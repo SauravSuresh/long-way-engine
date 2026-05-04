@@ -1,0 +1,23 @@
+todoist:
+  project_id: "REPLACE_WITH_TODOIST_PROJECT_ID"
+  labels:
+    daily: "daily-ritual"
+    weekly: "weekly-ritual"
+    monthly: "monthly-ritual"
+    quarterly: "quarterly-ritual"
+    practice: "active-practice"
+    module: "module-work"
+    reflection: "reflection"
+
+ritual_times:
+  morning_reading: "06:00"
+  anki: "08:30"
+  evening_hands_on: "19:00"
+  friday_review: "20:00"
+  saturday_deep_block: "09:00"
+
+sunday_off: true
+
+dashboard:
+  github_username: "REPLACE_WITH_GH_HANDLE"
+  repo_name: "long-way-engine"
