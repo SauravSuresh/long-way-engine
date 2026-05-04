@@ -268,6 +268,22 @@ def test_marker_dedup_skips_create_when_id_in_project():
     assert session.get.call_count == 1
 
 
+def test_marker_dedup_rehydrates_cache_on_hit():
+    """When marker dedup hits, the supplied cache dict gains an entry."""
+    session = MagicMock()
+    session.get.return_value = _list_response("a1234567890abcde")
+    client = make_client(session)
+    cache: dict = {}
+
+    client.create_task_idempotent(
+        make_template(), date(2026, 5, 4), "a1234567890abcde", cache
+    )
+    assert "a1234567890abcde" in cache
+    assert cache["a1234567890abcde"]["todoist_task_id"] == "task-0"
+    assert cache["a1234567890abcde"]["template_id"] == "daily-anki"
+    assert cache["a1234567890abcde"]["due_date"] == "2026-05-04"
+
+
 def test_marker_dedup_creates_when_id_not_in_project():
     """Cache miss + marker absent -> normal POST."""
     session = MagicMock()

@@ -134,12 +134,20 @@ class TodoistClient:
                 template.id,
                 existing_id,
             )
+            now_iso = self._clock.now().astimezone(timezone.utc).isoformat()
+            # Rehydrate the on-disk cache so future runs hit the fast path.
+            cache[external_id] = {
+                "todoist_task_id": existing_id,
+                "created_at": now_iso,
+                "template_id": template.id,
+                "due_date": due_date.isoformat(),
+            }
             return CreateResult(
                 external_id=external_id,
                 todoist_task_id=existing_id,
                 template_id=template.id,
                 due_date=due_date,
-                created_at=self._clock.now().astimezone(timezone.utc).isoformat(),
+                created_at=now_iso,
                 skipped=True,
             )
 
