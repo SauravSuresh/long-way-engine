@@ -22,7 +22,7 @@ from zoneinfo import ZoneInfo
 from src.cache import load_cache, prune, save_cache
 from src.clock import Clock, FrozenClock
 from src.config import Config, TokenRedactingFilter, load_config
-from src.ids import external_id
+from src.ids import external_id, module_external_id
 from src.reflections import StubResult, create_stub, update_metadata
 from src.scheduler import should_create_today
 from src.state import State, load_state
@@ -80,13 +80,20 @@ def _classify_skip(template, state: State, config: Config, today: date) -> str:
     if state.paused:
         return "SKIP (paused)"
     cadence = template.cadence
-    if (
-        cadence == "daily"
-        and template.skip_if == "sunday"
-        and config.sunday_off
-        and today.weekday() == 6
-    ):
-        return "SKIP (Sunday)"
+    if cadence == "daily":
+        if (
+            template.skip_if == "sunday"
+            and config.sunday_off
+            and today.weekday() == 6
+        ):
+            return "SKIP (Sunday)"
+        if (
+            template.skip_if == "pair_day"
+            and config.pair_day
+            and today.strftime("%A").lower() == config.pair_day.lower()
+        ):
+            return "SKIP (pair day)"
+        return "SKIP (rule)"
     if cadence == "weekly":
         day = template.day_of_week or "?"
         return f"SKIP (not {day})"
@@ -96,6 +103,8 @@ def _classify_skip(template, state: State, config: Config, today: date) -> str:
         return "SKIP (not quarter boundary)"
     if cadence == "annual":
         return "SKIP (not Jan 1)"
+    if cadence == "once-per-module":
+        return "SKIP (not current module)"
     return "SKIP (rule)"
 
 
@@ -199,7 +208,18 @@ def run(
             errors += 1
             continue
 
-        ext_id = external_id(tpl.id, today)
+        # Module-keyed id for once-per-module so advancing state.current_module
+        # gives module N's onboarding a fresh id (different from any past month's
+        # date-keyed ids). Cache + marker dedup still prevent re-firing on the
+        # same module value.
+        if tpl.cadence == "once-per-module":
+            assert tpl.module_number is not None  # scheduler already validated
+            ext_id = module_external_id(tpl.id, tpl.module_number)
+            cache_due = f"module:{tpl.module_number}"
+        else:
+            ext_id = external_id(tpl.id, today)
+            cache_due = today.isoformat()
+
         try:
             result = client.create_task_idempotent(resolved, today, ext_id, cache)
         except Exception as e:
@@ -218,7 +238,7 @@ def run(
                 "todoist_task_id": result.todoist_task_id,
                 "created_at": result.created_at,
                 "template_id": result.template_id,
-                "due_date": result.due_date.isoformat(),
+                "due_date": cache_due,
             }
 
         # Stub creation is template-fired, not task-creation-fired:
