@@ -428,3 +428,161 @@ def test_token_never_appears_in_logs(caplog, monkeypatch):
             )
     for record in caplog.records:
         assert "t-xyz" not in record.getMessage()
+
+
+# --- Phase E: TodoistCompletionClient ----------------------------------------
+
+import json as _json  # noqa: E402
+
+from src.todoist import (  # noqa: E402
+    COMPLETION_CACHE_TTL_SECONDS,
+    TodoistCompletionClient,
+)
+
+
+def make_completion_client(
+    session: MagicMock,
+    cache_path,
+    *,
+    when=None,
+    project_id: str | None = None,
+    window_days: int = 90,
+) -> TodoistCompletionClient:
+    when = when or datetime(2026, 5, 4, 12, 0, tzinfo=IST)
+    return TodoistCompletionClient(
+        token="t-xyz",
+        cache_path=cache_path,
+        project_id=project_id,
+        session=session,
+        clock=FrozenClock(when, IST),
+        window_days=window_days,
+    )
+
+
+def test_completion_client_no_shared_methods():
+    """Strict isolation: TodoistClient and TodoistCompletionClient must not
+    share any private method names (excluding dunders). Per Phase E plan
+    decision (2)."""
+    def private_methods(cls):
+        return {
+            name for name in vars(cls)
+            if name.startswith("_") and not name.startswith("__")
+            and callable(vars(cls)[name])
+        }
+    overlap = private_methods(TodoistClient) & private_methods(TodoistCompletionClient)
+    assert overlap == set(), f"unexpected shared private methods: {overlap}"
+
+
+def test_completion_get_returns_dict_of_bool(tmp_path):
+    session = MagicMock()
+    session.get.return_value = make_response(
+        200,
+        {"items": [{"task_id": "111"}, {"task_id": "222"}], "next_cursor": None},
+    )
+    client = make_completion_client(session, tmp_path / ".completion_cache.json")
+    result = client.get_completion_status(["111", "222", "333"])
+    assert result == {"111": True, "222": True, "333": False}
+
+
+def test_completion_writes_cache_after_fetch(tmp_path):
+    cache_path = tmp_path / ".completion_cache.json"
+    session = MagicMock()
+    session.get.return_value = make_response(
+        200,
+        {"items": [{"task_id": "111"}], "next_cursor": None},
+    )
+    client = make_completion_client(session, cache_path)
+    client.get_completion_status(["111"])
+    assert cache_path.exists()
+    data = _json.loads(cache_path.read_text())
+    assert data["completed_ids"] == ["111"]
+    assert "fetched_at" in data
+
+
+def test_completion_cache_hit_skips_api(tmp_path):
+    cache_path = tmp_path / ".completion_cache.json"
+    cache_path.write_text(_json.dumps({
+        "fetched_at": "2026-05-04T06:00:00+00:00",
+        "completed_ids": ["aaa", "bbb"],
+    }))
+    session = MagicMock()
+    # Frozen clock is 12:00 IST = 06:30 UTC; cache age 30 min < 6h.
+    client = make_completion_client(session, cache_path)
+    result = client.get_completion_status(["aaa", "ccc"])
+    assert result == {"aaa": True, "ccc": False}
+    session.get.assert_not_called()
+
+
+def test_completion_cache_expired_refetches(tmp_path):
+    cache_path = tmp_path / ".completion_cache.json"
+    # 7h before frozen now (12:00 IST 2026-05-04 = 06:30 UTC 2026-05-04)
+    cache_path.write_text(_json.dumps({
+        "fetched_at": "2026-05-03T23:30:00+00:00",  # ~7h old
+        "completed_ids": ["stale"],
+    }))
+    session = MagicMock()
+    session.get.return_value = make_response(
+        200, {"items": [{"task_id": "fresh"}], "next_cursor": None}
+    )
+    client = make_completion_client(session, cache_path)
+    result = client.get_completion_status(["fresh", "stale"])
+    assert result == {"fresh": True, "stale": False}
+    assert session.get.call_count == 1
+
+
+def test_completion_paginates_via_next_cursor(tmp_path):
+    session = MagicMock()
+    session.get.side_effect = [
+        make_response(200, {"items": [{"task_id": "a"}], "next_cursor": "c1"}),
+        make_response(200, {"items": [{"task_id": "b"}], "next_cursor": None}),
+    ]
+    client = make_completion_client(session, tmp_path / "cc.json")
+    result = client.get_completion_status(["a", "b"])
+    assert result == {"a": True, "b": True}
+    assert session.get.call_count == 2
+
+
+def test_completion_401_raises_auth(tmp_path):
+    session = MagicMock()
+    session.get.return_value = make_response(401)
+    client = make_completion_client(session, tmp_path / "cc.json")
+    with pytest.raises(TodoistAuthError):
+        client.get_completion_status(["a"])
+
+
+def test_completion_5xx_retries(tmp_path, monkeypatch):
+    monkeypatch.setattr("src.todoist.time.sleep", lambda *_: None)
+    session = MagicMock()
+    session.get.side_effect = [
+        make_response(500),
+        make_response(200, {"items": [{"task_id": "x"}], "next_cursor": None}),
+    ]
+    client = make_completion_client(session, tmp_path / "cc.json")
+    result = client.get_completion_status(["x"])
+    assert result == {"x": True}
+    assert session.get.call_count == 2
+
+
+def test_completion_corrupt_cache_falls_back(tmp_path):
+    cache_path = tmp_path / "cc.json"
+    cache_path.write_text("{this is not json")
+    session = MagicMock()
+    session.get.return_value = make_response(
+        200, {"items": [{"task_id": "x"}], "next_cursor": None}
+    )
+    client = make_completion_client(session, cache_path)
+    result = client.get_completion_status(["x"])
+    assert result == {"x": True}
+
+
+def test_completion_module_docstring_asserts_isolation():
+    """Module docstring must mention strict separation from TodoistClient."""
+    import src.todoist as mod
+    assert "strictly separated" in mod.__doc__.lower() or \
+           "isolation" in mod.__doc__.lower() or \
+           "strictly isolated" in mod.__doc__.lower() or \
+           "kept strictly" in mod.__doc__.lower()
+
+
+def test_completion_ttl_is_six_hours():
+    assert COMPLETION_CACHE_TTL_SECONDS == 6 * 60 * 60

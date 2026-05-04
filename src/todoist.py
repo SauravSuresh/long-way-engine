@@ -5,8 +5,9 @@ The daily-run client (`TodoistClient`) is write-only on TASK STATE.
 Idempotency reads are permitted: a single GET to list project tasks and
 parse content markers, used as the second dedup layer when the local
 cache misses. No PATCH, no DELETE, no POST outside `create_task_idempotent`.
-The read-only completion API (`get_completion_status`) lands in Phase E
-and must still be kept strictly separated from create_task_idempotent.
+The read-only completion API lives on `TodoistCompletionClient` (Phase E)
+and is kept strictly separated from `TodoistClient`: own session, own
+retry helper, own headers method, no shared private methods.
 
 Destructive operations (DELETE) live on `TodoistAdminClient`, a separate
 class invoked only by the explicit `--cleanup-project` CLI subcommand.
@@ -14,15 +15,20 @@ The daily-run code path never references it.
 
 CODE REVIEW CHECK: any PR that adds a POST/PATCH/DELETE method to
 `TodoistClient` outside `create_task_idempotent` must be rejected.
+A regression test (test_todoist.py::test_completion_client_no_shared_methods)
+asserts the private-method intersection between TodoistClient and
+TodoistCompletionClient is empty.
 """
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 import time
 from dataclasses import dataclass
-from datetime import date, timezone
+from datetime import date, datetime, timedelta, timezone
+from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -354,5 +360,197 @@ class TodoistAdminClient:
     def _headers(self) -> dict[str, str]:
         return {
             "Authorization": f"Bearer {self._token}",
+            "Content-Type": "application/json",
+        }
+
+
+# --- Phase E: read-only completion client ------------------------------------
+
+# Bulk completed-tasks endpoint (Todoist v1, by completion date).
+# NOTE: shape verified from public docs; live-probe before first deploy
+# (see STATUS.md Phase E open notes).
+COMPLETION_PATH = "/tasks/completed/by_completion_date"
+COMPLETION_CACHE_TTL_SECONDS = 6 * 60 * 60  # 6h
+COMPLETION_PAGE_LIMIT = 200
+DEFAULT_COMPLETION_WINDOW_DAYS = 90
+
+
+class TodoistCompletionClient:
+    """Read-only completion-status client. Strictly isolated from TodoistClient.
+
+    Distinct session, distinct retry helper, distinct headers method, no
+    shared private method names. Reads `.completion_cache.json` (6h TTL)
+    before issuing any GET. Bulk-fetches the completion window in one
+    paginated sweep and intersects locally with the caller's task IDs.
+
+    Returns dict[str, bool] per spec — True iff the task id appears in the
+    completion window. Missing or active task ids return False.
+    """
+
+    def __init__(
+        self,
+        token: str,
+        cache_path: Path,
+        project_id: str | None = None,
+        session: requests.Session | None = None,
+        timeout: float = DEFAULT_TIMEOUT,
+        clock: Clock | None = None,
+        window_days: int = DEFAULT_COMPLETION_WINDOW_DAYS,
+    ) -> None:
+        self._api_token = token
+        self._cache_path = cache_path
+        self._project_id_filter = project_id
+        self._http = session or requests.Session()
+        self._request_timeout = timeout
+        self._completion_clock = clock or Clock(ZoneInfo("UTC"))
+        self._window_days = window_days
+
+    def get_completion_status(self, task_ids: list[str]) -> dict[str, bool]:
+        """Return {task_id: completed?} for every id in the input list."""
+        completed = self._load_completed_set()
+        return {tid: tid in completed for tid in task_ids}
+
+    # --- cache layer -----------------------------------------------------
+
+    def _load_completed_set(self) -> set[str]:
+        cached = self._read_cache_if_fresh()
+        if cached is not None:
+            return cached
+        ids = self._fetch_completed_ids()
+        self._write_cache(ids)
+        return ids
+
+    def _read_cache_if_fresh(self) -> set[str] | None:
+        if not self._cache_path.exists():
+            return None
+        try:
+            data = json.loads(self._cache_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            logger.warning("completion cache unreadable; ignoring")
+            return None
+        fetched_at_raw = data.get("fetched_at")
+        ids_raw = data.get("completed_ids")
+        if not isinstance(fetched_at_raw, str) or not isinstance(ids_raw, list):
+            return None
+        try:
+            fetched_at = datetime.fromisoformat(fetched_at_raw)
+        except ValueError:
+            return None
+        now = self._completion_clock.now().astimezone(timezone.utc)
+        if fetched_at.tzinfo is None:
+            fetched_at = fetched_at.replace(tzinfo=timezone.utc)
+        age = (now - fetched_at).total_seconds()
+        if age >= COMPLETION_CACHE_TTL_SECONDS or age < 0:
+            return None
+        return {str(x) for x in ids_raw}
+
+    def _write_cache(self, ids: set[str]) -> None:
+        now_iso = self._completion_clock.now().astimezone(timezone.utc).isoformat()
+        payload = {"fetched_at": now_iso, "completed_ids": sorted(ids)}
+        tmp = self._cache_path.with_suffix(self._cache_path.suffix + ".tmp")
+        tmp.write_text(json.dumps(payload), encoding="utf-8")
+        tmp.replace(self._cache_path)
+
+    # --- HTTP layer ------------------------------------------------------
+
+    def _fetch_completed_ids(self) -> set[str]:
+        """Bulk-fetch the completion window over paginated cursors."""
+        until = self._completion_clock.now().astimezone(timezone.utc)
+        since = until - timedelta(days=self._window_days)
+        params: dict[str, Any] = {
+            "since": since.isoformat(),
+            "until": until.isoformat(),
+            "limit": COMPLETION_PAGE_LIMIT,
+        }
+        if self._project_id_filter is not None:
+            params["project_id"] = self._project_id_filter
+
+        ids: set[str] = set()
+        url = f"{API_ROOT}{COMPLETION_PATH}"
+        while True:
+            data = self._completion_get_with_retry(url, params)
+            items = self._extract_items(data)
+            for item in items:
+                tid = item.get("task_id") or item.get("id")
+                if tid is not None:
+                    ids.add(str(tid))
+            cursor = data.get("next_cursor") if isinstance(data, dict) else None
+            if not cursor:
+                break
+            params = dict(params)
+            params["cursor"] = cursor
+        logger.info(
+            "completion fetch: window=%dd, %d completed task(s)",
+            self._window_days,
+            len(ids),
+        )
+        return ids
+
+    @staticmethod
+    def _extract_items(data: Any) -> list[dict[str, Any]]:
+        """Tolerate either {'items': [...]} or {'results': [...]} or a bare list."""
+        if isinstance(data, list):
+            return data
+        if isinstance(data, dict):
+            for key in ("items", "results"):
+                if isinstance(data.get(key), list):
+                    return data[key]
+        return []
+
+    def _completion_get_with_retry(
+        self, url: str, params: dict[str, Any]
+    ) -> Any:
+        backoff = INITIAL_BACKOFF
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                resp = self._http.get(
+                    url,
+                    params=params,
+                    headers=self._completion_headers(),
+                    timeout=self._request_timeout,
+                )
+            except requests.RequestException as e:
+                logger.warning(
+                    "todoist completion GET attempt %d/%d failed: %s",
+                    attempt,
+                    MAX_RETRIES,
+                    e,
+                )
+                if attempt == MAX_RETRIES:
+                    raise TodoistError(
+                        f"network error after {MAX_RETRIES} attempts"
+                    ) from e
+                time.sleep(backoff)
+                backoff *= 2
+                continue
+
+            if resp.status_code == 401:
+                raise TodoistAuthError(
+                    "todoist 401 unauthorized; check TODOIST_TOKEN"
+                )
+            if 500 <= resp.status_code < 600:
+                logger.warning(
+                    "todoist completion GET attempt %d/%d returned %d",
+                    attempt,
+                    MAX_RETRIES,
+                    resp.status_code,
+                )
+                if attempt == MAX_RETRIES:
+                    raise TodoistError(
+                        f"todoist 5xx after {MAX_RETRIES} attempts: {resp.status_code}"
+                    )
+                time.sleep(backoff)
+                backoff *= 2
+                continue
+            if not resp.ok:
+                raise TodoistError(
+                    f"todoist completion GET {resp.status_code}: {resp.text[:200]}"
+                )
+            return resp.json()
+        raise TodoistError("todoist completion retry loop exited without return")
+
+    def _completion_headers(self) -> dict[str, str]:
+        return {
+            "Authorization": f"Bearer {self._api_token}",
             "Content-Type": "application/json",
         }
