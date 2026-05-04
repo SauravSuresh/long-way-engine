@@ -199,7 +199,7 @@ Phase F = production readiness + ergonomic polish. **Strict priority order — d
 
 1. ~~**Live-probe `/tasks/completed/by_completion_date`**~~ ✅ *(2026-05-04)*. Verified against production token via `scripts/probe_completion.py`: response shape is `{"items": [...]}`, per-item identifier is `"id"`. `TodoistCompletionClient._extract_items` and `_fetch_completed_ids` are locked to that shape; the `results` and `task_id` tolerance branches are dropped. The `next_cursor` branch stays as defensive code (probe didn't exercise multi-page; absent in single-page response).
 
-2. **`rebuild_cache.py`** *(blocking)*. Offline script that reconstructs `.task_cache.json` from project markers — a standalone CLI mirror of `_fetch_marker_ids`. Phase A scaffolded the runtime marker fallback; this is the catastrophic-recovery sibling. Required before any operation that could wipe the local cache.
+2. ~~**`rebuild_cache.py`**~~ ✅ *(2026-05-04)*. `scripts/rebuild_cache.py` reconstructs `.task_cache.json` by walking ACTIVE tasks + the last-N-days COMPLETED window, parsing markers, and reverse-searching `templates × date_window` to recover `template_id` + `due_date` (the dashboard's practice tracker reads `template_id`). Active markers win on collision; unmatched markers are kept with blank `template_id`/`due_date` and a warning. Read-only (grep-clean for POST/PATCH/DELETE). Defaults to writing `.task_cache.rebuilt.json` so the live cache is never clobbered without an explicit `mv`. 9 new tests; 291 total.
 
 3. **Synthetic pause smoke test.** Five-minute exercise to surface "passes unit tests but breaks in practice" bugs while the Phase E code is fresh:
    1. Toggle `paused: true`, set `paused_since: <today>`.
