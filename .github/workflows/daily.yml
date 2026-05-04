@@ -1,0 +1,55 @@
+name: daily
+
+on:
+  # 21:30 UTC is 03:00 the next day in Asia/Kolkata (IST = UTC+5:30).
+  # GitHub Actions cron is best-effort and may delay under load.
+  schedule:
+    - cron: "30 21 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-run
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Run engine
+        env:
+          TODOIST_TOKEN: ${{ secrets.TODOIST_TOKEN }}
+        run: python -m src.main
+
+      - name: Commit and push state changes
+        env:
+          GH_ACTOR: ${{ github.actor }}
+        run: |
+          git config user.name  "long-way-bot"
+          git config user.email "long-way-bot@users.noreply.github.com"
+
+          git add .task_cache.json LOG.md || true
+
+          if git diff --cached --quiet; then
+            echo "no state changes"
+            exit 0
+          fi
+
+          today=$(TZ=Asia/Kolkata date +%Y-%m-%d)
+          git commit -m "chore: daily run ${today}"
+          git push
