@@ -1,4 +1,4 @@
-start_date: 2026-05-04
+start_date: 2026-05-05
 timezone: Asia/Kolkata
 phase: 1
 month: 1
@@ -34,4 +34,4 @@ manual_counters:
   lineage_detours_done: []
 notes: |
   Most recent edit on top.
-  2026-05-04: started.
+  2026-05-05: starting day 1. May 4 setup tasks wiped via --cleanup-project; cache reset.

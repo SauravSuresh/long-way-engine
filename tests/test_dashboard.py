@@ -147,6 +147,17 @@ def test_last_7_color_red_neither():
     assert _last_7_color(date(2026, 5, 4), make_state(), {}, set()) == "red"
 
 
+def test_last_7_color_gray_before_start_date():
+    """Days before state.start_date are outside the journey — gray, not red."""
+    state = make_state(start_date=date(2026, 5, 5))
+    # 2026-05-02 is a Saturday (would normally be red without completions),
+    # but it's before start_date — should render gray.
+    assert _last_7_color(date(2026, 5, 2), state, {}, set()) == "gray"
+    assert _last_7_color(date(2026, 5, 4), state, {}, set()) == "gray"  # day before start
+    # Start date itself and after are normal.
+    assert _last_7_color(date(2026, 5, 5), state, {}, set()) == "red"
+
+
 def test_scan_reflections_reads_frontmatter(tmp_path: Path):
     weekly = tmp_path / "weekly"
     weekly.mkdir()

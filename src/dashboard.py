@@ -210,6 +210,13 @@ def _last_7_color(
     cache: dict[str, Any],
     completion_set: set[str],
 ) -> str:
+    # Days before the journey's start_date aren't 'missed' — they're
+    # outside the journey. Treat them as a gray skip-day, the same way
+    # Sundays and pause windows are coloured. Without this, a freshly
+    # initialised state.yaml shows the prior 6 days as red (= both
+    # dailies missed) which reads as failure before day 1.
+    if d < state.start_date:
+        return "gray"
     if d.weekday() == 6 or _is_in_pause_window(d, state):
         return "gray"
     done = 0
