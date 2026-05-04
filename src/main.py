@@ -10,16 +10,17 @@ dashboard, no weekly/monthly/quarterly cadences, no `paused` short-circuit.
 
 from __future__ import annotations
 
+import argparse
 import logging
 import sys
 from dataclasses import dataclass, field
-from datetime import date, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 from zoneinfo import ZoneInfo
 
 from src.cache import load_cache, prune, save_cache
-from src.clock import Clock
+from src.clock import Clock, FrozenClock
 from src.config import Config, TokenRedactingFilter, load_config
 from src.ids import external_id
 from src.scheduler import should_create_today
@@ -80,13 +81,16 @@ def run(
     today: date,
     templates_dir: Path,
     cache_path: Path,
-    client_factory=TodoistClient,
+    client_factory=None,
     clock: Clock | None = None,
     dry_run: bool = False,
     project_id: str | None = None,
 ) -> RunSummary:
     if clock is None:
         clock = Clock(state.timezone)
+    if client_factory is None:
+        # Lookup at call time so module-level patches in tests take effect.
+        client_factory = TodoistClient
 
     cache = load_cache(cache_path)
     templates = load_templates(templates_dir)
@@ -181,15 +185,104 @@ def append_log(
     log_path.write_text(existing + entry, encoding="utf-8")
 
 
-def main() -> int:
+def _parse_today(value: str) -> date:
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except ValueError as e:
+        raise argparse.ArgumentTypeError(f"--today must be YYYY-MM-DD: {e}")
+
+
+def _build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(
+        prog="python -m src.main",
+        description="Long Way Engine — daily run.",
+    )
+    p.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="No API calls, no file writes. Print a decision table.",
+    )
+    p.add_argument(
+        "--today",
+        type=_parse_today,
+        metavar="YYYY-MM-DD",
+        help="Override the clock. Time-of-day defaults to 05:30 in owner TZ.",
+    )
+    p.add_argument(
+        "--project-id",
+        metavar="ID",
+        help="Override config.yaml todoist.project_id.",
+    )
+    p.add_argument(
+        "--cache-file",
+        type=Path,
+        metavar="PATH",
+        help="Override .task_cache.json path.",
+    )
+    p.add_argument(
+        "--verbose",
+        action="store_true",
+        help="DEBUG-level logging.",
+    )
+    return p
+
+
+def _print_dry_run_table(summary: RunSummary, out=None) -> None:
+    if out is None:
+        out = sys.stdout
+    rows = [(d.template_id, d.external_id or "-", d.decision) for d in summary.decisions]
+    if not rows:
+        print("(no templates produced a decision)", file=out)
+        return
+    tpl_w = max(len("TEMPLATE"), max(len(r[0]) for r in rows))
+    id_w = max(len("EXTERNAL_ID"), max(len(r[1]) for r in rows))
+    dec_w = max(len("DECISION"), max(len(r[2]) for r in rows))
+    fmt = f"{{:<{tpl_w}}}  {{:<{id_w}}}  {{:<{dec_w}}}"
+    print(fmt.format("TEMPLATE", "EXTERNAL_ID", "DECISION"), file=out)
+    for r in rows:
+        print(fmt.format(*r), file=out)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = _build_parser().parse_args(argv)
+
     config = load_config(CONFIG_PATH, ENV_PATH)
-    _setup_logging(config.todoist_token)
+    _setup_logging(config.todoist_token, verbose=args.verbose)
     state = load_state(STATE_PATH)
-    clock = Clock(state.timezone)
-    today = clock.today()
-    logger.info("daily run start: today=%s tz=%s", today, state.timezone.key)
-    summary = run(config, state, today, TEMPLATES_DIR, CACHE_PATH, clock=clock)
-    append_log(LOG_PATH, summary, state.timezone.key, clock=clock)
+
+    if args.today is not None:
+        clock: Clock = FrozenClock(args.today, state.timezone)
+        today = args.today
+    else:
+        clock = Clock(state.timezone)
+        today = clock.today()
+
+    cache_path = args.cache_file or CACHE_PATH
+
+    logger.info(
+        "daily run start: today=%s tz=%s dry_run=%s cache=%s",
+        today,
+        state.timezone.key,
+        args.dry_run,
+        cache_path,
+    )
+
+    summary = run(
+        config,
+        state,
+        today,
+        TEMPLATES_DIR,
+        cache_path,
+        clock=clock,
+        dry_run=args.dry_run,
+        project_id=args.project_id,
+    )
+
+    if args.dry_run:
+        _print_dry_run_table(summary)
+    else:
+        append_log(LOG_PATH, summary, state.timezone.key, clock=clock)
+
     logger.info(
         "daily run done: created=%d skipped=%d errors=%d",
         len(summary.created),

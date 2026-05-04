@@ -1,0 +1,296 @@
+"""CLI surface for src.main: argparse, --dry-run, --today, --project-id, --cache-file."""
+
+from __future__ import annotations
+
+import io
+import json
+from datetime import date
+from pathlib import Path
+from unittest.mock import patch
+
+import pytest
+
+from src import main as main_module
+from src.main import RunSummary, _build_parser, _print_dry_run_table, run
+from tests.test_main import FakeClient, _seed_templates, make_config, make_state
+
+
+# ---------------------------------------------------------------------------
+# Argparse surface
+# ---------------------------------------------------------------------------
+
+
+def test_parser_defaults():
+    args = _build_parser().parse_args([])
+    assert args.dry_run is False
+    assert args.today is None
+    assert args.project_id is None
+    assert args.cache_file is None
+    assert args.verbose is False
+
+
+def test_parser_today_parses_iso_date():
+    args = _build_parser().parse_args(["--today", "2026-05-04"])
+    assert args.today == date(2026, 5, 4)
+
+
+def test_parser_today_rejects_bad_format():
+    parser = _build_parser()
+    with pytest.raises(SystemExit):
+        parser.parse_args(["--today", "not-a-date"])
+
+
+def test_parser_overrides():
+    args = _build_parser().parse_args(
+        [
+            "--dry-run",
+            "--today",
+            "2026-05-04",
+            "--project-id",
+            "sandbox-id",
+            "--cache-file",
+            "/tmp/sandbox.json",
+            "--verbose",
+        ]
+    )
+    assert args.dry_run is True
+    assert args.today == date(2026, 5, 4)
+    assert args.project_id == "sandbox-id"
+    assert args.cache_file == Path("/tmp/sandbox.json")
+    assert args.verbose is True
+
+
+# ---------------------------------------------------------------------------
+# Dry-run semantics: no POST, no cache write, no LOG append
+# ---------------------------------------------------------------------------
+
+
+def test_dry_run_does_not_write_cache_file(tmp_path: Path):
+    tdir = _seed_templates(tmp_path)
+    cache_path = tmp_path / ".task_cache.json"
+    summary = run(
+        make_config(),
+        make_state(),
+        date(2026, 5, 4),  # Monday
+        tdir,
+        cache_path,
+        client_factory=FakeClient,
+        dry_run=True,
+    )
+    assert not cache_path.exists()
+    assert len(summary.created) == 2
+    assert all(d.decision == "WOULD CREATE" for d in summary.decisions)
+
+
+def test_dry_run_decisions_for_sunday(tmp_path: Path):
+    tdir = _seed_templates(tmp_path)
+    cache_path = tmp_path / ".task_cache.json"
+    summary = run(
+        make_config(),
+        make_state(),
+        date(2026, 5, 3),  # Sunday
+        tdir,
+        cache_path,
+        client_factory=FakeClient,
+        dry_run=True,
+    )
+    assert summary.created == []
+    assert all(d.decision == "SKIP (Sunday)" for d in summary.decisions)
+
+
+def test_dry_run_uses_cache_for_skip_decisions(tmp_path: Path):
+    """Pre-seed cache; dry-run should label as cache hits, not WOULD CREATE."""
+    tdir = _seed_templates(tmp_path)
+    cache_path = tmp_path / ".task_cache.json"
+
+    # Populate cache via a real-ish run first.
+    run(
+        make_config(),
+        make_state(),
+        date(2026, 5, 4),
+        tdir,
+        cache_path,
+        client_factory=FakeClient,
+    )
+    assert cache_path.exists()
+    pre = json.loads(cache_path.read_text())
+    assert len(pre) == 2
+
+    # Dry-run on the same day should report cache hits and NOT touch the cache.
+    cache_mtime = cache_path.stat().st_mtime_ns
+    summary = run(
+        make_config(),
+        make_state(),
+        date(2026, 5, 4),
+        tdir,
+        cache_path,
+        client_factory=FakeClient,
+        dry_run=True,
+    )
+    assert all(d.decision == "SKIP (cache hit)" for d in summary.decisions)
+    # File untouched.
+    assert cache_path.stat().st_mtime_ns == cache_mtime
+
+
+def test_project_id_override_threads_into_client(tmp_path: Path):
+    """--project-id takes precedence over config.yaml."""
+    tdir = _seed_templates(tmp_path)
+    cache_path = tmp_path / ".task_cache.json"
+
+    captured: dict[str, str] = {}
+
+    def factory(**kwargs):
+        captured.update({k: v for k, v in kwargs.items() if isinstance(v, str)})
+        return FakeClient(**kwargs)
+
+    run(
+        make_config(),
+        make_state(),
+        date(2026, 5, 4),
+        tdir,
+        cache_path,
+        client_factory=factory,
+        project_id="sandbox-override",
+    )
+    assert captured["project_id"] == "sandbox-override"
+
+
+# ---------------------------------------------------------------------------
+# Dry-run table renderer
+# ---------------------------------------------------------------------------
+
+
+def test_dry_run_table_has_header_and_rows():
+    from src.main import Decision
+
+    summary = RunSummary(
+        today=date(2026, 5, 4),
+        created=[],
+        skipped=[],
+        errors=0,
+        decisions=[
+            Decision("daily-morning-reading", "a3f2b1c4d5e6f7a8", "WOULD CREATE"),
+            Decision("daily-anki", "b8d2c1e4f5a67890", "SKIP (cache hit)"),
+        ],
+    )
+    buf = io.StringIO()
+    _print_dry_run_table(summary, out=buf)
+    out = buf.getvalue()
+    assert "TEMPLATE" in out
+    assert "EXTERNAL_ID" in out
+    assert "DECISION" in out
+    assert "daily-morning-reading" in out
+    assert "WOULD CREATE" in out
+    assert "SKIP (cache hit)" in out
+
+
+# ---------------------------------------------------------------------------
+# main() end-to-end with monkeypatched paths
+# ---------------------------------------------------------------------------
+
+
+def _seed_repo(tmp_path: Path, monkeypatch) -> Path:
+    """Set up a minimal repo layout in tmp and point main's globals at it."""
+    config_path = tmp_path / "config.yaml"
+    state_path = tmp_path / "state.yaml"
+    env_path = tmp_path / ".env"
+    log_path = tmp_path / "LOG.md"
+    cache_path = tmp_path / ".task_cache.json"
+    tdir = _seed_templates(tmp_path)
+
+    config_path.write_text(
+        'todoist:\n'
+        '  project_id: "PROD-ID"\n'
+        '  labels: {daily: "daily-ritual"}\n'
+        'ritual_times:\n'
+        '  morning_reading: "06:00"\n'
+        '  anki: "08:30"\n'
+        'sunday_off: true\n'
+        'dashboard:\n'
+        '  github_username: "u"\n'
+        '  repo_name: "r"\n'
+    )
+    state_path.write_text(
+        "start_date: 2026-05-04\n"
+        "timezone: Asia/Kolkata\n"
+        "phase: 1\n"
+        "month: 1\n"
+        "current_module: 1\n"
+        'current_book: "CSAPP"\n'
+    )
+    env_path.write_text("TODOIST_TOKEN=tok-from-env\n")
+
+    monkeypatch.setattr(main_module, "CONFIG_PATH", config_path)
+    monkeypatch.setattr(main_module, "STATE_PATH", state_path)
+    monkeypatch.setattr(main_module, "ENV_PATH", env_path)
+    monkeypatch.setattr(main_module, "LOG_PATH", log_path)
+    monkeypatch.setattr(main_module, "CACHE_PATH", cache_path)
+    monkeypatch.setattr(main_module, "TEMPLATES_DIR", tdir)
+    return tmp_path
+
+
+def test_main_dry_run_end_to_end(tmp_path: Path, monkeypatch, capsys):
+    _seed_repo(tmp_path, monkeypatch)
+
+    with patch("src.main.TodoistClient", FakeClient):
+        rc = main_module.main(["--dry-run", "--today", "2026-05-04"])
+    assert rc == 0
+
+    captured = capsys.readouterr()
+    assert "WOULD CREATE" in captured.out
+    assert "daily-morning-reading" in captured.out
+
+    assert not (tmp_path / ".task_cache.json").exists()
+    assert not (tmp_path / "LOG.md").exists()
+
+
+def test_main_dry_run_sunday_zero_creates(tmp_path: Path, monkeypatch, capsys):
+    _seed_repo(tmp_path, monkeypatch)
+    with patch("src.main.TodoistClient", FakeClient):
+        rc = main_module.main(["--dry-run", "--today", "2026-05-03"])  # Sunday
+    assert rc == 0
+
+    captured = capsys.readouterr()
+    assert "WOULD CREATE" not in captured.out
+    assert "SKIP (Sunday)" in captured.out
+
+
+def test_main_real_run_writes_cache_and_log(tmp_path: Path, monkeypatch):
+    _seed_repo(tmp_path, monkeypatch)
+    with patch("src.main.TodoistClient", FakeClient):
+        rc = main_module.main(["--today", "2026-05-04"])
+    assert rc == 0
+    assert (tmp_path / ".task_cache.json").exists()
+    assert (tmp_path / "LOG.md").exists()
+    log = (tmp_path / "LOG.md").read_text()
+    assert "2026-05-04" in log
+    assert "Created: 2" in log
+
+
+def test_main_cache_file_override(tmp_path: Path, monkeypatch):
+    _seed_repo(tmp_path, monkeypatch)
+    sandbox = tmp_path / ".task_cache.sandbox.json"
+    with patch("src.main.TodoistClient", FakeClient):
+        rc = main_module.main(["--today", "2026-05-04", "--cache-file", str(sandbox)])
+    assert rc == 0
+    assert sandbox.exists()
+    # Default cache file untouched.
+    assert not (tmp_path / ".task_cache.json").exists()
+
+
+def test_main_project_id_override(tmp_path: Path, monkeypatch):
+    _seed_repo(tmp_path, monkeypatch)
+
+    seen: dict[str, str] = {}
+
+    class CapturingClient(FakeClient):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            seen["project_id"] = kwargs["project_id"]
+
+    with patch("src.main.TodoistClient", CapturingClient):
+        rc = main_module.main(
+            ["--today", "2026-05-04", "--project-id", "SANDBOX-ID"]
+        )
+    assert rc == 0
+    assert seen["project_id"] == "SANDBOX-ID"
