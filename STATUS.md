@@ -193,33 +193,42 @@ Per spec + your additions:
 | Page weight | ~4.4 KB CSS + ~5.3 KB HTML + ~3 KB JSON ≪ 100 KB | ✅ |
 | `TodoistClient` × `TodoistCompletionClient` | private-method intersection empty | ✅ |
 
-## Phase F entry points
+## Phase F — engine-side complete *(2026-05-04)*
 
-Phase F = production readiness + ergonomic polish. **Strict priority order — do not work out of order, items 1–2 are blocking.**
+**Engine-side complete; awaiting owner-driven verification on items 3 and 6.** Not claiming VERIFIED until both land. Phase F = production readiness + ergonomic polish; the priority order from the post-Phase-E review held — items 1 and 2 (blocking) shipped first, items 4 and 5 bundled after, item 7 parked.
 
-1. ~~**Live-probe `/tasks/completed/by_completion_date`**~~ ✅ *(2026-05-04)*. Verified against production token via `scripts/probe_completion.py`: response shape is `{"items": [...]}`, per-item identifier is `"id"`. `TodoistCompletionClient._extract_items` and `_fetch_completed_ids` are locked to that shape; the `results` and `task_id` tolerance branches are dropped. The `next_cursor` branch stays as defensive code (probe didn't exercise multi-page; absent in single-page response).
+### Items
 
-2. ~~**`rebuild_cache.py`**~~ ✅ *(2026-05-04)*. `scripts/rebuild_cache.py` reconstructs `.task_cache.json` by walking ACTIVE tasks + the last-N-days COMPLETED window, parsing markers, and reverse-searching `templates × date_window` to recover `template_id` + `due_date` (the dashboard's practice tracker reads `template_id`). Active markers win on collision; unmatched markers are kept with blank `template_id`/`due_date` and a warning. Read-only (grep-clean for POST/PATCH/DELETE). Defaults to writing `.task_cache.rebuilt.json` so the live cache is never clobbered without an explicit `mv`. 9 new tests; 291 total.
+| # | Item | Status |
+|---|---|---|
+| 1 | Live-probe `/tasks/completed/by_completion_date` | ✅ done |
+| 2 | `rebuild_cache.py` offline recovery | ✅ done |
+| 3 | Synthetic pause smoke test | ⏳ owner-driven |
+| 4 | `workflow_dispatch` `dry_run` + `verbose` inputs | ✅ done |
+| 5 | Last-Saturday skip on `weekly-saturday-deep-block` | ✅ done |
+| 6 | GitHub Pages enablement | ⏳ owner-driven |
+| 7 | Holiday × pair-day collision | 📌 parked |
 
-3. **Synthetic pause smoke test.** Five-minute exercise to surface "passes unit tests but breaks in practice" bugs while the Phase E code is fresh:
-   1. Toggle `paused: true`, set `paused_since: <today>`.
-   2. `python -m src.main --dry-run --today <today+1>` — confirm SKIP (paused) on all dailies; dashboard render is gated to a real run, so optionally generate against the sandbox cache.
-   3. `--dry-run --today <today+2>`, `<today+3>` — same.
-   4. Unpause: flip `paused: false`, append `pause_history: [{start: <today>, end: <today+3>, reason: "smoke"}]`, clear `paused_since`.
-   5. `--dry-run --today <today+4>` — daily streak should preserve any prior streak, not reset to zero. Last-7-days timeline should show the paused days as gray.
-   This isn't an automated test; it's a checklist run against the live state file with `--cache-file .task_cache.sandbox.json` so the production cache stays clean.
+### Locked Todoist v1 response shapes *(verified 2026-05-04 against production token)*
 
-4. ~~**`workflow_dispatch` inputs**~~ ✅ *(2026-05-04)*. `daily.yml` now exposes `dry_run` (boolean, default false) and `verbose` (boolean, default false) inputs to `workflow_dispatch`. Cron-triggered runs read empty `inputs.*` and resolve both flag expressions to `''` — production cron is never accidentally muted by a stale manual-run input value. Unquoted shell substitution intentionally drops empty flags so argparse sees correct argv.
+| Field | Locked value |
+|---|---|
+| Top-level response key for `/tasks/completed/by_completion_date` | `items` |
+| Per-item identifier key | `id` |
 
-5. ~~**Last-Saturday quadruple-firing UX**~~ ✅ *(2026-05-04)*. `weekly-saturday-deep-block` now carries `skip_if: [last-saturday-of-month]`. The scheduler's `_weekly_fires` honours the rule; the dry-run table label classifies last-Saturday skips as `SKIP (last Saturday)`. `weekly-read-real-code` left firing — owner gets the code-reading session even on retrieval days. 4 new tests; 295 total.
+Verified via `scripts/probe_completion.py` with one completed task in the window. `TodoistCompletionClient._extract_items` and `_fetch_completed_ids` are now locked against this shape; the `results` and `task_id` tolerance branches were dropped in commit `30a7a6e`. The `next_cursor` branch stays as defensive code (single-page response did not exercise multi-page; if Todoist ever surfaces a cursor, the existing `data.get("next_cursor")` path picks it up unchanged). Re-probe and re-lock if Todoist v1 ever changes its response envelope.
 
-6. **GitHub Pages enablement.** One-time owner click-through in repo settings (Settings → Pages → Deploy from a branch → main / `/docs`). Documented in README; no code change required.
+### Phase F closes when owner completes
 
-## Open design questions (deferred)
+- **Item 3 — synthetic pause smoke test.** Five-minute checklist against a sandbox cache (`--cache-file .task_cache.sandbox.json`): toggle `paused: true` + `paused_since: <today>`; dry-run a few synthetic days forward, confirming `SKIP (paused)` on every daily; unpause by flipping `paused: false` and appending `pause_history: [{start: <today>, end: <today+3>, reason: "smoke"}]`; dry-run again at `<today+4>` and confirm the daily streak preserves its prior value (not reset to zero) and that last-7-days timeline shows the paused days as gray. Surfaces "passes unit tests but breaks in practice" bugs while the Phase E code is fresh.
+- **Item 6 — GitHub Pages enablement.** Repo Settings → Pages → Source: "Deploy from a branch" → Branch: `main` / folder: `/docs`. After enable, the dashboard publishes at `https://<github_username>.github.io/<repo_name>/`. README has the full instructions.
 
-- **Holiday × pair-day collision.** `pair_day: thursday` + a Thursday holiday silently empties the day (the pair session and the solo evening hands-on both skip). No catch-up logic. Two paths: (a) make `pair_day` a per-week override list rather than a single weekday, or (b) add a `holidays` config block that rotates `pair_day` for that week. Park here until the first time it actually bites.
+### Open design questions (deferred)
 
-### Phase F operating rule (from owner, 2026-05-04)
+- **Item 7 — holiday × pair-day collision.** `pair_day: thursday` + a Thursday holiday silently empties the day (both the pair session and the solo evening hands-on skip). No catch-up logic. Two design paths: (a) make `pair_day` a per-week override list rather than a single weekday, or (b) add a `holidays` config block that rotates `pair_day` for affected weeks.
+  - **Revisit trigger:** the first time a holiday actually lands on a Thursday during an active phase, OR the first owner request for a manual one-off pair-day override. Until then, the silent empty Thursday is acceptable.
+
+### Operating rule (from owner, 2026-05-04 — applies indefinitely, not phase-bound)
 
 **No `python -m src.main` invocation against the production Todoist project unless gated by `--dry-run`, a sandbox `--cache-file`, or `--cleanup-project <SANDBOX_ID>`.** This includes smoke tests, sanity checks, and one-off verifications. `--today` freezes the clock but does NOT prevent API writes — it is not a safe substitute. If a real run is genuinely needed, ask the owner first.
 
