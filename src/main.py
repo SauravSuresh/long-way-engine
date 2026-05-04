@@ -64,14 +64,26 @@ def _setup_logging(token: str, verbose: bool = False) -> None:
 
 
 def _classify_skip(template, state: State, config: Config, today: date) -> str:
-    """Best-effort label for why a daily template was skipped today."""
+    """Human-readable label for why this template did not fire today."""
+    if state.paused:
+        return "SKIP (paused)"
+    cadence = template.cadence
     if (
-        template.cadence == "daily"
+        cadence == "daily"
         and template.skip_if == "sunday"
         and config.sunday_off
         and today.weekday() == 6
     ):
         return "SKIP (Sunday)"
+    if cadence == "weekly":
+        day = template.day_of_week or "?"
+        return f"SKIP (not {day})"
+    if cadence == "monthly":
+        return "SKIP (not month boundary)"
+    if cadence == "quarterly":
+        return "SKIP (not quarter boundary)"
+    if cadence == "annual":
+        return "SKIP (not Jan 1)"
     return "SKIP (rule)"
 
 

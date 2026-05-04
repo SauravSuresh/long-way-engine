@@ -98,6 +98,45 @@ def test_dry_run_decisions_for_sunday(tmp_path: Path):
     assert all(d.decision == "SKIP (Sunday)" for d in summary.decisions)
 
 
+def test_dry_run_decisions_when_paused(tmp_path: Path):
+    """state.paused=True labels every decision as SKIP (paused)."""
+    tdir = _seed_templates(tmp_path)
+    cache_path = tmp_path / ".task_cache.json"
+    state = make_state()
+    state.paused = True
+    summary = run(
+        make_config(),
+        state,
+        date(2026, 5, 4),  # Monday — would otherwise create
+        tdir,
+        cache_path,
+        client_factory=FakeClient,
+        dry_run=True,
+    )
+    assert summary.created == []
+    assert all(d.decision == "SKIP (paused)" for d in summary.decisions)
+
+
+def test_paused_real_run_writes_cache_and_log_with_zero_creates(tmp_path: Path):
+    """Non-dry-run paused: 0 creates, but cache + log still get written."""
+    tdir = _seed_templates(tmp_path)
+    cache_path = tmp_path / ".task_cache.json"
+    state = make_state()
+    state.paused = True
+    summary = run(
+        make_config(),
+        state,
+        date(2026, 5, 4),
+        tdir,
+        cache_path,
+        client_factory=FakeClient,
+    )
+    assert summary.created == []
+    assert summary.errors == 0
+    assert cache_path.exists()  # save_cache still runs
+    assert all(d.decision == "SKIP (paused)" for d in summary.decisions)
+
+
 def test_dry_run_uses_cache_for_skip_decisions(tmp_path: Path):
     """Pre-seed cache; dry-run should label as cache hits, not WOULD CREATE."""
     tdir = _seed_templates(tmp_path)
