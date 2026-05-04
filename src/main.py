@@ -131,7 +131,7 @@ def run(
             errors += 1
             continue
 
-        resolved = resolve_variables(tpl, state, config)
+        resolved = resolve_variables(tpl, state, config, today)
         if resolved is None:
             decisions.append(Decision(tpl.id, None, "ERROR (variable)"))
             errors += 1

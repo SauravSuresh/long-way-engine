@@ -1,11 +1,12 @@
 from datetime import date
 from pathlib import Path
 
+import pytest
 from zoneinfo import ZoneInfo
 
 from src.config import Config, DashboardConfig, TodoistConfig
 from src.state import State
-from src.templates import Template, load_templates, resolve_variables
+from src.templates import Template, load_templates, resolve_string, resolve_variables
 
 TPL_YAML = """
 - id: daily-morning-reading
@@ -125,14 +126,15 @@ def test_resolve_current_book_and_ritual_time(tmp_path: Path):
     (tmp_path / "daily.yaml").write_text(TPL_YAML)
     state, config = make_state(), make_config()
     templates = load_templates(tmp_path)
+    today = date(2026, 5, 4)
 
-    morning = resolve_variables(templates[0], state, config)
+    morning = resolve_variables(templates[0], state, config, today)
     assert morning is not None
     assert morning.title == "Morning reading: CSAPP"
     assert "CSAPP" in morning.description
     assert morning.due == "today at 06:00"
 
-    anki = resolve_variables(templates[1], state, config)
+    anki = resolve_variables(templates[1], state, config, today)
     assert anki is not None
     assert anki.due == "today at 08:30"
 
@@ -146,7 +148,7 @@ def test_missing_variable_returns_none_and_warns(caplog):
         labels=[],
         cadence="daily",
     )
-    out = resolve_variables(bad, make_state(), make_config())
+    out = resolve_variables(bad, make_state(), make_config(), date(2026, 5, 4))
     assert out is None
     assert any("missing variable" in r.message for r in caplog.records)
 
@@ -160,4 +162,60 @@ def test_missing_ritual_time_returns_none(caplog):
         labels=[],
         cadence="daily",
     )
-    assert resolve_variables(bad, make_state(), make_config()) is None
+    assert resolve_variables(bad, make_state(), make_config(), date(2026, 5, 4)) is None
+
+
+# ---------------------------------------------------------------------------
+# Date-derived placeholders (Phase C)
+# ---------------------------------------------------------------------------
+
+
+def test_resolve_year():
+    assert resolve_string("{year}", make_state(), make_config(), date(2026, 5, 4)) == "2026"
+
+
+def test_resolve_month_padded():
+    assert resolve_string("{month:02d}", make_state(), make_config(), date(2026, 5, 4)) == "05"
+
+
+def test_resolve_month_unpadded():
+    assert resolve_string("{month}", make_state(), make_config(), date(2026, 5, 4)) == "5"
+
+
+def test_resolve_date():
+    assert resolve_string("{date}", make_state(), make_config(), date(2026, 5, 4)) == "2026-05-04"
+
+
+def test_resolve_iso_year_iso_week_calendar_year_boundary():
+    """2027-01-01 is Friday but ISO week 53 of 2026."""
+    out = resolve_string(
+        "{iso_year}-W{iso_week:02d}", make_state(), make_config(), date(2027, 1, 1)
+    )
+    assert out == "2026-W53"
+
+
+def test_resolve_iso_year_iso_week_normal():
+    out = resolve_string(
+        "{iso_year}-W{iso_week:02d}", make_state(), make_config(), date(2026, 5, 8)
+    )
+    assert out == "2026-W19"
+
+
+@pytest.mark.parametrize(
+    "month,expected",
+    [(1, "1"), (3, "1"), (4, "2"), (6, "2"), (7, "3"), (9, "3"), (10, "4"), (12, "4")],
+)
+def test_resolve_quarter_boundaries(month, expected):
+    out = resolve_string("{quarter}", make_state(), make_config(), date(2026, month, 15))
+    assert out == expected
+
+
+def test_resolve_combined_path():
+    """A real stub_path resolves end to end."""
+    out = resolve_string(
+        "reflections/weekly/{iso_year}-W{iso_week:02d}.md",
+        make_state(),
+        make_config(),
+        date(2026, 5, 8),
+    )
+    assert out == "reflections/weekly/2026-W19.md"

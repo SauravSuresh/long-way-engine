@@ -1,8 +1,15 @@
 """Load task templates from YAML and resolve variable placeholders.
 
-Phase A supports {current_book} (from state) and {ritual_times.<key>}
-(from config). Unknown placeholders cause the affected template to be
-skipped with a warning, not a crash.
+Supported placeholders:
+  - {current_book}                   from state
+  - {ritual_times.<key>}             from config
+  - {year}, {month}, {date}          from `today` (calendar)
+  - {iso_year}, {iso_week}           from `today` (ISO calendar)
+  - {quarter}                        1..4 derived from today.month
+
+A format spec is allowed: {month:02d}, {iso_week:02d}, etc.
+
+Unknown placeholders skip the affected template with a warning.
 """
 
 from __future__ import annotations
@@ -10,6 +17,7 @@ from __future__ import annotations
 import logging
 import re
 from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -20,7 +28,8 @@ from src.state import State
 
 logger = logging.getLogger(__name__)
 
-_PLACEHOLDER = re.compile(r"\{([a-zA-Z_][\w.]*)\}")
+# {name} or {name:fmt}
+_PLACEHOLDER = re.compile(r"\{([a-zA-Z_][\w.]*)(?::([^}]+))?\}")
 
 
 @dataclass
@@ -83,8 +92,8 @@ def load_templates(directory: Path) -> list[Template]:
     return templates
 
 
-def _lookup(name: str, state: State, config: Config) -> str:
-    """Resolve a single dotted placeholder name."""
+def _lookup(name: str, state: State, config: Config, today: date) -> str | int:
+    """Resolve a single dotted placeholder name. May return int for format-spec callers."""
     if name == "current_book":
         return state.current_book
     if name.startswith("ritual_times."):
@@ -92,26 +101,50 @@ def _lookup(name: str, state: State, config: Config) -> str:
         if key not in config.ritual_times:
             raise MissingVariable(f"ritual_times.{key} not in config")
         return config.ritual_times[key]
+    if name == "year":
+        return today.year
+    if name == "month":
+        return today.month
+    if name == "date":
+        return today.isoformat()
+    iso = today.isocalendar()
+    if name == "iso_year":
+        return iso[0]
+    if name == "iso_week":
+        return iso[1]
+    if name == "quarter":
+        return (today.month - 1) // 3 + 1
     raise MissingVariable(name)
 
 
-def _resolve_string(s: str, state: State, config: Config) -> str:
+def resolve_string(s: str, state: State, config: Config, today: date) -> str:
+    """Resolve placeholders in `s`. Public so reflections.py can reuse."""
+
     def replace(match: re.Match[str]) -> str:
-        return _lookup(match.group(1), state, config)
+        name = match.group(1)
+        fmt = match.group(2)
+        value = _lookup(name, state, config, today)
+        if fmt is not None:
+            return format(value, fmt)
+        return str(value)
 
     return _PLACEHOLDER.sub(replace, s)
 
 
+# Backwards-compat alias used internally; new callers should prefer resolve_string.
+_resolve_string = resolve_string
+
+
 def resolve_variables(
-    template: Template, state: State, config: Config
+    template: Template, state: State, config: Config, today: date
 ) -> ResolvedTemplate | None:
     """Resolve placeholders. Returns None if any variable is missing."""
     try:
         return ResolvedTemplate(
             id=template.id,
-            title=_resolve_string(template.title, state, config),
-            description=_resolve_string(template.description, state, config),
-            due=_resolve_string(template.due, state, config),
+            title=resolve_string(template.title, state, config, today),
+            description=resolve_string(template.description, state, config, today),
+            due=resolve_string(template.due, state, config, today),
             labels=list(template.labels),
             cadence=template.cadence,
             skip_if=template.skip_if,
