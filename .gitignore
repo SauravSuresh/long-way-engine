@@ -12,6 +12,9 @@ venv/
 # Engine state (forward-looking; Phase E adds completion cache)
 .completion_cache.json
 
+# Sandbox cache for local --cache-file iteration
+.task_cache.sandbox.json
+
 # Private reflections (forward-looking; Phase C wires the dir)
 reflections/private/
 
