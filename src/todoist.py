@@ -367,8 +367,16 @@ class TodoistAdminClient:
 # --- Phase E: read-only completion client ------------------------------------
 
 # Bulk completed-tasks endpoint (Todoist v1, by completion date).
-# NOTE: shape verified from public docs; live-probe before first deploy
-# (see STATUS.md Phase E open notes).
+#
+# Verified 2026-05-04 against Todoist API v1 with the production token:
+#   Response shape:    {"items": [...]}
+#   Per-item id key:   "id"  (NOT "task_id")
+#   next_cursor:       absent when the result fits in one page; the loop
+#                      below treats absence as "no more pages". The probe
+#                      did not exercise multi-page pagination — if the
+#                      Todoist response shape grows a cursor field, the
+#                      existing data.get("next_cursor") branch picks it
+#                      up without further changes.
 COMPLETION_PATH = "/tasks/completed/by_completion_date"
 COMPLETION_CACHE_TTL_SECONDS = 6 * 60 * 60  # 6h
 COMPLETION_PAGE_LIMIT = 200
@@ -471,7 +479,8 @@ class TodoistCompletionClient:
             data = self._completion_get_with_retry(url, params)
             items = self._extract_items(data)
             for item in items:
-                tid = item.get("task_id") or item.get("id")
+                # Per-item id key locked to "id" against the 2026-05-04 probe.
+                tid = item.get("id")
                 if tid is not None:
                     ids.add(str(tid))
             cursor = data.get("next_cursor") if isinstance(data, dict) else None
@@ -488,13 +497,9 @@ class TodoistCompletionClient:
 
     @staticmethod
     def _extract_items(data: Any) -> list[dict[str, Any]]:
-        """Tolerate either {'items': [...]} or {'results': [...]} or a bare list."""
-        if isinstance(data, list):
-            return data
-        if isinstance(data, dict):
-            for key in ("items", "results"):
-                if isinstance(data.get(key), list):
-                    return data[key]
+        """Return data['items']. Locked to the 2026-05-04 probe shape."""
+        if isinstance(data, dict) and isinstance(data.get("items"), list):
+            return data["items"]
         return []
 
     def _completion_get_with_retry(

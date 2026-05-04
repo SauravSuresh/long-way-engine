@@ -477,7 +477,7 @@ def test_completion_get_returns_dict_of_bool(tmp_path):
     session = MagicMock()
     session.get.return_value = make_response(
         200,
-        {"items": [{"task_id": "111"}, {"task_id": "222"}], "next_cursor": None},
+        {"items": [{"id": "111"}, {"id": "222"}], "next_cursor": None},
     )
     client = make_completion_client(session, tmp_path / ".completion_cache.json")
     result = client.get_completion_status(["111", "222", "333"])
@@ -489,7 +489,7 @@ def test_completion_writes_cache_after_fetch(tmp_path):
     session = MagicMock()
     session.get.return_value = make_response(
         200,
-        {"items": [{"task_id": "111"}], "next_cursor": None},
+        {"items": [{"id": "111"}], "next_cursor": None},
     )
     client = make_completion_client(session, cache_path)
     client.get_completion_status(["111"])
@@ -522,7 +522,7 @@ def test_completion_cache_expired_refetches(tmp_path):
     }))
     session = MagicMock()
     session.get.return_value = make_response(
-        200, {"items": [{"task_id": "fresh"}], "next_cursor": None}
+        200, {"items": [{"id": "fresh"}], "next_cursor": None}
     )
     client = make_completion_client(session, cache_path)
     result = client.get_completion_status(["fresh", "stale"])
@@ -533,8 +533,8 @@ def test_completion_cache_expired_refetches(tmp_path):
 def test_completion_paginates_via_next_cursor(tmp_path):
     session = MagicMock()
     session.get.side_effect = [
-        make_response(200, {"items": [{"task_id": "a"}], "next_cursor": "c1"}),
-        make_response(200, {"items": [{"task_id": "b"}], "next_cursor": None}),
+        make_response(200, {"items": [{"id": "a"}], "next_cursor": "c1"}),
+        make_response(200, {"items": [{"id": "b"}], "next_cursor": None}),
     ]
     client = make_completion_client(session, tmp_path / "cc.json")
     result = client.get_completion_status(["a", "b"])
@@ -555,7 +555,7 @@ def test_completion_5xx_retries(tmp_path, monkeypatch):
     session = MagicMock()
     session.get.side_effect = [
         make_response(500),
-        make_response(200, {"items": [{"task_id": "x"}], "next_cursor": None}),
+        make_response(200, {"items": [{"id": "x"}], "next_cursor": None}),
     ]
     client = make_completion_client(session, tmp_path / "cc.json")
     result = client.get_completion_status(["x"])
@@ -568,7 +568,7 @@ def test_completion_corrupt_cache_falls_back(tmp_path):
     cache_path.write_text("{this is not json")
     session = MagicMock()
     session.get.return_value = make_response(
-        200, {"items": [{"task_id": "x"}], "next_cursor": None}
+        200, {"items": [{"id": "x"}], "next_cursor": None}
     )
     client = make_completion_client(session, cache_path)
     result = client.get_completion_status(["x"])

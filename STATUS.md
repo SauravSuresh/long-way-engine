@@ -197,7 +197,7 @@ Per spec + your additions:
 
 Phase F = production readiness + ergonomic polish. **Strict priority order — do not work out of order, items 1–2 are blocking.**
 
-1. **Live-probe `/tasks/completed/by_completion_date`** *(blocking)*. The Phase E client tolerates either `items` or `results` and either `task_id` or `id` against the live shape; until the real shape is verified against the production token, **streak walks may be silently wrong** (the dashboard will render but with stale or zero streaks). Run a one-shot probe against the sandbox project, lock the field names in `TodoistCompletionClient._extract_items`, and remove the tolerance branch.
+1. ~~**Live-probe `/tasks/completed/by_completion_date`**~~ ✅ *(2026-05-04)*. Verified against production token via `scripts/probe_completion.py`: response shape is `{"items": [...]}`, per-item identifier is `"id"`. `TodoistCompletionClient._extract_items` and `_fetch_completed_ids` are locked to that shape; the `results` and `task_id` tolerance branches are dropped. The `next_cursor` branch stays as defensive code (probe didn't exercise multi-page; absent in single-page response).
 
 2. **`rebuild_cache.py`** *(blocking)*. Offline script that reconstructs `.task_cache.json` from project markers — a standalone CLI mirror of `_fetch_marker_ids`. Phase A scaffolded the runtime marker fallback; this is the catastrophic-recovery sibling. Required before any operation that could wipe the local cache.
 
