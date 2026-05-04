@@ -51,6 +51,7 @@ class State:
     paused_since: date | None = None
     pause_history: list[PauseInterval] = field(default_factory=list)
     books_state: dict[str, str] = field(default_factory=dict)
+    learning_tracks: dict[str, dict[str, str]] = field(default_factory=dict)
     manual_counters: dict[str, Any] = field(default_factory=dict)
     notes: str = ""
 
@@ -102,6 +103,40 @@ def _parse_paused_since(raw: Any) -> date | None:
     return raw
 
 
+def _parse_learning_tracks(raw: Any) -> dict[str, dict[str, str]]:
+    """Owner-curated parallel learning surfaces (courses, branches, certs, ...).
+
+    Strict on shape (top-level dict, each category is a dict, each leaf
+    state is in the locked vocabulary), but permissive on content —
+    category and item names are arbitrary strings the engine never
+    inspects. Per the Phase G design constraint: a typo in 'Lineage
+    detours' produces a silent extra category at first render rather
+    than an error, keeping the field uniformly owner-agency.
+    """
+    if raw is None:
+        return {}
+    if not isinstance(raw, dict):
+        _fail("learning_tracks must be a mapping of category -> {item: state}")
+    out: dict[str, dict[str, str]] = {}
+    for category, items in raw.items():
+        if not isinstance(items, dict):
+            _fail(
+                f"learning_tracks[{category!r}] must be a mapping of "
+                f"item -> state (got {type(items).__name__})"
+            )
+        cat_items: dict[str, str] = {}
+        for item, state_val in items.items():
+            s = str(state_val)
+            if s not in _VALID_BOOK_STATES:
+                _fail(
+                    f"learning_tracks[{category!r}][{item!r}] = {s!r}; "
+                    f"must be one of {sorted(_VALID_BOOK_STATES)}"
+                )
+            cat_items[str(item)] = s
+        out[str(category)] = cat_items
+    return out
+
+
 def _parse_books_state(raw: Any) -> dict[str, str]:
     if raw is None:
         return {}
@@ -151,6 +186,7 @@ def load_state(path: Path) -> State:
         paused_since=_parse_paused_since(raw.get("paused_since")),
         pause_history=_parse_pause_history(raw.get("pause_history")),
         books_state=_parse_books_state(raw.get("books_state")),
+        learning_tracks=_parse_learning_tracks(raw.get("learning_tracks")),
         manual_counters=dict(raw.get("manual_counters", {}) or {}),
         notes=str(raw.get("notes", "") or ""),
     )

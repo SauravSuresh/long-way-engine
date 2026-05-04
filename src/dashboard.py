@@ -42,6 +42,7 @@ from src.syllabus import Book
 
 # Phase 1 = months 1–12, Phase 2 = 13–20, Phase 3 = 21–30, Phase 4 = 31–39.
 TOTAL_MONTHS = 39
+TOTAL_MODULES = 23
 PHASE_BOUNDARIES = (1, 13, 21, 31, 39)
 PHASE_LABELS = ("Phase 1", "Phase 2", "Phase 3", "Phase 4", "End")
 CADENCE_DIRS = ("weekly", "monthly", "quarterly", "annual")
@@ -310,6 +311,66 @@ def _books_section(state: State, books: list[Book]) -> str:
     return f'<section class="books"><h2>Books</h2>{"".join(parts)}</section>'
 
 
+def _module_trunk(state: State, module_titles: dict[int, str]) -> str:
+    """23-module progression spine. Always renders; current_module is required state.
+
+    Header: 'N/23 — <current title>'. Cells: 1..23 coloured past/current/
+    future. n is 'past' if n in completed_modules OR n < current_module
+    (the latter handles owners advancing without explicitly backfilling
+    completed_modules).
+    """
+    current = state.current_module
+    completed = set(state.completed_modules)
+    title = module_titles.get(current, f"Module {current}")
+    cells: list[str] = []
+    for n in range(1, TOTAL_MODULES + 1):
+        if n == current:
+            cls = "current"
+        elif n in completed or n < current:
+            cls = "past"
+        else:
+            cls = "future"
+        cells.append(
+            f'<span class="module-cell module-{cls}" title="Module {n}">{n}</span>'
+        )
+    return (
+        f'<section class="module-trunk"><h2>Module trunk</h2>'
+        f'<div class="trunk-header">'
+        f'<span class="trunk-counter">{current}/{TOTAL_MODULES}</span>'
+        f'<span class="trunk-current-title">{_h(title)}</span>'
+        f'</div>'
+        f'<div class="trunk-cells">{"".join(cells)}</div>'
+        f'</section>'
+    )
+
+
+def _learning_tracks(state: State) -> str:
+    """Owner-curated multi-track panel. Hides when no non-empty categories.
+
+    Empty inner dicts and the entirely-empty learning_tracks both yield
+    the empty string; the body concat in render() treats it as a no-op,
+    keeping the empty/partial/paused snapshot fixtures byte-equal.
+    """
+    blocks: list[str] = []
+    for category, items in state.learning_tracks.items():
+        if not items:
+            continue
+        rows = "".join(
+            f'<li class="track-row track-{_h(badge)}">'
+            f'<span class="track-item">{_h(item)}</span>'
+            f'<span class="track-badge">{_h(badge.replace("_", " "))}</span>'
+            f'</li>'
+            for item, badge in items.items()
+        )
+        blocks.append(
+            f'<div class="track-block"><h3>{_h(category)}</h3>'
+            f'<ul class="track-list">{rows}</ul></div>'
+        )
+    if not blocks:
+        return ""
+    return f'<section class="tracks"><h2>Tracks</h2>{"".join(blocks)}</section>'
+
+
 _TYPE_ORDER = {"weekly": 0, "monthly": 1, "quarterly": 2, "annual": 3}
 
 
@@ -366,8 +427,11 @@ def render(
     today: date,
     clock: Clock,
     reflections_root: Path,
+    module_titles: dict[int, str] | None = None,
 ) -> tuple[str, dict[str, Any]]:
     """Render dashboard. Returns (html_string, data_json_dict)."""
+    if module_titles is None:
+        module_titles = {}
     streaks = {
         "Daily": daily_streak(today, state, cache, completion_set),
         "Weekly review": weekly_review_streak(
@@ -383,9 +447,11 @@ def render(
             _header(state, config, today),
             _streaks_section(streaks),
             _phase_tree(state),
+            _module_trunk(state, module_titles),
             last7_html,
             _practice_tracker(practices),
             _books_section(state, books),
+            _learning_tracks(state),
             _reflection_log(config, reflections),
             _footer(today),
         )
@@ -540,6 +606,45 @@ section h3 { font-size: 1rem; margin: .75rem 0 .25rem; }
 .day-yellow { background: #fce39e; color: #864; }
 .day-red    { background: #f3c4c4; color: #944; }
 .day-gray   { background: var(--skip); color: var(--muted); }
+.module-trunk h2 { margin-bottom: .5rem; }
+.trunk-header {
+  display: flex; align-items: baseline; gap: .75rem;
+  margin: .25rem 0 .5rem;
+}
+.trunk-counter {
+  font-size: 1.5rem; font-weight: 800; color: var(--accent);
+  font-variant-numeric: tabular-nums; letter-spacing: -.02em;
+}
+.trunk-current-title { color: var(--fg); font-size: 1rem; }
+.trunk-cells {
+  display: flex; gap: .25rem; flex-wrap: wrap;
+}
+.module-cell {
+  width: 1.6rem; height: 1.6rem; border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: .7rem; font-variant-numeric: tabular-nums;
+  border: 1px solid var(--line); background: white; color: var(--muted);
+}
+.module-cell.module-past {
+  background: var(--accent); border-color: var(--accent); color: white;
+}
+.module-cell.module-current {
+  background: white; border: 2px solid var(--accent); color: var(--accent);
+  font-weight: 800; box-shadow: 0 0 0 3px rgba(0,170,85,.2);
+}
+.tracks .track-block { margin-top: .75rem; }
+.track-list { list-style: none; padding: 0; margin: 0; }
+.track-row {
+  border-bottom: 1px solid var(--line); padding: .25rem 0;
+  display: flex; align-items: baseline; gap: .25rem; flex-wrap: wrap;
+}
+.track-item { font-weight: 500; flex: 1; }
+.track-badge {
+  font-size: .7rem; padding: 1px 6px; border-radius: 3px;
+  background: var(--line); text-transform: uppercase;
+}
+.track-row.track-current .track-badge { background: var(--accent); color: white; }
+.track-row.track-done .track-badge { background: var(--muted); color: white; }
 .book-list { list-style: none; padding: 0; margin: 0; }
 .book-row {
   border-bottom: 1px solid var(--line); padding: .25rem 0;

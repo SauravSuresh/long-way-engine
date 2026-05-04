@@ -61,6 +61,7 @@ def make_state(**overrides) -> State:
         paused_since=None,
         pause_history=[],
         books_state={},
+        learning_tracks={},
         manual_counters={"traces_completed": 0, "prs_opened": 0},
     )
     base.update(overrides)
@@ -281,6 +282,21 @@ def _full_inputs(today: date, tmp_root: Path):
             "Computer Systems: A Programmer's Perspective": "done",
             "Computer Networking: A Top-Down Approach": "current",
             "The Go Programming Language": "not_started",
+        },
+        learning_tracks={
+            "Courses": {
+                "boot.dev backend path": "current",
+                "boot.dev DSA": "current",
+                "boot.dev C memory": "not_started",
+            },
+            "Active branches": {
+                "Text editor in C": "current",
+                "Toy DNS resolver": "not_started",
+            },
+            "Certifications": {
+                "LFCS": "current",
+                "AWS SAA": "not_started",
+            },
         },
     )
     refs = [

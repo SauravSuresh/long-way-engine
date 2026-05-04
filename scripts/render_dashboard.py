@@ -43,12 +43,14 @@ from src.config import load_config  # noqa: E402
 from src.dashboard import render, scan_reflections  # noqa: E402
 from src.state import load_state  # noqa: E402
 from src.syllabus import parse_books_from_file  # noqa: E402
+from src.templates import load_templates  # noqa: E402
 
 CONFIG_PATH = REPO_ROOT / "config.yaml"
 STATE_PATH = REPO_ROOT / "state.yaml"
 ENV_PATH = REPO_ROOT / ".env"
 CACHE_PATH = REPO_ROOT / ".task_cache.json"
 REFLECTIONS_DIR = REPO_ROOT / "reflections"
+TEMPLATES_DIR = REPO_ROOT / "task_templates"
 DOCS_DIR = REPO_ROOT / "docs"
 DEFAULT_OUT = Path("/tmp/dashboard_synthetic.html")
 
@@ -145,6 +147,15 @@ def main(argv: list[str] | None = None) -> int:
     except OSError:
         books = []
 
+    templates = load_templates(TEMPLATES_DIR)
+    module_titles = {
+        tpl.module_number: tpl.title
+        for tpl in templates
+        if tpl.cadence == "once-per-module"
+        and tpl.module_number is not None
+        and tpl.id.endswith("-onboarding")
+    }
+
     html, _data = render(
         state=state,
         config=config,
@@ -155,6 +166,7 @@ def main(argv: list[str] | None = None) -> int:
         today=today,
         clock=clock,
         reflections_root=REFLECTIONS_DIR,
+        module_titles=module_titles,
     )
 
     out_html = inject_banner(html)

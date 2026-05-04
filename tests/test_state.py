@@ -145,3 +145,92 @@ def test_books_state_rejects_invalid_value(tmp_path: Path):
     ))
     with pytest.raises(SystemExit):
         load_state(p)
+
+
+# --- learning_tracks ---------------------------------------------------------
+
+
+def test_learning_tracks_default_when_absent(tmp_path: Path):
+    p = tmp_path / "state.yaml"
+    p.write_text(VALID_STATE)
+    s = load_state(p)
+    assert s.learning_tracks == {}
+
+
+def test_learning_tracks_default_when_null(tmp_path: Path):
+    p = tmp_path / "state.yaml"
+    p.write_text(VALID_STATE + "learning_tracks: null\n")
+    s = load_state(p)
+    assert s.learning_tracks == {}
+
+
+def test_learning_tracks_parses_nested(tmp_path: Path):
+    p = tmp_path / "state.yaml"
+    p.write_text(VALID_STATE + (
+        "learning_tracks:\n"
+        "  Courses:\n"
+        '    "boot.dev backend path": current\n'
+        '    "boot.dev DSA": not_started\n'
+        "  Certifications:\n"
+        "    LFCS: current\n"
+    ))
+    s = load_state(p)
+    assert s.learning_tracks == {
+        "Courses": {
+            "boot.dev backend path": "current",
+            "boot.dev DSA": "not_started",
+        },
+        "Certifications": {"LFCS": "current"},
+    }
+
+
+def test_learning_tracks_rejects_top_non_dict(tmp_path: Path):
+    p = tmp_path / "state.yaml"
+    p.write_text(VALID_STATE + 'learning_tracks: ["a", "b"]\n')
+    with pytest.raises(SystemExit):
+        load_state(p)
+
+
+def test_learning_tracks_rejects_category_non_dict(tmp_path: Path):
+    p = tmp_path / "state.yaml"
+    p.write_text(VALID_STATE + (
+        "learning_tracks:\n"
+        "  Courses: \"not a dict\"\n"
+    ))
+    with pytest.raises(SystemExit):
+        load_state(p)
+
+
+def test_learning_tracks_rejects_invalid_state(tmp_path: Path):
+    p = tmp_path / "state.yaml"
+    p.write_text(VALID_STATE + (
+        "learning_tracks:\n"
+        "  Courses:\n"
+        "    \"boot.dev\": in_progress\n"  # not a valid state
+    ))
+    with pytest.raises(SystemExit):
+        load_state(p)
+
+
+def test_learning_tracks_empty_category_permitted(tmp_path: Path):
+    p = tmp_path / "state.yaml"
+    p.write_text(VALID_STATE + (
+        "learning_tracks:\n"
+        "  Courses: {}\n"
+    ))
+    s = load_state(p)
+    assert s.learning_tracks == {"Courses": {}}
+
+
+def test_learning_tracks_preserves_yaml_order(tmp_path: Path):
+    p = tmp_path / "state.yaml"
+    p.write_text(VALID_STATE + (
+        "learning_tracks:\n"
+        "  Zeta:\n"
+        "    z-item: current\n"
+        "  Alpha:\n"
+        "    a-item: current\n"
+    ))
+    s = load_state(p)
+    # Insertion order preserved (Python 3.7+ dict).
+    assert list(s.learning_tracks.keys()) == ["Zeta", "Alpha"]

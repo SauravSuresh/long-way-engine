@@ -177,6 +177,19 @@ def _record_stub(
     )
 
 
+def _module_titles_from_templates(templates) -> dict[int, str]:
+    """Map module_number -> onboarding template title for the dashboard's
+    module trunk. Lineage detours are excluded; they share a module_number
+    but the trunk is the onboarding spine."""
+    return {
+        tpl.module_number: tpl.title
+        for tpl in templates
+        if tpl.cadence == "once-per-module"
+        and tpl.module_number is not None
+        and tpl.id.endswith("-onboarding")
+    }
+
+
 def _render_dashboard_once(
     state: State,
     config: Config,
@@ -189,6 +202,7 @@ def _render_dashboard_once(
     docs_data_path: Path,
     docs_css_path: Path,
     completion_factory,
+    module_titles: dict[int, str],
 ) -> str:
     """Render dashboard + sidecar JSON. Returns "ok" or "error".
 
@@ -231,6 +245,7 @@ def _render_dashboard_once(
         today=today,
         clock=clock,
         reflections_root=reflections_root,
+        module_titles=module_titles,
     )
 
     docs_html_path.parent.mkdir(parents=True, exist_ok=True)
@@ -398,6 +413,7 @@ def run(
                 docs_data_path=docs_data_path,
                 docs_css_path=docs_css_path,
                 completion_factory=completion_factory,
+                module_titles=_module_titles_from_templates(templates),
             )
         except Exception as e:
             logger.warning("dashboard render failed: %s", e)
