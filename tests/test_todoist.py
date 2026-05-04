@@ -1,10 +1,12 @@
 import re
-from datetime import date
+from datetime import date, datetime
 from unittest.mock import MagicMock
 
 import pytest
 import requests
+from zoneinfo import ZoneInfo
 
+from src.clock import FrozenClock
 from src.templates import ResolvedTemplate
 from src.todoist import (
     MARKER_RE,
@@ -14,6 +16,8 @@ from src.todoist import (
     append_marker,
     content_marker,
 )
+
+IST = ZoneInfo("Asia/Kolkata")
 
 
 def make_template() -> ResolvedTemplate:
@@ -37,8 +41,15 @@ def make_response(status_code: int = 200, json_body: dict | None = None) -> Magi
     return resp
 
 
-def make_client(session: MagicMock) -> TodoistClient:
-    return TodoistClient(token="t-xyz", project_id="p123", session=session)
+def make_client(session: MagicMock, dry_run: bool = False) -> TodoistClient:
+    clock = FrozenClock(datetime(2026, 5, 4, 5, 30, tzinfo=IST), IST)
+    return TodoistClient(
+        token="t-xyz",
+        project_id="p123",
+        session=session,
+        clock=clock,
+        dry_run=dry_run,
+    )
 
 
 def test_marker_format_matches_regex():
@@ -166,6 +177,57 @@ def test_client_has_no_get_patch_or_delete_methods():
     public = {n for n in dir(TodoistClient) if not n.startswith("_")}
     leaked = public & forbidden
     assert not leaked, f"TodoistClient must remain write-only; leaked {leaked}"
+
+
+def test_dry_run_makes_zero_api_calls():
+    session = MagicMock()
+    client = make_client(session, dry_run=True)
+    result = client.create_task_idempotent(
+        make_template(), date(2026, 5, 4), "id1234567890abcd", cache={}
+    )
+    session.post.assert_not_called()
+    assert result.skipped is False
+    assert result.todoist_task_id == "DRY-RUN-id1234567890abcd"
+
+
+def test_dry_run_logs_would_create(caplog):
+    session = MagicMock()
+    client = make_client(session, dry_run=True)
+    with caplog.at_level("INFO", logger="src.todoist"):
+        client.create_task_idempotent(
+            make_template(), date(2026, 5, 4), "id1234567890abcd", cache={}
+        )
+    assert any("DRY RUN" in r.getMessage() for r in caplog.records)
+
+
+def test_dry_run_still_honors_cache_hit():
+    session = MagicMock()
+    client = make_client(session, dry_run=True)
+    cache = {
+        "id1234567890abcd": {
+            "todoist_task_id": "real-id-from-prior-run",
+            "created_at": "2026-05-04T03:00:00+00:00",
+            "template_id": "daily-anki",
+            "due_date": "2026-05-04",
+        }
+    }
+    result = client.create_task_idempotent(
+        make_template(), date(2026, 5, 4), "id1234567890abcd", cache
+    )
+    assert result.skipped is True
+    assert result.todoist_task_id == "real-id-from-prior-run"
+    session.post.assert_not_called()
+
+
+def test_created_at_uses_injected_clock():
+    session = MagicMock()
+    session.post.return_value = make_response(200, {"id": "777"})
+    client = make_client(session)
+    result = client.create_task_idempotent(
+        make_template(), date(2026, 5, 4), "id1234567890abcd", cache={}
+    )
+    # FrozenClock is 2026-05-04 05:30 IST = 2026-05-04 00:00 UTC.
+    assert result.created_at.startswith("2026-05-04T00:00:00")
 
 
 def test_token_never_appears_in_logs(caplog, monkeypatch):

@@ -16,11 +16,13 @@ import logging
 import re
 import time
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
+from datetime import date, timezone
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import requests
 
+from src.clock import Clock
 from src.templates import ResolvedTemplate
 
 logger = logging.getLogger(__name__)
@@ -74,11 +76,15 @@ class TodoistClient:
         project_id: str,
         session: requests.Session | None = None,
         timeout: float = DEFAULT_TIMEOUT,
+        clock: Clock | None = None,
+        dry_run: bool = False,
     ) -> None:
         self._token = token
         self._project_id = project_id
         self._session = session or requests.Session()
         self._timeout = timeout
+        self._clock = clock or Clock(ZoneInfo("UTC"))
+        self._dry_run = dry_run
 
     def create_task_idempotent(
         self,
@@ -120,8 +126,20 @@ class TodoistClient:
         if template.labels:
             body["labels"] = list(template.labels)
 
+        created_at = self._clock.now().astimezone(timezone.utc).isoformat()
+
+        if self._dry_run:
+            logger.info("DRY RUN: would create %s", template.title)
+            return CreateResult(
+                external_id=external_id,
+                todoist_task_id=f"DRY-RUN-{external_id}",
+                template_id=template.id,
+                due_date=due_date,
+                created_at=created_at,
+                skipped=False,
+            )
+
         created = self._post_with_retry("/tasks", body)
-        created_at = datetime.now(timezone.utc).isoformat()
         return CreateResult(
             external_id=external_id,
             todoist_task_id=str(created["id"]),
