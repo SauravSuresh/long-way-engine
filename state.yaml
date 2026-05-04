@@ -1,0 +1,17 @@
+start_date: 2026-05-04
+timezone: Asia/Kolkata
+phase: 1
+month: 1
+current_module: 1
+current_book: "Computer Systems: A Programmer's Perspective"
+completed_modules: []
+active_branches: []
+paused: false
+manual_counters:
+  anki_card_count: 0
+  prs_opened: 0
+  traces_completed: 0
+  lineage_detours_done: []
+notes: |
+  Most recent edit on top.
+  2026-05-04: started.
