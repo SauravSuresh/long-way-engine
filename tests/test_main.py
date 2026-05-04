@@ -44,9 +44,18 @@ class _FakeRecord:
 
 
 class FakeClient:
-    def __init__(self, *, token: str, project_id: str) -> None:
+    def __init__(
+        self,
+        *,
+        token: str,
+        project_id: str,
+        clock=None,
+        dry_run: bool = False,
+    ) -> None:
         self.token = token
         self.project_id = project_id
+        self.clock = clock
+        self.dry_run = dry_run
         self.creates: list[_FakeRecord] = []
         self._next_id = 1000
 
