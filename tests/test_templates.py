@@ -101,6 +101,36 @@ def test_load_template_parses_day_of_month_string(tmp_path: Path):
     assert t.day_of_month == "last-saturday"
 
 
+def test_load_template_parses_module_number(tmp_path: Path):
+    (tmp_path / "modules.yaml").write_text(
+        """
+- id: module-06-onboarding
+  title: "x"
+  due: "today"
+  labels: []
+  cadence: once-per-module
+  module_number: 6
+"""
+    )
+    [t] = load_templates(tmp_path)
+    assert t.module_number == 6
+    assert isinstance(t.module_number, int)
+
+
+def test_load_template_module_number_defaults_to_none(tmp_path: Path):
+    (tmp_path / "daily.yaml").write_text(
+        """
+- id: daily-anki
+  title: "x"
+  due: "today"
+  labels: []
+  cadence: daily
+"""
+    )
+    [t] = load_templates(tmp_path)
+    assert t.module_number is None
+
+
 def test_load_template_keeps_reflection_block_in_raw(tmp_path: Path):
     """Phase C will read reflection.create_stub from raw; Phase B leaves it alone."""
     (tmp_path / "weekly.yaml").write_text(
@@ -219,3 +249,41 @@ def test_resolve_combined_path():
         date(2026, 5, 8),
     )
     assert out == "reflections/weekly/2026-W19.md"
+
+
+# ---------------------------------------------------------------------------
+# current_book fallback chain (Phase D)
+# ---------------------------------------------------------------------------
+
+
+def test_current_book_state_override_wins():
+    """state.current_book non-empty short-circuits the syllabus fallback."""
+    state = make_state()
+    state.current_book = "Some Override"
+    state.month = 7  # would otherwise resolve to Networking
+    out = resolve_string("{current_book}", state, make_config(), date(2026, 5, 4))
+    assert out == "Some Override"
+
+
+def test_current_book_falls_back_to_syllabus_when_state_empty():
+    state = make_state()
+    state.current_book = ""
+    state.month = 1
+    out = resolve_string("{current_book}", state, make_config(), date(2026, 5, 4))
+    assert out == "Computer Systems: A Programmer's Perspective"
+
+
+def test_current_book_syllabus_month_7_networking():
+    state = make_state()
+    state.current_book = ""
+    state.month = 7
+    out = resolve_string("{current_book}", state, make_config(), date(2026, 5, 4))
+    assert out == "Computer Networking: A Top-Down Approach"
+
+
+def test_current_book_carry_forward_in_book_less_month():
+    state = make_state()
+    state.current_book = ""
+    state.month = 11  # no main book in syllabus; carry-forward
+    out = resolve_string("{current_book}", state, make_config(), date(2026, 5, 4))
+    assert out == "Computer Networking: A Top-Down Approach"

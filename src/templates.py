@@ -23,6 +23,7 @@ from typing import Any
 
 import yaml
 
+from src import syllabus
 from src.config import Config
 from src.state import State
 
@@ -43,6 +44,7 @@ class Template:
     skip_if: str | None = None
     day_of_week: str | None = None
     day_of_month: int | str | None = None
+    module_number: int | None = None
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -75,6 +77,9 @@ def load_templates(directory: Path) -> list[Template]:
             if isinstance(day_of_month, bool):
                 # YAML's `day_of_month: false` would otherwise sneak through as int 0.
                 day_of_month = None
+            module_number = entry.get("module_number")
+            if module_number is not None:
+                module_number = int(module_number)
             templates.append(
                 Template(
                     id=str(entry["id"]),
@@ -86,6 +91,7 @@ def load_templates(directory: Path) -> list[Template]:
                     skip_if=entry.get("skip_if"),
                     day_of_week=entry.get("day_of_week"),
                     day_of_month=day_of_month,
+                    module_number=module_number,
                     raw=entry,
                 )
             )
@@ -95,7 +101,11 @@ def load_templates(directory: Path) -> list[Template]:
 def _lookup(name: str, state: State, config: Config, today: date) -> str | int:
     """Resolve a single dotted placeholder name. May return int for format-spec callers."""
     if name == "current_book":
-        return state.current_book
+        # Override path: state.current_book wins when non-empty (Phase D Q16).
+        # Fallback path: syllabus.current_book(state.month) with carry-forward.
+        if state.current_book:
+            return state.current_book
+        return syllabus.current_book(state.month)
     if name.startswith("ritual_times."):
         key = name.split(".", 1)[1]
         if key not in config.ritual_times:
