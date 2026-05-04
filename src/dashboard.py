@@ -104,20 +104,31 @@ def scan_reflections(reflections_root: Path) -> list[ReflectionMeta]:
 
 
 def _header(state: State, config: Config, today: date) -> str:
+    """Hero block: 'where am I' is impossible to miss.
+
+    Layout:
+        THE LONG WAY · 2026-05-04
+        Month [1] of 39
+        Phase 1 · Module 1 · *Computer Systems...*
+        [paused banner if applicable]
+    """
     paused = _paused_summary(state, today)
     paused_html = (
         f'<div class="paused-banner">{_h(paused)}</div>' if paused else ""
     )
     return (
-        f'<header>'
-        f'<h1>The Long Way</h1>'
-        f'<div class="meta">'
-        f'<span class="today">{_h(today.isoformat())}</span> &middot; '
-        f'<span>Month {state.month}/{TOTAL_MONTHS}</span> &middot; '
-        f'<span>Phase {state.phase}</span> &middot; '
-        f'<span>Module {state.current_module}</span>'
+        f'<header class="hero">'
+        f'<div class="hero-eyebrow">'
+        f'The Long Way <span class="dot">&middot;</span> {_h(today.isoformat())}'
         f'</div>'
-        f'<div class="book">{_h(state.current_book)}</div>'
+        f'<div class="hero-progress">'
+        f'Month <span class="big">{state.month}</span> of {TOTAL_MONTHS}'
+        f'</div>'
+        f'<div class="hero-meta">'
+        f'Phase {state.phase} <span class="dot">&middot;</span> '
+        f'Module {state.current_module} <span class="dot">&middot;</span> '
+        f'<em>{_h(state.current_book)}</em>'
+        f'</div>'
         f'{paused_html}'
         f'</header>'
     )
@@ -134,21 +145,61 @@ def _streaks_section(values: dict[str, int]) -> str:
     return f'<section class="streaks"><h2>Streaks</h2>{cards}</section>'
 
 
-def _progress_bar(state: State) -> str:
-    pct = max(1, min(100, int(round(state.month / TOTAL_MONTHS * 100))))
-    ticks = "".join(
-        f'<div class="phase-tick" style="left:{int(round(b / TOTAL_MONTHS * 100))}%">'
-        f'<span class="tick-label">{_h(label)}</span>'
-        f'</div>'
-        for b, label in zip(PHASE_BOUNDARIES, PHASE_LABELS)
-    )
+PHASE_RANGES: tuple[tuple[int, int, str], ...] = (
+    (1, 12, "Phase 1 · Foundations"),
+    (13, 20, "Phase 2 · Go & Backend"),
+    (21, 30, "Phase 3 · Distributed"),
+    (31, 39, "Phase 4 · Synthesis"),
+)
+
+
+def _phase_tree(state: State) -> str:
+    """Vertical tree: each phase is a node with month leaves branching right.
+
+    Past months are filled, current month is highlighted, future months are
+    hollow. The vertical connector between phase nodes makes the tree shape.
+    Replaces the old linear progress bar (Phase G visual refresh, 2026-05-04).
+    """
+    rows: list[str] = []
+    for i, (start, end, label) in enumerate(PHASE_RANGES):
+        phase_complete = state.month > end
+        phase_active = start <= state.month <= end
+        node_class = (
+            "complete" if phase_complete
+            else "active" if phase_active
+            else "future"
+        )
+        position_class = (
+            "first" if i == 0
+            else "last" if i == len(PHASE_RANGES) - 1
+            else "middle"
+        )
+
+        cells: list[str] = []
+        for m in range(start, end + 1):
+            if m < state.month:
+                cls = "past"
+            elif m == state.month:
+                cls = "current"
+            else:
+                cls = "future"
+            cells.append(
+                f'<span class="month-cell month-{cls}" '
+                f'title="Month {m}">{m}</span>'
+            )
+
+        rows.append(
+            f'<div class="phase-row phase-{node_class} phase-{position_class}">'
+            f'<div class="phase-node"></div>'
+            f'<div class="phase-label">{_h(label)}</div>'
+            f'<div class="month-row">{"".join(cells)}</div>'
+            f'</div>'
+        )
     return (
-        f'<section class="progress"><h2>Progress</h2>'
-        f'<div class="bar-track">'
-        f'<div class="bar-fill" style="width:{pct}%"></div>'
-        f'{ticks}'
-        f'<div class="month-marker" style="left:{pct}%">M{state.month}</div>'
-        f'</div></section>'
+        f'<section class="phase-tree-section">'
+        f'<h2>Progress</h2>'
+        f'<div class="phase-tree">{"".join(rows)}</div>'
+        f'</section>'
     )
 
 
@@ -331,7 +382,7 @@ def render(
         (
             _header(state, config, today),
             _streaks_section(streaks),
-            _progress_bar(state),
+            _phase_tree(state),
             last7_html,
             _practice_tracker(practices),
             _books_section(state, books),
@@ -388,12 +439,36 @@ body {
   line-height: 1.5;
 }
 .dashboard { max-width: 920px; margin: 0 auto; }
-header { border-bottom: 1px solid var(--line); padding-bottom: 1rem; margin-bottom: 1rem; }
-header h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
-header .meta { color: var(--muted); font-size: .9rem; }
-header .book { margin-top: .25rem; font-style: italic; }
+header.hero {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 1.25rem; margin-bottom: 1.5rem;
+}
+.hero-eyebrow {
+  font-size: .75rem; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .12em;
+  margin-bottom: .35rem;
+}
+.hero-eyebrow .dot { margin: 0 .35rem; opacity: .5; }
+.hero-progress {
+  font-size: 1.1rem; color: var(--muted);
+  font-weight: 500; line-height: 1;
+  margin: .25rem 0 .5rem;
+}
+.hero-progress .big {
+  font-size: 4rem; font-weight: 800; color: var(--fg);
+  display: inline-block; line-height: 1;
+  letter-spacing: -.04em;
+  vertical-align: -.4rem;
+  margin: 0 .25rem;
+}
+.hero-meta {
+  font-size: 1rem; color: var(--fg);
+  margin-top: .5rem;
+}
+.hero-meta .dot { margin: 0 .35rem; color: var(--muted); }
+.hero-meta em { color: var(--accent); font-style: italic; font-weight: 600; }
 .paused-banner {
-  margin-top: .5rem; padding: .5rem .75rem;
+  margin-top: .75rem; padding: .5rem .75rem;
   background: #fff4d6; border: 1px solid #e0c060; border-radius: 4px;
 }
 section { margin: 1.5rem 0; }
@@ -408,31 +483,51 @@ section h3 { font-size: 1rem; margin: .75rem 0 .25rem; }
 }
 .streak-value, .practice-value { font-size: 1.5rem; font-weight: 600; }
 .streak-label, .practice-label { color: var(--muted); font-size: .85rem; }
-.bar-track {
-  position: relative; height: 1.5rem; background: white;
-  border: 1px solid var(--line); border-radius: 999px;
-  margin: 2rem 0 1.5rem;
+.phase-tree { display: flex; flex-direction: column; gap: 0; }
+.phase-row {
+  display: flex; align-items: center; gap: .75rem;
+  position: relative; padding: .6rem 0;
 }
-.bar-fill {
-  height: 100%; background: var(--accent);
-  border-radius: 999px; transition: width .3s;
+.phase-row::before {
+  content: ""; position: absolute;
+  left: .55rem; top: 0; bottom: 0;
+  width: 2px; background: var(--line);
 }
-.phase-tick {
-  position: absolute; top: -1.25rem; width: 1px; height: 2.75rem;
-  background: var(--muted);
+.phase-row.phase-first::before { top: 50%; }
+.phase-row.phase-last::before { bottom: 50%; }
+.phase-node {
+  width: 1.2rem; height: 1.2rem; border-radius: 50%;
+  background: white; border: 2px solid var(--line);
+  position: relative; z-index: 1; flex-shrink: 0;
 }
-.phase-tick .tick-label {
-  position: absolute; top: -1rem; left: 0;
-  font-size: .7rem; color: var(--muted);
-  transform: translateX(-50%); white-space: nowrap;
+.phase-row.phase-complete .phase-node { background: var(--accent); border-color: var(--accent); }
+.phase-row.phase-active .phase-node {
+  background: var(--accent); border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(0,170,85,.18);
 }
-.month-marker {
-  position: absolute; top: -1.5rem;
-  font-size: .7rem; font-weight: 600;
-  background: var(--fg); color: white;
-  padding: 1px 4px; border-radius: 3px;
-  transform: translateX(-50%);
+.phase-label {
+  font-weight: 600; font-size: .9rem;
+  min-width: 12rem; flex-shrink: 0;
 }
+.phase-row.phase-future .phase-label { color: var(--muted); }
+.month-row {
+  display: flex; gap: .2rem; flex-wrap: wrap; flex: 1;
+}
+.month-cell {
+  width: 1.6rem; height: 1.6rem; border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: .7rem; font-variant-numeric: tabular-nums;
+  border: 1px solid var(--line); background: white; color: var(--muted);
+}
+.month-cell.month-past {
+  background: var(--accent); border-color: var(--accent); color: white;
+}
+.month-cell.month-current {
+  background: white; border: 2px solid var(--accent); color: var(--accent);
+  font-weight: 800;
+  box-shadow: 0 0 0 3px rgba(0,170,85,.2);
+}
+.month-cell.month-future { background: white; }
 .day-row { display: flex; gap: .25rem; }
 .day {
   flex: 1; min-width: 2rem; padding: .5rem .25rem;
