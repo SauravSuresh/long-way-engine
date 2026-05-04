@@ -33,6 +33,9 @@
     didn't. The plan is allowed to evolve, but only at month boundaries,
     not in the middle of a tough week.
   due: "today at {ritual_times.saturday_deep_block}"
-  labels: [monthly-ritual]
+  labels: [monthly-ritual, reflection]
   cadence: monthly
   day_of_month: last-saturday
+  reflection:
+    create_stub: true
+    stub_path: "reflections/monthly/{year}-{month:02d}.md"

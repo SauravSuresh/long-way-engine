@@ -12,6 +12,7 @@ import pytest
 from src.reflections import (
     WORD_COUNT_THRESHOLD,
     StubResult,
+    _baseline_word_count,
     count_words_in_body,
     create_stub,
     render_frontmatter,
@@ -295,10 +296,8 @@ def _seed_stub(path: Path, body_words: int, status: str = "stub", recorded_count
 
 
 def _baseline() -> int:
-    """Count baseline words in the actual weekly template."""
-    text = (REFLECTION_TEMPLATES / "weekly.md").read_text()
-    _, body = split_frontmatter(text)
-    return count_words_in_body(body)
+    """Count baseline words via the engine's own helper (matches update_metadata)."""
+    return _baseline_word_count(REFLECTION_TEMPLATES, "weekly")
 
 
 def test_update_metadata_updates_word_count(tmp_path: Path):

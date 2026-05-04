@@ -211,13 +211,39 @@ def count_words_in_body(body: str) -> int:
 
 @functools.lru_cache(maxsize=8)
 def _baseline_word_count(reflection_templates_root: Path, cadence: str) -> int | None:
+    """Count words in the body of the raw reflection template.
+
+    The raw template's frontmatter contains unresolved placeholders like
+    `{date}` that don't parse as YAML, so we strip the frontmatter
+    region naively (by `---` markers) before counting.
+    """
     template_path = reflection_templates_root / f"{cadence}.md"
     if not template_path.exists():
         logger.warning("reflection template missing for cadence %s", cadence)
         return None
     text = template_path.read_text(encoding="utf-8")
-    _, body = split_frontmatter(text)
+    body = _strip_frontmatter_naively(text)
     return count_words_in_body(body)
+
+
+def _strip_frontmatter_naively(text: str) -> str:
+    """Skip past the leading `---\n…\n---\n` block by string position only.
+
+    Used for the raw template (with unresolved placeholders) where YAML
+    parsing fails. Returns `text` unchanged if no balanced fence is found.
+    """
+    if not text.startswith("---"):
+        return text
+    rest = text[3:]
+    if rest.startswith("\n"):
+        rest = rest[1:]
+    end = rest.find("\n---")
+    if end == -1:
+        return text
+    body = rest[end + len("\n---"):]
+    if body.startswith("\n"):
+        body = body[1:]
+    return body
 
 
 def _update_one(path: Path, threshold: int) -> bool:

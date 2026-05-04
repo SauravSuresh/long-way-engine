@@ -228,6 +228,10 @@ def test_dry_run_table_has_header_and_rows():
 # ---------------------------------------------------------------------------
 
 
+REPO_ROOT = Path(__file__).resolve().parent.parent
+REAL_REFLECTION_TEMPLATES = REPO_ROOT / "reflection_templates"
+
+
 def _seed_repo(tmp_path: Path, monkeypatch) -> Path:
     """Set up a minimal repo layout in tmp and point main's globals at it."""
     config_path = tmp_path / "config.yaml"
@@ -235,6 +239,8 @@ def _seed_repo(tmp_path: Path, monkeypatch) -> Path:
     env_path = tmp_path / ".env"
     log_path = tmp_path / "LOG.md"
     cache_path = tmp_path / ".task_cache.json"
+    reflections_dir = tmp_path / "reflections"
+    reflections_dir.mkdir()
     tdir = _seed_templates(tmp_path)
 
     config_path.write_text(
@@ -244,6 +250,9 @@ def _seed_repo(tmp_path: Path, monkeypatch) -> Path:
         'ritual_times:\n'
         '  morning_reading: "06:00"\n'
         '  anki: "08:30"\n'
+        '  friday_review: "20:00"\n'
+        '  saturday_deep_block: "09:00"\n'
+        '  evening_hands_on: "19:00"\n'
         'sunday_off: true\n'
         'dashboard:\n'
         '  github_username: "u"\n'
@@ -265,6 +274,10 @@ def _seed_repo(tmp_path: Path, monkeypatch) -> Path:
     monkeypatch.setattr(main_module, "LOG_PATH", log_path)
     monkeypatch.setattr(main_module, "CACHE_PATH", cache_path)
     monkeypatch.setattr(main_module, "TEMPLATES_DIR", tdir)
+    monkeypatch.setattr(main_module, "REFLECTIONS_DIR", reflections_dir)
+    monkeypatch.setattr(
+        main_module, "REFLECTION_TEMPLATES_DIR", REAL_REFLECTION_TEMPLATES
+    )
     return tmp_path
 
 
@@ -416,3 +429,176 @@ def test_cleanup_yes_with_empty_project(tmp_path: Path, monkeypatch, capsys):
     out = capsys.readouterr().out
     assert "Nothing to delete" in out
     assert admin.deleted == []
+
+
+# ---------------------------------------------------------------------------
+# Phase C: stub creation wired into main.run, metadata walk
+# ---------------------------------------------------------------------------
+
+
+REAL_TEMPLATES = REPO_ROOT / "task_templates"
+
+
+def _seed_repo_with_real_templates(tmp_path: Path, monkeypatch) -> Path:
+    """Same as _seed_repo, but TEMPLATES_DIR points at the real task_templates/
+    so the run uses cadence templates with reflection.create_stub.
+    """
+    _seed_repo(tmp_path, monkeypatch)
+    monkeypatch.setattr(main_module, "TEMPLATES_DIR", REAL_TEMPLATES)
+    return tmp_path
+
+
+def test_friday_run_creates_weekly_stub(tmp_path: Path, monkeypatch):
+    _seed_repo_with_real_templates(tmp_path, monkeypatch)
+    with patch("src.main.TodoistClient", FakeClient):
+        rc = main_module.main(["--today", "2026-05-08"])  # Friday, ISO W19
+    assert rc == 0
+
+    stub = tmp_path / "reflections" / "weekly" / "2026-W19.md"
+    assert stub.exists()
+    from src.reflections import _baseline_word_count, split_frontmatter
+
+    fm, body = split_frontmatter(stub.read_text())
+    assert fm["type"] == "weekly"
+    assert fm["iso_week"] == "2026-W19"
+    assert fm["status"] == "stub"
+    # The metadata walk runs after stub creation and updates word_count to
+    # the baseline count of the rendered body — NOT 0. word_count: 0 only
+    # appears in the unfilled template before the walk runs.
+    assert fm["word_count"] == _baseline_word_count(REAL_REFLECTION_TEMPLATES, "weekly")
+    assert "Three things I learned this week" in body
+
+
+def test_friday_rerun_does_not_clobber_stub(tmp_path: Path, monkeypatch):
+    _seed_repo_with_real_templates(tmp_path, monkeypatch)
+    with patch("src.main.TodoistClient", FakeClient):
+        main_module.main(["--today", "2026-05-08"])
+
+    stub = tmp_path / "reflections" / "weekly" / "2026-W19.md"
+    # Owner edits the stub.
+    text = stub.read_text()
+    edited = text.replace("status: stub", "status: stub").replace(
+        "word_count: 0", "word_count: 0"
+    ) + "\nMy actual prose written here.\n"
+    stub.write_text(edited)
+    mtime_before = stub.stat().st_mtime_ns
+
+    # Re-run.
+    with patch("src.main.TodoistClient", FakeClient):
+        main_module.main(["--today", "2026-05-08"])
+
+    # File still has owner prose. Frontmatter word_count was updated by the
+    # metadata walk (so the file IS rewritten), but the body content survives.
+    after = stub.read_text()
+    assert "My actual prose written here." in after
+
+
+def test_dry_run_prints_stub_table_and_writes_no_files(tmp_path: Path, monkeypatch, capsys):
+    _seed_repo_with_real_templates(tmp_path, monkeypatch)
+    with patch("src.main.TodoistClient", FakeClient):
+        rc = main_module.main(["--dry-run", "--today", "2026-05-08"])
+    assert rc == 0
+
+    out = capsys.readouterr().out
+    assert "REFLECTION STUBS" in out
+    assert "WOULD CREATE STUB" in out
+    assert "weekly-friday-review" in out
+
+    stub = tmp_path / "reflections" / "weekly" / "2026-W19.md"
+    assert not stub.exists()
+
+
+def test_dry_run_last_saturday_shared_path_pending_collision(
+    tmp_path: Path, monkeypatch, capsys
+):
+    """monthly-retrieval and monthly-review point at the same path. First
+    template prints WOULD CREATE STUB, second prints WOULD SKIP STUB (pending).
+    """
+    _seed_repo_with_real_templates(tmp_path, monkeypatch)
+    with patch("src.main.TodoistClient", FakeClient):
+        rc = main_module.main(["--dry-run", "--today", "2026-05-30"])
+    assert rc == 0
+
+    out = capsys.readouterr().out
+    # Exactly one WOULD CREATE STUB line for the monthly path.
+    assert out.count("WOULD CREATE STUB") >= 1
+    assert "WOULD SKIP STUB (pending)" in out
+    assert "reflections/monthly/2026-05.md" in out
+
+
+def test_paused_metadata_walk_still_updates(tmp_path: Path, monkeypatch):
+    """Pause skips creates but the metadata walk still updates word_count + status."""
+    _seed_repo_with_real_templates(tmp_path, monkeypatch)
+
+    # Pre-populate a stub with prose past the threshold.
+    stub = tmp_path / "reflections" / "weekly" / "2026-W19.md"
+    stub.parent.mkdir(parents=True, exist_ok=True)
+    fm = (
+        "---\n"
+        "type: weekly\n"
+        "date: 2026-05-08\n"
+        "iso_week: 2026-W19\n"
+        "status: stub\n"
+        "word_count: 0\n"
+        "---\n"
+    )
+    # Compute baseline for weekly + 60 words to comfortably cross threshold.
+    from src.reflections import _baseline_word_count, WORD_COUNT_THRESHOLD
+
+    baseline = _baseline_word_count(REAL_REFLECTION_TEMPLATES, "weekly")
+    body = "word " * (baseline + WORD_COUNT_THRESHOLD + 10)
+    stub.write_text(fm + body)
+
+    # Set state.paused: true.
+    state_path = tmp_path / "state.yaml"
+    state_path.write_text(
+        state_path.read_text().replace("phase: 1\n", "phase: 1\npaused: true\n")
+    )
+
+    with patch("src.main.TodoistClient", FakeClient):
+        rc = main_module.main(["--today", "2026-05-08"])
+    assert rc == 0
+
+    # Stub should now be filled — metadata walk ran despite pause.
+    from src.reflections import split_frontmatter
+
+    fm_after, _ = split_frontmatter(stub.read_text())
+    assert fm_after["status"] == "filled"
+    assert fm_after["word_count"] >= baseline + WORD_COUNT_THRESHOLD
+
+
+def test_metadata_walk_runs_after_stub_creation_ordering(
+    tmp_path: Path, monkeypatch
+):
+    """Empty reflections/, run --today Friday → stub created AND walked.
+
+    If walk ran BEFORE creation, the freshly-created stub would be invisible
+    to the walk this run; word_count would still be 0 (the template's value).
+    We expect word_count == baseline (the actual body length) — proving the
+    walk ran AFTER creation and rewrote the frontmatter.
+    """
+    _seed_repo_with_real_templates(tmp_path, monkeypatch)
+
+    with patch("src.main.TodoistClient", FakeClient):
+        main_module.main(["--today", "2026-05-08"])
+
+    stub = tmp_path / "reflections" / "weekly" / "2026-W19.md"
+    assert stub.exists()
+    from src.reflections import _baseline_word_count, split_frontmatter
+
+    fm, body = split_frontmatter(stub.read_text())
+    assert fm["status"] == "stub"  # below threshold
+    assert fm["word_count"] == _baseline_word_count(
+        REAL_REFLECTION_TEMPLATES, "weekly"
+    )  # walk ran AFTER creation
+    assert fm["word_count"] > 0  # disproves "walk ran before creation"
+    assert "Three things I learned this week" in body
+
+
+def test_log_records_stub_and_metadata_lines(tmp_path: Path, monkeypatch):
+    _seed_repo_with_real_templates(tmp_path, monkeypatch)
+    with patch("src.main.TodoistClient", FakeClient):
+        main_module.main(["--today", "2026-05-08"])
+    log = (tmp_path / "LOG.md").read_text()
+    assert "Reflection stubs created:" in log
+    assert "Reflection metadata updated:" in log

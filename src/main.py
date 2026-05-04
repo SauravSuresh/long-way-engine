@@ -23,6 +23,7 @@ from src.cache import load_cache, prune, save_cache
 from src.clock import Clock, FrozenClock
 from src.config import Config, TokenRedactingFilter, load_config
 from src.ids import external_id
+from src.reflections import StubResult, create_stub, update_metadata
 from src.scheduler import should_create_today
 from src.state import State, load_state
 from src.templates import load_templates, resolve_variables
@@ -37,6 +38,8 @@ ENV_PATH = REPO_ROOT / ".env"
 TEMPLATES_DIR = REPO_ROOT / "task_templates"
 CACHE_PATH = REPO_ROOT / ".task_cache.json"
 LOG_PATH = REPO_ROOT / "LOG.md"
+REFLECTIONS_DIR = REPO_ROOT / "reflections"
+REFLECTION_TEMPLATES_DIR = REPO_ROOT / "reflection_templates"
 
 
 @dataclass
@@ -47,12 +50,21 @@ class Decision:
 
 
 @dataclass
+class StubDecision:
+    path: str
+    decision: str  # "WOULD CREATE STUB" | "WOULD SKIP STUB (exists)" | "WOULD SKIP STUB (pending)" | "CREATED" | "EXISTS"
+    via_template_id: str
+
+
+@dataclass
 class RunSummary:
     today: date
     created: list[CreateResult]
     skipped: list[CreateResult]
     errors: int
     decisions: list[Decision] = field(default_factory=list)
+    stub_decisions: list[StubDecision] = field(default_factory=list)
+    metadata_updated: int = 0
 
 
 def _setup_logging(token: str, verbose: bool = False) -> None:
@@ -87,6 +99,48 @@ def _classify_skip(template, state: State, config: Config, today: date) -> str:
     return "SKIP (rule)"
 
 
+_STUB_DECISION_LABELS = {
+    "would_create": "WOULD CREATE STUB",
+    "would_skip_exists": "WOULD SKIP STUB (exists)",
+    "would_skip_pending": "WOULD SKIP STUB (pending)",
+    "created": "CREATED",
+    "exists": "EXISTS",
+}
+
+
+def _record_stub(
+    tpl,
+    state: State,
+    config: Config,
+    today: date,
+    reflections_root: Path,
+    reflection_templates_root: Path,
+    pending_paths: set[Path],
+    dry_run: bool,
+    stub_decisions: list[StubDecision],
+) -> None:
+    """Run create_stub for one template and append a StubDecision row."""
+    res: StubResult | None = create_stub(
+        tpl,
+        state,
+        config,
+        today,
+        reflections_root,
+        reflection_templates_root,
+        pending_paths,
+        dry_run=dry_run,
+    )
+    if res is None:
+        return
+    stub_decisions.append(
+        StubDecision(
+            path=str(res.path),
+            decision=_STUB_DECISION_LABELS.get(res.decision, res.decision.upper()),
+            via_template_id=tpl.id,
+        )
+    )
+
+
 def run(
     config: Config,
     state: State,
@@ -97,12 +151,18 @@ def run(
     clock: Clock | None = None,
     dry_run: bool = False,
     project_id: str | None = None,
+    reflections_root: Path | None = None,
+    reflection_templates_root: Path | None = None,
 ) -> RunSummary:
     if clock is None:
         clock = Clock(state.timezone)
     if client_factory is None:
         # Lookup at call time so module-level patches in tests take effect.
         client_factory = TodoistClient
+    if reflections_root is None:
+        reflections_root = REFLECTIONS_DIR
+    if reflection_templates_root is None:
+        reflection_templates_root = REFLECTION_TEMPLATES_DIR
 
     cache = load_cache(cache_path)
     templates = load_templates(templates_dir)
@@ -116,6 +176,8 @@ def run(
     created: list[CreateResult] = []
     skipped: list[CreateResult] = []
     decisions: list[Decision] = []
+    stub_decisions: list[StubDecision] = []
+    pending_paths: set[Path] = set()
     errors = 0
 
     for tpl in templates:
@@ -159,9 +221,30 @@ def run(
                 "due_date": result.due_date.isoformat(),
             }
 
+        # Stub creation is template-fired, not task-creation-fired:
+        # it runs whether the task was created, marker-deduped, or cache-hit.
+        _record_stub(
+            tpl,
+            state,
+            config,
+            today,
+            reflections_root,
+            reflection_templates_root,
+            pending_paths,
+            dry_run,
+            stub_decisions,
+        )
+
     cache = prune(cache, now=clock.now().astimezone(timezone.utc))
     if not dry_run:
         save_cache(cache_path, cache)
+
+    # Metadata walk runs UNCONDITIONALLY at end — even when paused — so
+    # owner-edited stubs continue to track word_count and status across
+    # pauses. Skipped in dry-run because it would otherwise mutate files.
+    metadata_updated = 0
+    if not dry_run:
+        metadata_updated = update_metadata(reflections_root, reflection_templates_root)
 
     return RunSummary(
         today=today,
@@ -169,6 +252,8 @@ def run(
         skipped=skipped,
         errors=errors,
         decisions=decisions,
+        stub_decisions=stub_decisions,
+        metadata_updated=metadata_updated,
     )
 
 
@@ -181,6 +266,7 @@ def append_log(
     if clock is None:
         clock = Clock(ZoneInfo(tz_name))
     when = clock.now().strftime("%Y-%m-%d %H:%M %Z")
+    stubs_created = [s for s in summary.stub_decisions if s.decision == "CREATED"]
     entry = (
         f"## {summary.today.isoformat()} ({tz_name})\n"
         f"- Run at: {when}\n"
@@ -188,6 +274,9 @@ def append_log(
         f"({', '.join(r.template_id for r in summary.created) or 'none'})\n"
         f"- Skipped (cache hit): {len(summary.skipped)} "
         f"({', '.join(r.template_id for r in summary.skipped) or 'none'})\n"
+        f"- Reflection stubs created: {len(stubs_created)} "
+        f"({', '.join(s.path for s in stubs_created) or 'none'})\n"
+        f"- Reflection metadata updated: {summary.metadata_updated}\n"
         f"- Errors: {summary.errors}\n\n"
     )
     if log_path.exists():
@@ -266,6 +355,20 @@ def _print_dry_run_table(summary: RunSummary, out=None) -> None:
     print(fmt.format("TEMPLATE", "EXTERNAL_ID", "DECISION"), file=out)
     for r in rows:
         print(fmt.format(*r), file=out)
+
+    if summary.stub_decisions:
+        print("", file=out)
+        print("REFLECTION STUBS", file=out)
+        srows = [
+            (s.path, s.decision, s.via_template_id) for s in summary.stub_decisions
+        ]
+        path_w = max(len("PATH"), max(len(r[0]) for r in srows))
+        sdec_w = max(len("DECISION"), max(len(r[1]) for r in srows))
+        via_w = max(len("VIA TEMPLATE"), max(len(r[2]) for r in srows))
+        sfmt = f"{{:<{path_w}}}  {{:<{sdec_w}}}  {{:<{via_w}}}"
+        print(sfmt.format("PATH", "DECISION", "VIA TEMPLATE"), file=out)
+        for r in srows:
+            print(sfmt.format(*r), file=out)
 
 
 def cleanup_project(
