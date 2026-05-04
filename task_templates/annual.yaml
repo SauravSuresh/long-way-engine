@@ -12,4 +12,3 @@
   reflection:
     create_stub: true
     stub_path: "reflections/annual/{year}.md"
-    template: annual_review_template

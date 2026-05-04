@@ -25,7 +25,6 @@
   reflection:
     create_stub: true
     stub_path: "reflections/monthly/{year}-{month:02d}.md"
-    template: monthly_review_template
 
 - id: monthly-review
   title: "Monthly review: what worked, what didn't"

@@ -12,4 +12,3 @@
   reflection:
     create_stub: true
     stub_path: "reflections/quarterly/{year}-Q{quarter}.md"
-    template: quarterly_review_template

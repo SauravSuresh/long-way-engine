@@ -12,7 +12,6 @@
   reflection:
     create_stub: true
     stub_path: "reflections/weekly/{iso_year}-W{iso_week:02d}.md"
-    template: weekly_review_template
 
 - id: weekly-saturday-deep-block
   title: "Saturday deep block (3–4 hr)"
