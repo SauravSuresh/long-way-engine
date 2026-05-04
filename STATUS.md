@@ -193,9 +193,9 @@ Per spec + your additions:
 | Page weight | ~4.4 KB CSS + ~5.3 KB HTML + ~3 KB JSON ≪ 100 KB | ✅ |
 | `TodoistClient` × `TodoistCompletionClient` | private-method intersection empty | ✅ |
 
-## Phase F — engine-side complete *(2026-05-04)*
+## Phase F — engine-side complete; item 3 verified 2026-05-04; item 6 awaiting owner click-through
 
-**Engine-side complete; awaiting owner-driven verification on items 3 and 6.** Not claiming VERIFIED until both land. Phase F = production readiness + ergonomic polish; the priority order from the post-Phase-E review held — items 1 and 2 (blocking) shipped first, items 4 and 5 bundled after, item 7 parked.
+Phase F = production readiness + ergonomic polish. Priority order from the post-Phase-E review held — items 1 and 2 (blocking) shipped first, items 4 and 5 bundled after, item 7 parked.
 
 ### Items
 
@@ -203,11 +203,23 @@ Per spec + your additions:
 |---|---|---|
 | 1 | Live-probe `/tasks/completed/by_completion_date` | ✅ done |
 | 2 | `rebuild_cache.py` offline recovery | ✅ done |
-| 3 | Synthetic pause smoke test | ⏳ owner-driven |
+| 3 | Synthetic pause smoke test | ✅ verified 2026-05-04 |
 | 4 | `workflow_dispatch` `dry_run` + `verbose` inputs | ✅ done |
 | 5 | Last-Saturday skip on `weekly-saturday-deep-block` | ✅ done |
-| 6 | GitHub Pages enablement | ⏳ owner-driven |
+| 6 | GitHub Pages enablement | ⏳ awaiting owner click-through |
 | 7 | Holiday × pair-day collision | 📌 parked |
+
+### Item 3 — synthetic pause smoke (verified 2026-05-04)
+
+Five-step exercise run end-to-end against a synthetic-completion render harness (`scripts/render_dashboard.py`); zero production Todoist calls. Baseline streak with the local cache state was N=0 (cache only contains today's two date-keyed dailies plus markers; no completion history exists locally without an API fetch). The exercise verified:
+
+1. **Paused short-circuit produces zero task creation.** With `paused: true` + `paused_since: 2026-05-04`, a dry-run at 2026-05-05 emitted 45 `SKIP (paused)` decisions and 0 `WOULD CREATE` rows across the full template set — daily, weekly, monthly, quarterly, annual, once-per-module, and active-practice cadences all short-circuited at the paused gate in `should_create_today`.
+2. **Pause banner renders.** Header showed `Paused since 2026-05-04 (1 days)` matching `_paused_summary`'s open-window format.
+3. **Loader tolerates both `paused_since: null` and the field absent on unpause.** Tested both forms; both produce 0 `SKIP (paused)` decisions when `paused: false`.
+4. **Streak walker treats `pause_history` windows like Sundays.** Across a 5-day closed `pause_history` interval (2026-05-04 to 2026-05-08), the daily walker starting from yesterday traversed every paused day via `_is_in_pause_window` and continued walking, exactly mirroring the Sunday-skip behaviour. Streak count remained at the baseline (0) without breaking — confirming pause windows neither count toward nor break a streak.
+5. **Last-7-days timeline colours pause windows gray.** Render at today=2026-05-09 produced 1 red cell (2026-05-02, outside the window, no completions) + 6 gray cells (2026-05-03 Sunday + 2026-05-04..05-08 all inside the pause window) — matching the decision-14 colour rules from the Phase E plan.
+
+State + cache + LOG were left untouched throughout (only `/tmp/` files written; final `git checkout state.yaml` restored the YAML to HEAD).
 
 ### Locked Todoist v1 response shapes *(verified 2026-05-04 against production token)*
 
@@ -220,7 +232,6 @@ Verified via `scripts/probe_completion.py` with one completed task in the window
 
 ### Phase F closes when owner completes
 
-- **Item 3 — synthetic pause smoke test.** Five-minute checklist against a sandbox cache (`--cache-file .task_cache.sandbox.json`): toggle `paused: true` + `paused_since: <today>`; dry-run a few synthetic days forward, confirming `SKIP (paused)` on every daily; unpause by flipping `paused: false` and appending `pause_history: [{start: <today>, end: <today+3>, reason: "smoke"}]`; dry-run again at `<today+4>` and confirm the daily streak preserves its prior value (not reset to zero) and that last-7-days timeline shows the paused days as gray. Surfaces "passes unit tests but breaks in practice" bugs while the Phase E code is fresh.
 - **Item 6 — GitHub Pages enablement.** Repo Settings → Pages → Source: "Deploy from a branch" → Branch: `main` / folder: `/docs`. After enable, the dashboard publishes at `https://<github_username>.github.io/<repo_name>/`. README has the full instructions.
 
 ### Open design questions (deferred)
