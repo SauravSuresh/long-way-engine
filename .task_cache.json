@@ -1,0 +1,26 @@
+{
+  "9fc9276c9439b346": {
+    "created_at": "2026-05-04T17:26:05.611826+00:00",
+    "due_date": "2026-05-04",
+    "template_id": "daily-evening-hands-on",
+    "todoist_task_id": "6gX3Wxg4jPJVx67R"
+  },
+  "d56818d8bf3cd728": {
+    "created_at": "2026-05-04T17:26:03.764512+00:00",
+    "due_date": "2026-05-04",
+    "template_id": "daily-morning-reading",
+    "todoist_task_id": "6gX3WxV28xJ52FC2"
+  },
+  "ee300869ddec639a": {
+    "created_at": "2026-05-04T17:26:06.415541+00:00",
+    "due_date": "module:1",
+    "template_id": "module-01-onboarding",
+    "todoist_task_id": "6gX3WxqfHHhRjm92"
+  },
+  "f94e4103244318e9": {
+    "created_at": "2026-05-04T17:26:04.592318+00:00",
+    "due_date": "2026-05-04",
+    "template_id": "daily-anki",
+    "todoist_task_id": "6gX3WxgpmrWPpp52"
+  }
+}

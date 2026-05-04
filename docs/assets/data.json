@@ -91,27 +91,27 @@
   "last_7_days": [
     {
       "date": "2026-04-27",
-      "state": "red"
+      "state": "gray"
     },
     {
       "date": "2026-04-28",
-      "state": "red"
+      "state": "gray"
     },
     {
       "date": "2026-04-29",
-      "state": "red"
+      "state": "gray"
     },
     {
       "date": "2026-04-30",
-      "state": "red"
+      "state": "gray"
     },
     {
       "date": "2026-05-01",
-      "state": "red"
+      "state": "gray"
     },
     {
       "date": "2026-05-02",
-      "state": "red"
+      "state": "gray"
     },
     {
       "date": "2026-05-03",
