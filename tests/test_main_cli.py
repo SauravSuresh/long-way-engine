@@ -294,3 +294,86 @@ def test_main_project_id_override(tmp_path: Path, monkeypatch):
         )
     assert rc == 0
     assert seen["project_id"] == "SANDBOX-ID"
+
+
+# ---------------------------------------------------------------------------
+# Cleanup CLI
+# ---------------------------------------------------------------------------
+
+
+class FakeAdmin:
+    """Test double for TodoistAdminClient."""
+
+    def __init__(self, *, token: str, **_: object) -> None:
+        self.token = token
+        self._tasks_by_project: dict[str, list[dict]] = {}
+        self.deleted: list[str] = []
+
+    def seed(self, project_id: str, tasks: list[dict]) -> None:
+        self._tasks_by_project[project_id] = list(tasks)
+
+    def list_tasks(self, project_id: str) -> list[dict]:
+        return list(self._tasks_by_project.get(project_id, []))
+
+    def delete_task(self, task_id: str) -> None:
+        self.deleted.append(task_id)
+        for tasks in self._tasks_by_project.values():
+            tasks[:] = [t for t in tasks if str(t["id"]) != task_id]
+
+
+def test_cleanup_lists_without_yes(tmp_path: Path, monkeypatch, capsys):
+    _seed_repo(tmp_path, monkeypatch)
+    admin = FakeAdmin(token="t")
+    admin.seed("SANDBOX", [{"id": "1", "content": "a"}, {"id": "2", "content": "b"}])
+
+    with patch("src.main.TodoistAdminClient", lambda **kw: admin):
+        rc = main_module.main(["--cleanup-project", "SANDBOX"])
+    assert rc == 0
+
+    out = capsys.readouterr().out
+    assert "2 task(s)" in out
+    assert "Re-run with --yes" in out
+    assert admin.deleted == []
+
+
+def test_cleanup_deletes_with_yes(tmp_path: Path, monkeypatch, capsys):
+    _seed_repo(tmp_path, monkeypatch)
+    admin = FakeAdmin(token="t")
+    admin.seed("SANDBOX", [{"id": "1", "content": "a"}, {"id": "2", "content": "b"}])
+
+    with patch("src.main.TodoistAdminClient", lambda **kw: admin):
+        rc = main_module.main(["--cleanup-project", "SANDBOX", "--yes"])
+    assert rc == 0
+
+    out = capsys.readouterr().out
+    assert "Deleted 2/2" in out
+    assert sorted(admin.deleted) == ["1", "2"]
+
+
+def test_cleanup_with_yes_also_removes_cache_file(tmp_path: Path, monkeypatch, capsys):
+    _seed_repo(tmp_path, monkeypatch)
+    cache = tmp_path / ".task_cache.sandbox.json"
+    cache.write_text("{}")
+
+    admin = FakeAdmin(token="t")
+    admin.seed("SANDBOX", [{"id": "1", "content": "a"}])
+
+    with patch("src.main.TodoistAdminClient", lambda **kw: admin):
+        rc = main_module.main(
+            ["--cleanup-project", "SANDBOX", "--cache-file", str(cache), "--yes"]
+        )
+    assert rc == 0
+    assert not cache.exists()
+
+
+def test_cleanup_yes_with_empty_project(tmp_path: Path, monkeypatch, capsys):
+    _seed_repo(tmp_path, monkeypatch)
+    admin = FakeAdmin(token="t")
+    admin.seed("EMPTY", [])
+
+    with patch("src.main.TodoistAdminClient", lambda **kw: admin):
+        rc = main_module.main(["--cleanup-project", "EMPTY", "--yes"])
+    assert rc == 0
+    out = capsys.readouterr().out
+    assert "Nothing to delete" in out
+    assert admin.deleted == []

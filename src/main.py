@@ -26,7 +26,7 @@ from src.ids import external_id
 from src.scheduler import should_create_today
 from src.state import State, load_state
 from src.templates import load_templates, resolve_variables
-from src.todoist import CreateResult, TodoistClient
+from src.todoist import CreateResult, TodoistAdminClient, TodoistClient
 
 logger = logging.getLogger(__name__)
 
@@ -224,6 +224,19 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="DEBUG-level logging.",
     )
+    p.add_argument(
+        "--cleanup-project",
+        metavar="ID",
+        help=(
+            "Destructive: list (and with --yes, delete) ALL tasks in this "
+            "Todoist project. Use against sandbox projects only."
+        ),
+    )
+    p.add_argument(
+        "--yes",
+        action="store_true",
+        help="Confirm destructive operations (only meaningful with --cleanup-project).",
+    )
     return p
 
 
@@ -243,11 +256,76 @@ def _print_dry_run_table(summary: RunSummary, out=None) -> None:
         print(fmt.format(*r), file=out)
 
 
+def cleanup_project(
+    project_id: str,
+    token: str,
+    confirm: bool,
+    cache_path: Path | None = None,
+    admin_factory=None,
+    out=None,
+) -> int:
+    """List (and on --yes, delete) all tasks in `project_id`.
+
+    If --yes: also wipes `cache_path` so the next run gets a clean slate.
+    Returns process exit code.
+    """
+    if out is None:
+        out = sys.stdout
+    if admin_factory is None:
+        admin_factory = TodoistAdminClient
+
+    admin = admin_factory(token=token)
+    tasks = admin.list_tasks(project_id)
+    print(f"Project {project_id}: {len(tasks)} task(s)", file=out)
+    for t in tasks:
+        tid = t.get("id", "?")
+        content = t.get("content", "")
+        print(f"  {tid}  {content}", file=out)
+
+    if not confirm:
+        print(
+            "\nDry-run (no --yes). Re-run with --yes to delete the tasks above.",
+            file=out,
+        )
+        return 0
+
+    if not tasks:
+        print("\nNothing to delete.", file=out)
+        return 0
+
+    deleted = 0
+    errors = 0
+    for t in tasks:
+        try:
+            admin.delete_task(str(t["id"]))
+            deleted += 1
+        except Exception as e:
+            logger.error("delete failed for task %s: %s", t.get("id"), e)
+            errors += 1
+
+    print(f"\nDeleted {deleted}/{len(tasks)} task(s); {errors} error(s).", file=out)
+
+    if cache_path is not None and cache_path.exists():
+        cache_path.unlink()
+        print(f"Removed cache file {cache_path}.", file=out)
+
+    return 0 if errors == 0 else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
 
     config = load_config(CONFIG_PATH, ENV_PATH)
     _setup_logging(config.todoist_token, verbose=args.verbose)
+
+    if args.cleanup_project:
+        return cleanup_project(
+            project_id=args.cleanup_project,
+            token=config.todoist_token,
+            confirm=args.yes,
+            cache_path=args.cache_file,
+        )
+
     state = load_state(STATE_PATH)
 
     if args.today is not None:
