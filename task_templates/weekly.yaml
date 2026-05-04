@@ -21,3 +21,8 @@
   labels: [weekly-ritual]
   cadence: weekly
   day_of_week: saturday
+  # On last-Saturdays the monthly retrieval + monthly review take over the
+  # Saturday deep-block slot. Skip the deep block to avoid a quadruple-fire
+  # (Phase F item 5; reuses the existing skip_if list machinery).
+  skip_if:
+    - last-saturday-of-month

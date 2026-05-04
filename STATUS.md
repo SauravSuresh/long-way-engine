@@ -209,13 +209,15 @@ Phase F = production readiness + ergonomic polish. **Strict priority order — d
    5. `--dry-run --today <today+4>` — daily streak should preserve any prior streak, not reset to zero. Last-7-days timeline should show the paused days as gray.
    This isn't an automated test; it's a checklist run against the live state file with `--cache-file .task_cache.sandbox.json` so the production cache stays clean.
 
-4. **`workflow_dispatch` `dry_run` input.** Surface `--dry-run` as a workflow input so the owner can preview a future date from the GitHub UI without checking out locally.
+4. ~~**`workflow_dispatch` inputs**~~ ✅ *(2026-05-04)*. `daily.yml` now exposes `dry_run` (boolean, default false) and `verbose` (boolean, default false) inputs to `workflow_dispatch`. Cron-triggered runs read empty `inputs.*` and resolve both flag expressions to `''` — production cron is never accidentally muted by a stale manual-run input value. Unquoted shell substitution intentionally drops empty flags so argparse sees correct argv.
 
-5. **Last-Saturday quadruple-firing UX.** Decide whether `weekly-saturday-deep-block` and/or `weekly-read-real-code` should skip on last-Saturdays so monthly-retrieval + monthly-review don't drown them out.
+5. ~~**Last-Saturday quadruple-firing UX**~~ ✅ *(2026-05-04)*. `weekly-saturday-deep-block` now carries `skip_if: [last-saturday-of-month]`. The scheduler's `_weekly_fires` honours the rule; the dry-run table label classifies last-Saturday skips as `SKIP (last Saturday)`. `weekly-read-real-code` left firing — owner gets the code-reading session even on retrieval days. 4 new tests; 295 total.
 
 6. **GitHub Pages enablement.** One-time owner click-through in repo settings (Settings → Pages → Deploy from a branch → main / `/docs`). Documented in README; no code change required.
 
-7. **Holiday week pair-day collision.** `pair_day: thursday` + Thursday holiday silently empties the day. No catch-up logic. Either rotate `pair_day` or add a one-shot override.
+## Open design questions (deferred)
+
+- **Holiday × pair-day collision.** `pair_day: thursday` + a Thursday holiday silently empties the day (the pair session and the solo evening hands-on both skip). No catch-up logic. Two paths: (a) make `pair_day` a per-week override list rather than a single weekday, or (b) add a `holidays` config block that rotates `pair_day` for that week. Park here until the first time it actually bites.
 
 ### Phase F operating rule (from owner, 2026-05-04)
 

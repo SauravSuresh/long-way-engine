@@ -109,7 +109,16 @@ def _weekly_fires(template: Template, today: date) -> bool:
         raise NotImplementedError(
             f"unsupported day_of_week {template.day_of_week!r} on template {template.id!r}"
         )
-    return today.weekday() == _DAY_OF_WEEK[key]
+    if today.weekday() != _DAY_OF_WEEK[key]:
+        return False
+    # Phase F: weekly templates may opt out of last-Saturdays via the existing
+    # skip_if list (e.g. weekly-saturday-deep-block on monthly-retrieval days).
+    if (
+        "last-saturday-of-month" in template.skip_if
+        and _is_last_saturday_of_month(today)
+    ):
+        return False
+    return True
 
 
 def _monthly_fires(template: Template, today: date) -> bool:

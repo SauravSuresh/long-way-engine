@@ -30,7 +30,7 @@ def daily_template(skip: str | None = "sunday") -> Template:
     )
 
 
-def weekly_template(day: str) -> Template:
+def weekly_template(day: str, skip_if: list[str] | None = None) -> Template:
     return Template(
         id=f"weekly-{day}",
         title=f"Weekly {day}",
@@ -38,6 +38,7 @@ def weekly_template(day: str) -> Template:
         due="today",
         labels=[],
         cadence="weekly",
+        skip_if=skip_if or [],
         day_of_week=day,
     )
 
@@ -190,6 +191,42 @@ def test_weekly_iso_week_year_boundary_fires_on_calendar_friday():
 def test_weekly_unknown_day_raises():
     with pytest.raises(NotImplementedError, match="day_of_week"):
         should_create_today(weekly_template("funday"), date(2026, 5, 4), make_state(), make_config())
+
+
+# Phase F item 5: weekly skip_if=last-saturday-of-month -----------------------
+
+
+def test_weekly_saturday_with_last_saturday_skip_does_not_fire_on_last_saturday():
+    """weekly-saturday-deep-block opts out of last-Saturdays so the monthly
+    retrieval + monthly review aren't drowned out (Phase F item 5)."""
+    last_sat = date(2026, 5, 30)
+    assert _is_last_saturday_of_month(last_sat)
+    tpl = weekly_template("saturday", skip_if=["last-saturday-of-month"])
+    assert should_create_today(tpl, last_sat, make_state(), make_config()) is False
+
+
+def test_weekly_saturday_with_last_saturday_skip_fires_on_normal_saturday():
+    """The skip rule is bounded to last-Saturdays only — earlier Saturdays still fire."""
+    earlier_sat = date(2026, 5, 9)
+    assert not _is_last_saturday_of_month(earlier_sat)
+    tpl = weekly_template("saturday", skip_if=["last-saturday-of-month"])
+    assert should_create_today(tpl, earlier_sat, make_state(), make_config()) is True
+
+
+def test_weekly_saturday_without_skip_still_fires_on_last_saturday():
+    """Templates that don't opt in keep firing on last-Saturdays (no implicit skip)."""
+    last_sat = date(2026, 5, 30)
+    tpl = weekly_template("saturday")  # no skip_if
+    assert should_create_today(tpl, last_sat, make_state(), make_config()) is True
+
+
+def test_weekly_saturday_skip_does_not_apply_to_other_weekdays():
+    """skip_if=last-saturday-of-month on a non-Saturday weekly template is a no-op
+    in practice — its day_of_week pre-check still gates everything."""
+    last_sat = date(2026, 5, 30)
+    tpl = weekly_template("friday", skip_if=["last-saturday-of-month"])
+    # Not a Friday -> doesn't fire regardless of the rule.
+    assert should_create_today(tpl, last_sat, make_state(), make_config()) is False
 
 
 def test_weekly_missing_day_raises():

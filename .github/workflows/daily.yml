@@ -6,6 +6,23 @@ on:
   schedule:
     - cron: "30 21 * * *"
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (no Todoist writes, no cache/log mutation, no docs commit)."
+        type: boolean
+        required: false
+        default: false
+      verbose:
+        description: "DEBUG-level logging."
+        type: boolean
+        required: false
+        default: false
+
+# When this workflow runs on `schedule:`, the `inputs` context is empty.
+# `inputs.X == true` is therefore false on cron-triggered runs, so both
+# flag expressions below resolve to '' and the engine runs with its
+# defaults — production cron is never accidentally muted by a stale
+# manual run's input values.
 
 permissions:
   contents: write
@@ -34,7 +51,9 @@ jobs:
       - name: Run engine
         env:
           TODOIST_TOKEN: ${{ secrets.TODOIST_TOKEN }}
-        run: python -m src.main
+          DRY_RUN_FLAG: ${{ inputs.dry_run == true && '--dry-run' || '' }}
+          VERBOSE_FLAG: ${{ inputs.verbose == true && '--verbose' || '' }}
+        run: python -m src.main $DRY_RUN_FLAG $VERBOSE_FLAG
 
       - name: Commit and push state changes
         env:

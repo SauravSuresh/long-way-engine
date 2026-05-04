@@ -31,7 +31,7 @@ from src.dashboard import (
 )
 from src.ids import external_id, module_external_id
 from src.reflections import StubResult, create_stub, update_metadata
-from src.scheduler import should_create_today
+from src.scheduler import _is_last_saturday_of_month, should_create_today
 from src.state import State, load_state
 from src.syllabus import parse_books_from_file
 from src.templates import load_templates, resolve_variables
@@ -116,6 +116,13 @@ def _classify_skip(template, state: State, config: Config, today: date) -> str:
         return "SKIP (rule)"
     if cadence == "weekly":
         day = template.day_of_week or "?"
+        if (
+            template.day_of_week
+            and today.weekday() == "monday tuesday wednesday thursday friday saturday sunday".split().index(template.day_of_week.lower())
+            and "last-saturday-of-month" in template.skip_if
+            and _is_last_saturday_of_month(today)
+        ):
+            return "SKIP (last Saturday)"
         return f"SKIP (not {day})"
     if cadence == "monthly":
         return "SKIP (not month boundary)"
