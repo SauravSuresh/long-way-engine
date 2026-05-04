@@ -19,15 +19,28 @@ from pathlib import Path
 
 from zoneinfo import ZoneInfo
 
+import json
+
 from src.cache import load_cache, prune, save_cache
 from src.clock import Clock, FrozenClock
 from src.config import Config, TokenRedactingFilter, load_config
+from src.dashboard import (
+    render as render_dashboard,
+    scan_reflections,
+    write_css_if_absent,
+)
 from src.ids import external_id, module_external_id
 from src.reflections import StubResult, create_stub, update_metadata
 from src.scheduler import should_create_today
 from src.state import State, load_state
+from src.syllabus import parse_books_from_file
 from src.templates import load_templates, resolve_variables
-from src.todoist import CreateResult, TodoistAdminClient, TodoistClient
+from src.todoist import (
+    CreateResult,
+    TodoistAdminClient,
+    TodoistClient,
+    TodoistCompletionClient,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +53,11 @@ CACHE_PATH = REPO_ROOT / ".task_cache.json"
 LOG_PATH = REPO_ROOT / "LOG.md"
 REFLECTIONS_DIR = REPO_ROOT / "reflections"
 REFLECTION_TEMPLATES_DIR = REPO_ROOT / "reflection_templates"
+COMPLETION_CACHE_PATH = REPO_ROOT / ".completion_cache.json"
+DOCS_DIR = REPO_ROOT / "docs"
+DOCS_HTML_PATH = DOCS_DIR / "index.html"
+DOCS_DATA_PATH = DOCS_DIR / "assets" / "data.json"
+DOCS_CSS_PATH = DOCS_DIR / "assets" / "style.css"
 
 
 @dataclass
@@ -65,6 +83,7 @@ class RunSummary:
     decisions: list[Decision] = field(default_factory=list)
     stub_decisions: list[StubDecision] = field(default_factory=list)
     metadata_updated: int = 0
+    dashboard_status: str | None = None  # "ok" | "error" | "skipped" | None (dry-run)
 
 
 def _setup_logging(token: str, verbose: bool = False) -> None:
@@ -151,6 +170,72 @@ def _record_stub(
     )
 
 
+def _render_dashboard_once(
+    state: State,
+    config: Config,
+    today: date,
+    clock: Clock,
+    cache: dict,
+    reflections_root: Path,
+    completion_cache_path: Path,
+    docs_html_path: Path,
+    docs_data_path: Path,
+    docs_css_path: Path,
+    completion_factory,
+) -> str:
+    """Render dashboard + sidecar JSON. Returns "ok" or "error".
+
+    Per Phase E plan: failures log but never fail the run. The CSS file is
+    laid down only on first run; subsequent runs leave it untouched so the
+    owner can hand-edit visuals.
+    """
+    write_css_if_absent(docs_css_path)
+    completion_client = completion_factory(
+        token=config.todoist_token,
+        cache_path=completion_cache_path,
+        project_id=config.todoist.project_id,
+        clock=clock,
+    )
+    candidate_ids = sorted({
+        str(entry["todoist_task_id"])
+        for entry in cache.values()
+        if entry.get("todoist_task_id")
+        and not str(entry["todoist_task_id"]).startswith("DRY-RUN")
+    })
+    if candidate_ids:
+        statuses = completion_client.get_completion_status(candidate_ids)
+        completion_set = {tid for tid, done in statuses.items() if done}
+    else:
+        completion_set = set()
+
+    reflections = scan_reflections(reflections_root)
+    try:
+        books = parse_books_from_file()
+    except OSError:
+        books = []
+
+    html, data = render_dashboard(
+        state=state,
+        config=config,
+        completion_set=completion_set,
+        cache=cache,
+        reflections=reflections,
+        books=books,
+        today=today,
+        clock=clock,
+        reflections_root=reflections_root,
+    )
+
+    docs_html_path.parent.mkdir(parents=True, exist_ok=True)
+    docs_data_path.parent.mkdir(parents=True, exist_ok=True)
+    docs_html_path.write_text(html, encoding="utf-8")
+    docs_data_path.write_text(
+        json.dumps(data, indent=2, sort_keys=True, default=str),
+        encoding="utf-8",
+    )
+    return "ok"
+
+
 def run(
     config: Config,
     state: State,
@@ -163,16 +248,32 @@ def run(
     project_id: str | None = None,
     reflections_root: Path | None = None,
     reflection_templates_root: Path | None = None,
+    skip_dashboard: bool = False,
+    completion_factory=None,
+    completion_cache_path: Path | None = None,
+    docs_html_path: Path | None = None,
+    docs_data_path: Path | None = None,
+    docs_css_path: Path | None = None,
 ) -> RunSummary:
     if clock is None:
         clock = Clock(state.timezone)
     if client_factory is None:
         # Lookup at call time so module-level patches in tests take effect.
         client_factory = TodoistClient
+    if completion_factory is None:
+        completion_factory = TodoistCompletionClient
     if reflections_root is None:
         reflections_root = REFLECTIONS_DIR
     if reflection_templates_root is None:
         reflection_templates_root = REFLECTION_TEMPLATES_DIR
+    if completion_cache_path is None:
+        completion_cache_path = COMPLETION_CACHE_PATH
+    if docs_html_path is None:
+        docs_html_path = DOCS_HTML_PATH
+    if docs_data_path is None:
+        docs_data_path = DOCS_DATA_PATH
+    if docs_css_path is None:
+        docs_css_path = DOCS_CSS_PATH
 
     cache = load_cache(cache_path)
     templates = load_templates(templates_dir)
@@ -267,6 +368,34 @@ def run(
     if not dry_run:
         metadata_updated = update_metadata(reflections_root, reflection_templates_root)
 
+    # Dashboard render: after metadata walk, before append_log. Failure logs
+    # but doesn't fail the run (Phase E plan, decision 17). Dry-run skips
+    # entirely; --skip-dashboard skips on-demand. Render runs even when
+    # paused so the dashboard reflects the pause and preserves prior streaks.
+    dashboard_status: str | None = None
+    if dry_run:
+        dashboard_status = None
+    elif skip_dashboard:
+        dashboard_status = "skipped"
+    else:
+        try:
+            dashboard_status = _render_dashboard_once(
+                state=state,
+                config=config,
+                today=today,
+                clock=clock,
+                cache=cache,
+                reflections_root=reflections_root,
+                completion_cache_path=completion_cache_path,
+                docs_html_path=docs_html_path,
+                docs_data_path=docs_data_path,
+                docs_css_path=docs_css_path,
+                completion_factory=completion_factory,
+            )
+        except Exception as e:
+            logger.warning("dashboard render failed: %s", e)
+            dashboard_status = "error"
+
     return RunSummary(
         today=today,
         created=created,
@@ -275,6 +404,7 @@ def run(
         decisions=decisions,
         stub_decisions=stub_decisions,
         metadata_updated=metadata_updated,
+        dashboard_status=dashboard_status,
     )
 
 
@@ -288,6 +418,11 @@ def append_log(
         clock = Clock(ZoneInfo(tz_name))
     when = clock.now().strftime("%Y-%m-%d %H:%M %Z")
     stubs_created = [s for s in summary.stub_decisions if s.decision == "CREATED"]
+    dashboard_line = (
+        f"- Dashboard: {summary.dashboard_status}\n"
+        if summary.dashboard_status is not None
+        else ""
+    )
     entry = (
         f"## {summary.today.isoformat()} ({tz_name})\n"
         f"- Run at: {when}\n"
@@ -298,6 +433,7 @@ def append_log(
         f"- Reflection stubs created: {len(stubs_created)} "
         f"({', '.join(s.path for s in stubs_created) or 'none'})\n"
         f"- Reflection metadata updated: {summary.metadata_updated}\n"
+        f"{dashboard_line}"
         f"- Errors: {summary.errors}\n\n"
     )
     if log_path.exists():
@@ -358,6 +494,11 @@ def _build_parser() -> argparse.ArgumentParser:
         "--yes",
         action="store_true",
         help="Confirm destructive operations (only meaningful with --cleanup-project).",
+    )
+    p.add_argument(
+        "--skip-dashboard",
+        action="store_true",
+        help="Skip the Phase E dashboard render. Default is to render.",
     )
     return p
 
@@ -490,6 +631,7 @@ def main(argv: list[str] | None = None) -> int:
         clock=clock,
         dry_run=args.dry_run,
         project_id=args.project_id,
+        skip_dashboard=args.skip_dashboard,
     )
 
     if args.dry_run:

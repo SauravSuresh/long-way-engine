@@ -166,3 +166,159 @@ def test_append_log_creates_and_appends(tmp_path: Path):
     contents_b = log.read_text()
     assert "2026-05-05" in contents_b
     assert "2026-05-04" in contents_b  # earlier entry preserved
+
+
+# --- Phase E: dashboard wiring -----------------------------------------------
+
+
+def test_dashboard_renders_in_real_run(tmp_path: Path):
+    tdir = _seed_templates(tmp_path)
+    cache_path = tmp_path / ".task_cache.json"
+    docs_html = tmp_path / "docs" / "index.html"
+    docs_data = tmp_path / "docs" / "assets" / "data.json"
+    docs_css = tmp_path / "docs" / "assets" / "style.css"
+    refl_root = tmp_path / "reflections"
+    refl_templates = tmp_path / "rtpl"
+    refl_root.mkdir(); refl_templates.mkdir()
+
+    summary = run(
+        make_config(),
+        make_state(),
+        date(2026, 5, 4),
+        tdir,
+        cache_path,
+        client_factory=FakeClient,
+        reflections_root=refl_root,
+        reflection_templates_root=refl_templates,
+        completion_cache_path=tmp_path / ".completion_cache.json",
+        docs_html_path=docs_html,
+        docs_data_path=docs_data,
+        docs_css_path=docs_css,
+    )
+    assert summary.dashboard_status == "ok"
+    assert docs_html.exists()
+    assert docs_data.exists()
+    assert docs_css.exists()
+    data = json.loads(docs_data.read_text())
+    assert data["today"] == "2026-05-04"
+
+
+def test_dashboard_skipped_when_flag_set(tmp_path: Path):
+    tdir = _seed_templates(tmp_path)
+    cache_path = tmp_path / ".task_cache.json"
+    docs_html = tmp_path / "docs" / "index.html"
+    refl_root = tmp_path / "reflections"
+    refl_templates = tmp_path / "rtpl"
+    refl_root.mkdir(); refl_templates.mkdir()
+
+    summary = run(
+        make_config(),
+        make_state(),
+        date(2026, 5, 4),
+        tdir,
+        cache_path,
+        client_factory=FakeClient,
+        reflections_root=refl_root,
+        reflection_templates_root=refl_templates,
+        skip_dashboard=True,
+        docs_html_path=docs_html,
+    )
+    assert summary.dashboard_status == "skipped"
+    assert not docs_html.exists()
+
+
+def test_dashboard_none_in_dry_run(tmp_path: Path):
+    tdir = _seed_templates(tmp_path)
+    summary = run(
+        make_config(),
+        make_state(),
+        date(2026, 5, 4),
+        tdir,
+        tmp_path / ".task_cache.json",
+        client_factory=FakeClient,
+        reflections_root=tmp_path / "reflections",
+        reflection_templates_root=tmp_path / "rtpl",
+        dry_run=True,
+    )
+    assert summary.dashboard_status is None
+
+
+def test_dashboard_render_failure_logs_error_does_not_fail_run(tmp_path: Path, caplog):
+    tdir = _seed_templates(tmp_path)
+    refl_root = tmp_path / "reflections"
+    refl_templates = tmp_path / "rtpl"
+    refl_root.mkdir(); refl_templates.mkdir()
+
+    class BoomClient:
+        def __init__(self, **kwargs): pass
+        def get_completion_status(self, task_ids):
+            raise RuntimeError("network exploded")
+
+    with caplog.at_level("WARNING"):
+        summary = run(
+            make_config(),
+            make_state(),
+            date(2026, 5, 4),
+            tdir,
+            tmp_path / ".task_cache.json",
+            client_factory=FakeClient,
+            reflections_root=refl_root,
+            reflection_templates_root=refl_templates,
+            completion_factory=BoomClient,
+            docs_html_path=tmp_path / "docs" / "index.html",
+            docs_data_path=tmp_path / "docs" / "assets" / "data.json",
+            docs_css_path=tmp_path / "docs" / "assets" / "style.css",
+        )
+    assert summary.dashboard_status == "error"
+    assert summary.errors == 0  # render failure doesn't add to engine errors
+    assert any("dashboard render failed" in r.getMessage().lower() for r in caplog.records)
+
+
+def test_dashboard_status_in_log_line(tmp_path: Path):
+    tdir = _seed_templates(tmp_path)
+    refl_root = tmp_path / "reflections"
+    refl_templates = tmp_path / "rtpl"
+    refl_root.mkdir(); refl_templates.mkdir()
+    summary = run(
+        make_config(),
+        make_state(),
+        date(2026, 5, 4),
+        tdir,
+        tmp_path / ".task_cache.json",
+        client_factory=FakeClient,
+        reflections_root=refl_root,
+        reflection_templates_root=refl_templates,
+        skip_dashboard=True,
+    )
+    log = tmp_path / "LOG.md"
+    append_log(log, summary, "Asia/Kolkata")
+    assert "Dashboard: skipped" in log.read_text()
+
+
+def test_dashboard_renders_when_paused(tmp_path: Path):
+    """Per Phase A failure-modes: pause should NOT freeze the dashboard."""
+    tdir = _seed_templates(tmp_path)
+    refl_root = tmp_path / "reflections"
+    refl_templates = tmp_path / "rtpl"
+    refl_root.mkdir(); refl_templates.mkdir()
+    paused_state = State(
+        start_date=date(2026, 5, 4),
+        timezone=ZoneInfo("Asia/Kolkata"),
+        phase=1, month=1, current_module=1, current_book="CSAPP",
+        paused=True, paused_since=date(2026, 5, 4),
+    )
+    summary = run(
+        make_config(),
+        paused_state,
+        date(2026, 5, 4),
+        tdir,
+        tmp_path / ".task_cache.json",
+        client_factory=FakeClient,
+        reflections_root=refl_root,
+        reflection_templates_root=refl_templates,
+        completion_cache_path=tmp_path / ".completion_cache.json",
+        docs_html_path=tmp_path / "docs" / "index.html",
+        docs_data_path=tmp_path / "docs" / "assets" / "data.json",
+        docs_css_path=tmp_path / "docs" / "assets" / "style.css",
+    )
+    assert summary.dashboard_status == "ok"
