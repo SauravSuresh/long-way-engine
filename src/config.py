@@ -39,12 +39,14 @@ class Config:
     sunday_off: bool
     dashboard: DashboardConfig
     todoist_token: str
+    pair_day: str | None = None  # e.g. "thursday" — daily-evening-hands-on skips on this weekday
 
     def __repr__(self) -> str:
         return (
             f"Config(todoist={self.todoist!r}, "
             f"ritual_times={self.ritual_times!r}, "
             f"sunday_off={self.sunday_off!r}, "
+            f"pair_day={self.pair_day!r}, "
             f"dashboard={self.dashboard!r}, "
             f"todoist_token='***REDACTED***')"
         )
@@ -98,12 +100,16 @@ def load_config(yaml_path: Path, env_path: Path) -> Config:
         github_username=str(dashboard_raw["github_username"]),
         repo_name=str(dashboard_raw["repo_name"]),
     )
+    pair_day = raw.get("pair_day")
+    if pair_day is not None:
+        pair_day = str(pair_day).lower()
     return Config(
         todoist=todoist,
         ritual_times=dict(raw.get("ritual_times", {})),
         sunday_off=bool(raw.get("sunday_off", True)),
         dashboard=dashboard,
         todoist_token=_read_token(env_path),
+        pair_day=pair_day,
     )
 
 

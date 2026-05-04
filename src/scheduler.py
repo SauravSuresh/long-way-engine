@@ -1,15 +1,18 @@
 """Decide whether a template should produce a task today.
 
-Cadence dispatch (Phase B):
+Cadence dispatch:
 
   - paused short-circuit (highest precedence)
-  - daily       — every day except Sunday when sunday_off and skip_if=sunday
-  - weekly      — today.weekday() matches template.day_of_week
-  - monthly     — template.day_of_month is int 1..28, "last-day", or "last-saturday"
-  - quarterly   — today is Jan 1 / Apr 1 / Jul 1 / Oct 1
-  - annual      — today is Jan 1
-  - anything else (e.g. once-per-module) raises NotImplementedError naming
-    both the cadence and the template id.
+  - daily          — every day, with optional skip_if rules:
+                       * skip_if=sunday   + sunday_off + Sunday   -> skip
+                       * skip_if=pair_day + today is config.pair_day -> skip
+  - weekly         — today.weekday() matches template.day_of_week
+  - monthly        — template.day_of_month is int 1..28, "last-day", or "last-saturday"
+  - quarterly      — today is Jan 1 / Apr 1 / Jul 1 / Oct 1
+  - annual         — today is Jan 1
+  - once-per-module — template.module_number == state.current_module
+  - anything else raises NotImplementedError naming the cadence and the
+    offending template id.
 
 Sunday-off applies only to the daily cadence. Quarterly Apr 1 fires
 regardless of weekday — including a Sunday Apr 1 (e.g. 2029-04-01).
@@ -60,9 +63,11 @@ def should_create_today(
         return _is_first_of_quarter(today)
     if cadence == "annual":
         return _is_jan_1(today)
+    if cadence == "once-per-module":
+        return _once_per_module_fires(template, state)
 
     raise NotImplementedError(
-        f"cadence {cadence!r} on template {template.id!r} not supported in Phase B"
+        f"cadence {cadence!r} on template {template.id!r} not supported"
     )
 
 
@@ -76,7 +81,21 @@ def _daily_fires(template: Template, today: date, config: Config) -> bool:
         and today.weekday() == SUNDAY
     ):
         return False
+    if (
+        template.skip_if == "pair_day"
+        and config.pair_day
+        and today.weekday() == _DAY_OF_WEEK.get(config.pair_day.lower(), -1)
+    ):
+        return False
     return True
+
+
+def _once_per_module_fires(template: Template, state: State) -> bool:
+    if template.module_number is None:
+        raise NotImplementedError(
+            f"once-per-module template {template.id!r} missing module_number"
+        )
+    return template.module_number == state.current_module
 
 
 def _weekly_fires(template: Template, today: date) -> bool:

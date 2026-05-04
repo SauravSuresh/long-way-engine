@@ -341,16 +341,149 @@ def test_2029_04_01_daily_with_sunday_skip_does_not_fire():
 
 
 def test_unknown_cadence_raises_with_template_id():
-    once_per_module = Template(
-        id="module-onboarding-1",
+    bogus = Template(
+        id="bogus-cadence-template",
+        title="x",
+        description="",
+        due="",
+        labels=[],
+        cadence="biweekly",  # not supported
+    )
+    with pytest.raises(NotImplementedError, match=r"biweekly.*bogus-cadence-template"):
+        should_create_today(bogus, date(2026, 5, 4), make_state(), make_config())
+
+
+# ---------------------------------------------------------------------------
+# once-per-module cadence (Phase D)
+# ---------------------------------------------------------------------------
+
+
+def _module_template(module_number: int, suffix: str = "onboarding") -> Template:
+    return Template(
+        id=f"module-{module_number:02d}-{suffix}",
+        title=f"Module {module_number} {suffix}",
+        description="",
+        due="today",
+        labels=[],
+        cadence="once-per-module",
+        module_number=module_number,
+    )
+
+
+def test_once_per_module_fires_when_template_matches_current_module():
+    state = make_state()
+    state.current_module = 6
+    assert (
+        should_create_today(
+            _module_template(6), date(2026, 5, 4), state, make_config()
+        )
+        is True
+    )
+
+
+def test_once_per_module_does_not_fire_for_past_module():
+    state = make_state()
+    state.current_module = 6
+    assert (
+        should_create_today(
+            _module_template(1), date(2026, 5, 4), state, make_config()
+        )
+        is False
+    )
+
+
+def test_once_per_module_does_not_fire_for_future_module():
+    state = make_state()
+    state.current_module = 1
+    assert (
+        should_create_today(
+            _module_template(2), date(2026, 5, 4), state, make_config()
+        )
+        is False
+    )
+
+
+def test_once_per_module_lineage_and_onboarding_both_fire_for_same_module():
+    """Module 6 has both onboarding and lineage detour. Both have module_number=6."""
+    state = make_state()
+    state.current_module = 6
+    onboarding = _module_template(6, "onboarding")
+    lineage = _module_template(6, "lineage")
+    assert should_create_today(onboarding, date(2026, 5, 4), state, make_config())
+    assert should_create_today(lineage, date(2026, 5, 4), state, make_config())
+
+
+def test_once_per_module_missing_module_number_raises():
+    bad = Template(
+        id="module-bad",
         title="x",
         description="",
         due="",
         labels=[],
         cadence="once-per-module",
     )
-    with pytest.raises(NotImplementedError, match=r"once-per-module.*module-onboarding-1"):
-        should_create_today(once_per_module, date(2026, 5, 4), make_state(), make_config())
+    with pytest.raises(NotImplementedError, match="module_number"):
+        should_create_today(bad, date(2026, 5, 4), make_state(), make_config())
+
+
+def test_paused_blocks_once_per_module_without_raising():
+    """paused short-circuit beats every cadence including once-per-module."""
+    state = make_state()
+    state.paused = True
+    state.current_module = 6
+    assert (
+        should_create_today(
+            _module_template(6), date(2026, 5, 4), state, make_config()
+        )
+        is False
+    )
+
+
+# ---------------------------------------------------------------------------
+# skip_if: pair_day  (Phase D)
+# ---------------------------------------------------------------------------
+
+
+def _pair_day_template() -> Template:
+    return Template(
+        id="daily-evening-hands-on",
+        title="Evening hands-on",
+        description="",
+        due="today",
+        labels=[],
+        cadence="daily",
+        skip_if="pair_day",
+    )
+
+
+def test_pair_day_skip_on_configured_day():
+    cfg = make_config()
+    cfg.pair_day = "thursday"
+    thursday = date(2026, 5, 7)
+    assert thursday.weekday() == 3
+    assert should_create_today(_pair_day_template(), thursday, make_state(), cfg) is False
+
+
+def test_pair_day_no_skip_on_other_days():
+    cfg = make_config()
+    cfg.pair_day = "thursday"
+    monday = date(2026, 5, 4)
+    assert should_create_today(_pair_day_template(), monday, make_state(), cfg) is True
+
+
+def test_pair_day_unset_means_no_skip():
+    cfg = make_config()
+    cfg.pair_day = None
+    thursday = date(2026, 5, 7)
+    assert should_create_today(_pair_day_template(), thursday, make_state(), cfg) is True
+
+
+def test_pair_day_unknown_value_means_no_skip():
+    """Defensive: a typo in config should not crash; skip rule simply doesn't fire."""
+    cfg = make_config()
+    cfg.pair_day = "tursday"  # typo
+    thursday = date(2026, 5, 7)
+    assert should_create_today(_pair_day_template(), thursday, make_state(), cfg) is True
 
 
 # ---------------------------------------------------------------------------
