@@ -27,7 +27,7 @@ from src.templates import ResolvedTemplate
 
 logger = logging.getLogger(__name__)
 
-API_ROOT = "https://api.todoist.com/rest/v2"
+API_ROOT = "https://api.todoist.com/api/v1"
 MARKER_PREFIX = "<!--LW:"
 MARKER_SUFFIX = "-->"
 MARKER_RE = re.compile(r"<!--LW:([0-9a-f]{16})-->")
