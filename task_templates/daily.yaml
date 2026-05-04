@@ -24,7 +24,12 @@
   description: |
     boot.dev, the side build, or the main project. In nvim.
     Without AI writing code for you (using AI to *explain* concepts is fine).
+
+    Skipped on Sunday (rest day) and on pair days (the weekly
+    pair-with-engineer session replaces solo evening work that day).
   due: "today at {ritual_times.evening_hands_on}"
   labels: [daily-ritual]
   cadence: daily
-  skip_if: sunday
+  skip_if:
+    - sunday
+    - pair_day

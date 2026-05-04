@@ -81,14 +81,15 @@ def _classify_skip(template, state: State, config: Config, today: date) -> str:
         return "SKIP (paused)"
     cadence = template.cadence
     if cadence == "daily":
+        rules = template.skip_if
         if (
-            template.skip_if == "sunday"
+            "sunday" in rules
             and config.sunday_off
             and today.weekday() == 6
         ):
             return "SKIP (Sunday)"
         if (
-            template.skip_if == "pair_day"
+            "pair_day" in rules
             and config.pair_day
             and today.strftime("%A").lower() == config.pair_day.lower()
         ):

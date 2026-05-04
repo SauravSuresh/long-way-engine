@@ -29,7 +29,7 @@ def make_template() -> ResolvedTemplate:
         due="today at 08:30",
         labels=["daily-ritual"],
         cadence="daily",
-        skip_if="sunday",
+        skip_if=["sunday"],
     )
 
 
@@ -316,7 +316,7 @@ def test_marker_dedup_lazy_one_get_for_five_cache_misses():
             due="",
             labels=[],
             cadence="daily",
-            skip_if=None,
+            skip_if=[],
         )
         client.create_task_idempotent(tpl, date(2026, 5, 4), ext_id, cache={})
 

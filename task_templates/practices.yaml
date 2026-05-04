@@ -1,0 +1,104 @@
+- id: weekly-trace-one-thing
+  title: "Trace one thing"
+  description: |
+    30–60 min. Pick a single thing your computer "just does" — `git push`,
+    `curl https://example.com`, `ssh pi`, a Postgres query — and watch it
+    happen with real tools (strace, tcpdump, dtruss, dig +trace, devtools,
+    /proc/<pid>/). Write the layer-by-layer trace in your notebook.
+
+    The rule: you are not allowed to use the abstract phrase "and then it
+    does X." Either you can name a tool that lets you observe it doing X,
+    or you don't actually know.
+
+    That same evening: convert the trace into one Anki card titled
+    "[X] resolution layers".
+  due: "today at {ritual_times.sunday_trace}"
+  labels: [active-practice]
+  cadence: weekly
+  day_of_week: sunday
+
+- id: weekly-read-real-code
+  title: "Read real code (1 hr)"
+  description: |
+    Pick a target — a Go stdlib package, a small canonical project (BoltDB,
+    groupcache), a daily-use tool (git, ripgrep, fzf), or a piece of a
+    larger system (kube-scheduler, SQLite). Read the README, run the
+    tests, find the entry point, trace one path. Don't read top-to-bottom.
+    Code is a graph, not a book.
+
+    Write a one-page summary in your notebook: what you learned, what was
+    confusing, what was beautiful. Add 1–2 Anki cards. Push the notes
+    to your public repo.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [active-practice]
+  cadence: weekly
+  day_of_week: saturday
+
+- id: weekly-pair-with-engineer
+  title: "Pair with your engineer (60–90 min)"
+  description: |
+    Camera and screen-share if remote. He drives, you observe and ask.
+    Watch the meta-moves — when he hits something unexpected, what's the
+    *first* thing he does? Which tool? Reproduce in isolation? Check logs
+    at a particular layer? These habits are mostly invisible to him; the
+    fastest way to skill transfer is copying them.
+
+    Within 24 hours, write up what you saw — observations, not instructions.
+    "When he saw the failing test, he ran X first instead of Y. Why?"
+    These notes are the most concentrated learning material you'll generate.
+
+    Goal by month 12: predict his next move during the session.
+    Goal by month 24: open PRs to the codebase yourself.
+  due: "today at {ritual_times.evening_hands_on}"
+  labels: [active-practice]
+  cadence: weekly
+  day_of_week: thursday
+
+- id: monthly-oss-pr
+  title: "Open an OSS pull request"
+  description: |
+    Find a small bug or doc improvement in a project you use. Even a typo
+    fix in a README is a valid PR — it teaches the contribution flow
+    without high stakes. By month 18 you should be capable of meaningful
+    patches in Go.
+
+    Read three recently-merged PRs in the project before opening yours.
+    Engage with criticism graciously.
+
+    Right after merge or close: write a paragraph in your journal —
+    what was the bug, what was the fix, why was the maintainer's review
+    feedback correct (or not)?
+
+    Resources:
+    - https://github.com/topics/good-first-issue
+    - https://up-for-grabs.net/
+    - https://www.codetriage.com/
+  due: "today at {ritual_times.morning_reading}"
+  labels: [active-practice]
+  cadence: monthly
+  day_of_month: 15
+
+- id: quarterly-build-thing-under-thing
+  title: "Build the thing under the thing — pick the next target"
+  description: |
+    Once per quarter, pick a tool or system you use and plan a small
+    version of it from scratch. Time-box: 20–60 hours over 4–8 weeks.
+    The goal is not to build something useful — it's to demystify a
+    category of software. When done, write a blog post about what
+    surprised you.
+
+    Ideas (beyond the optional branches in the syllabus):
+    - toy DNS resolver (after Phase 1 networking — strongly recommended)
+    - toy git (init / add / commit; see Coglan's Building Git)
+    - toy load balancer
+    - toy ray tracer (one weekend with Peter Shirley's series)
+    - toy regex engine (Russ Cox's series)
+    - toy SQL query engine (after DDIA)
+    - CHIP-8 emulator
+
+    Today's task: pick the target, sketch the scope, set the time-box.
+    Don't start coding yet — synthesis comes first (the quarterly
+    synthesis task), then this.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [active-practice]
+  cadence: quarterly

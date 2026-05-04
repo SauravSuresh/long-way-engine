@@ -1,0 +1,527 @@
+# Module trunk — one onboarding task per module (1..23) plus seven
+# lineage-detour tasks for modules with flagged ancestor reads.
+# Both kinds are cadence: once-per-module, dispatched by module_number
+# matching state.current_module. external_id is module-keyed, so cache +
+# marker dedup prevent any past module from re-firing when current_module
+# advances.
+
+# ===== Phase 1 — Foundations (months 1–12) =====
+
+- id: module-01-onboarding
+  module_number: 1
+  title: "Module 1: Python Basics — start"
+  description: |
+    Phase 1, ~60 hrs. boot.dev courses 1–7 (Python, Linux, Git, OOP,
+    Functional). Skim chapters where you already know the material;
+    do every exercise where you don't. boot.dev is your runway, not
+    your syllabus. Move fast through this.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-02-onboarding
+  module_number: 2
+  title: "Module 2: Debugging (Agans) — start"
+  description: |
+    Phase 1, ~10 hrs over a weekend. Read cover to cover. Hand-write
+    the nine rules onto a card and stick it to your monitor. As you
+    work through the rest of Phase 1, mark in the margins of your
+    debugging notebook which rule(s) applied to each bug you fixed.
+
+    The nine rules become the scaffolding of every debug session for
+    the rest of your life. Doing this in month 2 means every chapter
+    of CSAPP, every Pi failure, every weird browser behavior slots
+    into a framework instead of being a fresh panic.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-03-onboarding
+  module_number: 3
+  title: "Module 3: Data Structures & Algorithms — start"
+  description: |
+    Phase 1, ~50 hrs. boot.dev DSA course. Every exercise. Pay
+    attention to Big-O — it's the language engineers use to talk
+    about performance. CLRS only as reference; do not read cover to
+    cover.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-04-onboarding
+  module_number: 4
+  title: "Module 4: C & Memory Management — start"
+  description: |
+    Phase 1, ~60 hrs. boot.dev C memory management course. Slow down.
+    Take notes by hand. The course that dissolves the feeling of
+    magic. After this, pointers, the stack, the heap, and what a
+    process actually IS will be concrete things in your head.
+
+    Complement: Beej's Guide to C Programming (free).
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-05-onboarding
+  module_number: 5
+  title: "Module 5: CSAPP — start"
+  description: |
+    Phase 1, ~80 hrs (months 1–6). Bryant & O'Hallaron. Chapters 1–3
+    (machine-level), 6 (memory hierarchy), 8 (exceptional control
+    flow), 9 (virtual memory). Skip the rest unless curious.
+    Read in the morning, 30 min, hand-written notes.
+
+    Pick at least one lab: bomb, attack, or malloc.
+
+    The book that makes you stop being scared of the layer beneath
+    your code.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-06-onboarding
+  module_number: 6
+  title: "Module 6: Pi Homelab Stage 1 — start"
+  description: |
+    Phase 1, ~20 hrs. Headless Pi setup. ssh in. Learn the shell
+    deeply. Write your first systemd service that runs locally.
+    Practice the boot.dev Linux course on real hardware. *Don't*
+    expose anything to the network yet.
+
+    Trace at least three things on the Pi as part of the weekly
+    tracing practice — `ls` invoking syscalls, a systemd service
+    starting up, `apt install` doing its work.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-06-lineage
+  module_number: 6
+  title: "Module 6 lineage: UNIX Time-Sharing System (Ritchie & Thompson, 1974)"
+  description: |
+    Lineage detour, ~5 hrs over an afternoon. Read the original 1974
+    paper. Optionally play with Research Unix V7 in an emulator.
+
+    Modern Linux is a coral reef built on this fossil. Suddenly it
+    makes sense why everything is a file, why the shell is a separate
+    program, why fork/exec are two calls instead of one.
+
+    Deliverable (non-negotiable): one-page contrast note —
+    what survived, what changed, what got bolted on. If you can't
+    write that note, the detour was tourism.
+
+    Compress into 1–2 Anki cards within a week.
+  due: "today"
+  labels: [module-work, lineage-detour]
+  cadence: once-per-module
+
+- id: module-07-onboarding
+  module_number: 7
+  title: "Module 7: Computer Networking (Top-Down) — start"
+  description: |
+    Phase 1, ~60 hrs (months 7–10). Kurose & Ross. Chapters 1–3
+    deeply (application, transport, TCP). Skim 4–5. Pair with packet
+    captures on your Pi using tcpdump — this is where theory meets
+    your hands.
+
+    Do at least four traces during this module: full DNS resolution
+    (dig +trace), TCP three-way handshake, TLS handshake, and a full
+    HTTP request from browser to your Pi gitea instance.
+
+    The CCNA replacement. Top-down: HTTP first, then TCP, then IP.
+    The load-bearing pillar of "no more feeling small about
+    infrastructure."
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-07-lineage
+  module_number: 7
+  title: "Module 7 lineage: RFC 1945 — HTTP/1.0 (1996)"
+  description: |
+    Lineage detour, ~6 hrs over a weekend. Read RFC 1945 (~60 pages,
+    reads like a description of a small clean protocol). Then skim
+    the table of contents of RFC 9110 (HTTP Semantics, 2022) and
+    look at HTTP/2 and HTTP/3 at a high level.
+
+    Modern HTTP is HTTP/1.0 plus thirty years of patches: head-of-line
+    blocking, multiplexing, encryption-everywhere, server push.
+
+    Deliverable: one-page contrast note — what stayed the same? What
+    did each new version exist to fix? You'll never look at a
+    Content-Length header the same way.
+  due: "today"
+  labels: [module-work, lineage-detour]
+  cadence: once-per-module
+
+- id: module-08-onboarding
+  module_number: 8
+  title: "Module 8: Pi Homelab Stage 2 (real server) — start"
+  description: |
+    Phase 1, ~30 hrs. *Now* the Pi becomes a public-facing server.
+    UFW firewall (knowing what packets you're filtering and why).
+    nginx as a reverse proxy. Let's Encrypt + certbot for HTTPS
+    (understanding TLS handshakes from Kurose). Self-hosted git with
+    gitea. Backups to S3 via a systemd timer.
+
+    Use tcpdump and wireshark to watch the traffic. Trace your own
+    setup end-to-end and write the layer map to a card — your first
+    real production debugging asset.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-09-onboarding
+  module_number: 9
+  title: "Module 9: LFCS Certification — start"
+  description: |
+    Phase 1, ~50 hrs. Linux Foundation Certified System Administrator.
+    Practical exam. By the time you sit it, you should be able to
+    debug a broken service on your Pi from first principles —
+    systemd side and network side.
+
+    Sander van Vugt's prep material is widely recommended.
+    Take the exam at the end of Phase 1, after Linux course and
+    networking course are behind you, with a real running Pi server
+    as your study lab.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+# ===== Phase 2 — Go & the Backend Toolkit (months 13–20) =====
+
+- id: module-10-onboarding
+  module_number: 10
+  title: "Module 10: Go Fundamentals — start"
+  description: |
+    Phase 2, ~80 hrs. boot.dev Go course, then HTTP Clients course.
+    Build the Pokedex. Pay close attention to interfaces and error
+    handling — the two things Go does differently.
+
+    The lingua franca of infrastructure. Kubernetes, Docker, Terraform
+    — all Go. This is the language you'll live in.
+
+    Resources: A Tour of Go, Effective Go.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-10-lineage
+  module_number: 10
+  title: "Module 10 lineage: Hoare's CSP (1978) and Russ Cox's CSP threads"
+  description: |
+    Lineage detour, ~6 hrs. Read the first ten pages of Hoare's
+    *Communicating Sequential Processes* (1978) — the paper Go's
+    concurrency model is named after. Then read Russ Cox's *Bell Labs
+    and CSP Threads* essay for the line from CSP through Plan 9 to Go.
+
+    Goroutines and channels stop being arbitrary language features
+    and become a 45-year-old idea finally getting wide adoption.
+
+    Deliverable: contrast note — what does Go's `chan` keep from
+    Hoare's CSP, and what does it modify? (Hint: buffering, select,
+    the close operation.)
+  due: "today"
+  labels: [module-work, lineage-detour]
+  cadence: once-per-module
+
+- id: module-11-onboarding
+  module_number: 11
+  title: "Module 11: The Go Programming Language (book) — start"
+  description: |
+    Phase 2, ~50 hrs (months 14–18). Donovan & Kernighan. Read
+    alongside boot.dev Go work. Notes on places where idiom differs
+    from your instinct.
+
+    boot.dev teaches you to write Go. This book teaches you to think
+    in Go.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-12-onboarding
+  module_number: 12
+  title: "Module 12: SQL & Databases — start"
+  description: |
+    Phase 2, ~40 hrs. boot.dev SQL course. Build the Blog Aggregator.
+    Pay attention to query plans — EXPLAIN is your friend. Use the
+    tracing practice on Postgres: trace a query from psql through the
+    wire protocol to query parsing to plan to execution.
+
+    Your booking system runs on Postgres. Indexes, joins, normalization
+    determine whether it scales.
+
+    Reference: PostgreSQL tutorial, Use The Index, Luke.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-12-lineage
+  module_number: 12
+  title: "Module 12 lineage: Codd — A Relational Model of Data (1970)"
+  description: |
+    Lineage detour, ~5 hrs. Read Codd's twelve-page paper. Predates
+    SQL by years. Defines what a *relation* is, what *normal form*
+    means, and why joins are not arbitrary.
+
+    Modern SQL is a deliberately impure implementation of Codd's
+    ideas — you'll read both the elegance of the original and the
+    compromises every database has had to make.
+
+    Pair with Joe Celko's "What's Wrong With SQL" for contrast.
+
+    Deliverable: contrast note — what does Codd's model insist on
+    that SQL violates? Why?
+  due: "today"
+  labels: [module-work, lineage-detour]
+  cadence: once-per-module
+
+- id: module-13-onboarding
+  module_number: 13
+  title: "Module 13: HTTP Servers in Go — start"
+  description: |
+    Phase 2, ~60 hrs. boot.dev HTTP Servers course. Build it from
+    chapter exercises up. Read the net/http source while you do.
+
+    You already understand HTTP at the protocol level from Phase 1's
+    networking work — now you build the server side. Routing, JSON,
+    auth, webhooks. This is where you start to feel like a real
+    backend engineer.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-14-onboarding
+  module_number: 14
+  title: "Module 14: Docker, S3 & CDN — start"
+  description: |
+    Phase 2, ~50 hrs. boot.dev Docker course + S3/CloudFront course.
+    Containerize the blog aggregator. Push it to your Pi. Trace
+    `docker run` end-to-end as part of the tracing practice — image
+    pull, namespaces, cgroups, runtime. The moment Docker stops being
+    magic.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-14-lineage
+  module_number: 14
+  title: "Module 14 lineage: Plan 9 namespaces (Pike et al.)"
+  description: |
+    Lineage detour, ~8 hrs (especially valuable if you also do the
+    toy container runtime branch). Read "The Use of Name Spaces in
+    Plan 9" by Pike, Presotto, Thompson, et al. Twelve pages.
+
+    Plan 9 invented per-process namespaces in the late 80s; Linux
+    namespaces (the foundation of every container) are a direct
+    descendant. Then read LWN's Linux namespaces overview to see how
+    the idea was adapted.
+
+    After this, the Linux unshare syscall is not magic — it's a
+    specific borrowing from Plan 9, and you can articulate exactly
+    which design choices were kept and which were changed.
+    Containers stop being a Docker concept and become a kernel concept
+    that Docker happens to package nicely.
+  due: "today"
+  labels: [module-work, lineage-detour]
+  cadence: once-per-module
+
+# ===== Phase 3 — Distributed Systems & the Booking System (months 21–30) =====
+
+- id: module-15-onboarding
+  module_number: 15
+  title: "Module 15: Pub/Sub Architecture — start"
+  description: |
+    Phase 3, ~40 hrs. boot.dev RabbitMQ course. Build the project.
+    Understand at-least-once vs exactly-once delivery and why the
+    former is reality.
+
+    How systems talk to each other when one cannot wait for the
+    other. Booking confirmations, payment events, notifications — all
+    async.
+
+    Reference: Enterprise Integration Patterns.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-16-onboarding
+  module_number: 16
+  title: "Module 16: DDIA — start"
+  description: |
+    Phase 3, ~100 hrs (months 21–26). Kleppmann. All chapters.
+    Especially 5 (replication), 6 (partitioning), 7 (transactions),
+    8 (the troubles), 9 (consistency and consensus).
+
+    Slowly, with hand-written notes, over four months. Will
+    permanently change how you think about backends.
+
+    The most important book on this list.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-16-lineage
+  module_number: 16
+  title: "Module 16 lineage: Dynamo (2007) + The Google File System (2003)"
+  description: |
+    Combined lineage detour, ~10 hrs spread across the DDIA reading.
+
+    Read *Dynamo: Amazon's Highly Available Key-value Store* (2007)
+    before chapter 5 (replication) — the ancestor of every NoSQL
+    system you will ever touch.
+
+    Read *The Google File System* (2003) before chapter 10 (batch
+    processing).
+
+    Deliverables: two contrast notes.
+    - What assumptions did Dynamo make that Postgres rejects?
+    - What tradeoffs did GFS choose that S3 inherits and HDFS doesn't?
+
+    DDIA cites foundational papers at the end of every chapter; frame
+    those reading sessions explicitly as lineage work, not optional
+    follow-ups.
+  due: "today"
+  labels: [module-work, lineage-detour]
+  cadence: once-per-module
+
+- id: module-17-onboarding
+  module_number: 17
+  title: "Module 17: Building Microservices (Newman) — start"
+  description: |
+    Phase 3, ~50 hrs. Newman 2nd ed. Read chapters relevant to current
+    architectural decisions, not in order.
+
+    Read this while you architect the booking system. Newman will be
+    in your ear during every service-boundary decision.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-18-onboarding
+  module_number: 18
+  title: "Module 18: Release It! (Nygard) — start"
+  description: |
+    Phase 3, ~30 hrs. Cover to cover. Apply the patterns to your
+    booking system: timeouts, circuit breakers, bulkheads, graceful
+    degradation.
+
+    How systems fail in production. Short, gripping, full of horror
+    stories you will not want to repeat. Read before you deploy
+    seriously.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-19-onboarding
+  module_number: 19
+  title: "Module 19: The Rental Booking System — start building"
+  description: |
+    Phase 3, ~250 hrs. The whole point. Built slowly, with each
+    component understood. This is what your business rests on.
+
+    Vendor + user portals. Go API. Postgres + Redis. RabbitMQ for
+    async. S3 + CloudFront for media. Stripe (test mode) for payments.
+    Deployed on AWS via Terraform. Observability from day one.
+
+    Resources: Stripe API docs, Terraform docs, AWS Well-Architected,
+    Use The Index Luke (booking conflict resolution), Redis distributed
+    locks (double-booking).
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-20-onboarding
+  module_number: 20
+  title: "Module 20: AWS Solutions Architect Associate — start"
+  description: |
+    Phase 3, ~80 hrs. Adrian Cantrill's course. Practice exams. Take
+    the exam within 2 weeks of finishing the course while it's fresh.
+
+    Studying for this after you've deployed a real system on AWS makes
+    the cert easy and the knowledge stick. Right cert, right time.
+
+    Practice tests: Tutorials Dojo.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+# ===== Phase 4 — Kubernetes, Observability, Synthesis (months 31–39) =====
+
+- id: module-21-onboarding
+  module_number: 21
+  title: "Module 21: Kubernetes the Hard Way — start"
+  description: |
+    Phase 4, ~60 hrs. No managed Kubernetes, no kubeadm. Set up from
+    binaries on your Pi cluster (Kelsey Hightower's tutorial, adapted
+    for Pis). etcd, kubelet, kube-apiserver, kube-scheduler — by hand.
+
+    Trace `kubectl apply` end-to-end as part of the tracing practice
+    — this single trace, written down, becomes one of the most useful
+    Anki cards you have for the rest of your career.
+
+    Once done the hard way: k3s on Pi is what you'll actually run.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-21-lineage
+  module_number: 21
+  title: "Module 21 lineage: Borg (Verma et al., 2015)"
+  description: |
+    Lineage detour, ~6 hrs. Strongly recommended.
+
+    Read *Large-scale cluster management at Google with Borg* (2015).
+    Borg is the system Kubernetes was built to be the open-source
+    successor to. The paper describes a decade of operating production
+    schedulers at Google scale, with lessons K8s explicitly inherits
+    and lessons it explicitly rejects.
+
+    Kubernetes makes ten times more sense as "Borg with the rough
+    edges filed down" than read cold from the K8s docs.
+
+    Deliverable: contrast note.
+    - Kept: controller pattern, declarative state, scheduler bin-packing.
+    - Changed: RBAC, namespaces, CRDs as user-facing extension points.
+    - Why?
+
+    Optional follow-up: the Omega paper (Borg's intermediate
+    successor that fed into K8s' design).
+  due: "today"
+  labels: [module-work, lineage-detour]
+  cadence: once-per-module
+
+- id: module-22-onboarding
+  module_number: 22
+  title: "Module 22: Observability — start"
+  description: |
+    Phase 4, ~80 hrs. Add Prometheus + Grafana + OpenTelemetry to the
+    booking system. Define SLOs. Run a chaos experiment. Write a
+    postmortem when it breaks.
+
+    The systematized form of the tracing practice — the same instinct,
+    but built into your production system instead of done by hand.
+    The skill that separates "deployed" from "operated."
+
+    Resources: Google SRE book + Workbook (free), Prometheus docs,
+    Distributed Systems Observability (Sridharan).
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: module-23-onboarding
+  module_number: 23
+  title: "Module 23: Synthesis — Writing & Polish — start"
+  description: |
+    Phase 4, ~80 hrs. Six to ten blog posts about what you actually
+    built. Public, your real name. Architecture diagrams. README every
+    project. Polish your GitHub.
+
+    The receipts. This is the moment imposter syndrome dissolves —
+    not when you finish reading, but when you finish writing about
+    what you built.
+
+    Diagrams: Excalidraw.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module

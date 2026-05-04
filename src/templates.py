@@ -41,7 +41,7 @@ class Template:
     due: str
     labels: list[str]
     cadence: str
-    skip_if: str | None = None
+    skip_if: list[str] = field(default_factory=list)
     day_of_week: str | None = None
     day_of_month: int | str | None = None
     module_number: int | None = None
@@ -56,7 +56,7 @@ class ResolvedTemplate:
     due: str
     labels: list[str]
     cadence: str
-    skip_if: str | None
+    skip_if: list[str] = field(default_factory=list)
 
 
 class MissingVariable(KeyError):
@@ -80,6 +80,15 @@ def load_templates(directory: Path) -> list[Template]:
             module_number = entry.get("module_number")
             if module_number is not None:
                 module_number = int(module_number)
+            # skip_if accepts either a single string ("sunday") or a list
+            # (["sunday", "pair_day"]). Normalize to list internally.
+            skip_if_raw = entry.get("skip_if")
+            if skip_if_raw is None:
+                skip_if = []
+            elif isinstance(skip_if_raw, list):
+                skip_if = [str(s) for s in skip_if_raw]
+            else:
+                skip_if = [str(skip_if_raw)]
             templates.append(
                 Template(
                     id=str(entry["id"]),
@@ -88,7 +97,7 @@ def load_templates(directory: Path) -> list[Template]:
                     due=str(entry.get("due", "")),
                     labels=list(entry.get("labels", []) or []),
                     cadence=str(entry["cadence"]),
-                    skip_if=entry.get("skip_if"),
+                    skip_if=skip_if,
                     day_of_week=entry.get("day_of_week"),
                     day_of_month=day_of_month,
                     module_number=module_number,
@@ -157,7 +166,7 @@ def resolve_variables(
             due=resolve_string(template.due, state, config, today),
             labels=list(template.labels),
             cadence=template.cadence,
-            skip_if=template.skip_if,
+            skip_if=list(template.skip_if),
         )
     except MissingVariable as e:
         logger.warning(

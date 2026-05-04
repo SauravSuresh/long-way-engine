@@ -75,14 +75,15 @@ def should_create_today(
 
 
 def _daily_fires(template: Template, today: date, config: Config) -> bool:
+    rules = template.skip_if  # list[str]; may have multiple rules
     if (
-        template.skip_if == "sunday"
+        "sunday" in rules
         and config.sunday_off
         and today.weekday() == SUNDAY
     ):
         return False
     if (
-        template.skip_if == "pair_day"
+        "pair_day" in rules
         and config.pair_day
         and today.weekday() == _DAY_OF_WEEK.get(config.pair_day.lower(), -1)
     ):

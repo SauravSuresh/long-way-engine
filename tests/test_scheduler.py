@@ -26,7 +26,7 @@ def daily_template(skip: str | None = "sunday") -> Template:
         due="today",
         labels=[],
         cadence="daily",
-        skip_if=skip,
+        skip_if=[skip] if skip else [],
     )
 
 
@@ -452,7 +452,7 @@ def _pair_day_template() -> Template:
         due="today",
         labels=[],
         cadence="daily",
-        skip_if="pair_day",
+        skip_if=["pair_day"],
     )
 
 
@@ -484,6 +484,31 @@ def test_pair_day_unknown_value_means_no_skip():
     cfg.pair_day = "tursday"  # typo
     thursday = date(2026, 5, 7)
     assert should_create_today(_pair_day_template(), thursday, make_state(), cfg) is True
+
+
+def test_multi_rule_skip_if_template_skips_on_either_match():
+    """Real evening-hands-on template has skip_if=[sunday, pair_day]. Both rules fire."""
+    multi = Template(
+        id="daily-evening-hands-on",
+        title="Evening hands-on",
+        description="",
+        due="today",
+        labels=[],
+        cadence="daily",
+        skip_if=["sunday", "pair_day"],
+    )
+    cfg = make_config()
+    cfg.pair_day = "thursday"
+
+    sunday = date(2026, 5, 3)
+    monday = date(2026, 5, 4)
+    thursday = date(2026, 5, 7)
+    saturday = date(2026, 5, 9)
+
+    assert should_create_today(multi, sunday, make_state(), cfg) is False
+    assert should_create_today(multi, thursday, make_state(), cfg) is False
+    assert should_create_today(multi, monday, make_state(), cfg) is True
+    assert should_create_today(multi, saturday, make_state(), cfg) is True
 
 
 # ---------------------------------------------------------------------------

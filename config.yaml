@@ -16,8 +16,14 @@ ritual_times:
   evening_hands_on: "19:00"
   friday_review: "20:00"
   saturday_deep_block: "09:00"
+  sunday_trace: "19:00"
 
 sunday_off: true
+
+# Day of the week for the weekly pair-with-engineer session.
+# daily-evening-hands-on uses skip_if=pair_day to avoid double-booking
+# this evening with solo work.
+pair_day: thursday
 
 dashboard:
   github_username: "SauravSuresh"
