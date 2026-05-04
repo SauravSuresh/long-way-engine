@@ -92,7 +92,7 @@ This document is the full design. The work is broken into seven phases (A throug
 │    test.yml                ← runs pytest on PRs to main            │
 │                                                                    │
 └────────────────────────────────────────────────────────────────────┘
-                       ↓ Todoist REST API v2          ↓ GH Pages
+                       ↓ Todoist API v1               ↓ GH Pages
                   ┌─────────────┐               ┌──────────────┐
                   │   Todoist   │               │  Dashboard   │
                   └─────────────┘               └──────────────┘
@@ -262,10 +262,14 @@ Same template + same due date = same ID. Two runs same day, same template → sa
 
 ### Two layers of dedup
 
-1. **Cache file (fast path).** Before creating, check `.task_cache.json`. If `external_id` is present, skip without an API call.
-2. **Content marker (correctness).** Append `<!--LW:{external_id}-->` to every task description. Invisible in the Todoist UI for descriptions. If the cache is ever lost or corrupted, `rebuild_cache.py` reconstructs by listing project tasks and parsing markers.
+Both layers are *runtime* and load-bearing. A "marker that only gets read by an offline rebuild script" is a half-feature — a deleted cache file would silently duplicate tasks before the rebuild ever ran. Phase A wires both layers:
 
-The cache makes runs fast; the marker makes them safe. Both must exist.
+1. **Cache file (fast path).** Before creating, check `.task_cache.json`. If `external_id` is present, skip without an API call. Zero Todoist traffic.
+2. **Content marker (correctness, runtime).** On *first* cache miss in a run, the engine fires a single `GET /api/v1/tasks?project_id=…` (paginated; follow `next_cursor`), parses every description for `<!--LW:{external_id}-->`, and memoizes the resulting set on the client instance. Every subsequent miss in the same run consults the memoized set — never a second GET. If the marker is present, the engine skips the POST, reads the existing task's `id` from the GET response, and **rehydrates the in-memory cache** so the next run hits the fast path.
+
+The cache makes runs fast; the marker makes them safe. Both must exist at runtime, regardless of how Phase F's offline `rebuild_cache.py` evolves.
+
+**Memoization is mandatory.** A 5-template run with all-cache-misses must issue exactly one GET. Test for it.
 
 ### Once-per-module tasks
 
@@ -281,12 +285,17 @@ So advancing `current_module: 1 → 2` causes the next run to create module 2's 
 
 ## Read-only completion API
 
-The streaks dashboard requires knowing whether tasks were completed. This is the *only* read interaction the engine has with Todoist, and it must be strictly separated from the write path:
+The streaks dashboard requires knowing whether tasks were completed. This is a *separate* read concern from the marker-dedup GET in the idempotency layer (which lists active tasks in a single project to find existing markers). The completion API queries archive endpoints and is dashboard-only:
 
-- `todoist.py` exposes `create_task_idempotent(...)` (write) and `get_completion_status(task_ids: list[str]) -> dict[str, bool]` (read).
-- The read function uses the Todoist `/tasks/completed` and `/tasks` endpoints to determine whether each ID is in active tasks (not done), in completed tasks (done), or neither (deleted/missing).
-- The read function never modifies anything. Code review check: any PR adding a `POST`, `PATCH`, or `DELETE` call to the completion code path must be rejected.
+- `todoist.py` exposes `create_task_idempotent(...)` (write, Phase A), the marker-dedup helper (read, Phase A — internal-only, called from the create path), and `get_completion_status(task_ids: list[str]) -> dict[str, bool]` (read, Phase E).
+- The Phase E read function uses the Todoist completed-tasks and active-tasks endpoints to determine whether each ID is in active tasks (not done), in completed tasks (done), or neither (deleted/missing).
+- The Phase E read function never modifies anything, and **must not share a retry wrapper, helper, or session-scoped state with `create_task_idempotent`**. They live in the same module but are wired so a bug in one cannot silently issue calls of the other's kind.
+- Code review check: any PR adding a `POST`, `PATCH`, or `DELETE` call to the completion code path must be rejected. Conversely, any PR that pulls the completion read into the create path's retry/error-handling helpers must be rejected.
 - Read results are cached in `.completion_cache.json` for 6 hours to stay under rate limits.
+
+### Destructive ops live elsewhere
+
+DELETE operations (used by `--cleanup-project` for sandbox reset) must live on a *separate class*, e.g. `TodoistAdminClient`, in the same module. The daily-run code path must have no symbol-level reference to it. A regression test asserts that `TodoistClient` exposes no `delete_*` / `patch_*` / `complete_*` / `update_*` methods.
 
 ---
 
@@ -468,8 +477,8 @@ Practices and the module trunk.
 
 The dashboard, with real completion data.
 
-- `src/todoist.py` extended with `get_completion_status(task_ids)` — strictly read-only, well-tested, well-isolated.
-- `.completion_cache.json` for 6-hour caching of completion lookups.
+- `src/todoist.py` extended with `get_completion_status(task_ids)` — strictly read-only, well-tested, well-isolated. **Must not share helpers, retry wrappers, or session-scoped state with the existing marker-dedup GET (Phase A) or with `create_task_idempotent`.** Add a regression test that imports the symbols and asserts they don't share a private helper module.
+- `.completion_cache.json` for 6-hour caching of completion lookups. Distinct from `.task_cache.json` and from the in-memory marker memoization on the daily-run client; do not unify their lifetimes.
 - `src/dashboard.py` — pure function from `(state, completion_data, reflection_listing) -> html_string`.
 - `docs/index.html` and `docs/assets/style.css` and `docs/assets/data.json` written each run.
 - All seven dashboard sections implemented (header, streaks, progress bar, reflections log, practice tracker, books, last 7 days timeline, footer).
@@ -487,11 +496,12 @@ The dashboard, with real completion data.
 
 Sand the rough edges.
 
-- `dry_run` boolean input on `workflow_dispatch` — logs all decisions without creating tasks or writing files.
-- `rebuild_cache.py` — one-shot script to reconstruct `.task_cache.json` from Todoist by parsing content markers. Documented in README.
+- `dry_run` boolean input on `workflow_dispatch` — logs all decisions without creating tasks or writing files. (Phase A's local CLI already implements `--dry-run`; Phase F surfaces it in the GH Actions UI as a workflow input.)
+- `rebuild_cache.py` — one-shot **offline** reconstruction script for `.task_cache.json`. The runtime marker dedup (Phase A) already prevents duplicates after a cache loss, so this script's job is narrower: produce a complete on-disk cache including entries for tasks the daily run will *never* re-encounter (older days outside the 60-day prune window, or completed tasks which the create path no longer queries). Documented in README.
+- `--cleanup-project ID [--yes]` operational tool (already exists from Phase A's local CLI). Documented in README as the canonical path to reset a sandbox project. Without `--yes` it lists; with `--yes` it deletes via `TodoistAdminClient` and removes the cache file passed via `--cache-file`. Refuse to run without explicit project ID — never default to a project from `config.yaml`.
 - `LOG.md` formatting cleaned up; pruned to last 90 days.
 - Owner-facing `README.md` covering: setup (Todoist token, project ID, Pages enablement), pause flow, module advancement, adding/editing templates, recovering from cache loss, archiving a year.
-- A `bootstrap.py` for first-time setup: prompts for Todoist token, creates the project (or asks for the ID), generates initial `state.yaml` and `config.yaml`. Single one-shot script.
+- A `bootstrap.py` for first-time setup: prompts for Todoist token, creates the project (or asks for the ID), generates initial `state.yaml` and `config.yaml`. Single one-shot script. Must also walk the owner through the GitHub side: `gh repo create --public --source . --remote origin --push` (note: the OAuth token needs `workflow` scope; if missing, prompt to run `gh auth refresh -s workflow`), then `gh secret set TODOIST_TOKEN`. Default branch is `main`; if the local branch is `master`, rename it.
 - All errors produce GitHub annotations (`::error::`) so they surface on the Actions UI, not just in logs.
 
 **Done when:** a fresh-eyed reader could clone the repo, run bootstrap, and have a working system in 15 minutes.
@@ -514,17 +524,25 @@ You won't need this for ~12 months. Designing it now so it's not a refactor late
 
 - **Python 3.11+, stdlib + `requests` + `pyyaml` + `pytest` + `markdown` (for word count of rendered text). No frameworks, no async, no ORMs.**
 - **No LLMs at runtime.** Every decision is deterministic.
-- **Owner TZ everywhere.** Use `zoneinfo` from stdlib. Never `datetime.now()` without a tz; never the runner's local time.
-- **Token never logged.** Redact in any debug output.
-- **No `print` for status. Use `logging`.** Workflow logs are the operator UI.
+- **One system-clock injection point.** A single `Clock` class (default reads system time in owner TZ) is constructed once per run and threaded through. Tests and the `--today` CLI flag swap in a `FrozenClock`. The repo grep `datetime.now\|date.today\|time.time` in `src/` should return exactly one line: the `Clock.now()` body. Functions that need "now" take a `Clock` parameter (or a UTC-stamp from one) — never call the system clock directly.
+- **Owner TZ everywhere.** Use `zoneinfo` from stdlib. Never naive datetimes; never the runner's local time.
+- **Token never logged.** Redact in any debug output. Install a `TokenRedactingFilter` on the root logger as defense in depth.
+- **No `print` for status. Use `logging`.** Workflow logs are the operator UI. (`print` is reserved for CLI table renderers like `--dry-run`'s decision table.)
 - **Type hints everywhere. Functions short. Modules match the architecture diagram.**
+- **Daily-run client is write-only on TASK STATE.** No PATCH, DELETE, or POST outside `create_task_idempotent`. Idempotency reads (the single memoized GET for marker dedup) are permitted — they list active tasks, never modify. Destructive ops (DELETE, used only by `--cleanup-project`) live on a *separate* `TodoistAdminClient` class. The daily-run code path must contain no symbol reference to the admin class.
+- **Pin to Todoist API v1** (`https://api.todoist.com/api/v1`). REST v2 (`/rest/v2/*`) is deprecated and returns 410. List-tasks responses are paginated as `{"results": [...], "next_cursor": null|str}`; helpers must follow the cursor. When the API evolves further, *probe a live response with the actual token before assuming the shape* — the cost of one curl is minutes; the cost of guessing is duplicate tasks.
 - **Test the load-bearing logic. Don't aim for coverage; aim for confidence.**
+  - `clock.py`: `FrozenClock` returns the date/datetime given; `today()` reflects owner TZ across day boundaries.
   - `ids.py`: determinism, collision properties.
-  - `todoist.py`: idempotency, retry behavior, *strict separation of read and write paths*.
+  - `todoist.py`: idempotency, retry behavior, *strict separation of read and write paths*; **5 cache misses → exactly 1 marker GET (memoization)**; marker hit rehydrates the cache; pagination handled.
   - `scheduler.py`: every cadence, every skip rule, time edge cases.
   - `reflections.py`: never-overwrite invariant, frontmatter parsing.
   - `dashboard.py`: snapshot tests on representative state.
-- **Code review checklist for every PR:** Does this PR add any write call (POST/PATCH/DELETE/POST-completed) outside `create_task_idempotent`? If yes, reject.
+- **Code review checklist for every PR:**
+  - Does this PR add any write call (POST/PATCH/DELETE) outside `create_task_idempotent`, *and* outside `TodoistAdminClient`? Reject.
+  - Does this PR add a method on `TodoistClient` whose name suggests destructive action (`delete_*`, `complete_*`, `update_*`, `patch_*`)? Reject — those belong on `TodoistAdminClient`.
+  - Does this PR introduce a `datetime.now()` call outside `src/clock.py`? Reject — thread `Clock` instead.
+  - Does this PR couple the Phase E completion read path to the create path (shared retry wrapper, shared session helper)? Reject.
 
 ---
 
