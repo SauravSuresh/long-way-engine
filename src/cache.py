@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -45,12 +45,15 @@ def save_cache(path: Path, cache: dict[str, dict[str, Any]]) -> None:
 
 def prune(
     cache: dict[str, dict[str, Any]],
+    *,
+    now: datetime,
     days: int = PRUNE_DAYS_DEFAULT,
-    now: datetime | None = None,
 ) -> dict[str, dict[str, Any]]:
-    """Drop entries whose created_at is older than `days`. Returns a new dict."""
-    if now is None:
-        now = datetime.now(timezone.utc)
+    """Drop entries whose created_at is older than `days`. Returns a new dict.
+
+    `now` is required (no system-clock default) so the call chain has a
+    single injection point in src/clock.py.
+    """
     cutoff = now - timedelta(days=days)
     kept: dict[str, dict[str, Any]] = {}
     for ext_id, entry in cache.items():
