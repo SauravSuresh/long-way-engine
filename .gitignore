@@ -1,0 +1,20 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Engine state (forward-looking; Phase E adds completion cache)
+.completion_cache.json
+
+# Private reflections (forward-looking; Phase C wires the dir)
+reflections/private/
+
+# OS / editor
+.DS_Store
+*.swp
