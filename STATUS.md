@@ -195,14 +195,31 @@ Per spec + your additions:
 
 ## Phase F entry points
 
-Phase F = production readiness + ergonomic polish. Items inherited from Phases A–E:
+Phase F = production readiness + ergonomic polish. **Strict priority order — do not work out of order, items 1–2 are blocking.**
 
-- **Live-probe `/tasks/completed/by_completion_date`.** Confirm the response shape (`items` vs `results`, `task_id` vs `id`) against the production token. Lock the field names in `TodoistCompletionClient._extract_items` once known and remove the tolerance branch.
-- **`rebuild_cache.py`.** Offline script that reconstructs `.task_cache.json` from project markers. Mirror of `_fetch_marker_ids` but as a standalone CLI for catastrophic recovery. Required after a full Todoist project wipe.
-- **`workflow_dispatch` `dry_run` input.** Surface `--dry-run` as a workflow input so the owner can preview a future date from the GitHub UI without checking out locally.
-- **Last-Saturday quadruple-firing UX.** Decide whether `weekly-saturday-deep-block` and/or `weekly-read-real-code` should skip on last-Saturdays so monthly-retrieval + monthly-review don't drown them out.
-- **GitHub Pages enablement.** One-time owner click-through in repo settings (Settings → Pages → Deploy from a branch → main / `/docs`). Documented in README; no code change required.
-- **Holiday week pair-day collision.** `pair_day: thursday` + Thursday holiday silently empties the day. No catch-up logic. Either rotate `pair_day` or add a one-shot override.
+1. **Live-probe `/tasks/completed/by_completion_date`** *(blocking)*. The Phase E client tolerates either `items` or `results` and either `task_id` or `id` against the live shape; until the real shape is verified against the production token, **streak walks may be silently wrong** (the dashboard will render but with stale or zero streaks). Run a one-shot probe against the sandbox project, lock the field names in `TodoistCompletionClient._extract_items`, and remove the tolerance branch.
+
+2. **`rebuild_cache.py`** *(blocking)*. Offline script that reconstructs `.task_cache.json` from project markers — a standalone CLI mirror of `_fetch_marker_ids`. Phase A scaffolded the runtime marker fallback; this is the catastrophic-recovery sibling. Required before any operation that could wipe the local cache.
+
+3. **Synthetic pause smoke test.** Five-minute exercise to surface "passes unit tests but breaks in practice" bugs while the Phase E code is fresh:
+   1. Toggle `paused: true`, set `paused_since: <today>`.
+   2. `python -m src.main --dry-run --today <today+1>` — confirm SKIP (paused) on all dailies; dashboard render is gated to a real run, so optionally generate against the sandbox cache.
+   3. `--dry-run --today <today+2>`, `<today+3>` — same.
+   4. Unpause: flip `paused: false`, append `pause_history: [{start: <today>, end: <today+3>, reason: "smoke"}]`, clear `paused_since`.
+   5. `--dry-run --today <today+4>` — daily streak should preserve any prior streak, not reset to zero. Last-7-days timeline should show the paused days as gray.
+   This isn't an automated test; it's a checklist run against the live state file with `--cache-file .task_cache.sandbox.json` so the production cache stays clean.
+
+4. **`workflow_dispatch` `dry_run` input.** Surface `--dry-run` as a workflow input so the owner can preview a future date from the GitHub UI without checking out locally.
+
+5. **Last-Saturday quadruple-firing UX.** Decide whether `weekly-saturday-deep-block` and/or `weekly-read-real-code` should skip on last-Saturdays so monthly-retrieval + monthly-review don't drown them out.
+
+6. **GitHub Pages enablement.** One-time owner click-through in repo settings (Settings → Pages → Deploy from a branch → main / `/docs`). Documented in README; no code change required.
+
+7. **Holiday week pair-day collision.** `pair_day: thursday` + Thursday holiday silently empties the day. No catch-up logic. Either rotate `pair_day` or add a one-shot override.
+
+### Phase F operating rule (from owner, 2026-05-04)
+
+**No `python -m src.main` invocation against the production Todoist project unless gated by `--dry-run`, a sandbox `--cache-file`, or `--cleanup-project <SANDBOX_ID>`.** This includes smoke tests, sanity checks, and one-off verifications. `--today` freezes the clock but does NOT prevent API writes — it is not a safe substitute. If a real run is genuinely needed, ask the owner first.
 
 ## Constraints holding
 
