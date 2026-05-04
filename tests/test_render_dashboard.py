@@ -60,6 +60,11 @@ def test_main_writes_html_with_banner(
     render_dashboard_mod, tmp_path: Path, capsys, monkeypatch
 ):
     """End-to-end: run main(), load output, banner appears at the top."""
+    # CI doesn't carry .env, and load_config() refuses to load without a
+    # token. The harness never USES the token (no API calls), but the
+    # config loader is shared with the engine and validates token presence.
+    # Provide a stub so the test runs identically locally and in CI.
+    monkeypatch.setenv("TODOIST_TOKEN", "test-token-not-used")
     out = tmp_path / "render.html"
     rc = render_dashboard_mod.main(
         ["--today", "2026-05-04", "--out", str(out)]
