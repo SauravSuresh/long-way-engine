@@ -53,6 +53,74 @@ def test_load_templates_reads_directory(tmp_path: Path):
     assert [t.id for t in out] == ["daily-morning-reading", "daily-anki"]
 
 
+def test_load_template_parses_day_of_week(tmp_path: Path):
+    (tmp_path / "weekly.yaml").write_text(
+        """
+- id: weekly-friday
+  title: "x"
+  due: "today"
+  labels: []
+  cadence: weekly
+  day_of_week: friday
+"""
+    )
+    [t] = load_templates(tmp_path)
+    assert t.day_of_week == "friday"
+    assert t.day_of_month is None
+
+
+def test_load_template_parses_day_of_month_int(tmp_path: Path):
+    (tmp_path / "monthly.yaml").write_text(
+        """
+- id: monthly-blog
+  title: "x"
+  due: "today"
+  labels: []
+  cadence: monthly
+  day_of_month: 1
+"""
+    )
+    [t] = load_templates(tmp_path)
+    assert t.day_of_month == 1
+    assert isinstance(t.day_of_month, int)
+
+
+def test_load_template_parses_day_of_month_string(tmp_path: Path):
+    (tmp_path / "monthly.yaml").write_text(
+        """
+- id: monthly-retrieval
+  title: "x"
+  due: "today"
+  labels: []
+  cadence: monthly
+  day_of_month: last-saturday
+"""
+    )
+    [t] = load_templates(tmp_path)
+    assert t.day_of_month == "last-saturday"
+
+
+def test_load_template_keeps_reflection_block_in_raw(tmp_path: Path):
+    """Phase C will read reflection.create_stub from raw; Phase B leaves it alone."""
+    (tmp_path / "weekly.yaml").write_text(
+        """
+- id: weekly-friday
+  title: "x"
+  due: "today"
+  labels: []
+  cadence: weekly
+  day_of_week: friday
+  reflection:
+    create_stub: true
+    stub_path: "reflections/weekly/{iso_year}-W{iso_week:02d}.md"
+    template: weekly_review_template
+"""
+    )
+    [t] = load_templates(tmp_path)
+    assert t.raw["reflection"]["create_stub"] is True
+    assert t.raw["reflection"]["stub_path"].startswith("reflections/weekly/")
+
+
 def test_resolve_current_book_and_ritual_time(tmp_path: Path):
     (tmp_path / "daily.yaml").write_text(TPL_YAML)
     state, config = make_state(), make_config()

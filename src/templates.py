@@ -32,6 +32,8 @@ class Template:
     labels: list[str]
     cadence: str
     skip_if: str | None = None
+    day_of_week: str | None = None
+    day_of_month: int | str | None = None
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -60,6 +62,10 @@ def load_templates(directory: Path) -> list[Template]:
             logger.warning("template file %s is not a list; skipping", path)
             continue
         for entry in entries:
+            day_of_month = entry.get("day_of_month")
+            if isinstance(day_of_month, bool):
+                # YAML's `day_of_month: false` would otherwise sneak through as int 0.
+                day_of_month = None
             templates.append(
                 Template(
                     id=str(entry["id"]),
@@ -69,6 +75,8 @@ def load_templates(directory: Path) -> list[Template]:
                     labels=list(entry.get("labels", []) or []),
                     cadence=str(entry["cadence"]),
                     skip_if=entry.get("skip_if"),
+                    day_of_week=entry.get("day_of_week"),
+                    day_of_month=day_of_month,
                     raw=entry,
                 )
             )
