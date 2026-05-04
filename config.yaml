@@ -5,6 +5,7 @@ todoist:
     weekly: "weekly-ritual"
     monthly: "monthly-ritual"
     quarterly: "quarterly-ritual"
+    annual: "annual-ritual"
     practice: "active-practice"
     module: "module-work"
     reflection: "reflection"

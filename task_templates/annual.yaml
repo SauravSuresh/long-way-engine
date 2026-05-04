@@ -1,0 +1,15 @@
+- id: annual-review
+  title: "Annual review (half a day)"
+  description: |
+    Re-read all four quarterly syntheses. Re-read your year's blog posts.
+    Look at your GitHub contribution graph. Write the year-in-review
+    document that captures the trajectory. This is also when you
+    reconsider the plan — the syllabus is allowed to evolve at year
+    boundaries far more than at month boundaries.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [annual-ritual, reflection]
+  cadence: annual
+  reflection:
+    create_stub: true
+    stub_path: "reflections/annual/{year}.md"
+    template: annual_review_template

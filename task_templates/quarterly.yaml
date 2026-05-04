@@ -1,0 +1,15 @@
+- id: quarterly-synthesis
+  title: "Quarterly synthesis"
+  description: |
+    2–3 hrs. Re-read three months of journal entries. Re-read three
+    months of monthly retrospectives. Write a single page: what changed
+    about how you think? What can you now do that you couldn't 90 days
+    ago? What's still confusing? This page is the most valuable single
+    artifact you produce that quarter.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [quarterly-ritual, reflection]
+  cadence: quarterly
+  reflection:
+    create_stub: true
+    stub_path: "reflections/quarterly/{year}-Q{quarter}.md"
+    template: quarterly_review_template

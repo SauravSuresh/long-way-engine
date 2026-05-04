@@ -1,0 +1,39 @@
+- id: monthly-blog-post
+  title: "Monthly post: write about last month"
+  description: |
+    One blog post or detailed notes document about something you learned
+    last month. 800–2000 words. Public, your real name, your domain.
+    Show your work — code samples, diagrams, real numbers. Don't optimize
+    for going viral; optimize for being useful in five years.
+  due: "today at {ritual_times.morning_reading}"
+  labels: [monthly-ritual]
+  cadence: monthly
+  day_of_month: 1
+
+- id: monthly-retrieval
+  title: "Monthly retrieval: re-read 4 weeks of notes"
+  description: |
+    60 min. Pull up the last four weeks of code-reading notes. Re-read
+    your one-page summaries. For each codebase, ask: could I sketch its
+    architecture from memory now? If not, that codebase needs revisiting
+    before any new ones. Same for PRs (read your diffs and the reviewer's
+    comments) and any blog posts you wrote this month.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [monthly-ritual, reflection]
+  cadence: monthly
+  day_of_month: last-saturday
+  reflection:
+    create_stub: true
+    stub_path: "reflections/monthly/{year}-{month:02d}.md"
+    template: monthly_review_template
+
+- id: monthly-review
+  title: "Monthly review: what worked, what didn't"
+  description: |
+    Right after retrieval. End-of-month review — what worked, what
+    didn't. The plan is allowed to evolve, but only at month boundaries,
+    not in the middle of a tough week.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [monthly-ritual]
+  cadence: monthly
+  day_of_month: last-saturday

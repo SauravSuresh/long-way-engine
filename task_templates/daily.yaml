@@ -18,3 +18,13 @@
   labels: [daily-ritual]
   cadence: daily
   skip_if: sunday
+
+- id: daily-evening-hands-on
+  title: "Evening hands-on (60–90 min)"
+  description: |
+    boot.dev, the side build, or the main project. In nvim.
+    Without AI writing code for you (using AI to *explain* concepts is fine).
+  due: "today at {ritual_times.evening_hands_on}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday

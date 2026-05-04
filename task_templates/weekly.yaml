@@ -1,0 +1,24 @@
+- id: weekly-friday-review
+  title: "Friday review: 20-min retrieval"
+  description: |
+    Without looking at your notes, write down the 3 most important
+    things you learned this week. Then compare to your notes. The gap
+    is the diagnostic — that's what your Anki cards for next week
+    should target.
+  due: "today at {ritual_times.friday_review}"
+  labels: [weekly-ritual, reflection]
+  cadence: weekly
+  day_of_week: friday
+  reflection:
+    create_stub: true
+    stub_path: "reflections/weekly/{iso_year}-W{iso_week:02d}.md"
+    template: weekly_review_template
+
+- id: weekly-saturday-deep-block
+  title: "Saturday deep block (3–4 hr)"
+  description: |
+    Bigger project work, or a chapter that needs uninterrupted thought.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [weekly-ritual]
+  cadence: weekly
+  day_of_week: saturday
