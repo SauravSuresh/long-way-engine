@@ -1,19 +1,43 @@
 """Decide whether a template should produce a task today.
 
-Phase A handles only `cadence: daily` with optional `skip_if: sunday`.
-Other cadences raise NotImplementedError so an accidental Phase B
-template added to Phase A fails loudly rather than silently misfiring.
+Cadence dispatch (Phase B):
+
+  - paused short-circuit (highest precedence)
+  - daily       — every day except Sunday when sunday_off and skip_if=sunday
+  - weekly      — today.weekday() matches template.day_of_week
+  - monthly     — template.day_of_month is int 1..28, "last-day", or "last-saturday"
+  - quarterly   — today is Jan 1 / Apr 1 / Jul 1 / Oct 1
+  - annual      — today is Jan 1
+  - anything else (e.g. once-per-module) raises NotImplementedError naming
+    both the cadence and the template id.
+
+Sunday-off applies only to the daily cadence. Quarterly Apr 1 fires
+regardless of weekday — including a Sunday Apr 1 (e.g. 2029-04-01).
 """
 
 from __future__ import annotations
 
-from datetime import date
+import calendar
+from datetime import date, timedelta
 
 from src.config import Config
 from src.state import State
 from src.templates import Template
 
-SUNDAY = 6  # date.weekday() returns 0=Mon ... 6=Sun
+SUNDAY = 6  # date.weekday(): 0=Mon ... 6=Sun
+SATURDAY = 5
+
+_DAY_OF_WEEK: dict[str, int] = {
+    "monday": 0,
+    "tuesday": 1,
+    "wednesday": 2,
+    "thursday": 3,
+    "friday": 4,
+    "saturday": 5,
+    "sunday": 6,
+}
+
+_QUARTER_START_MONTHS = (1, 4, 7, 10)
 
 
 def should_create_today(
@@ -22,16 +46,94 @@ def should_create_today(
     state: State,
     config: Config,
 ) -> bool:
-    """Phase A scheduler: daily cadence + Sunday skip only."""
-    if template.cadence == "daily":
-        if (
-            template.skip_if == "sunday"
-            and config.sunday_off
-            and today.weekday() == SUNDAY
-        ):
-            return False
-        return True
+    if state.paused:
+        return False
+
+    cadence = template.cadence
+    if cadence == "daily":
+        return _daily_fires(template, today, config)
+    if cadence == "weekly":
+        return _weekly_fires(template, today)
+    if cadence == "monthly":
+        return _monthly_fires(template, today)
+    if cadence == "quarterly":
+        return _is_first_of_quarter(today)
+    if cadence == "annual":
+        return _is_jan_1(today)
 
     raise NotImplementedError(
-        f"cadence {template.cadence!r} is not supported in Phase A"
+        f"cadence {cadence!r} on template {template.id!r} not supported in Phase B"
     )
+
+
+# --- per-cadence predicates -----------------------------------------------------
+
+
+def _daily_fires(template: Template, today: date, config: Config) -> bool:
+    if (
+        template.skip_if == "sunday"
+        and config.sunday_off
+        and today.weekday() == SUNDAY
+    ):
+        return False
+    return True
+
+
+def _weekly_fires(template: Template, today: date) -> bool:
+    if template.day_of_week is None:
+        raise NotImplementedError(
+            f"weekly template {template.id!r} missing day_of_week"
+        )
+    key = template.day_of_week.lower()
+    if key not in _DAY_OF_WEEK:
+        raise NotImplementedError(
+            f"unsupported day_of_week {template.day_of_week!r} on template {template.id!r}"
+        )
+    return today.weekday() == _DAY_OF_WEEK[key]
+
+
+def _monthly_fires(template: Template, today: date) -> bool:
+    rule = template.day_of_month
+    if rule is None:
+        raise NotImplementedError(
+            f"monthly template {template.id!r} missing day_of_month"
+        )
+    if isinstance(rule, int):
+        if not (1 <= rule <= 28):
+            raise NotImplementedError(
+                f"unsupported day_of_month {rule!r} on template {template.id!r}; "
+                "only 1..28 supported (avoid 29/30/31 month-length edge cases)"
+            )
+        return today.day == rule
+    if rule == "last-day":
+        return _is_last_day_of_month(today)
+    if rule == "last-saturday":
+        return _is_last_saturday_of_month(today)
+    raise NotImplementedError(
+        f"unsupported day_of_month {rule!r} on template {template.id!r}; "
+        "supported: int 1..28, 'last-day', 'last-saturday'"
+    )
+
+
+# --- date helpers --------------------------------------------------------------
+
+
+def _is_last_day_of_month(today: date) -> bool:
+    last = calendar.monthrange(today.year, today.month)[1]
+    return today.day == last
+
+
+def _is_last_saturday_of_month(today: date) -> bool:
+    if today.weekday() != SATURDAY:
+        return False
+    # If today is Saturday and adding 7 days lands in a different month,
+    # today is the last Saturday.
+    return (today + timedelta(days=7)).month != today.month
+
+
+def _is_first_of_quarter(today: date) -> bool:
+    return today.day == 1 and today.month in _QUARTER_START_MONTHS
+
+
+def _is_jan_1(today: date) -> bool:
+    return today.month == 1 and today.day == 1
