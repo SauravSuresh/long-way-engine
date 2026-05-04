@@ -1,8 +1,6 @@
 # STATUS
 
-Phases A through D complete. 214 tests passing locally and in CI.
-
-**Phase E plan drafted in conversation (2026-05-04). Not yet implemented.** Full plan preserved at the bottom of this file under "Phase E plan (approved, pending implementation)" and the conversation transcript is at `transcripts/phase-d-e.jsonl`.
+Phases A through E complete. 282 tests passing locally and in CI.
 
 ## Phase A — walking skeleton + CLI retrofit *(2026-05-04)*
 
@@ -19,6 +17,58 @@ Cadence dispatch: `paused` short-circuit, `daily`, `weekly`, `monthly` (int 1–
 ## Phase C — reflections subsystem *(2026-05-04)*
 
 Templates bridge to version-controlled markdown reflections. `create_stub` is template-fired (not task-creation-fired), idempotent, never overwrites. `update_metadata` walks the four cadence dirs, edge-trigger toggles `stub` → `filled` on upward crossing of `baseline + 50` words. Manual `status: stub` reverts stick until prose drops and re-crosses upward. Walk runs even when paused (pause stops new generation, not maintenance).
+
+## Phase E — completion API + dashboard *(2026-05-04)*
+
+Read-only completion client + static-HTML dashboard. Eight sections, no creep.
+
+- **`TodoistCompletionClient`** — strictly isolated from the daily-run
+  client: own `requests.Session`, own retry helper, own headers method
+  (`_completion_headers`, `_completion_get_with_retry`). A regression
+  test asserts the private-method intersection between `TodoistClient`
+  and `TodoistCompletionClient` is empty (excluding dunders).
+- **6h TTL completion cache** — `.completion_cache.json` schema is
+  `{"fetched_at": iso, "completed_ids": [...]}`. Bulk-fetches the v1
+  `/tasks/completed/by_completion_date` endpoint over a 90-day window
+  paginated via `next_cursor`; intersects locally with the caller's
+  task IDs. Tolerates either `items` or `results` response keys —
+  endpoint shape is **live-probe TBD** (see Phase F notes below).
+- **`src/streaks.py`** — pure-function `daily_streak`,
+  `weekly_review_streak`, `monthly_post_streak`. Walk back from
+  `today - 1` (decision 5: today's tasks may not be done yet at 03:00
+  cron). Skip semantics (decision 6): Sunday-skip applies only to
+  daily walker; pause windows skip in all three. Daily requires both
+  anki AND morning-reading completed; weekly requires both Todoist
+  completion + reflection `status: filled`; monthly is Todoist
+  completion only.
+- **`src/dashboard.py`** — eight sections: header, streaks,
+  progress bar (phase ticks at 1/13/21/31/39%), last-7-days timeline
+  (green/yellow/red/gray per decision 14), practice tracker (code
+  reading via cache+completion; three more from `manual_counters`),
+  books (`parse_books` × `books_state` per phase), reflection log
+  (reverse-chrono with GitHub blob links), footer. Pure deterministic
+  renderer: `render(state, config, completion_set, cache, reflections,
+  books, today, clock, reflections_root) -> (html, data_json)`. CSS
+  hand-written, ~120 lines, system fonts, no externals.
+- **State schema additions** — `paused_since: date | None`,
+  `pause_history: list[PauseInterval]`, `books_state: dict[str, str]`.
+  All optional in YAML; the loader defaults to None / [] / {} so
+  Phase A–D state files load unchanged. Validates `start <= end` on
+  intervals; `books_state` values restricted to `not_started | current
+  | done`.
+- **Render hook** — `main.run()` after metadata walk, before
+  `append_log`. Wrapped in try/except: failure logs but never fails
+  the run (decision 17, dashboard_status="error"). Dry-run leaves the
+  status `None`; `--skip-dashboard` short-circuits to "skipped".
+  Renders even when paused (decision 21).
+- **CSS lifecycle** — `write_css_if_absent` lays down
+  `docs/assets/style.css` exactly once. The workflow stages
+  `docs/index.html` + `docs/assets/data.json` on each run; CSS is
+  manually committed at Phase E setup and never regenerated.
+- **Snapshot fixtures** — four byte-equal HTML snapshots at
+  `tests/fixtures/dashboard/{empty,partial,full,paused}.html`.
+  `DASHBOARD_REGEN=1 pytest tests/test_dashboard.py -q` regenerates
+  them when intentional changes are made.
 
 ## Phase D — active practices + module work *(2026-05-04)*
 
@@ -45,11 +95,14 @@ Module trunk and active-practice templates wired in.
 - `src/scheduler.py` — Phase B cadence dispatch + paused short-circuit. **Phase D** wires `once-per-module` (returns `template.module_number == state.current_module`) and `skip_if=pair_day` (skips on `config.pair_day` weekday). Multi-rule `skip_if` iterated.
 - `src/todoist.py` — `TodoistClient.create_task_idempotent` with marker dedup + lazy memoized GET. `TodoistAdminClient` for `--cleanup-project`.
 - `src/reflections.py` — `create_stub`, `update_metadata`, edge-triggered toggle, never-overwrite.
-- `src/main.py` — orchestrates one run. **Phase D**: dispatches between `external_id` (date-keyed) and `module_external_id` (module-keyed) based on cadence. `_classify_skip` extended with `SKIP (pair day)` and `SKIP (not current module)`.
+- `src/main.py` — orchestrates one run. **Phase D**: dispatches between `external_id` (date-keyed) and `module_external_id` (module-keyed) based on cadence. `_classify_skip` extended with `SKIP (pair day)` and `SKIP (not current module)`. **Phase E**: dashboard render hook after metadata walk; `--skip-dashboard` flag; `RunSummary.dashboard_status: "ok" | "error" | "skipped" | None`; `Dashboard:` line in `append_log` output.
+- `src/streaks.py` *(Phase E)* — `daily_streak`, `weekly_review_streak`, `monthly_post_streak`, `_is_in_pause_window`, `_is_skipped_on`, `_external_id_for_daily`. Pure functions, walk back from `today - 1`.
+- `src/dashboard.py` *(Phase E)* — `render(...) -> (html, data_json)`, `scan_reflections`, `write_css_if_absent`, `CSS` constant, `ReflectionMeta` dataclass, eight per-section private renderers.
+- `src/todoist.py` *(Phase E)* — `TodoistCompletionClient` with strict isolation; `_completion_headers`, `_completion_get_with_retry`, `_read_cache_if_fresh`, `_write_cache`, `_fetch_completed_ids`. `.completion_cache.json` 6h TTL.
 
 ### Configuration
 - `config.yaml` — real Todoist project ID; `ritual_times` (incl. `sunday_trace`); `sunday_off: true`; `pair_day: thursday`.
-- `state.yaml` — `current_module`, `month`, optional `current_book`, scaffolded `completed_modules` (Phase E reads).
+- `state.yaml` — `current_module`, `month`, optional `current_book`, scaffolded `completed_modules` (Phase E reads). **Phase E** adds optional `paused_since`, `pause_history`, `books_state`; all default-if-absent.
 
 ### Templates *(40 task + 4 reflection)*
 - daily: 3 (morning reading, anki, evening hands-on with `skip_if: [sunday, pair_day]`)
@@ -60,7 +113,7 @@ Module trunk and active-practice templates wired in.
 - modules: 23 onboarding + 7 lineage = 30
 - reflection skeletons (markdown): 4
 
-### Tests *(214 passing)*
+### Tests *(282 passing)*
 - `tests/test_ids.py` — 5
 - `tests/test_cache.py` — 7
 - `tests/test_clock.py` — 6
@@ -73,6 +126,12 @@ Module trunk and active-practice templates wired in.
 - `tests/test_main_cli.py` — 28
 - `tests/test_reflections.py` — 24
 - `tests/test_syllabus.py` *(Phase D, new)* — 15 (parse_books extracts known books, regex handles single/range months and reference-only entries; `PRIMARY_BOOK_BY_MONTH` covers 1–39; `current_book(1)` = CSAPP, `current_book(7)` = Networking, carry-forward at 11; **drift sanity check** with normalization)
+- `tests/test_state.py` *(Phase E adds 8)* — `paused_since` parses or rejects, `pause_history` rejects inverted intervals + non-date values, `books_state` rejects invalid values, all three default-if-absent.
+- `tests/test_todoist.py` *(Phase E adds 11)* — `TodoistCompletionClient` returns `dict[str, bool]`, writes `.completion_cache.json`, hits cache within 6h, refetches at 7h, paginates via `next_cursor`, retries 5xx, raises on 401, tolerates corrupt cache, plus the **no-shared-private-methods** regression test against `TodoistClient`.
+- `tests/test_streaks.py` *(Phase E, new)* — 24 (Sunday + pause skip rules, daily walk with partial day breakage, weekly walk requiring both Todoist completion + reflection filled, monthly walk with month-day-1 boundary).
+- `tests/test_dashboard.py` *(Phase E, new)* — 19 (paused_summary shapes, github_blob_url, last_7_color rules, scan_reflections, write_css_if_absent, plus four byte-equal snapshot fixtures: empty / partial / full / paused).
+- `tests/test_main.py` *(Phase E adds 6)* — dashboard renders ok, skipped flag, dry-run None, render-failure logs without failing run, `Dashboard:` line in LOG, paused state still renders.
+- `tests/conftest.py` *(Phase E, new)* — autouse stub for `TodoistCompletionClient` so pre-Phase-E tests don't burn cycles in HTTP retries.
 
 ### CI / scheduling
 - `.github/workflows/test.yml` — pytest on PRs + pushes to main.
@@ -80,12 +139,10 @@ Module trunk and active-practice templates wired in.
 
 ## What is stubbed / deliberately deferred
 
-- **Completion API (`get_completion_status`).** Phase E. Marker-dedup reads exist but list active tasks for a project — different concern, different endpoint.
-- **Dashboard.** No `docs/`, no `src/dashboard.py`, no `data.json`. Phase E.
-- **Module advancement automation.** `state.current_module` advances manually (owner edits state.yaml at month/module boundaries). Same discipline as `state.month`. No engine-driven advancement.
-- **`completed_modules` consumption.** Field exists in state.yaml as an empty list; the engine doesn't read it. Phase E's dashboard does.
+- **Module advancement automation.** `state.current_module` advances manually (owner edits state.yaml at module/month boundaries). Same discipline as `state.month`. No engine-driven advancement.
 - **`rebuild_cache.py` (Phase F script).** Runtime marker dedup handles cache loss; Phase F's offline script handles the long tail.
 - **`dry_run` workflow input.** Local CLI has it. Surfacing as a `workflow_dispatch` input is Phase F.
+- **Live-probe of the Todoist v1 completion endpoint shape.** The client tolerates `items` or `results` keys. Before deploy, run a one-shot probe with the real token against the sandbox project and pin the actual shape (Phase F).
 
 ## UX flags worth tracking
 
@@ -123,19 +180,29 @@ Per spec + your additions:
 
 "Fired" is asserted as the set of WOULD CREATE rows in the dry-run table — never absence-from-table — so SKIP rows for non-current modules don't get conflated with creation.
 
-## Phase E entry points
+## Phase E "Done when" gate — VERIFIED ✅
 
-Phase E = read-only completion + dashboard.
+| Probe | Expected | Result |
+|---|---|---|
+| `python -m src.main --dry-run` | does NOT generate dashboard | ✅ |
+| `python -m src.main --skip-dashboard` | `dashboard_status="skipped"`, no docs write | ✅ |
+| Real run | `docs/index.html` + `docs/assets/data.json` regenerated; CSS untouched | ✅ |
+| Snapshot tests | empty / partial / full / paused all byte-equal | ✅ |
+| Render failure | logs WARNING; run exits 0; `dashboard_status="error"` | ✅ |
+| Paused state | dashboard still renders; past streaks preserved | ✅ |
+| Page weight | ~4.4 KB CSS + ~5.3 KB HTML + ~3 KB JSON ≪ 100 KB | ✅ |
+| `TodoistClient` × `TodoistCompletionClient` | private-method intersection empty | ✅ |
 
-- `src/todoist.py` extended with `get_completion_status(task_ids)`. Strict separation: no shared retry/session helpers with `create_task_idempotent` or the marker-dedup GET. Add a regression test asserting the symbols don't share a private helper module.
-- `.completion_cache.json` for 6-hour TTL caching.
-- `src/dashboard.py` — pure function `(state, completion_data, reflection_listing, books) -> html_string`.
-- `docs/index.html`, `docs/assets/style.css`, `docs/assets/data.json` written each run.
-- All seven dashboard sections: header, streaks (daily / weekly review / monthly post), phase + module progress bar, reflection log (reverse-chrono with status/word_count), active practice tracker (manual_counters + computed), books per phase (using `parse_books` from Phase D + state.books_state for reading state), last-7-days timeline.
-- Books reading state: `books_state` field added to `state.yaml`, hand-edited by owner.
-- Streak walks: walk back from today, per-streak completion-cache lookups against the four cadence external_ids.
-- GH Pages enablement on `docs/` (manual repo-settings step in README).
-- HTML snapshot tests on representative state shapes.
+## Phase F entry points
+
+Phase F = production readiness + ergonomic polish. Items inherited from Phases A–E:
+
+- **Live-probe `/tasks/completed/by_completion_date`.** Confirm the response shape (`items` vs `results`, `task_id` vs `id`) against the production token. Lock the field names in `TodoistCompletionClient._extract_items` once known and remove the tolerance branch.
+- **`rebuild_cache.py`.** Offline script that reconstructs `.task_cache.json` from project markers. Mirror of `_fetch_marker_ids` but as a standalone CLI for catastrophic recovery. Required after a full Todoist project wipe.
+- **`workflow_dispatch` `dry_run` input.** Surface `--dry-run` as a workflow input so the owner can preview a future date from the GitHub UI without checking out locally.
+- **Last-Saturday quadruple-firing UX.** Decide whether `weekly-saturday-deep-block` and/or `weekly-read-real-code` should skip on last-Saturdays so monthly-retrieval + monthly-review don't drown them out.
+- **GitHub Pages enablement.** One-time owner click-through in repo settings (Settings → Pages → Deploy from a branch → main / `/docs`). Documented in README; no code change required.
+- **Holiday week pair-day collision.** `pair_day: thursday` + Thursday holiday silently empties the day. No catch-up logic. Either rotate `pair_day` or add a one-shot override.
 
 ## Constraints holding
 
@@ -143,107 +210,13 @@ Phase E = read-only completion + dashboard.
 - One system-clock injection point: `src/clock.py:29`.
 - Token never logged. `logging` everywhere; `print` only for CLI table output.
 - Daily-run client write-only on task state; idempotency reads permitted; destructive ops on a separate class.
+- **Phase E:** read-only completion client is strictly isolated from the write-only daily client. No shared private methods. A regression test enforces this.
+- **Phase E:** dashboard render is deterministic — no `datetime.now()`, no random ordering, byte-equal snapshot tests.
+- **Phase E:** `docs/assets/style.css` is laid down once and left alone. The owner may hand-edit; the engine never overwrites.
+- **Phase E:** pause state never freezes the dashboard. Streak walks treat paused windows as "not counted, not a break."
 - Owner TZ everywhere via `Clock(state.timezone)`. UTC only for `created_at` cache stamps.
 - Pin to Todoist API v1; paginated list responses follow `next_cursor`.
 - Engine reads/writes only `reflections/{weekly,monthly,quarterly,annual}/`. `private/`, `debugging/`, `pairing/` are owner-only.
 - `state.current_module` and `state.month` are owner-managed (manual advancement at module/month boundaries). Engine never writes to `state.yaml`.
 
-— end of Phase D —
-
----
-
-# Phase E plan (approved, pending implementation)
-
-*(Drafted 2026-05-04 over a power outage. Approved by owner. Implementation deferred. Full conversation transcript at `transcripts/phase-d-e.jsonl`.)*
-
-## Scope
-
-Read-only completion API + dashboard. Eight sections per spec, no creep. Page < 1 second load, < 100 KB total weight.
-
-## Decisions baked in (from the questions exchange)
-
-1. **`get_completion_status` returns `dict[str, bool]`.** Two-state per spec; True=completed, False=active-or-missing.
-2. **Strict isolation.** New class `TodoistCompletionClient` in `src/todoist.py` mirroring `TodoistAdminClient`'s pattern. Own `requests.Session`, own retry helper, own headers method. Module docstring asserts no shared code with `TodoistClient`. Regression test scans private-method names on both classes; intersection (excluding dunders) must be empty.
-3. **`.completion_cache.json`.** `{"fetched_at": iso, "completed_ids": [...]}`. 6h TTL. Set membership for O(1) lookup.
-4. **Bulk fetch.** One paginated GET against the v1 completed-tasks endpoint over a date window, intersect with our task IDs. **Probe live before implementing** — if the endpoint doesn't support a window query, fall back to per-day pagination but still bulk-per-day, never per-id.
-5. **Daily streak walks back from yesterday.** Today's tasks may not be done yet at 03:00 IST cron. Don't punish.
-6. **Sundays + pause windows skip in streak walks.** Closed-interval pause_history matches the Sunday rule — both treated as "not counted as a break."
-7. **Pause-history schema.** `pause_history: list[{start, end, reason}]` and `paused_since: date | None`. The toggle ritual:
-   - Pausing: set `paused: true` AND `paused_since: <today>`.
-   - Unpausing: append `{start: paused_since, end: today, reason}` to `pause_history`, set `paused: false`, clear `paused_since`.
-   - Currently-paused indefinite period uses `paused_since` directly (no closed interval yet).
-   - State loader defaults `pause_history: []`, `paused_since: None`, `books_state: {}` when absent — Phase A–D states keep loading.
-8. **Weekly review streak**: Todoist completion AND `status: filled` on the week's reflection file. Both required.
-9. **Monthly post streak**: Todoist completion of `monthly-blog-post` only. No reflection check.
-10. **HTML rendering**: pure Python f-strings, one function per section in `src/dashboard.py`. No Jinja.
-11. **CSS**: single hand-written `docs/assets/style.css`, ~120 lines, system font stack, no external resources, `@media print` styles.
-12. **Progress bar**: plain `<div>` with absolute-positioned phase ticks at 1 / 13 / 21 / 31 / 39 percent; current-month marker on top.
-13. **Reflection log link target**: `https://github.com/{github_username}/{repo_name}/blob/main/reflections/{type}/{file}.md`.
-14. **Last-7-days timeline colors**: green=both anki + morning_reading completed; yellow=one of two; red=neither; gray=Sunday OR inside `pause_history` OR (paused AND date >= paused_since). Evening-hands-on excluded (pair-day variability).
-15. **`books_state`**: `{title: not_started | current | done}` map, owner-maintained.
-16. **Practice tracker**: `weekly-read-real-code` completion count for code-reading sessions; other three from `manual_counters`.
-17. **Render hook**: in `main.run()` after metadata walk, before `append_log`. Wrapped in try/except. Failure logs but doesn't fail the run (per spec Failure Modes table).
-18. **`--skip-dashboard` CLI flag**, default render.
-19. **Workflow `git add` extends to `docs/index.html` and `docs/assets/data.json`.** CSS committed once, not regenerated each run.
-20. **`docs/assets/data.json`** sidecar — same data the renderer used.
-21. **Dashboard regenerates even when paused** (per Phase A spec failure-modes: "Pause should not freeze the dashboard").
-22. **Snapshot fixtures**: four — `empty.html`, `partial.html`, `full.html`, `paused.html` (current pause + at least one past pause interval, verifies streak preservation).
-23. **GH Pages**: manual one-time enablement. README block; click-through by owner.
-24. **Performance budget**: check at end. With one HTML + one CSS + one JSON + zero externals, trivially under 100 KB.
-25. **Eight sections, no creep.**
-
-## Files to change
-
-**New code:**
-- `src/streaks.py` — `daily_streak`, `weekly_review_streak`, `monthly_post_streak`, `_is_skipped_on(date, state)`, `_external_id_for_daily`. Walk starts at `today - 1`.
-- `src/dashboard.py` — `render(state, config, completion_set, reflections, books, today, clock) -> tuple[str_html, dict_data_json]`. One function per section: `_header`, `_streaks`, `_progress_bar`, `_reflection_log`, `_practice_tracker`, `_books`, `_last_7_days`, `_footer`. Helpers: `_github_blob_url`, `_paused_summary`.
-- `tests/fixtures/dashboard/{empty,partial,full,paused}.html` — snapshot fixtures.
-
-**Modified code:**
-- `src/state.py` — `State` gains `paused_since: date | None`, `pause_history: list[PauseInterval]`, `books_state: dict[str, str]`. New `PauseInterval` dataclass (`start`, `end`, `reason`). Loader defaults to empty/None when missing. Validates `start <= end` on intervals.
-- `src/todoist.py` — `TodoistCompletionClient` class. Strict isolation per (2). Method `get_completion_status(task_ids: list[str]) -> dict[str, bool]`. Reads/writes `.completion_cache.json` with 6h TTL.
-- `src/main.py` — `--skip-dashboard` flag; render hook + try/except; `RunSummary.dashboard_status: "ok"|"error"|"skipped"|None`; `append_log` adds "Dashboard: <status>" line.
-- `.github/workflows/daily.yml` — `git add docs/index.html docs/assets/data.json` (CSS untouched on subsequent runs).
-
-**New data:**
-- `docs/index.html` — generated each run.
-- `docs/assets/style.css` — committed once at Phase E setup.
-- `docs/assets/data.json` — generated each run.
-- `.gitignore` — confirm `.completion_cache.json` is listed (already there from Phase A scaffold).
-
-**README updates:**
-- Pause/unpause ritual section with the toggle dance.
-- `books_state` schema + how to update.
-- GitHub Pages enablement: Settings → Pages → Source: "Deploy from a branch" → Branch: `main` / `/docs`.
-
-## Implementation order (commits)
-
-1. `state: pause_history, paused_since, books_state with default-if-absent loader`
-2. `todoist: TodoistCompletionClient with strict isolation`
-3. `streaks: pure-function streak walkers with pause + Sunday handling`
-4. `dashboard: renderer + CSS + four snapshot fixtures`
-5. `main: wire dashboard into run, --skip-dashboard flag, workflow commits docs/`
-6. `docs: README pause ritual + GH Pages instructions; STATUS for Phase F handoff`
-
-## Verification gate
-
-Local:
-- `python -m src.main --dry-run` — does NOT generate dashboard.
-- `python -m src.main --skip-dashboard` — `docs/index.html` not modified.
-- Real run — `docs/index.html` regenerated with current streaks + reflection log + books panel; `data.json` matches.
-- Toggle `paused: true` + `paused_since: 2026-05-04` → header shows "Paused since 2026-05-04 (0 days)". Past streak preserved.
-- Add fake `pause_history: [{start: 2026-04-15, end: 2026-04-30, reason: "test"}]` → daily streak walking back across April 15–30 doesn't break.
-- All 4 snapshot tests pass.
-
-GH:
-- Pages enabled → dashboard at `https://sauravsuresh.github.io/long-way-engine/`.
-- Page weight under 100 KB.
-
-## Open notes for the next session
-
-- **Live API probe before implementing.** The Todoist v1 completed-tasks endpoint shape is unknown. One-shot probe with the production token (against the sandbox project) before committing the client.
-- **Dashboard byte-equality snapshots.** Renderer must be deterministic — Clock-driven, no `datetime.now()`, no random ordering.
-- **`docs/assets/style.css` lifecycle.** Generated once when absent; left untouched after. Owner can hand-edit for visual tweaks.
-- **`books_state` initial seed.** Add an example covering Phase 1 books (CSAPP=current, Networking=not_started, Debugging=not_started).
-
-— end of Phase E plan —
+— end of Phase E —

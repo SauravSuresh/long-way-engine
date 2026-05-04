@@ -1,0 +1,117 @@
+:root {
+  --bg: #fafafa;
+  --fg: #1a1a1a;
+  --muted: #666;
+  --accent: #0a5;
+  --warn: #d94;
+  --bad: #c33;
+  --line: #ddd;
+  --skip: #cfcfcf;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg); color: var(--fg);
+  margin: 0; padding: 1.5rem;
+  line-height: 1.5;
+}
+.dashboard { max-width: 920px; margin: 0 auto; }
+header { border-bottom: 1px solid var(--line); padding-bottom: 1rem; margin-bottom: 1rem; }
+header h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
+header .meta { color: var(--muted); font-size: .9rem; }
+header .book { margin-top: .25rem; font-style: italic; }
+.paused-banner {
+  margin-top: .5rem; padding: .5rem .75rem;
+  background: #fff4d6; border: 1px solid #e0c060; border-radius: 4px;
+}
+section { margin: 1.5rem 0; }
+section h2 { font-size: 1.1rem; margin: 0 0 .5rem; }
+section h3 { font-size: 1rem; margin: .75rem 0 .25rem; }
+.streaks, .practices { display: flex; gap: .75rem; flex-wrap: wrap; }
+.streaks h2, .practices h2 { width: 100%; }
+.streak-card, .practice-card {
+  flex: 1 1 8rem; min-width: 8rem;
+  border: 1px solid var(--line); border-radius: 6px;
+  padding: .75rem; background: white; text-align: center;
+}
+.streak-value, .practice-value { font-size: 1.5rem; font-weight: 600; }
+.streak-label, .practice-label { color: var(--muted); font-size: .85rem; }
+.bar-track {
+  position: relative; height: 1.5rem; background: white;
+  border: 1px solid var(--line); border-radius: 999px;
+  margin: 2rem 0 1.5rem;
+}
+.bar-fill {
+  height: 100%; background: var(--accent);
+  border-radius: 999px; transition: width .3s;
+}
+.phase-tick {
+  position: absolute; top: -1.25rem; width: 1px; height: 2.75rem;
+  background: var(--muted);
+}
+.phase-tick .tick-label {
+  position: absolute; top: -1rem; left: 0;
+  font-size: .7rem; color: var(--muted);
+  transform: translateX(-50%); white-space: nowrap;
+}
+.month-marker {
+  position: absolute; top: -1.5rem;
+  font-size: .7rem; font-weight: 600;
+  background: var(--fg); color: white;
+  padding: 1px 4px; border-radius: 3px;
+  transform: translateX(-50%);
+}
+.day-row { display: flex; gap: .25rem; }
+.day {
+  flex: 1; min-width: 2rem; padding: .5rem .25rem;
+  border-radius: 4px; text-align: center;
+  display: flex; flex-direction: column; gap: .15rem;
+}
+.day .dow { font-size: .7rem; opacity: .8; }
+.day .dom { font-size: 1rem; font-weight: 600; }
+.day-green  { background: #c6efc6; color: #084; }
+.day-yellow { background: #fce39e; color: #864; }
+.day-red    { background: #f3c4c4; color: #944; }
+.day-gray   { background: var(--skip); color: var(--muted); }
+.book-list { list-style: none; padding: 0; margin: 0; }
+.book-row {
+  border-bottom: 1px solid var(--line); padding: .25rem 0;
+  display: flex; align-items: baseline; gap: .25rem; flex-wrap: wrap;
+}
+.book-title { font-weight: 600; }
+.book-author { color: var(--muted); }
+.book-timing { color: var(--muted); font-size: .85rem; }
+.book-badge {
+  margin-left: auto; font-size: .7rem;
+  padding: 1px 6px; border-radius: 3px;
+  background: var(--line); text-transform: uppercase;
+}
+.book-current .book-badge { background: var(--accent); color: white; }
+.book-done .book-badge    { background: var(--muted); color: white; }
+.reflection-list { list-style: none; padding: 0; margin: 0; }
+.reflection-row {
+  border-bottom: 1px solid var(--line); padding: .25rem 0;
+  display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap;
+}
+.reflection-row a { color: var(--fg); text-decoration: none; flex: 1; }
+.reflection-row a:hover { text-decoration: underline; }
+.ref-cadence {
+  font-size: .7rem; padding: 1px 6px; border-radius: 3px;
+  background: var(--line); text-transform: uppercase;
+}
+.ref-status {
+  font-size: .75rem; color: var(--muted);
+  padding: 1px 6px; border-radius: 3px; background: white;
+  border: 1px solid var(--line);
+}
+.reflection-filled .ref-status { background: var(--accent); color: white; border-color: var(--accent); }
+.ref-words { color: var(--muted); font-size: .85rem; }
+footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--line);
+         color: var(--muted); font-size: .8rem; text-align: center; }
+@media print {
+  body { background: white; padding: 0; }
+  .dashboard { max-width: none; }
+  a { text-decoration: none; color: var(--fg); }
+  .paused-banner { background: white; }
+}
