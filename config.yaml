@@ -1,5 +1,5 @@
 todoist:
-  project_id: "REPLACE_WITH_TODOIST_PROJECT_ID"
+  project_id: "6gWxC2wh5WRvjfw2"
   labels:
     daily: "daily-ritual"
     weekly: "weekly-ritual"
@@ -19,5 +19,5 @@ ritual_times:
 sunday_off: true
 
 dashboard:
-  github_username: "REPLACE_WITH_GH_HANDLE"
+  github_username: "SauravSuresh"
   repo_name: "long-way-engine"
