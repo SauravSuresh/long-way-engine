@@ -1,0 +1,20 @@
+- id: daily-morning-reading
+  title: "Morning reading: {current_book}"
+  description: |
+    30 min. Paper book, paper notebook, no laptop.
+    Same chair, same time. This is sacred.
+    Today's book: {current_book}.
+  due: "today at {ritual_times.morning_reading}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday
+
+- id: daily-anki
+  title: "Anki review"
+  description: |
+    10–15 min. Whenever — commute, lunch, before bed.
+    Add 3–5 new cards per day from what you read and built. No more.
+  due: "today at {ritual_times.anki}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday
