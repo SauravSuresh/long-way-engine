@@ -1,6 +1,6 @@
 # STATUS
 
-Phases A and B complete. Production daily run validated end-to-end (cron + workflow_dispatch). All 136 tests passing locally and in CI.
+Phases A through C complete. Production daily run validated end-to-end (cron + workflow_dispatch). Reflection lifecycle (create → edit → walk → toggle) verified live against the sandbox project. 182 tests passing locally and in CI.
 
 ## Phase A — walking skeleton + CLI retrofit *(2026-05-04)*
 
@@ -20,87 +20,103 @@ Destructive operations (DELETE) live on a *separate class* `TodoistAdminClient` 
 
 Cadence dispatch in the scheduler (`paused`, `daily`, `weekly`, `monthly`, `quarterly`, `annual`), plus the matching ritual templates parsed from the syllabus.
 
+## Phase C — reflections subsystem *(2026-05-04)*
+
+Tasks now bridge to version-controlled markdown reflections.
+
+- **Cadence-based reflection templates** in `reflection_templates/{weekly,monthly,quarterly,annual}.md`.
+- **Stub creation** is template-fired (not task-creation-fired): runs whenever a template would fire, regardless of whether the task was newly created, marker-deduped, or cache-hit. Never overwrites an existing file.
+- **Edge-triggered status toggle**: `stub` flips to `filled` only on an *upward crossing* of `baseline + 50` words. Old `word_count` from frontmatter is the lower side of the comparison. This makes manual `status: stub` reverts sticky — they hold until the count drops below threshold and rises again.
+- **Metadata walk** runs unconditionally at the end of every run, including paused runs. Pause stops new generation, not maintenance of existing stubs.
+- **Per-run pending-paths set** in dry-run only: when two templates point at the same path (e.g. `monthly-retrieval` and `monthly-review` both at `reflections/monthly/2026-05.md` on last-Saturdays), the first prints `WOULD CREATE STUB`, the second prints `WOULD SKIP STUB (pending)`. Real runs use the disk as source of truth — no pending set needed.
+- **Variable resolver** extended with `{year}`, `{month:02d}`, `{date}`, `{iso_year}`, `{iso_week:02d}`, `{quarter}` (1–4 from month). Format spec syntax `{name:fmt}` supported. Confirmed against the 2027-01-01 ISO-W53/2026 boundary.
+- **Owner-only directories** (`reflections/private/`, `debugging/`, `pairing/`) are never read or written by the engine.
+
 ## What works
 
 ### Code
-- `src/ids.py` — deterministic SHA256-based `external_id(template_id, due_date)`. Includes `module_external_id(template_id, module_number)` shape for Phase D.
-- `src/cache.py` — JSON cache load/save with atomic write, corruption tolerance, 60-day pruning. `prune` requires `now=` (no system-clock fallback) to enforce the single injection point.
+- `src/ids.py` — deterministic SHA256-based `external_id`. `module_external_id` shape for Phase D.
+- `src/cache.py` — JSON cache with atomic write, corruption tolerance, 60-day pruning. `prune` requires `now=` (no system-clock fallback).
 - `src/clock.py` — single injection point for the system clock. `Clock(tz)` for production, `FrozenClock(when, tz)` for tests and `--today`. `grep -rn "datetime\.now\|date\.today\|time\.time" src/` returns exactly one line.
-- `src/config.py` — loads `config.yaml` and the Todoist token from `.env` (10-line stdlib parser) or `TODOIST_TOKEN` env var. `Config.__repr__` redacts the token; `TokenRedactingFilter` strips it from any log record.
-- `src/state.py` — loads and validates `state.yaml`. Required keys, ZoneInfo, date checking. Dataclass scaffolds Phase D–F fields (`completed_modules`, `manual_counters`, etc.).
-- `src/templates.py` — loads `task_templates/*.yaml` and resolves `{current_book}` and `{ritual_times.<key>}` placeholders. **Phase B**: parses `day_of_week` and `day_of_month` (int or string `last-day` / `last-saturday`) into the `Template` dataclass; unknown YAML fields stay in `template.raw` for forward-compat (Phase C reads `reflection.create_stub` from there).
-- `src/scheduler.py` — **Phase B cadence dispatch** with `paused` short-circuit at the top:
-  - `paused: true` → False for every cadence (including `once-per-module`, so future Phase D drift doesn't crash a paused run).
-  - `daily` — `skip_if=sunday` + `config.sunday_off` + Sunday → False; else True.
-  - `weekly` — `today.weekday()` matches `template.day_of_week` (calendar-based, not ISO-week-based; verified for 2027-01-01 / ISO W53 of 2026 boundary).
-  - `monthly` — `template.day_of_month` is int 1–28 (refuses 29/30/31), or `last-day`, or `last-saturday`. Anything else raises NotImplementedError naming both the rule and the template id.
-  - `quarterly` — Jan 1 / Apr 1 / Jul 1 / Oct 1, regardless of weekday.
-  - `annual` — Jan 1.
-  - `once-per-module` and other unknown cadences raise NotImplementedError; Phase D wires them.
-  - **2029-04-01 (Sun + Q2 boundary) regression test**: quarterly fires, daily-with-sunday-skip does not. Same `should_create_today` call, two templates, opposite answers.
-- `src/todoist.py` — `TodoistClient.create_task_idempotent`. Cache hit = zero API calls; cache miss = up to one GET (memoized) for marker dedup, then if still novel, one POST with `<!--LW:{id}-->` appended to description. Marker hit *rehydrates the in-memory cache* so the next run hits the fast path. Retries 3× on 5xx with exponential backoff, raises immediately on 401, raises on other 4xx without retry. Endpoint base: `https://api.todoist.com/api/v1` (REST v2 deprecated 2026-05-04). Module docstring + regression test enforce no PATCH/DELETE methods on the daily-run client. Destructive ops live on `TodoistAdminClient` (used only by `--cleanup-project`).
-- `src/main.py` — orchestrates one run: load config + state + templates → today in owner TZ → for each template `should_create_today`? → resolve variables → check cache → check marker layer (lazy) → create → update cache → prune → save → append `LOG.md`. CLI: `--dry-run`, `--today YYYY-MM-DD`, `--project-id`, `--cache-file`, `--verbose`, `--cleanup-project ID [--yes]`. **Phase B**: `_classify_skip` extended for paused (highest precedence) and per-cadence reasons (`SKIP (paused)`, `SKIP (Sunday)`, `SKIP (not friday)`, `SKIP (not month boundary)`, `SKIP (not quarter boundary)`, `SKIP (not Jan 1)`).
+- `src/config.py` — yaml + `.env` loader, token redaction at repr and via `TokenRedactingFilter`.
+- `src/state.py` — loads and validates `state.yaml`. Required keys, ZoneInfo, date checking. Schema scaffolds Phase D–F fields.
+- `src/templates.py` — loads `task_templates/*.yaml`, resolves placeholders. **Phase B** added `day_of_week`, `day_of_month`. **Phase C** added date-derived placeholders (`{year}`, `{month:02d}`, `{iso_year}`, `{iso_week:02d}`, `{quarter}`, `{date}`) and the `{name:fmt}` format-spec syntax. Unknown YAML fields stay in `template.raw` for forward-compat.
+- `src/scheduler.py` — Phase B cadence dispatch with `paused` short-circuit; calendar-based weekly day matching (verified across ISO week boundary); monthly int 1–28 / `last-day` / `last-saturday`; quarterly Jan/Apr/Jul/Oct 1; annual Jan 1; the 2029-04-01 Sun + Q2 boundary regression test.
+- `src/todoist.py` — `TodoistClient.create_task_idempotent`. Cache hit = zero API calls; cache miss = up to one GET (memoized) for marker dedup, then one POST. Marker hit *rehydrates the in-memory cache*. Retries 3× on 5xx. Endpoint base: `https://api.todoist.com/api/v1`. Module docstring + regression test enforce no PATCH/DELETE on the daily-run client. `TodoistAdminClient` for `--cleanup-project`.
+- `src/reflections.py` *(new in Phase C)* — `create_stub` (idempotent, never overwrites, dry-run safe, pending-paths-aware), `update_metadata` (walks four cadence dirs only, edge-triggered toggle, malformed-frontmatter tolerance), helpers `split_frontmatter`, `render_frontmatter`, `count_words_in_body`, `_baseline_word_count` (LRU-cached, naive frontmatter strip for unresolved templates), `_strip_frontmatter_naively`.
+- `src/main.py` — orchestrates one run: load config + state + templates → today in owner TZ → for each template `should_create_today` → resolve variables → check cache → check marker layer → create task → **create_stub** → update cache → prune → save → **update_metadata walk** → append `LOG.md`. CLI: `--dry-run`, `--today`, `--project-id`, `--cache-file`, `--verbose`, `--cleanup-project ID [--yes]`. Dry-run table now has a second `REFLECTION STUBS` section. LOG.md gains "Reflection stubs created" and "Reflection metadata updated" lines.
 
 ### Configuration
-- `state.yaml` — `start_date: 2026-05-04`, timezone `Asia/Kolkata`, `current_book` set to "Computer Systems: A Programmer's Perspective" (hardcoded; Phase D replaces with parser).
-- `config.yaml` — real Todoist project ID `6gWxC2wh5WRvjfw2`, real github_username `SauravSuresh`, all five ritual times, full label set including `annual: annual-ritual`.
-- `.env.example` — `TODOIST_TOKEN=` placeholder. Real `.env` is gitignored; `TODOIST_TOKEN` also lives as a GitHub repo secret.
+- `state.yaml` — `start_date: 2026-05-04`, timezone `Asia/Kolkata`, `current_book` hardcoded (Phase D replaces with parser).
+- `config.yaml` — real Todoist project ID, real github_username, all five ritual times, full label set.
+- `.env.example` + `.env` (gitignored) + `TODOIST_TOKEN` GitHub repo secret.
 
-### Templates *(10 active)*
-- `task_templates/daily.yaml` — `daily-morning-reading`, `daily-anki`, `daily-evening-hands-on`. All `cadence: daily`, `skip_if: sunday`.
-- `task_templates/weekly.yaml` — `weekly-friday-review` (Friday, with reflection stub for Phase C), `weekly-saturday-deep-block` (Saturday).
-- `task_templates/monthly.yaml` — `monthly-blog-post` (day 1), `monthly-retrieval` (last Saturday, with reflection stub), `monthly-review` (last Saturday, chained after retrieval).
-- `task_templates/quarterly.yaml` — `quarterly-synthesis` (with reflection stub).
-- `task_templates/annual.yaml` — `annual-review` (with reflection stub).
+### Templates *(10 task + 4 reflection)*
+- `task_templates/daily.yaml` — `daily-morning-reading`, `daily-anki`, `daily-evening-hands-on`.
+- `task_templates/weekly.yaml` — `weekly-friday-review` (with stub), `weekly-saturday-deep-block`.
+- `task_templates/monthly.yaml` — `monthly-blog-post` (day 1), `monthly-retrieval` (last Sat, with stub), `monthly-review` (last Sat, with stub at the same path).
+- `task_templates/quarterly.yaml` — `quarterly-synthesis` (with stub).
+- `task_templates/annual.yaml` — `annual-review` (with stub).
+- `reflection_templates/{weekly,monthly,quarterly,annual}.md` — owner-editable markdown skeletons with placeholder frontmatter.
 
-### Tests *(136 passing, all stdlib + mocked HTTP)*
-- `tests/test_ids.py` — determinism, distinctness, hex shape (5 tests).
-- `tests/test_cache.py` — round-trip, missing/corrupt handling, prune (7).
-- `tests/test_clock.py` — Clock + FrozenClock, owner-TZ day boundaries (6).
-- `tests/test_config.py` — `.env` parser, env-var fallback, missing-token, redaction (9).
-- `tests/test_state.py` — happy path, malformed-input exits (4).
-- `tests/test_templates.py` — load directory, resolve `{current_book}`/`{ritual_times.X}`, missing variable returns None, **`day_of_week` and `day_of_month` parsing, reflection block survives in raw** (8).
-- `tests/test_scheduler.py` — **48 tests** covering paused-blocks-each-cadence, daily Sunday skip, weekly day-of-week (incl. ISO week boundary), monthly int / last-day / last-saturday, quarterly all four boundaries, annual, **2029-04-01 edge case**, unknown cadence + value error messages, helper functions.
-- `tests/test_todoist.py` — marker format, cache hit = 0 calls, cache miss = 1 POST, marker dedup skips/creates, **5 cache misses → 1 GET (memoization)**, paginated marker fetch, marker hit rehydrates cache, dry-run skips POST, clock-driven `created_at`, admin list/delete, no destructive methods on `TodoistClient`, token never logged (24).
-- `tests/test_main.py` — end-to-end with FakeClient: Monday creates, second-run cache hits, Sunday creates 0, LOG.md appends (4).
-- `tests/test_main_cli.py` — argparse, `--dry-run`, `--today`, `--project-id`, `--cache-file`, `--cleanup-project [--yes]`, **paused dry-run all SKIP (paused), paused real-run still writes cache + log** (21).
+### Tests *(182 passing)*
+- `tests/test_ids.py` — 5
+- `tests/test_cache.py` — 7
+- `tests/test_clock.py` — 6
+- `tests/test_config.py` — 9
+- `tests/test_state.py` — 4
+- `tests/test_templates.py` — 16 (including ISO week boundary, quarter-month parametrize)
+- `tests/test_scheduler.py` — 48 (paused-blocks-each-cadence, 2029-04-01 edge case, last-saturday, ISO week boundary)
+- `tests/test_todoist.py` — 25 (marker dedup, lazy memoization, pagination, admin client, no destructive methods)
+- `tests/test_main.py` — 4
+- `tests/test_main_cli.py` — 28 (incl. paused dry-run all SKIP (paused), paused real-run still writes cache+log, **Friday creates weekly stub, dry-run shows stub table, last-Saturday pending collision, paused metadata walk still updates, ordering: walk runs after creation**)
+- `tests/test_reflections.py` *(new)* — 24 (frontmatter parser edge cases, never-overwrite invariant, dry-run filesystem safety, **off-by-one toggle baseline+49 stub vs baseline+50 filled**, one-way filled persistence, **manual revert stickiness**, manual-revert-then-recross flip cycle, owner-only dirs untouched)
 
 ### CI / scheduling
-- `.github/workflows/test.yml` — runs `pytest -q` on PRs and pushes to main, Python 3.11.
-- `.github/workflows/daily.yml` — `cron: "30 21 * * *"` (03:00 next-day Asia/Kolkata) + `workflow_dispatch`. Permissions `contents: write`. Reads `secrets.TODOIST_TOKEN`. Commits `.task_cache.json` and `LOG.md` if changed, pushes. Concurrency group `daily-run`.
+- `.github/workflows/test.yml` — pytest on PRs + pushes to main, Python 3.11.
+- `.github/workflows/daily.yml` — `cron: "30 21 * * *"` (03:00 IST) + `workflow_dispatch`. Reads `secrets.TODOIST_TOKEN`. Commits `.task_cache.json`, `LOG.md`, and any new reflection stubs.
 
 ## What is stubbed / deliberately deferred
 
-- **Reflection stubs.** Phase B's templates carry `reflection.create_stub: true` and `stub_path` strings as inert YAML data. Phase C wires `src/reflections.py` and the path resolver (`{iso_year}-W{iso_week:02d}`, `{year}-{month:02d}`, `{year}-Q{quarter}`, `{year}`).
-- **Completion API (`get_completion_status`).** Phase E. Marker-dedup reads exist but list active tasks for a project — different endpoint, different concern.
-- **Module / once-per-module cadence.** `module_external_id` exists in `src/ids.py`; scheduler raises NotImplementedError. Phase D wires it.
+- **Completion API (`get_completion_status`).** Phase E. Marker-dedup reads exist but list active tasks for a project, not completion state.
+- **Module / once-per-module cadence.** `module_external_id` exists in `src/ids.py`; scheduler raises `NotImplementedError`. Phase D wires it.
 - **Syllabus parser.** `current_book` is hardcoded in `state.yaml`. Phase D adds `src/syllabus.py`.
 - **Dashboard.** No `docs/`, no `src/dashboard.py`, no `data.json`. Phase E.
-- **`rebuild_cache.py` (Phase F).** Runtime marker dedup handles the common case of cache loss; Phase F's offline script handles the long tail (older days outside the prune window, completed tasks).
-- **`dry_run` workflow input.** Local CLI has `--dry-run` (Phase A retrofit). Surfacing it as a `workflow_dispatch` input is a Phase F task.
+- **`rebuild_cache.py` (Phase F).** Runtime marker dedup handles cache loss; Phase F's offline script handles the long tail (older days outside the prune window, completed tasks).
+- **`dry_run` workflow input.** Local CLI has `--dry-run`. Surfacing it as a `workflow_dispatch` input is Phase F.
 
 ## UX flags worth tracking
 
-- **Last-Saturday triple-firing.** On the last Saturday of any month, three Saturday-time tasks fire simultaneously: `weekly-saturday-deep-block` + `monthly-retrieval` + `monthly-review`. This is intentional per the syllabus (deep block continues happening; retrieval and review are monthly cadences that landed on the same Saturday). Owner may eventually want `weekly-saturday-deep-block` to skip on last-Saturdays so the monthly tasks subsume it. Not a Phase B fix — flagged here for Phase C/F revisit. Verified live on `--dry-run --today 2026-05-30`.
+- **Last-Saturday triple-firing (Phase B + C).** On the last Saturday of any month, three Saturday-time tasks fire simultaneously: `weekly-saturday-deep-block` + `monthly-retrieval` + `monthly-review`. Phase C adds the wrinkle that monthly-retrieval and monthly-review now *share* a reflection path — exactly one `2026-05.md` stub gets created per month, but two tasks land in Todoist at the same time. Owner may eventually want `weekly-saturday-deep-block` to skip on last-Saturdays so the monthly tasks subsume it. Not a Phase C fix — flagged here for Phase F revisit.
 - **Bot-author commit identity.** Daily workflow commits as `long-way-bot <long-way-bot@users.noreply.github.com>`. Owner may want a stronger marker (e.g. signed commits) once Phase E's dashboard is the public-facing artifact.
+- **Threshold tuning.** `WORD_COUNT_THRESHOLD = 50`. Documented in `reflections/README.md`. If the auto-toggle feels wrong in either direction (e.g. weekly reviews crossing too easily because the prompt-list is short), this is the single number to bisect.
 
 ## Phase A "Done when" gate — VERIFIED ✅
-Production project has 2 tasks dated 2026-05-04. Re-trigger via `workflow_dispatch` shows 0 new (cache hit). LOG.md committed by bot. See repo at https://github.com/SauravSuresh/long-way-engine.
+Production project has 2 tasks dated 2026-05-04. Re-trigger via `workflow_dispatch` shows 0 new (cache hit). LOG.md committed by bot.
 
 ## Phase B "Done when" gate — VERIFIED ✅
 Per spec: `today=Friday` produces Friday review; `today=Sunday` produces zero; `today=last-Saturday-of-month` produces monthly retrieval; `paused: true` produces zero of any kind. All eight matrix dates verified by template-ID assertion (not just count) including the 2029-04-01 Sunday-quarterly interaction.
 
-## Phase C entry points
+## Phase C "Done when" gate — VERIFIED ✅
+Per spec: *"Friday's run creates `reflections/weekly/2026-W14.md` as a stub *and* the Todoist task. Editing the file and re-running updates `word_count` and toggles `status` to `filled`. Re-running with the file already present does not clobber it."*
 
-Phase C = reflections subsystem.
+Live sandbox verification:
+1. Empty `reflections/weekly/`, ran `--today 2026-05-08 --project-id <SANDBOX>` → stub created at `reflections/weekly/2026-W19.md` with `status: stub, word_count: 38` (post-walk baseline). 4 sandbox tasks created.
+2. Appended ~60 words of prose to the stub.
+3. Re-ran same date → log shows `status stub -> filled (word_count 38 -> 101, threshold 88)`. Stub now `status: filled, word_count: 101`. Owner prose preserved verbatim. Cache hits all 4 tasks.
 
-- `reflections/` directory tree with `.gitkeep` files (`weekly/`, `monthly/`, `quarterly/`, `annual/`, `debugging/`, `pairing/`, `private/`).
-- `reflections/private/` already in `.gitignore`.
-- `src/reflections.py` — given a template and a date, write the stub markdown file at the resolved path *if it doesn't already exist*. Never overwrite. Frontmatter: `type`, `date`, `iso_week` / month / quarter equivalent, `status: stub`, `word_count: 0`.
-- `src/templates.py` — extend variable resolver with `{iso_year}`, `{iso_week:02d}`, `{year}`, `{month:02d}`, `{quarter}`, `{quarter_num}` so `stub_path` strings resolve at run time.
-- `src/main.py` — when a created (or marker-rehydrated) template carries `reflection.create_stub: true`, also create the stub file. Add to LOG.md summary line.
-- A small utility (likely a step in `main.py`) updates `word_count` and `status` for all reflections each run, by reading current word counts via the `markdown` package. `status: stub | filled` toggles automatically when word count exceeds template baseline by some threshold (or owner manually sets `status: filled`).
-- Tests: stub creation idempotent (no overwrite), frontmatter parsing, word-count updating, path resolution edge case (ISO week year boundary 2026-12-31 → 2027-W53 file).
+Plus dry-run probes for: ISO-W53/2026 boundary (`2027-01-01 → reflections/weekly/2026-W53.md`), Jan 1 multi-cadence stack (annual + quarterly + monthly stubs all listed), last-Saturday pending collision (one CREATE + one SKIP (pending) for the shared monthly path).
+
+## Phase D entry points
+
+Phase D = active practices and module work.
+
+- `task_templates/practices.yaml` — weekly trace-one-thing (Sunday), Saturday code-reading, monthly OSS PR, quarterly build-the-thing, continuous debug-deliberately reminder.
+- `task_templates/modules.yaml` — one entry per syllabus module (1–23) with `cadence: once-per-module`, optional `lineage_detour` sub-task.
+- `src/syllabus.py` — minimal regex extractor for "Phase X reading" sections from `the-long-way.md`. Replaces hardcoded `state.current_book` with a lookup keyed on `state.month`.
+- `src/scheduler.py` — wire `cadence: once-per-module` (currently raises NotImplementedError). Uses `module_external_id(template_id, module_number)` for ID generation. Cache miss is the trigger: advancing `state.current_module` from 1 to 2 makes module 2's onboarding task miss the cache, causing creation; subsequent runs see the cache hit.
+- `src/main.py` — pass `state.current_module` and `state.completed_modules` to the scheduler.
+- Tests: module advancement creates exactly one onboarding task; advancing again before completion does not duplicate; `{current_book}` resolves correctly across all four phases per syllabus reading schedule.
 
 ## Constraints holding
 
@@ -110,5 +126,6 @@ Phase C = reflections subsystem.
 - Daily-run client write-only on task state; idempotency reads permitted; destructive ops on a separate class.
 - Owner TZ everywhere via `Clock(state.timezone)`. UTC only for `created_at` cache stamps.
 - Pin to Todoist API v1; paginated list responses follow `next_cursor`.
+- Engine reads/writes only `reflections/{weekly,monthly,quarterly,annual}/`. `private/`, `debugging/`, `pairing/` are owner-only.
 
-— end of Phase B —
+— end of Phase C —
