@@ -21,3 +21,6 @@ reflections/private/
 # OS / editor
 .DS_Store
 *.swp
+
+# Books and pdfs that will put me in jail 
+Books/
