@@ -17,10 +17,28 @@
     "template_id": "daily-anki",
     "todoist_task_id": "6gX586xVm2Hc2P22"
   },
+  "c880b6f2a122f3d4": {
+    "created_at": "2026-05-05T22:31:14.778614+00:00",
+    "due_date": "2026-05-06",
+    "template_id": "daily-morning-reading",
+    "todoist_task_id": "6gXGfXjcGQ5pfCw2"
+  },
+  "dd3ddb820fb616d3": {
+    "created_at": "2026-05-05T22:31:15.936076+00:00",
+    "due_date": "2026-05-06",
+    "template_id": "daily-evening-hands-on",
+    "todoist_task_id": "6gXGfXvfV4jPw95R"
+  },
   "ee300869ddec639a": {
     "created_at": "2026-05-04T22:33:20.461189+00:00",
     "due_date": "module:1",
     "template_id": "module-01-onboarding",
     "todoist_task_id": "6gX58747f54fv282"
+  },
+  "f41b7930bd8af5f9": {
+    "created_at": "2026-05-05T22:31:15.362275+00:00",
+    "due_date": "2026-05-06",
+    "template_id": "daily-anki",
+    "todoist_task_id": "6gXGfXqQHGRQW96R"
   }
 }
