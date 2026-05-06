@@ -11,11 +11,29 @@
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6gX586rrvChrv73R"
   },
+  "77e71f95bfb0baf5": {
+    "created_at": "2026-05-06T22:25:25.608138+00:00",
+    "due_date": "2026-05-07",
+    "template_id": "daily-morning-reading",
+    "todoist_task_id": "6gXW6Pcj6jJjMH4R"
+  },
+  "819092dda91ed6aa": {
+    "created_at": "2026-05-06T22:25:26.364352+00:00",
+    "due_date": "2026-05-07",
+    "template_id": "daily-anki",
+    "todoist_task_id": "6gXW6Pj6xJ6J5gxR"
+  },
   "8947fbee4687ed9f": {
     "created_at": "2026-05-04T22:33:19.411575+00:00",
     "due_date": "2026-05-05",
     "template_id": "daily-anki",
     "todoist_task_id": "6gX586xVm2Hc2P22"
+  },
+  "bbf4f76524ba68bb": {
+    "created_at": "2026-05-06T22:25:27.210782+00:00",
+    "due_date": "2026-05-07",
+    "template_id": "weekly-pair-with-engineer",
+    "todoist_task_id": "6gXW6PpV9gQxVpFR"
   },
   "c880b6f2a122f3d4": {
     "created_at": "2026-05-05T22:31:14.778614+00:00",
