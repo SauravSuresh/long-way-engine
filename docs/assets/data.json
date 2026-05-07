@@ -90,10 +90,6 @@
   "current_module": 1,
   "last_7_days": [
     {
-      "date": "2026-04-30",
-      "state": "gray"
-    },
-    {
       "date": "2026-05-01",
       "state": "gray"
     },
@@ -116,6 +112,10 @@
     {
       "date": "2026-05-06",
       "state": "green"
+    },
+    {
+      "date": "2026-05-07",
+      "state": "green"
     }
   ],
   "month": 1,
@@ -127,11 +127,19 @@
     "Pair sessions": 0,
     "Traces completed": 0
   },
-  "reflections": [],
+  "reflections": [
+    {
+      "cadence": "weekly",
+      "file": "2026-W19",
+      "relative_path": "weekly/2026-W19.md",
+      "status": "stub",
+      "word_count": 38
+    }
+  ],
   "streaks": {
-    "Daily": 2,
+    "Daily": 3,
     "Monthly post": 0,
     "Weekly review": 0
   },
-  "today": "2026-05-07"
+  "today": "2026-05-08"
 }
