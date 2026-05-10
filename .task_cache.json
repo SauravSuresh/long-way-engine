@@ -11,6 +11,12 @@
     "template_id": "weekly-friday-review",
     "todoist_task_id": "6gXmg2RHP87MGRf2"
   },
+  "067be20dde02fcac": {
+    "created_at": "2026-05-10T22:11:13.141953+00:00",
+    "due_date": "2026-05-11",
+    "template_id": "daily-anki",
+    "todoist_task_id": "6gcR3GMPxGWx56X2"
+  },
   "1cb68587c635dcfb": {
     "created_at": "2026-05-08T22:30:57.702480+00:00",
     "due_date": "2026-05-09",
@@ -65,6 +71,12 @@
     "template_id": "daily-anki",
     "todoist_task_id": "6gXW6Pj6xJ6J5gxR"
   },
+  "8685e74869e63fd3": {
+    "created_at": "2026-05-10T22:11:12.622621+00:00",
+    "due_date": "2026-05-11",
+    "template_id": "daily-morning-reading",
+    "todoist_task_id": "6gcR3GGjpwrXGVX2"
+  },
   "8947fbee4687ed9f": {
     "created_at": "2026-05-04T22:33:19.411575+00:00",
     "due_date": "2026-05-05",
@@ -94,6 +106,12 @@
     "due_date": "2026-05-06",
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6gXGfXjcGQ5pfCw2"
+  },
+  "cba1629d90d6d10d": {
+    "created_at": "2026-05-10T22:11:13.666827+00:00",
+    "due_date": "2026-05-11",
+    "template_id": "daily-evening-hands-on",
+    "todoist_task_id": "6gcR3GM5cP4G5mJR"
   },
   "dd3ddb820fb616d3": {
     "created_at": "2026-05-05T22:31:15.936076+00:00",
