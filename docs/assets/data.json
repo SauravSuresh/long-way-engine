@@ -90,10 +90,6 @@
   "current_module": 1,
   "last_7_days": [
     {
-      "date": "2026-05-06",
-      "state": "green"
-    },
-    {
       "date": "2026-05-07",
       "state": "green"
     },
@@ -116,6 +112,10 @@
     {
       "date": "2026-05-12",
       "state": "yellow"
+    },
+    {
+      "date": "2026-05-13",
+      "state": "yellow"
     }
   ],
   "month": 1,
@@ -133,5 +133,5 @@
     "Monthly post": 0,
     "Weekly review": 0
   },
-  "today": "2026-05-13"
+  "today": "2026-05-14"
 }
