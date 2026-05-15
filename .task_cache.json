@@ -47,6 +47,12 @@
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6gX586rrvChrv73R"
   },
+  "2de9ab319e6816e1": {
+    "created_at": "2026-05-15T22:30:20.938219+00:00",
+    "due_date": "2026-05-16",
+    "template_id": "weekly-saturday-deep-block",
+    "todoist_task_id": "6gffXVc9cp3p9F8R"
+  },
   "43b13ec81e76b4ea": {
     "created_at": "2026-05-13T22:46:15.845765+00:00",
     "due_date": "2026-05-14",
@@ -83,6 +89,12 @@
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6gc36xjw72xq2wpR"
   },
+  "5b95d9b9eff9c274": {
+    "created_at": "2026-05-15T22:30:19.302994+00:00",
+    "due_date": "2026-05-16",
+    "template_id": "daily-evening-hands-on",
+    "todoist_task_id": "6gffXVQ9Ff8fFv9R"
+  },
   "5f3fdc67bafdb178": {
     "created_at": "2026-05-14T22:37:19.168668+00:00",
     "due_date": "2026-05-15",
@@ -106,6 +118,12 @@
     "due_date": "2026-05-10",
     "template_id": "weekly-trace-one-thing",
     "todoist_task_id": "6gcCV2wvh3H6CW6R"
+  },
+  "767fd8952ca98a7d": {
+    "created_at": "2026-05-15T22:30:20.287975+00:00",
+    "due_date": "2026-05-16",
+    "template_id": "weekly-read-real-code",
+    "todoist_task_id": "6gffXVWMCqJ5R4VR"
   },
   "77e71f95bfb0baf5": {
     "created_at": "2026-05-06T22:25:25.608138+00:00",
@@ -149,6 +167,12 @@
     "template_id": "daily-anki",
     "todoist_task_id": "6gchcqCW8ccj9XRR"
   },
+  "af8e5d22e65065e6": {
+    "created_at": "2026-05-15T22:30:18.193766+00:00",
+    "due_date": "2026-05-16",
+    "template_id": "daily-anki",
+    "todoist_task_id": "6gffXVJhgpvXFrcR"
+  },
   "ba4181a001ac6def": {
     "created_at": "2026-05-13T22:46:17.719925+00:00",
     "due_date": "2026-05-14",
@@ -160,6 +184,12 @@
     "due_date": "2026-05-07",
     "template_id": "weekly-pair-with-engineer",
     "todoist_task_id": "6gXW6PpV9gQxVpFR"
+  },
+  "bc4b5d76ee3b57ba": {
+    "created_at": "2026-05-15T22:30:17.457171+00:00",
+    "due_date": "2026-05-16",
+    "template_id": "daily-morning-reading",
+    "todoist_task_id": "6gffXVCcXCVwchj2"
   },
   "bc7b7f6451b83f9e": {
     "created_at": "2026-05-07T22:35:56.273516+00:00",
