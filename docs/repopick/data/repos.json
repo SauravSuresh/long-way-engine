@@ -87,21 +87,24 @@
   },
   {
     "id": "sqlite",
-    "name": "sqlite (amalgamation)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "sqlite/sqlite (btree, version-3.53.1)",
+    "url": "https://github.com/sqlite/sqlite",
+    "ref": "version-3.53.1",
+    "language": "C",
     "themes": [
       "databases"
     ],
     "difficulty": 5,
-    "why": "stub",
+    "why": "The B-tree that backs every table and index in SQLite, pinned to 3.53.1 — about ten thousand lines inside the larger amalgamation. Read it for how on-disk b-tree pages, cursors, and balancing actually work in production code.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Insert a row through the b-tree",
         "files": [
-          "TBD"
+          "src/btree.c",
+          "src/btree.h",
+          "src/btreeInt.h"
         ],
-        "question": "stub"
+        "question": "When sqlite3BtreeInsert is called for a new (key, payload) on a table b-tree, what's the path through btree.c — moveto via the cursor, allocating space on the target leaf page, splitting and rebalancing siblings when the leaf is full, and updating parent pointers — until the cell is written into a page buffer the pager will later flush?"
       }
     ],
     "reading": []
@@ -447,21 +450,24 @@
   },
   {
     "id": "openzfs-arc",
-    "name": "openzfs/zfs (ARC)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "openzfs/zfs (ARC, zfs-2.4.2)",
+    "url": "https://github.com/openzfs/zfs",
+    "ref": "zfs-2.4.2",
+    "language": "C",
     "themes": [
       "storage"
     ],
     "difficulty": 5,
-    "why": "stub",
+    "why": "OpenZFS's Adaptive Replacement Cache — Megiddo and Modha's algorithm with ZFS-specific extensions for ghost lists, MFU/MRU rebalancing, and compressed buffers, pinned to zfs-2.4.2. Scoped to the read path so the famous 'adaptive boundary' is visible in code without taking on writeback or compression internals.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read the ARC adaptive read path",
         "files": [
-          "TBD"
+          "module/zfs/arc.c",
+          "include/sys/arc_impl.h",
+          "include/sys/arc.h"
         ],
-        "question": "stub"
+        "question": "When arc_read is called for a block buffer that hits in either the MFU or MRU list, what's the path that returns it to the caller — and on a miss, how does the ghost-list bookkeeping in arc.c decide whether to grow the MFU or MRU target size (the adaptive boundary `arc_p`) before initiating the underlying I/O?"
       }
     ],
     "reading": []
@@ -498,22 +504,25 @@
   },
   {
     "id": "v8-ignition",
-    "name": "v8/v8 (Ignition)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "v8/v8 (Ignition, 15.0.99)",
+    "url": "https://github.com/v8/v8",
+    "ref": "15.0.99",
+    "language": "C++",
     "themes": [
       "compilers",
       "runtime"
     ],
     "difficulty": 5,
-    "why": "stub",
+    "why": "V8's bytecode interpreter, pinned to 15.0.99 — the layer that runs JavaScript before TurboFan compiles it, dispatching one opcode at a time. The smallest complete view of 'interpreter inside a JIT.'",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read the bytecode dispatch loop",
         "files": [
-          "TBD"
+          "src/interpreter/interpreter.cc",
+          "src/interpreter/bytecodes.h",
+          "src/interpreter/interpreter-generator.cc"
         ],
-        "question": "stub"
+        "question": "How does Ignition's bytecode interpreter (built by interpreter-generator.cc using CSA) dispatch from one bytecode handler to the next at runtime, and where does the bytecode array's offset get updated to point at the next instruction?"
       }
     ],
     "reading": []
@@ -647,22 +656,25 @@
   },
   {
     "id": "litestream",
-    "name": "benbjohnson/litestream",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "benbjohnson/litestream (v0.5.11)",
+    "url": "https://github.com/benbjohnson/litestream",
+    "ref": "v0.5.11",
+    "language": "Go",
     "themes": [
       "databases",
       "storage"
     ],
     "difficulty": 3,
-    "why": "stub",
+    "why": "Streaming replication for SQLite — a Go daemon that watches a SQLite WAL and ships frames to S3-compatible storage continuously. Pinned to v0.5.11; read it for how 'replication as a sidecar' is structured around the WAL file format that SQLite was already going to write anyway.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace a WAL frame from sync to replica",
         "files": [
-          "TBD"
+          "litestream.go",
+          "db.go",
+          "replica.go"
         ],
-        "question": "stub"
+        "question": "When litestream's monitor sees the SQLite WAL grow because a new frame has landed, what's the path in db.go that opens the WAL, parses the new frame's header (page number, checksum, commit marker), copies the page bytes — and what does replica.go then do to ship that frame to the configured replica client before the next WAL checkpoint potentially overwrites it?"
       }
     ],
     "reading": []
@@ -936,22 +948,23 @@
   },
   {
     "id": "busybox-init",
-    "name": "busybox/busybox (init.c)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "mirror/busybox (init.c, 1_36_1)",
+    "url": "https://github.com/mirror/busybox",
+    "ref": "1_36_1",
+    "language": "C",
     "themes": [
       "unix-tools",
       "operating-systems"
     ],
     "difficulty": 3,
-    "why": "stub",
+    "why": "BusyBox's init — a complete System V style PID 1 in one C file, the kind of init that boots most embedded Linux. Pinned to 1.36.1; read it for the actual reaper-and-respawn loop, parsing /etc/inittab, and what 'PID 1's job' looks like when it isn't systemd.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read the init lifecycle",
         "files": [
-          "TBD"
+          "init/init.c"
         ],
-        "question": "stub"
+        "question": "When BusyBox init starts as PID 1, what's the structure of the main loop after the boot-time actions have run — how does it simultaneously wait for SIGCHLD from respawned children, dispatch the respawn logic for each, and reap orphaned processes that the kernel reparents to PID 1?"
       }
     ],
     "reading": []
@@ -984,22 +997,23 @@
   },
   {
     "id": "musl-printf",
-    "name": "musl/musl (src/stdio/vfprintf.c)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "kraj/musl (vfprintf.c, v1.2.5)",
+    "url": "https://github.com/kraj/musl",
+    "ref": "v1.2.5",
+    "language": "C",
     "themes": [
       "runtime",
       "language"
     ],
     "difficulty": 4,
-    "why": "stub",
+    "why": "musl libc's printf — the entire C printf family funnels through one ~700-line vfprintf.c, pinned to musl 1.2.5. Read it for an unusually clean implementation of the format-specifier mini-language, including the awkward bits like width-from-arg `%*d`, positional `%2$s`, and floating-point conversion.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Parse a format string and emit one int and one float",
         "files": [
-          "TBD"
+          "src/stdio/vfprintf.c"
         ],
-        "question": "stub"
+        "question": "When vfprintf walks a format string like `\"%5d %.3f\\n\"`, how does the inner loop dispatch on each `%` directive — collecting flags, width, precision, length modifier — and then for `%d` pull the int via va_arg and format it, and for `%.3f` pull the double and run it through the floating-point conversion routines defined in vfprintf.c?"
       }
     ],
     "reading": []
