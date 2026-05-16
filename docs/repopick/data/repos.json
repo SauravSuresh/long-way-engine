@@ -468,25 +468,33 @@
   },
   {
     "id": "cpython-dict",
-    "name": "python/cpython (Objects/dictobject.c)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "python/cpython (dictobject.c, v3.13.0)",
+    "url": "https://github.com/python/cpython",
+    "ref": "v3.13.0",
+    "language": "C",
     "themes": [
       "runtime",
       "language"
     ],
     "difficulty": 4,
-    "why": "stub",
+    "why": "The CPython dict at 3.13 — the compact-and-ordered hash table that backs everything from globals() to keyword arguments. Pinned to a settled release so the compact representation and insertion-order guarantee are stable; scoped to insertion and probing, not the full rehash/resize story.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace an insertion through the open-addressing probe",
         "files": [
-          "TBD"
+          "Objects/dictobject.c",
+          "Include/internal/pycore_dict.h"
         ],
-        "question": "stub"
+        "question": "When `d[key] = value` reaches insertdict() in Objects/dictobject.c, how does the probing sequence (the `5*i + 1 + perturb` scheme) walk the compact `ix` array described in PyDictKeysObject to find either an existing slot or a free one — and where exactly does insertion order get recorded so that iterating the dict later produces keys in the order they were first added?"
       }
     ],
-    "reading": []
+    "reading": [
+      {
+        "title": "dictnotes.txt — design notes on CPython's compact dict",
+        "url": "https://github.com/python/cpython/blob/v3.13.0/Objects/dictnotes.txt",
+        "kind": "doc"
+      }
+    ]
   },
   {
     "id": "v8-ignition",
@@ -534,21 +542,25 @@
   },
   {
     "id": "postgres-exec",
-    "name": "postgres/postgres (executor)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "postgres/postgres (executor SeqScan, REL_18_4)",
+    "url": "https://github.com/postgres/postgres",
+    "ref": "REL_18_4",
+    "language": "C",
     "themes": [
       "databases"
     ],
     "difficulty": 5,
-    "why": "stub",
+    "why": "Postgres pinned to 18.4, scoped to one trace: how `SELECT * FROM t WHERE x > 5` actually executes, from ExecutorStart through one tuple coming out of a SeqScan. The cleanest entry into the Volcano iterator framework that powers every Postgres query.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Walk one tuple from ExecutorStart through SeqScan",
         "files": [
-          "TBD"
+          "src/backend/executor/execMain.c",
+          "src/backend/executor/execProcnode.c",
+          "src/backend/executor/nodeSeqscan.c",
+          "src/backend/executor/execScan.c"
         ],
-        "question": "stub"
+        "question": "For `SELECT * FROM t WHERE x > 5`, starting at execMain.c's ExecutorStart and following ExecProcNode through one iteration of the SeqScanState produced by ExecInitSeqScan, where is the heap tuple actually fetched, where is the `x > 5` qual evaluated, and what does the SeqScan node return to its parent on each call — both the steady-state case and when the heap is exhausted?"
       }
     ],
     "reading": []
@@ -712,20 +724,21 @@
   {
     "id": "tailscale-tsnet",
     "name": "tailscale/tailscale (tsnet)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/tailscale/tailscale",
+    "language": "Go",
     "themes": [
       "networking"
     ],
     "difficulty": 3,
-    "why": "stub",
+    "why": "Userspace WireGuard wrapped as a Go library — embed it and your program becomes its own node on a tailnet, no daemon needed. The tsnet package is the small API surface that hides wgengine and magicsock; read it for what 'tailscale-in-a-binary' actually looks like, not for the lower layers underneath.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read the tsnet API surface",
         "files": [
-          "TBD"
+          "tsnet/tsnet.go",
+          "tsnet/example_tsnet_test.go"
         ],
-        "question": "stub"
+        "question": "When a Go program calls `(&tsnet.Server{}).Listen(\"tcp\", \":80\")` and starts serving, what does tsnet.go do on first Up — how does it materialize a node identity, bring up the wgengine/magicsock stack it depends on, and hand a real net.Listener back to the caller — and at what point does the returned listener start accepting connections from peer nodes on the tailnet?"
       }
     ],
     "reading": []
@@ -873,23 +886,25 @@
   },
   {
     "id": "curl",
-    "name": "curl/curl",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "curl/curl (urlapi, curl-8_20_0)",
+    "url": "https://github.com/curl/curl",
+    "ref": "curl-8_20_0",
+    "language": "C",
     "themes": [
       "networking-tools",
       "networking",
       "cli-tools"
     ],
     "difficulty": 4,
-    "why": "stub",
+    "why": "The URL parser of curl, pinned to 8.20.0 — a self-contained study in 'what does a URL actually mean.' Covers scheme, userinfo, host, port, path, query, and fragment, plus relative-resolution, IDN, and percent-encoding.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Parse a URL end to end",
         "files": [
-          "TBD"
+          "lib/urlapi.c",
+          "include/curl/urlapi.h"
         ],
-        "question": "stub"
+        "question": "When you call `curl_url_set(u, CURLUPART_URL, \"https://user:pass@host:8443/path?q=1#frag\", 0)`, what's the path through lib/urlapi.c that splits the input into the seven URL parts — and how does the parser distinguish a relative reference like `page.html?x=1` (which must be resolved against a base) from an absolute URL it can split on its own?"
       }
     ],
     "reading": []
@@ -943,22 +958,26 @@
   },
   {
     "id": "openssh-kex",
-    "name": "openssh/openssh-portable (kex.c, kexgen.c)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "openssh/openssh-portable (curve25519 kex, V_10_3_P1)",
+    "url": "https://github.com/openssh/openssh-portable",
+    "ref": "V_10_3_P1",
+    "language": "C",
     "themes": [
       "networking",
       "crypto"
     ],
     "difficulty": 5,
-    "why": "stub",
+    "why": "OpenSSH key exchange at 10.3p1, scoped to one method on one side: the client-side curve25519-sha256 handshake. The full kex layer supports a dozen methods plus hybrids (mlkem768x25519, sntrup761x25519); this entry point ignores everything except the modern default so the round trip stays readable in one sitting.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace a curve25519 KEX from the client side",
         "files": [
-          "TBD"
+          "kex.c",
+          "kex.h",
+          "kexgen.c",
+          "kexc25519.c"
         ],
-        "question": "stub"
+        "question": "From the SSH_MSG_KEXINIT message on the client side, what's the path through kex.c that negotiates curve25519-sha256 from the server's algorithm list, then through kexgen.c's kex_gen_client and kexc25519.c's kex_c25519_keygen/kex_c25519_shared_key until the shared secret K is derived — and at exactly which points in that sequence does the client send SSH_MSG_KEX_ECDH_INIT and consume SSH_MSG_KEX_ECDH_REPLY?"
       }
     ],
     "reading": []
