@@ -152,3 +152,173 @@ export function pick(weekKey, repos) {
   }
   return pickAt(weekKey, repos, new Set(history.slice(-window).filter(Boolean)));
 }
+
+// --- Browser UI ------------------------------------------------------------
+// Pure picker ends above. The rest of this file is the DOM-rendering side
+// and a bootstrap. Node imports (tests, simulator) never reach the bootstrap
+// because of the `window`/`document` guard at the bottom.
+
+export function currentWeekKey(now = new Date()) {
+  return dateToWeekKey(
+    new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+    ),
+  );
+}
+
+function refUrl(repo) {
+  if (!repo.ref) return repo.url;
+  return `${repo.url.replace(/\/+$/, "")}/tree/${encodeURIComponent(repo.ref)}`;
+}
+
+function el(tag, attrs, ...children) {
+  const e = document.createElement(tag);
+  if (attrs) {
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v == null) continue;
+      if (k === "class") e.className = v;
+      else e.setAttribute(k, v);
+    }
+  }
+  for (const c of children) {
+    if (c == null) continue;
+    e.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+  }
+  return e;
+}
+
+const EXT_LINK = { target: "_blank", rel: "noopener noreferrer" };
+const SOURCE_URL =
+  "https://github.com/SauravSuresh/long-way-engine/tree/main/docs/repopick";
+
+export function render(state, root) {
+  const { repo, entryPoint, theme, target, weekKey, prevWeekKey, nextWeekKey } =
+    state;
+
+  root.replaceChildren();
+
+  root.appendChild(
+    el(
+      "section",
+      { class: "pick" },
+      el("h1", null, el("a", { href: refUrl(repo), ...EXT_LINK }, repo.name)),
+      el("p", { class: "why" }, repo.why || ""),
+    ),
+  );
+
+  if (entryPoint) {
+    root.appendChild(
+      el(
+        "section",
+        { class: "entry" },
+        el("h2", null, "this week"),
+        el("p", { class: "label" }, entryPoint.label),
+        el(
+          "ul",
+          { class: "files" },
+          ...entryPoint.files.map((f) => el("li", null, el("code", null, f))),
+        ),
+        el("p", { class: "question" }, entryPoint.question),
+      ),
+    );
+  }
+
+  if (Array.isArray(repo.reading) && repo.reading.length > 0) {
+    root.appendChild(
+      el(
+        "section",
+        { class: "reading" },
+        el("h2", null, "reading"),
+        el(
+          "ul",
+          null,
+          ...repo.reading.map((r) =>
+            el(
+              "li",
+              null,
+              el("a", { href: r.url, ...EXT_LINK }, r.title),
+              el("span", { class: "kind" }, r.kind),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  root.appendChild(
+    el(
+      "footer",
+      null,
+      el(
+        "p",
+        { class: "wk" },
+        `${weekKey} · theme: ${theme} · target difficulty: ${target}`,
+      ),
+      el(
+        "p",
+        { class: "nav" },
+        el("a", { href: `#week=${prevWeekKey}` }, "← prev week"),
+        " · ",
+        el("a", { href: `#week=${nextWeekKey}` }, "next week →"),
+        " · ",
+        el("a", { href: SOURCE_URL, ...EXT_LINK }, "source"),
+      ),
+    ),
+  );
+}
+
+const HASH_RE = /^#week=(\d{4}-W\d{1,2})$/;
+
+async function bootstrap() {
+  const root = document.getElementById("app");
+  if (!root) return;
+  try {
+    const res = await fetch("./data/repos.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`fetch repos.json: HTTP ${res.status}`);
+    const repos = await res.json();
+
+    const renderForHash = () => {
+      const m = HASH_RE.exec(window.location.hash);
+      const weekKey = m ? m[1] : currentWeekKey();
+      const result = pick(weekKey, repos);
+      if (!result) {
+        root.replaceChildren();
+        root.appendChild(
+          el(
+            "p",
+            { class: "error" },
+            `No pick available for ${weekKey}.`,
+          ),
+        );
+        return;
+      }
+      const idx = weekKeyToIndex(weekKey);
+      render(
+        {
+          ...result,
+          weekKey,
+          prevWeekKey: indexToWeekKey(idx - 1),
+          nextWeekKey: indexToWeekKey(idx + 1),
+        },
+        root,
+      );
+    };
+
+    renderForHash();
+    window.addEventListener("hashchange", renderForHash);
+  } catch (e) {
+    root.replaceChildren();
+    root.appendChild(
+      el("p", { class: "error" }, `Failed to load: ${e.message}`),
+    );
+    console.error(e);
+  }
+}
+
+if (typeof window !== "undefined" && typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bootstrap);
+  } else {
+    bootstrap();
+  }
+}

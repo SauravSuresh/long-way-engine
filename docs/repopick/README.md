@@ -2,6 +2,8 @@
 
 Weekly code-reading picker. One bookmarked URL hands you one repo, one entry point, and a short reading list — deterministic from the current ISO week.
 
+Lives at `docs/repopick/` so GitHub Pages serves it from the same branch source as the rest of the site. Live URL: `https://sauravsuresh.github.io/long-way-engine/repopick/`.
+
 See [SPEC.md](./SPEC.md) for the full design.
 
 ## Add a repo

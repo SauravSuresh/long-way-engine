@@ -1,16 +1,16 @@
-name: validate
+name: repopick-validate
 
 on:
   pull_request:
     paths:
-      - "data/**"
-      - "scripts/validate.mjs"
-      - ".github/workflows/validate.yml"
+      - "docs/repopick/data/**"
+      - "docs/repopick/scripts/validate.mjs"
+      - ".github/workflows/repopick-validate.yml"
   push:
     branches: [main]
     paths:
-      - "data/**"
-      - "scripts/validate.mjs"
+      - "docs/repopick/data/**"
+      - "docs/repopick/scripts/validate.mjs"
 
 jobs:
   validate:
@@ -22,8 +22,8 @@ jobs:
           node-version: "20"
 
       - name: Schema + duplicates (must pass)
-        run: node scripts/validate.mjs
+        run: node docs/repopick/scripts/validate.mjs
 
       - name: Network checks — URLs, refs (best-effort)
-        run: node scripts/validate.mjs --strict
+        run: node docs/repopick/scripts/validate.mjs --strict
         continue-on-error: true
