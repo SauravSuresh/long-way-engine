@@ -136,6 +136,8 @@ Most of what you'll write professionally will be modifying existing code, not gr
 
 **The practice:** Saturday morning, hour one. Pick a target, read it, write a one-page summary in your notebook of what you learned, what was confusing, what was beautiful. Add 1–2 Anki cards. Push the notes to your public repo.
 
+**Picker:** [repopick](https://sauravsuresh.github.io/long-way-engine/repopick/) materializes this practice — one curated repo at a time from a 41-entry seed, scoped to a specific entry point with a concrete reading question. Mark the week's read complete to unlock the next pick; progress is per-browser in localStorage.
+
 **What to read, in roughly increasing difficulty:**
 - **Go standard library** — start with simple packages: [`strings`](https://pkg.go.dev/strings), [`sort`](https://pkg.go.dev/sort), [`io`](https://pkg.go.dev/io). Then [`net/http`](https://pkg.go.dev/net/http), [`encoding/json`](https://pkg.go.dev/encoding/json). The stdlib is famously well-written and is your single best teacher for Go idiom.
 - **Small canonical Go projects** — [BoltDB](https://github.com/etcd-io/bbolt) (a single-file embedded KV store, ~6k lines), [groupcache](https://github.com/golang/groupcache), [hashicorp/raft](https://github.com/hashicorp/raft).

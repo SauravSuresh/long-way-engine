@@ -29,6 +29,11 @@
     Write a one-page summary in your notebook: what you learned, what was
     confusing, what was beautiful. Add 1–2 Anki cards. Push the notes
     to your public repo.
+
+    Picker: https://sauravsuresh.github.io/long-way-engine/repopick/
+    Surfaces one curated repo at a time from the 41-entry seed, with a
+    scoped entry point and a concrete question. Click "Mark complete"
+    when this week's read is done to unlock the next one.
   due: "today at {ritual_times.saturday_deep_block}"
   labels: [active-practice]
   cadence: weekly
