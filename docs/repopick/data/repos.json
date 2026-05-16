@@ -2,22 +2,33 @@
   {
     "id": "boltdb",
     "name": "boltdb/bolt",
-    "url": "https://example.com/stub",
+    "url": "https://github.com/boltdb/bolt",
     "ref": "v1.3.1",
-    "language": "stub",
+    "language": "Go",
     "themes": [
       "databases",
       "storage"
     ],
     "difficulty": 2,
-    "why": "stub",
+    "why": "Single-file embedded KV with a B+tree on mmap, small enough to hold in your head — the cleanest MVCC-via-COW I've read in open source. Tag v1.3.1 is the last release before archive.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace a Put through a write transaction",
         "files": [
-          "TBD"
+          "db.go",
+          "tx.go",
+          "bucket.go",
+          "node.go"
         ],
-        "question": "stub"
+        "question": "Where does the copy-on-write actually happen, and how do in-flight readers see a consistent snapshot of the old tree while a writer is mutating pages?"
+      },
+      {
+        "label": "Understand the freelist",
+        "files": [
+          "freelist.go",
+          "page.go"
+        ],
+        "question": "How does Bolt reclaim freed pages without breaking readers that still hold pointers into the old MVCC snapshot?"
       }
     ],
     "reading": []
@@ -133,21 +144,21 @@
   {
     "id": "fzf",
     "name": "junegunn/fzf",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/junegunn/fzf",
+    "language": "Go",
     "themes": [
       "cli-tools",
       "search"
     ],
     "difficulty": 2,
-    "why": "stub",
+    "why": "The matching engine and scoring that make interactive fuzzy search feel instant on a million-line input. Surprisingly small.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read the matching algorithm",
         "files": [
-          "TBD"
+          "src/algo/algo.go"
         ],
-        "question": "stub"
+        "question": "What does FuzzyMatchV2 do differently from V1, and how do the scoring components (gap penalty, consecutive-match bonus, case-sensitivity bonus) compose into a single int?"
       }
     ],
     "reading": []
@@ -284,20 +295,22 @@
   {
     "id": "miniredis",
     "name": "alicebob/miniredis",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/alicebob/miniredis",
+    "language": "Go",
     "themes": [
       "databases"
     ],
     "difficulty": 2,
-    "why": "stub",
+    "why": "A test-time fake Redis written in Go — small enough to read in a sitting, big enough to teach you what the Redis wire protocol actually looks like.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace a SET command from socket to reply",
         "files": [
-          "TBD"
+          "server/server.go",
+          "server/proto.go",
+          "cmd_string.go"
         ],
-        "question": "stub"
+        "question": "How does miniredis read a RESP command off the socket, dispatch it, and write a RESP reply — and where exactly does the in-memory datastore get touched in that round-trip?"
       }
     ],
     "reading": []
@@ -649,21 +662,23 @@
   {
     "id": "busybox-cat",
     "name": "busybox/busybox (coreutils/cat.c)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/mirror/busybox",
+    "ref": "1_36_1",
+    "language": "C",
     "themes": [
       "unix-tools",
       "cli-tools"
     ],
     "difficulty": 1,
-    "why": "stub",
+    "why": "Every busybox applet is shaped the same way; cat.c is the smallest complete example of that shape.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read cat.c in full and identify the applet contract",
         "files": [
-          "TBD"
+          "coreutils/cat.c",
+          "include/applets.src.h"
         ],
-        "question": "stub"
+        "question": "What does busybox demand of every applet (name, argv parsing, return code, output handling), and how does cat.c satisfy each of those in under 200 lines?"
       }
     ],
     "reading": []
@@ -671,21 +686,22 @@
   {
     "id": "busybox-wc",
     "name": "busybox/busybox (coreutils/wc.c)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/mirror/busybox",
+    "ref": "1_36_1",
+    "language": "C",
     "themes": [
       "unix-tools",
       "cli-tools"
     ],
     "difficulty": 1,
-    "why": "stub",
+    "why": "Three counters in a single pass over arbitrary input — the shape of the loop is the lesson.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read wc.c and identify the multi-counter pattern",
         "files": [
-          "TBD"
+          "coreutils/wc.c"
         ],
-        "question": "stub"
+        "question": "Where in the main loop does wc commit to counting one of bytes / characters / words / lines, and how does the multibyte-input handling thread through that decision?"
       }
     ],
     "reading": []
