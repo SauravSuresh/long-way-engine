@@ -9,9 +9,17 @@ This autouse fixture replaces TodoistCompletionClient module-wide with
 a stub that returns an empty completion set instantly. Tests that DO
 care about dashboard behavior (test_dashboard.py) call render() directly
 and don't go through main, so they're unaffected.
+
+The second autouse fixture redirects the module-level path constants
+that run() falls back to when a test doesn't pass explicit overrides.
+Without it, any test that calls run() without `docs_*_path` /
+`reflections_root` / `completion_cache_path` writes to the real repo
+paths — overwriting docs/index.html, mutating reflections/, etc.
 """
 
 from __future__ import annotations
+
+from pathlib import Path
 
 import pytest
 
@@ -28,4 +36,31 @@ class _FakeCompletionClient:
 def _stub_completion_client(monkeypatch):
     monkeypatch.setattr(
         "src.main.TodoistCompletionClient", _FakeCompletionClient
+    )
+
+
+@pytest.fixture(autouse=True)
+def _isolate_engine_paths(monkeypatch, tmp_path_factory):
+    """Redirect src.main's path constants into a per-test tmp dir.
+
+    Tests that pass explicit overrides to run() are unaffected (kwargs
+    take precedence inside run()). This is the safety net for tests
+    that don't pass overrides.
+    """
+    root = tmp_path_factory.mktemp("engine-iso")
+    reflections = root / "reflections"
+    rtpl = root / "reflection_templates"
+    reflections.mkdir()
+    rtpl.mkdir()
+    monkeypatch.setattr("src.main.REFLECTIONS_DIR", reflections)
+    monkeypatch.setattr("src.main.REFLECTION_TEMPLATES_DIR", rtpl)
+    monkeypatch.setattr(
+        "src.main.COMPLETION_CACHE_PATH", root / ".completion_cache.json"
+    )
+    monkeypatch.setattr("src.main.DOCS_HTML_PATH", root / "docs" / "index.html")
+    monkeypatch.setattr(
+        "src.main.DOCS_DATA_PATH", root / "docs" / "assets" / "data.json"
+    )
+    monkeypatch.setattr(
+        "src.main.DOCS_CSS_PATH", root / "docs" / "assets" / "style.css"
     )

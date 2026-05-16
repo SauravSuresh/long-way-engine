@@ -95,6 +95,26 @@ def _seed_templates(tmp_path: Path) -> Path:
     return tdir
 
 
+def _isolated_paths(tmp_path: Path) -> dict:
+    """All run() kwargs needed to keep filesystem effects inside tmp_path.
+
+    Tests that don't pass these end up writing the engine's real docs/,
+    .completion_cache.json, and mutating reflections/ via update_metadata.
+    """
+    refl_root = tmp_path / "reflections"
+    refl_templates = tmp_path / "rtpl"
+    refl_root.mkdir(parents=True, exist_ok=True)
+    refl_templates.mkdir(parents=True, exist_ok=True)
+    return {
+        "reflections_root": refl_root,
+        "reflection_templates_root": refl_templates,
+        "completion_cache_path": tmp_path / ".completion_cache.json",
+        "docs_html_path": tmp_path / "docs" / "index.html",
+        "docs_data_path": tmp_path / "docs" / "assets" / "data.json",
+        "docs_css_path": tmp_path / "docs" / "assets" / "style.css",
+    }
+
+
 def test_run_creates_two_tasks_on_monday(tmp_path: Path):
     tdir = _seed_templates(tmp_path)
     cache_path = tmp_path / ".task_cache.json"
@@ -105,6 +125,7 @@ def test_run_creates_two_tasks_on_monday(tmp_path: Path):
         tdir,
         cache_path,
         client_factory=FakeClient,
+        **_isolated_paths(tmp_path),
     )
     assert len(summary.created) == 2
     assert len(summary.skipped) == 0
@@ -118,11 +139,12 @@ def test_run_twice_same_day_creates_zero_on_second(tmp_path: Path):
     tdir = _seed_templates(tmp_path)
     cache_path = tmp_path / ".task_cache.json"
     monday = date(2026, 5, 4)
+    paths = _isolated_paths(tmp_path)
 
-    first = run(make_config(), make_state(), monday, tdir, cache_path, FakeClient)
+    first = run(make_config(), make_state(), monday, tdir, cache_path, FakeClient, **paths)
     assert len(first.created) == 2
 
-    second = run(make_config(), make_state(), monday, tdir, cache_path, FakeClient)
+    second = run(make_config(), make_state(), monday, tdir, cache_path, FakeClient, **paths)
     assert len(second.created) == 0
     assert len(second.skipped) == 2
     assert second.errors == 0
@@ -132,7 +154,10 @@ def test_run_sunday_creates_zero(tmp_path: Path):
     tdir = _seed_templates(tmp_path)
     cache_path = tmp_path / ".task_cache.json"
     sunday = date(2026, 5, 3)
-    summary = run(make_config(), make_state(), sunday, tdir, cache_path, FakeClient)
+    summary = run(
+        make_config(), make_state(), sunday, tdir, cache_path, FakeClient,
+        **_isolated_paths(tmp_path),
+    )
     assert len(summary.created) == 0
     assert len(summary.skipped) == 0
     assert summary.errors == 0
@@ -140,6 +165,7 @@ def test_run_sunday_creates_zero(tmp_path: Path):
 
 def test_append_log_creates_and_appends(tmp_path: Path):
     log = tmp_path / "LOG.md"
+    paths_a = _isolated_paths(tmp_path / "a")
     summary_a = run(
         make_config(),
         make_state(),
@@ -147,6 +173,7 @@ def test_append_log_creates_and_appends(tmp_path: Path):
         _seed_templates(tmp_path / "a"),
         tmp_path / "a.json",
         FakeClient,
+        **paths_a,
     )
     append_log(log, summary_a, "Asia/Kolkata")
     contents_a = log.read_text()
@@ -154,6 +181,7 @@ def test_append_log_creates_and_appends(tmp_path: Path):
     assert "2026-05-04" in contents_a
     assert "Created: 2" in contents_a
 
+    paths_b = _isolated_paths(tmp_path / "b")
     summary_b = run(
         make_config(),
         make_state(),
@@ -161,6 +189,7 @@ def test_append_log_creates_and_appends(tmp_path: Path):
         _seed_templates(tmp_path / "b"),
         tmp_path / "b.json",
         FakeClient,
+        **paths_b,
     )
     append_log(log, summary_b, "Asia/Kolkata")
     contents_b = log.read_text()
@@ -276,9 +305,6 @@ def test_dashboard_render_failure_logs_error_does_not_fail_run(tmp_path: Path, c
 
 def test_dashboard_status_in_log_line(tmp_path: Path):
     tdir = _seed_templates(tmp_path)
-    refl_root = tmp_path / "reflections"
-    refl_templates = tmp_path / "rtpl"
-    refl_root.mkdir(); refl_templates.mkdir()
     summary = run(
         make_config(),
         make_state(),
@@ -286,9 +312,8 @@ def test_dashboard_status_in_log_line(tmp_path: Path):
         tdir,
         tmp_path / ".task_cache.json",
         client_factory=FakeClient,
-        reflections_root=refl_root,
-        reflection_templates_root=refl_templates,
         skip_dashboard=True,
+        **_isolated_paths(tmp_path),
     )
     log = tmp_path / "LOG.md"
     append_log(log, summary, "Asia/Kolkata")
