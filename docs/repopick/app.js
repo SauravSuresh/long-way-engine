@@ -153,6 +153,65 @@ export function pick(weekKey, repos) {
   return pickAt(weekKey, repos, new Set(history.slice(-window).filter(Boolean)));
 }
 
+// --- Progress (sequence-mode reading list) --------------------------------
+// localStorage-backed completion state. Sequence mode walks weeks forward
+// from START_WEEK and shows the first pick the user hasn't marked complete.
+
+export const PROGRESS_KEY = "repopick.progress";
+
+export function loadProgress() {
+  if (typeof localStorage === "undefined") return new Set();
+  try {
+    const raw = localStorage.getItem(PROGRESS_KEY);
+    if (!raw) return new Set();
+    const obj = JSON.parse(raw);
+    return new Set(Array.isArray(obj && obj.completedIds) ? obj.completedIds : []);
+  } catch {
+    return new Set();
+  }
+}
+
+export function saveProgress(completedIds) {
+  if (typeof localStorage === "undefined") return;
+  try {
+    localStorage.setItem(
+      PROGRESS_KEY,
+      JSON.stringify({ completedIds: Array.from(completedIds) }),
+    );
+  } catch {}
+}
+
+export function clearProgress() {
+  if (typeof localStorage === "undefined") return;
+  try {
+    localStorage.removeItem(PROGRESS_KEY);
+  } catch {}
+}
+
+// Walk weeks forward from START_WEEK; return the first pick whose repo
+// isn't in completedIds. Completed picks still count toward the recency
+// window so the sequence respects the same "don't repeat recent themes"
+// rule the calendar picker uses.
+export function nextPick(repos, completedIds) {
+  if (!Array.isArray(repos) || repos.length === 0) return null;
+  const start = weekKeyToIndex(START_WEEK);
+  const window = recencyWeeks(repos);
+  const history = [];
+  const cap = repos.length * 4;
+  for (let i = 0; i < cap; i++) {
+    const wk = indexToWeekKey(start + i);
+    const recent = new Set(history.slice(-window).filter(Boolean));
+    const p = pickAt(wk, repos, recent);
+    if (!p) break;
+    if (completedIds.has(p.repo.id)) {
+      history.push(p.repo.id);
+      continue;
+    }
+    return { ...p, weekKey: wk };
+  }
+  return null;
+}
+
 // --- Browser UI ------------------------------------------------------------
 // Pure picker ends above. The rest of this file is the DOM-rendering side
 // and a bootstrap. Node imports (tests, simulator) never reach the bootstrap
@@ -192,8 +251,12 @@ const SOURCE_URL =
   "https://github.com/SauravSuresh/long-way-engine/tree/main/docs/repopick";
 
 export function render(state, root) {
-  const { repo, entryPoint, theme, target, weekKey, prevWeekKey, nextWeekKey } =
-    state;
+  const {
+    repo, entryPoint, theme, target, weekKey,
+    mode, prevWeekKey, nextWeekKey,
+    completedCount, totalCount, isCompleted,
+    onMarkComplete, onUnmark, onReset,
+  } = state;
 
   root.replaceChildren();
 
@@ -211,7 +274,7 @@ export function render(state, root) {
       el(
         "section",
         { class: "entry" },
-        el("h2", null, "this week"),
+        el("h2", null, mode === "sequence" ? "your read" : "this week"),
         el("p", { class: "label" }, entryPoint.label),
         el(
           "ul",
@@ -245,15 +308,58 @@ export function render(state, root) {
     );
   }
 
-  root.appendChild(
+  if (typeof completedCount === "number" && typeof totalCount === "number") {
+    const actions = el("section", { class: "progress" });
+    actions.appendChild(
+      el("p", { class: "count" }, `${completedCount} of ${totalCount} complete`),
+    );
+    if (mode === "sequence") {
+      const btn = el(
+        "button",
+        { class: "mark", type: "button" },
+        "Mark complete",
+      );
+      btn.addEventListener("click", () => onMarkComplete && onMarkComplete());
+      actions.appendChild(btn);
+    } else if (isCompleted) {
+      const btn = el(
+        "button",
+        { class: "mark unmark", type: "button" },
+        "Completed — unmark",
+      );
+      btn.addEventListener("click", () => onUnmark && onUnmark());
+      actions.appendChild(btn);
+    } else {
+      const btn = el(
+        "button",
+        { class: "mark", type: "button" },
+        "Mark complete",
+      );
+      btn.addEventListener("click", () => onMarkComplete && onMarkComplete());
+      actions.appendChild(btn);
+    }
+    if (completedCount > 0) {
+      const reset = el("a", { href: "#", class: "reset" }, "reset progress");
+      reset.addEventListener("click", (ev) => {
+        ev.preventDefault();
+        if (confirm(`Reset progress on ${completedCount} repo(s)?`)) {
+          onReset && onReset();
+        }
+      });
+      actions.appendChild(reset);
+    }
+    root.appendChild(actions);
+  }
+
+  const footerChildren = [
     el(
-      "footer",
-      null,
-      el(
-        "p",
-        { class: "wk" },
-        `${weekKey} · theme: ${theme} · target difficulty: ${target}`,
-      ),
+      "p",
+      { class: "wk" },
+      `${weekKey} · theme: ${theme} · target difficulty: ${target}`,
+    ),
+  ];
+  if (mode === "adhoc") {
+    footerChildren.push(
       el(
         "p",
         { class: "nav" },
@@ -261,6 +367,58 @@ export function render(state, root) {
         " · ",
         el("a", { href: `#week=${nextWeekKey}` }, "next week →"),
         " · ",
+        el("a", { href: "#" }, "your sequence"),
+        " · ",
+        el("a", { href: SOURCE_URL, ...EXT_LINK }, "source"),
+      ),
+    );
+  } else {
+    footerChildren.push(
+      el(
+        "p",
+        { class: "nav" },
+        el("a", { href: SOURCE_URL, ...EXT_LINK }, "source"),
+      ),
+    );
+  }
+  root.appendChild(el("footer", null, ...footerChildren));
+}
+
+function renderDone(state, root) {
+  const { completedCount, totalCount, onReset } = state;
+  root.replaceChildren();
+  root.appendChild(
+    el(
+      "section",
+      { class: "pick done" },
+      el("h1", null, "All done."),
+      el(
+        "p",
+        { class: "why" },
+        `You've marked all ${totalCount} repos complete. Reset to start over.`,
+      ),
+    ),
+  );
+  const actions = el("section", { class: "progress" });
+  actions.appendChild(
+    el("p", { class: "count" }, `${completedCount} of ${totalCount} complete`),
+  );
+  const reset = el("a", { href: "#", class: "reset" }, "reset progress");
+  reset.addEventListener("click", (ev) => {
+    ev.preventDefault();
+    if (confirm(`Reset progress on ${completedCount} repo(s)?`)) {
+      onReset && onReset();
+    }
+  });
+  actions.appendChild(reset);
+  root.appendChild(actions);
+  root.appendChild(
+    el(
+      "footer",
+      null,
+      el(
+        "p",
+        { class: "nav" },
         el("a", { href: SOURCE_URL, ...EXT_LINK }, "source"),
       ),
     ),
@@ -278,27 +436,67 @@ async function bootstrap() {
     const repos = await res.json();
 
     const renderForHash = () => {
+      const completedIds = loadProgress();
+      const totalCount = repos.length;
+      const completedCount = completedIds.size;
       const m = HASH_RE.exec(window.location.hash);
-      const weekKey = m ? m[1] : currentWeekKey();
-      const result = pick(weekKey, repos);
-      if (!result) {
-        root.replaceChildren();
-        root.appendChild(
-          el(
-            "p",
-            { class: "error" },
-            `No pick available for ${weekKey}.`,
-          ),
+
+      const markComplete = (id) => {
+        completedIds.add(id);
+        saveProgress(completedIds);
+        renderForHash();
+      };
+      const unmark = (id) => {
+        completedIds.delete(id);
+        saveProgress(completedIds);
+        renderForHash();
+      };
+      const reset = () => {
+        clearProgress();
+        renderForHash();
+      };
+
+      if (m) {
+        const weekKey = m[1];
+        const result = pick(weekKey, repos);
+        if (!result) {
+          root.replaceChildren();
+          root.appendChild(
+            el("p", { class: "error" }, `No pick available for ${weekKey}.`),
+          );
+          return;
+        }
+        const idx = weekKeyToIndex(weekKey);
+        const isCompleted = completedIds.has(result.repo.id);
+        render(
+          {
+            ...result,
+            weekKey,
+            mode: "adhoc",
+            prevWeekKey: indexToWeekKey(idx - 1),
+            nextWeekKey: indexToWeekKey(idx + 1),
+            completedCount, totalCount, isCompleted,
+            onMarkComplete: () => markComplete(result.repo.id),
+            onUnmark: () => unmark(result.repo.id),
+            onReset: reset,
+          },
+          root,
         );
         return;
       }
-      const idx = weekKeyToIndex(weekKey);
+
+      const result = nextPick(repos, completedIds);
+      if (!result) {
+        renderDone({ completedCount, totalCount, onReset: reset }, root);
+        return;
+      }
       render(
         {
           ...result,
-          weekKey,
-          prevWeekKey: indexToWeekKey(idx - 1),
-          nextWeekKey: indexToWeekKey(idx + 1),
+          mode: "sequence",
+          completedCount, totalCount, isCompleted: false,
+          onMarkComplete: () => markComplete(result.repo.id),
+          onReset: reset,
         },
         root,
       );

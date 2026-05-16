@@ -12,6 +12,7 @@ import {
   recencyWeeks,
   pick,
   pickAt,
+  nextPick,
   START_WEEK,
   THEMES,
 } from "../app.js";
@@ -118,6 +119,24 @@ eq(
   null,
 );
 eq("empty pool returns null", pick("2026-W20", []), null);
+
+// nextPick (sequence-mode reading list)
+const np0 = nextPick(repos, new Set());
+eq("nextPick empty completed returns pick", np0 !== null, true);
+eq(
+  "nextPick empty completed ≡ pick at START_WEEK",
+  np0.repo.id,
+  pick(START_WEEK, repos).repo.id,
+);
+eq("nextPick includes weekKey", typeof np0.weekKey, "string");
+
+const np1 = nextPick(repos, new Set([np0.repo.id]));
+eq("nextPick skips completed repo", np1.repo.id !== np0.repo.id, true);
+
+const allDone = new Set(repos.map((r) => r.id));
+eq("nextPick returns null when all completed", nextPick(repos, allDone), null);
+
+eq("nextPick empty pool returns null", nextPick([], new Set()), null);
 
 let pass = 0, fail = 0;
 for (const [label, ok, got, want] of tests) {

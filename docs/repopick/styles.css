@@ -160,3 +160,43 @@ footer .nav a {
   color: #cc3333;
   font-style: normal;
 }
+
+.progress {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.progress .count {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.progress .mark {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.9rem;
+  background: var(--accent);
+  color: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.progress .mark:hover {
+  filter: brightness(1.1);
+}
+
+.progress .mark.unmark {
+  background: transparent;
+  color: var(--muted);
+  border-color: var(--hairline);
+}
+
+.progress .reset {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
