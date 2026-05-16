@@ -36,20 +36,27 @@
   {
     "id": "groupcache",
     "name": "golang/groupcache",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/golang/groupcache",
+    "language": "Go",
     "themes": [
       "distributed-systems"
     ],
     "difficulty": 2,
-    "why": "stub",
+    "why": "Brad Fitzpatrick's distributed in-process cache. The singleflight trick — deduping concurrent fetches — is a small file with a big lesson.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read singleflight",
         "files": [
-          "TBD"
+          "singleflight/singleflight.go"
         ],
-        "question": "stub"
+        "question": "When N goroutines all ask for the same key at the same time, how does singleflight ensure only one actually fetches it, and what guarantees do the other N-1 callers get about the value they receive (and any error)?"
+      },
+      {
+        "label": "Read the consistent hash ring",
+        "files": [
+          "consistenthash/consistenthash.go"
+        ],
+        "question": "How does groupcache decide which peer owns a key, and what happens to the distribution when a peer is added or removed?"
       }
     ],
     "reading": []
@@ -273,21 +280,21 @@
   {
     "id": "sqlite-utils",
     "name": "simonw/sqlite-utils",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/simonw/sqlite-utils",
+    "language": "Python",
     "themes": [
       "cli-tools",
       "databases"
     ],
     "difficulty": 1,
-    "why": "stub",
+    "why": "Pythonic wrapper over sqlite3 — read it to see what minimum API turns the stdlib module from awkward into pleasant.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read db.py top to bottom",
         "files": [
-          "TBD"
+          "sqlite_utils/db.py"
         ],
-        "question": "stub"
+        "question": "What's the minimum API surface that makes the Python sqlite3 module pleasant to use, and how does sqlite-utils handle the impedance between Python dicts and SQL columns (types, NULLs, primary keys, foreign keys)?"
       }
     ],
     "reading": []
@@ -532,21 +539,30 @@
   {
     "id": "crafting-interp",
     "name": "munificent/craftinginterpreters (tree-walker)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/munificent/craftinginterpreters",
+    "language": "Java",
     "themes": [
       "language",
       "compilers"
     ],
     "difficulty": 2,
-    "why": "stub",
+    "why": "jlox is a complete language interpreter written across one book — the cleanest tree-walking interpreter I know, and the resolver pass teaches a lesson you don't get from textbooks.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace an expression from source to value",
         "files": [
-          "TBD"
+          "java/com/craftinginterpreters/lox/Scanner.java",
+          "java/com/craftinginterpreters/lox/Parser.java",
+          "java/com/craftinginterpreters/lox/Interpreter.java"
         ],
-        "question": "stub"
+        "question": "How does an expression like `(1 + 2) * 3` travel from source characters to a runtime double — what's the shape of the AST nodes (see Expr.java) in between, and where do precedence and associativity get encoded in Parser.java?"
+      },
+      {
+        "label": "Read the resolver",
+        "files": [
+          "java/com/craftinginterpreters/lox/Resolver.java"
+        ],
+        "question": "Why does jlox need a separate variable-resolution pass — what bug does it fix, and how does the pass map a name to a static scope distance?"
       }
     ],
     "reading": []
@@ -640,21 +656,23 @@
   {
     "id": "age",
     "name": "FiloSottile/age",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/FiloSottile/age",
+    "language": "Go",
     "themes": [
       "crypto",
       "cli-tools"
     ],
     "difficulty": 2,
-    "why": "stub",
+    "why": "A small, modern file-encryption tool whose entire format spec fits on one page. Read it to see how existing primitives (X25519, ChaCha20-Poly1305, HKDF) compose into a complete encrypted file format.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace an X25519 encryption",
         "files": [
-          "TBD"
+          "age.go",
+          "primitives.go",
+          "x25519.go"
         ],
-        "question": "stub"
+        "question": "When `age -r <recipient> <file>` runs, how does the recipient's X25519 public key become a wrapped file key, and where in the code does the wrapped key get serialized into the file header?"
       }
     ],
     "reading": []
@@ -732,22 +750,22 @@
   {
     "id": "netcat-hobbit",
     "name": "Hobbit netcat (nc110)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/diegocr/netcat",
+    "language": "C",
     "themes": [
       "networking-tools",
       "networking",
       "cli-tools"
     ],
     "difficulty": 2,
-    "why": "stub",
+    "why": "Hobbit's original netcat, 1995 — a swiss-army-knife for TCP/UDP in under 1000 lines of K&R-flavored C. Predates 'nc' being a verb. The smallest complete network tool worth reading.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read main() and identify what netcat actually does",
         "files": [
-          "TBD"
+          "netcat.c"
         ],
-        "question": "stub"
+        "question": "How few lines of C does it take to open a TCP socket (connect or listen), copy stdin↔socket bidirectionally, and exit cleanly when either side closes? Then: what does netcat layer on top of that core to become useful?"
       }
     ],
     "reading": []
