@@ -44,7 +44,7 @@ const SEED = [
   ["age",             "FiloSottile/age",                              "crypto",             ["cli-tools"],            2],
   ["busybox-cat",     "busybox/busybox (coreutils/cat.c)",            "unix-tools",         ["cli-tools"],            1],
   ["busybox-wc",      "busybox/busybox (coreutils/wc.c)",             "unix-tools",         ["cli-tools"],            1],
-  ["gnu-grep-early",  "gnu/grep",                                     "unix-tools",         ["search"],               2, "v2.0"],
+  ["gnu-grep",        "gnu/grep",                                     "unix-tools",         ["search"],               2, "v2.5.1"],
   ["netcat-hobbit",   "Hobbit netcat (nc110)",                        "networking-tools",   ["networking","cli-tools"], 2],
   ["openbsd-ping",    "openbsd/src (ping.c)",                         "networking-tools",   ["networking"],           3],
   ["curl",            "curl/curl",                                    "networking-tools",   ["networking","cli-tools"], 4],

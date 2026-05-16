@@ -129,21 +129,31 @@
   {
     "id": "ripgrep",
     "name": "BurntSushi/ripgrep",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/BurntSushi/ripgrep",
+    "language": "Rust",
     "themes": [
       "cli-tools",
       "search"
     ],
     "difficulty": 3,
-    "why": "stub",
+    "why": "Andrew Gallant's grep replacement and a clinic in \"fast for real users\" — every interesting decision in tool building made out loud, from the regex engine choice to mmap heuristics to gitignore-aware filesystem walking.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Architecture tour: a single grep through searcher and matcher",
         "files": [
-          "TBD"
+          "crates/core/main.rs",
+          "crates/searcher/src/searcher/mod.rs",
+          "crates/regex/src/lib.rs"
         ],
-        "question": "stub"
+        "question": "What's the shape of a single grep run through ripgrep — main → walk → searcher → matcher → printer — and which boundary is where \"this is fast\" actually gets earned (literal-prefix detection, mmap vs streaming, Sink design)?"
+      },
+      {
+        "label": "Read the ignore crate",
+        "files": [
+          "crates/ignore/src/walk.rs",
+          "crates/ignore/src/gitignore.rs"
+        ],
+        "question": "How does ripgrep walk a directory tree while respecting .gitignore at every depth, and what's the relationship between the global, parent, and per-directory ignore patterns?"
       }
     ],
     "reading": []
@@ -367,20 +377,30 @@
   {
     "id": "whisper-cpp",
     "name": "ggerganov/whisper.cpp",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/ggerganov/whisper.cpp",
+    "language": "C++",
     "themes": [
       "ml-infra"
     ],
     "difficulty": 3,
-    "why": "stub",
+    "why": "A real transformer (the original Whisper) running end-to-end in plain C++ with no Python, no PyTorch, no ONNX runtime — just ggml tensors and a single source file. The clearest demonstration that \"ML inference\" is mostly arithmetic.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace audio through to text",
         "files": [
-          "TBD"
+          "include/whisper.h",
+          "src/whisper.cpp",
+          "examples/cli/cli.cpp"
         ],
-        "question": "stub"
+        "question": "From a 16kHz WAV input to a text transcript: where does the mel-spectrogram get computed, what tensors does the encoder produce, and how does the decoder loop choose tokens?"
+      },
+      {
+        "label": "Understand model loading and quantization",
+        "files": [
+          "src/whisper.cpp",
+          "ggml/src/ggml.c"
+        ],
+        "question": "When whisper-cpp loads a quantized model file (q5_0, q8_0, etc.), how is the weight data laid out in memory and how do the matrix-multiply kernels in ggml.c consume it without a full dequantization step?"
       }
     ],
     "reading": []
@@ -517,21 +537,24 @@
   {
     "id": "chibicc",
     "name": "rui314/chibicc",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/rui314/chibicc",
+    "language": "C",
     "themes": [
       "compilers",
       "language"
     ],
     "difficulty": 3,
-    "why": "stub",
+    "why": "Rui Ueyama's small C compiler — compiles a real subset of C to x86-64 assembly, with each phase isolated in its own file. The cleanest hand-written compiler available to read.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace a compilation top to bottom",
         "files": [
-          "TBD"
+          "main.c",
+          "tokenize.c",
+          "parse.c",
+          "codegen.c"
         ],
-        "question": "stub"
+        "question": "When chibicc compiles `int main() { return 1+2; }`, what does the token stream look like, what AST does parse.c build, and which x86-64 instructions does codegen.c emit for the addition and the return?"
       }
     ],
     "reading": []
@@ -592,20 +615,29 @@
   {
     "id": "mosh",
     "name": "mobile-shell/mosh",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/mobile-shell/mosh",
+    "language": "C++",
     "themes": [
       "networking"
     ],
     "difficulty": 3,
-    "why": "stub",
+    "why": "Mobile shell — replaces SSH for high-latency or roaming connections. The State Synchronization Protocol (SSP) it invented is the lesson: send \"what the terminal should look like\", not \"what to type\".",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read the network layer",
         "files": [
-          "TBD"
+          "src/network/network.cc",
+          "src/network/network.h",
+          "src/network/transportsender-impl.h"
         ],
-        "question": "stub"
+        "question": "How does mosh frame, sequence, and (re)transmit datagrams over a single UDP socket, and how does it survive a NAT rebinding or IP change without resetting the session?"
+      },
+      {
+        "label": "Read the state synchronization",
+        "files": [
+          "src/statesync/completeterminal.cc"
+        ],
+        "question": "What is mosh actually sending across the wire — diffs of terminal state, or full snapshots, or both — and how does it decide?"
       }
     ],
     "reading": []
@@ -725,24 +757,26 @@
     "reading": []
   },
   {
-    "id": "gnu-grep-early",
+    "id": "gnu-grep",
     "name": "gnu/grep",
-    "url": "https://example.com/stub",
-    "ref": "v2.0",
-    "language": "stub",
+    "url": "https://github.com/Distrotech/grep",
+    "ref": "v2.5.1",
+    "language": "C",
     "themes": [
       "unix-tools",
       "search"
     ],
     "difficulty": 2,
-    "why": "stub",
+    "why": "The reference GNU grep. Read it to internalize how a real production regex tool composes DFA construction, Boyer-Moore literal scanning, and line buffering into a search loop that stays fast on adversarial inputs.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read the search loop",
         "files": [
-          "TBD"
+          "src/grep.c",
+          "src/dfa.c",
+          "src/search.c"
         ],
-        "question": "stub"
+        "question": "How does GNU grep handle a regex pattern against a giant input stream — where does the DFA construction happen, and what tricks (Boyer-Moore, line buffering, byte-aware scans) does it use to stay fast on the common case?"
       }
     ],
     "reading": []
