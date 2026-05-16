@@ -1,0 +1,29 @@
+name: validate
+
+on:
+  pull_request:
+    paths:
+      - "data/**"
+      - "scripts/validate.mjs"
+      - ".github/workflows/validate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "data/**"
+      - "scripts/validate.mjs"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Schema + duplicates (must pass)
+        run: node scripts/validate.mjs
+
+      - name: Network checks — URLs, refs (best-effort)
+        run: node scripts/validate.mjs --strict
+        continue-on-error: true

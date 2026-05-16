@@ -1,0 +1,894 @@
+[
+  {
+    "id": "boltdb",
+    "name": "boltdb/bolt",
+    "url": "https://example.com/stub",
+    "ref": "v1.3.1",
+    "language": "stub",
+    "themes": [
+      "databases",
+      "storage"
+    ],
+    "difficulty": 2,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "groupcache",
+    "name": "golang/groupcache",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "distributed-systems"
+    ],
+    "difficulty": 2,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "redis-early",
+    "name": "antirez/redis",
+    "url": "https://example.com/stub",
+    "ref": "1.0.0",
+    "language": "stub",
+    "themes": [
+      "databases"
+    ],
+    "difficulty": 3,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "sqlite",
+    "name": "sqlite (amalgamation)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "databases"
+    ],
+    "difficulty": 5,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "git-early",
+    "name": "git/git",
+    "url": "https://example.com/stub",
+    "ref": "v0.99",
+    "language": "stub",
+    "themes": [
+      "version-control"
+    ],
+    "difficulty": 4,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "ripgrep",
+    "name": "BurntSushi/ripgrep",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "cli-tools",
+      "search"
+    ],
+    "difficulty": 3,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "fzf",
+    "name": "junegunn/fzf",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "cli-tools",
+      "search"
+    ],
+    "difficulty": 2,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "kube-scheduler",
+    "name": "kubernetes/kube-scheduler",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "scheduling",
+      "distributed-systems"
+    ],
+    "difficulty": 4,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "etcd-raft",
+    "name": "etcd-io/raft",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "distributed-systems"
+    ],
+    "difficulty": 4,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "fluent-bit",
+    "name": "fluent/fluent-bit",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "networking"
+    ],
+    "difficulty": 3,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "nginx",
+    "name": "nginx/nginx",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "networking"
+    ],
+    "difficulty": 4,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "lua",
+    "name": "lua/lua",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "runtime",
+      "language"
+    ],
+    "difficulty": 4,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "sqlite-utils",
+    "name": "simonw/sqlite-utils",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "cli-tools",
+      "databases"
+    ],
+    "difficulty": 1,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "miniredis",
+    "name": "alicebob/miniredis",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "databases"
+    ],
+    "difficulty": 2,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "tinygrad",
+    "name": "tinygrad/tinygrad",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "ml-infra"
+    ],
+    "difficulty": 4,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "llama-cpp",
+    "name": "ggerganov/llama.cpp",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "ml-infra"
+    ],
+    "difficulty": 4,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "whisper-cpp",
+    "name": "ggerganov/whisper.cpp",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "ml-infra"
+    ],
+    "difficulty": 3,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "openzfs-arc",
+    "name": "openzfs/zfs (ARC)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "storage"
+    ],
+    "difficulty": 5,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "cpython-dict",
+    "name": "python/cpython (Objects/dictobject.c)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "runtime",
+      "language"
+    ],
+    "difficulty": 4,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "v8-ignition",
+    "name": "v8/v8 (Ignition)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "compilers",
+      "runtime"
+    ],
+    "difficulty": 5,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "llvm-mem2reg",
+    "name": "llvm/llvm-project (mem2reg)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "compilers"
+    ],
+    "difficulty": 4,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "postgres-exec",
+    "name": "postgres/postgres (executor)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "databases"
+    ],
+    "difficulty": 5,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "duckdb-planner",
+    "name": "duckdb/duckdb (planner)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "databases",
+      "compilers"
+    ],
+    "difficulty": 4,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "chibicc",
+    "name": "rui314/chibicc",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "compilers",
+      "language"
+    ],
+    "difficulty": 3,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "crafting-interp",
+    "name": "munificent/craftinginterpreters (tree-walker)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "language",
+      "compilers"
+    ],
+    "difficulty": 2,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "litestream",
+    "name": "benbjohnson/litestream",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "databases",
+      "storage"
+    ],
+    "difficulty": 3,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "mosh",
+    "name": "mobile-shell/mosh",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "networking"
+    ],
+    "difficulty": 3,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "tigerbeetle-vsr",
+    "name": "tigerbeetle/tigerbeetle (vsr.zig)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "distributed-systems",
+      "databases"
+    ],
+    "difficulty": 4,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "tailscale-tsnet",
+    "name": "tailscale/tailscale (tsnet)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "networking"
+    ],
+    "difficulty": 3,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "age",
+    "name": "FiloSottile/age",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "crypto",
+      "cli-tools"
+    ],
+    "difficulty": 2,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "busybox-cat",
+    "name": "busybox/busybox (coreutils/cat.c)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "unix-tools",
+      "cli-tools"
+    ],
+    "difficulty": 1,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "busybox-wc",
+    "name": "busybox/busybox (coreutils/wc.c)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "unix-tools",
+      "cli-tools"
+    ],
+    "difficulty": 1,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "gnu-grep-early",
+    "name": "gnu/grep",
+    "url": "https://example.com/stub",
+    "ref": "v2.0",
+    "language": "stub",
+    "themes": [
+      "unix-tools",
+      "search"
+    ],
+    "difficulty": 2,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "netcat-hobbit",
+    "name": "Hobbit netcat (nc110)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "networking-tools",
+      "networking",
+      "cli-tools"
+    ],
+    "difficulty": 2,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "openbsd-ping",
+    "name": "openbsd/src (ping.c)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "networking-tools",
+      "networking"
+    ],
+    "difficulty": 3,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "curl",
+    "name": "curl/curl",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "networking-tools",
+      "networking",
+      "cli-tools"
+    ],
+    "difficulty": 4,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "xv6",
+    "name": "mit-pdos/xv6-riscv",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "runtime",
+      "operating-systems"
+    ],
+    "difficulty": 2,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "busybox-init",
+    "name": "busybox/busybox (init.c)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "unix-tools",
+      "operating-systems"
+    ],
+    "difficulty": 3,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "openssh-kex",
+    "name": "openssh/openssh-portable (kex.c, kexgen.c)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "networking",
+      "crypto"
+    ],
+    "difficulty": 5,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "musl-printf",
+    "name": "musl/musl (src/stdio/vfprintf.c)",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "runtime",
+      "language"
+    ],
+    "difficulty": 4,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  },
+  {
+    "id": "dnsmasq",
+    "name": "simonkelley/dnsmasq",
+    "url": "https://example.com/stub",
+    "language": "stub",
+    "themes": [
+      "networking",
+      "networking-tools"
+    ],
+    "difficulty": 3,
+    "why": "stub",
+    "entry_points": [
+      {
+        "label": "stub entry point",
+        "files": [
+          "TBD"
+        ],
+        "question": "stub"
+      }
+    ],
+    "reading": []
+  }
+]

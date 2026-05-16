@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "read-real-code repos",
+  "description": "Curated pool of repos for the weekly picker. See SPEC.md §4.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "id",
+      "name",
+      "url",
+      "language",
+      "themes",
+      "difficulty",
+      "why",
+      "entry_points",
+      "reading"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$",
+        "description": "Stable slug used for recency tracking. Lowercase, digits, hyphens only."
+      },
+      "name": {
+        "type": "string",
+        "description": "Human-facing repo name, e.g. 'boltdb/bolt'."
+      },
+      "url": {
+        "type": "string",
+        "format": "uri"
+      },
+      "ref": {
+        "type": "string",
+        "description": "Optional git tag/branch/SHA. UI renders link as {url}/tree/{ref}. The 'why' text should mention the checkout."
+      },
+      "language": {
+        "type": "string"
+      },
+      "themes": {
+        "type": "array",
+        "minItems": 1,
+        "items": { "type": "string" },
+        "description": "themes[0] is primary (full weight); the rest are secondary (half weight)."
+      },
+      "difficulty": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5
+      },
+      "loc_estimate": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "why": {
+        "type": "string"
+      },
+      "entry_points": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "required": ["label", "files", "question"],
+          "additionalProperties": false,
+          "properties": {
+            "label": { "type": "string" },
+            "files": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string" }
+            },
+            "question": { "type": "string" }
+          }
+        }
+      },
+      "reading": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["title", "url", "kind"],
+          "additionalProperties": false,
+          "properties": {
+            "title": { "type": "string" },
+            "url": { "type": "string", "format": "uri" },
+            "kind": { "enum": ["blog", "paper", "talk", "doc"] }
+          }
+        }
+      }
+    }
+  }
+}
