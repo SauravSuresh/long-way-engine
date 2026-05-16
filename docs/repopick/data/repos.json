@@ -275,42 +275,48 @@
   {
     "id": "nginx",
     "name": "nginx/nginx",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/nginx/nginx",
+    "language": "C",
     "themes": [
       "networking"
     ],
     "difficulty": 4,
-    "why": "stub",
+    "why": "The textbook C event-driven HTTP server — workers, the connection pool, and an eleven-phase request pipeline. Read it for the lifecycle of one HTTP request through the phase engine, not the configuration parser or the broader module system.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace an HTTP request through the phase engine",
         "files": [
-          "TBD"
+          "src/event/ngx_event_accept.c",
+          "src/http/ngx_http_request.c",
+          "src/http/ngx_http.c",
+          "src/http/ngx_http_core_module.c"
         ],
-        "question": "stub"
+        "question": "From the moment ngx_event_accept hands a new TCP connection to ngx_http_init_connection, what's the path through the eleven request-processing phases (declared in ngx_http_core_module.c) until a handler in NGX_HTTP_CONTENT_PHASE produces a response?"
       }
     ],
     "reading": []
   },
   {
     "id": "lua",
-    "name": "lua/lua",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "lua/lua (v5.4.7)",
+    "url": "https://github.com/lua/lua",
+    "ref": "v5.4.7",
+    "language": "C",
     "themes": [
       "runtime",
       "language"
     ],
     "difficulty": 4,
-    "why": "stub",
+    "why": "The Lua 5.4 reference implementation — roughly seventeen thousand lines of meticulously small C. The interpreter dispatch in lvm.c is the cleanest 'bytecode VM' you can read, free of JIT machinery.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read the bytecode interpreter",
         "files": [
-          "TBD"
+          "lvm.c",
+          "lopcodes.h",
+          "lstate.h"
         ],
-        "question": "stub"
+        "question": "In lvm.c's luaV_execute, how does the dispatch loop fetch and decode the next instruction from a CallInfo's saved program counter, and when OP_CALL runs, what determines whether the call descends into a fresh luaV_execute frame, tail-calls in place, or jumps out to a C function — and where does the matching OP_RETURN logic re-enter the outer luaV_execute?"
       }
     ],
     "reading": []
@@ -362,42 +368,48 @@
   },
   {
     "id": "tinygrad",
-    "name": "tinygrad/tinygrad",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "tinygrad/tinygrad (v0.4.0)",
+    "url": "https://github.com/tinygrad/tinygrad",
+    "ref": "v0.4.0",
+    "language": "Python",
     "themes": [
       "ml-infra"
     ],
     "difficulty": 4,
-    "why": "stub",
+    "why": "tinygrad pinned to v0.4.0, when the whole framework — tensors, autograd, math ops, lazy graph, CPU/GPU backends — fit in roughly three thousand lines of Python. The 'PyTorch but readable' pitch is still true at this tag; later versions add a kernel compiler and grow substantially.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace an op forward and backward",
         "files": [
-          "TBD"
+          "tinygrad/tensor.py",
+          "tinygrad/mlops.py",
+          "tinygrad/llops/ops_cpu.py"
         ],
-        "question": "stub"
+        "question": "At v0.4.0, when you call `(a * b).sum().backward()` on two tinygrad Tensors, what's the path from tensor.py's __mul__ through an mlops.py Function (forward + backward) into a kernel in llops/ops_cpu.py — and when backward() runs, how does the autograd graph recorded in tensor.py walk back through Function instances to call each .backward() in the right order?"
       }
     ],
     "reading": []
   },
   {
     "id": "llama-cpp",
-    "name": "ggerganov/llama.cpp",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "ggerganov/llama.cpp (sampling, b9174)",
+    "url": "https://github.com/ggerganov/llama.cpp",
+    "ref": "b9174",
+    "language": "C++",
     "themes": [
       "ml-infra"
     ],
     "difficulty": 4,
-    "why": "stub",
+    "why": "Pinned to release b9174 and scoped to the token-sampling chain — the part that actually picks the next token after the model produces logits. Read it to internalize how top-k, top-p, temperature, and repetition-penalty compose into a real sampling pipeline, and where randomness enters.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read the sampler chain",
         "files": [
-          "TBD"
+          "src/llama-sampler.cpp",
+          "src/llama-sampler.h",
+          "common/sampling.cpp"
         ],
-        "question": "stub"
+        "question": "When the per-request sampler chain in common/sampling.cpp processes a fresh set of logits, in what order do the top-k, top-p, temperature, and repetition-penalty samplers in src/llama-sampler.cpp transform the candidate distribution — and where inside llama_sampler_sample does the final random draw actually happen, with what RNG state?"
       }
     ],
     "reading": []
@@ -885,21 +897,24 @@
   {
     "id": "xv6",
     "name": "mit-pdos/xv6-riscv",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/mit-pdos/xv6-riscv",
+    "language": "C",
     "themes": [
       "runtime",
       "operating-systems"
     ],
     "difficulty": 2,
-    "why": "stub",
+    "why": "MIT's teaching xv6 ported to RISC-V — the entire Unix-like kernel in roughly six thousand lines, designed to be read end-to-end. The entry point picks the boot path so the first session has a defined finish line; later reads can follow the file system or one syscall.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Walk the boot path to the first scheduler tick",
         "files": [
-          "TBD"
+          "kernel/entry.S",
+          "kernel/start.c",
+          "kernel/main.c",
+          "kernel/proc.c"
         ],
-        "question": "stub"
+        "question": "From the very first instruction in kernel/entry.S after the SBI hands control over, what's the exact sequence — switch to S-mode in start.c, jump into main.c's main(), bring up paging/traps/the scheduler, fork the first user process — until proc.c's scheduler() loop calls swtch() (from kernel/swtch.S) to load that user process's context for the first time?"
       }
     ],
     "reading": []
