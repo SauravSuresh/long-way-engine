@@ -182,22 +182,24 @@
   },
   {
     "id": "kube-scheduler",
-    "name": "kubernetes/kube-scheduler",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "kubernetes/kubernetes · pkg/scheduler",
+    "url": "https://github.com/kubernetes/kubernetes",
+    "language": "Go",
     "themes": [
       "scheduling",
       "distributed-systems"
     ],
     "difficulty": 4,
-    "why": "stub",
+    "why": "Kubernetes' decision-making for 'which pod goes on which node' — a real distributed scheduler with pluggable policies, living in `pkg/scheduler/` of the main kubernetes/kubernetes repo. Read it to see how predicate-and-priority became filter-and-score, and how a queue handles backoff, preemption, and unschedulable retries.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace a pod from queue to bound",
         "files": [
-          "TBD"
+          "pkg/scheduler/scheduler.go",
+          "pkg/scheduler/schedule_one.go",
+          "pkg/scheduler/framework/runtime/framework.go"
         ],
-        "question": "stub"
+        "question": "When a new Pod hits the scheduler, what's the path from the scheduling queue through filter plugins, score plugins, and final binding — and where exactly does the algorithm decide a node is infeasible vs just lower-scoring?"
       }
     ],
     "reading": []
@@ -205,20 +207,29 @@
   {
     "id": "etcd-raft",
     "name": "etcd-io/raft",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/etcd-io/raft",
+    "language": "Go",
     "themes": [
       "distributed-systems"
     ],
     "difficulty": 4,
-    "why": "stub",
+    "why": "The standalone Raft implementation extracted from etcd. The whole protocol — leader election, log replication, snapshot, joint consensus — is a few thousand lines of Go you can hold in your head. The reference implementation many other systems consult.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read leader election",
         "files": [
-          "TBD"
+          "raft.go",
+          "node.go"
         ],
-        "question": "stub"
+        "question": "When a node times out without hearing from the leader, what's the exact sequence of state transitions, RPCs sent and received, and tie-breaking until exactly one node becomes leader (or another timeout fires)?"
+      },
+      {
+        "label": "Read log replication and storage",
+        "files": [
+          "log.go",
+          "storage.go"
+        ],
+        "question": "How does the leader commit a log entry — what does 'majority replicated' mean in this code, when does an entry become 'applied' vs just 'committed', and what's the contract with the storage interface?"
       }
     ],
     "reading": []
@@ -226,20 +237,22 @@
   {
     "id": "fluent-bit",
     "name": "fluent/fluent-bit",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/fluent/fluent-bit",
+    "language": "C",
     "themes": [
       "networking"
     ],
     "difficulty": 3,
-    "why": "stub",
+    "why": "Log/metrics shipper at the heart of a million Kubernetes clusters. Event loop, pluggable input/filter/output chain, and a real budget for memory and CPU — read it to see what 'lightweight' actually buys in C.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace a record through the pipeline",
         "files": [
-          "TBD"
+          "src/flb_engine.c",
+          "src/flb_input.c",
+          "src/flb_router.c"
         ],
-        "question": "stub"
+        "question": "From an input plugin emitting a record to an output plugin sending it elsewhere, what's the in-process path — when does the record become a chunk, where does routing happen, and what owns the memory at each hop?"
       }
     ],
     "reading": []
@@ -473,20 +486,21 @@
   {
     "id": "llvm-mem2reg",
     "name": "llvm/llvm-project (mem2reg)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/llvm/llvm-project",
+    "language": "C++",
     "themes": [
       "compilers"
     ],
     "difficulty": 4,
-    "why": "stub",
+    "why": "LLVM's 'promote alloca to SSA register' pass — the optimization that turns memory-shaped IR into the SSA form every later pass operates on. The smallest LLVM transform that uses the dominator tree non-trivially.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read the promotion pass",
         "files": [
-          "TBD"
+          "llvm/lib/Transforms/Utils/PromoteMemoryToRegister.cpp",
+          "llvm/include/llvm/Analysis/IteratedDominanceFrontier.h"
         ],
-        "question": "stub"
+        "question": "When mem2reg promotes a stack alloca to SSA registers, where does it insert the phi nodes and how does it use the dominator tree (via ForwardIDFCalculator) to know which load reads from which store?"
       }
     ],
     "reading": []
@@ -515,21 +529,23 @@
   {
     "id": "duckdb-planner",
     "name": "duckdb/duckdb (planner)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/duckdb/duckdb",
+    "language": "C++",
     "themes": [
       "databases",
       "compilers"
     ],
     "difficulty": 4,
-    "why": "stub",
+    "why": "A modern analytical SQL planner small enough to finish reading. The Binder → LogicalPlan → Optimizer pipeline is well-named and easy to trace — read it to see how a textbook query plan actually looks in code.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace a SELECT from parser to plan",
         "files": [
-          "TBD"
+          "src/planner/planner.cpp",
+          "src/planner/binder.cpp",
+          "src/planner/logical_operator.cpp"
         ],
-        "question": "stub"
+        "question": "From `SELECT a, sum(b) FROM t WHERE c > 5 GROUP BY a`, what does Binder produce for the column references and the aggregate, and where in the LogicalPlan tree does the WHERE clause end up — above or below the aggregation?"
       }
     ],
     "reading": []
