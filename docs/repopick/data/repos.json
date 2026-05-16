@@ -63,22 +63,24 @@
   },
   {
     "id": "redis-early",
-    "name": "antirez/redis",
-    "url": "https://example.com/stub",
-    "ref": "1.0.0",
-    "language": "stub",
+    "name": "antirez/redis (1.0.0)",
+    "url": "https://github.com/antirez/redis",
+    "ref": "26cdd4dd2d108384f94a614e42b469fab8cba9ba",
+    "language": "C",
     "themes": [
       "databases"
     ],
     "difficulty": 3,
-    "why": "stub",
+    "why": "Antirez's first stable Redis — the whole server, every command, and the event loop in roughly ten thousand lines of C, pinned to the 1.0.0 release commit (no v1.0.0 tag was ever pushed to GitHub). Read it to see what the server actually does when a SET arrives, before later refactors split redis.c into a dozen files.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace a SET from socket to dict",
         "files": [
-          "TBD"
+          "redis.c",
+          "ae.c",
+          "dict.c"
         ],
-        "question": "stub"
+        "question": "When a client sends `SET key value`, what's the path from aeMain's select-wakeup, through command parsing and dispatch in redis.c, to the dictAdd that stores the entry — and how does the single-threaded server interleave this request with others on the same iteration of the event loop?"
       }
     ],
     "reading": []
@@ -106,22 +108,35 @@
   },
   {
     "id": "git-early",
-    "name": "git/git",
-    "url": "https://example.com/stub",
+    "name": "git/git (v0.99)",
+    "url": "https://github.com/git/git",
     "ref": "v0.99",
-    "language": "stub",
+    "language": "C",
     "themes": [
       "version-control"
     ],
     "difficulty": 4,
-    "why": "stub",
+    "why": "Git when it was still a 'stupid content tracker' — plumbing only, before porcelain commands existed as anything but shell scripts. Read the object database, the index, and the earliest sketch of merge with no high-level glue in the way.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read the object store",
         "files": [
-          "TBD"
+          "sha1_file.c",
+          "init-db.c",
+          "cat-file.c",
+          "cache.h"
         ],
-        "question": "stub"
+        "question": "When a file is hashed into the object database at v0.99, what exactly does sha1_file.c write under `.git/objects/`, and how does cat-file.c locate that object on disk — what's the on-disk shape of a blob/tree/commit before packfiles existed?"
+      },
+      {
+        "label": "Read the index",
+        "files": [
+          "read-cache.c",
+          "update-cache.c",
+          "write-tree.c",
+          "cache.h"
+        ],
+        "question": "How is the index file laid out at v0.99, what does update-cache do when staging a path, and at what step inside write-tree does the in-memory index actually become a tree object on disk?"
       }
     ],
     "reading": []
@@ -661,21 +676,23 @@
   {
     "id": "tigerbeetle-vsr",
     "name": "tigerbeetle/tigerbeetle (vsr.zig)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/tigerbeetle/tigerbeetle",
+    "language": "Zig",
     "themes": [
       "distributed-systems",
       "databases"
     ],
     "difficulty": 4,
-    "why": "stub",
+    "why": "TigerBeetle's Viewstamped Replication Revisited in Zig — a clean modern consensus implementation you can read top to bottom. Read it to see VSR (the alternative to Raft) the way the Liskov paper actually describes it, written to be deterministic and testable.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read the replica state machine",
         "files": [
-          "TBD"
+          "src/vsr.zig",
+          "src/vsr/replica.zig",
+          "src/vsr/journal.zig"
         ],
-        "question": "stub"
+        "question": "When a primary fails and a view change starts, how does replica.zig decide who the new primary is, how does it reconcile its journal with peers during the do-view-change step, and at what point does the new primary start accepting fresh client requests again?"
       }
     ],
     "reading": []
@@ -822,22 +839,22 @@
   },
   {
     "id": "openbsd-ping",
-    "name": "openbsd/src (ping.c)",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "name": "openbsd/src (sbin/ping/ping.c)",
+    "url": "https://github.com/openbsd/src",
+    "language": "C",
     "themes": [
       "networking-tools",
       "networking"
     ],
     "difficulty": 3,
-    "why": "stub",
+    "why": "BSD ping in one .c file — the textbook implementation of ICMP echo, RTT timing, and raw sockets, kept readable by OpenBSD's house style. Read it to see what 'just send a packet and wait' looks like when there's no library to hide behind.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Read the ICMP echo loop",
         "files": [
-          "TBD"
+          "sbin/ping/ping.c"
         ],
-        "question": "stub"
+        "question": "How does ping.c build an ICMP echo request with sequence number and timestamp, get it onto a raw socket, and match each reply back to its send time — and what does it actually do with kernel-provided timestamps vs. its own gettimeofday for the round-trip measurement?"
       }
     ],
     "reading": []
@@ -956,21 +973,24 @@
   {
     "id": "dnsmasq",
     "name": "simonkelley/dnsmasq",
-    "url": "https://example.com/stub",
-    "language": "stub",
+    "url": "https://github.com/imp/dnsmasq",
+    "language": "C",
     "themes": [
       "networking",
       "networking-tools"
     ],
     "difficulty": 3,
-    "why": "stub",
+    "why": "Small single-binary DNS forwarder + DHCP server running in millions of routers and laptops; the github.com/imp/dnsmasq mirror tracks Simon Kelley's upstream at thekelleys.org.uk. Read it to see how a real network daemon parses RFC 1035 wire-format records, caches answers, and forwards upstream — in a C codebase a determined reader can finish in a weekend.",
     "entry_points": [
       {
-        "label": "stub entry point",
+        "label": "Trace a DNS query through forward + cache",
         "files": [
-          "TBD"
+          "src/dnsmasq.c",
+          "src/forward.c",
+          "src/rfc1035.c",
+          "src/cache.c"
         ],
-        "question": "stub"
+        "question": "When a client query arrives on the UDP socket, what's the path through forward.c that picks an upstream server, parses the RFC 1035 packet (via rfc1035.c), and decides whether to answer from cache.c or forward — and where does the answer get rewritten with the original transaction ID before being returned to the client?"
       }
     ],
     "reading": []
