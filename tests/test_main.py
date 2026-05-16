@@ -8,7 +8,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 from src.config import Config, DashboardConfig, TodoistConfig
-from src.main import append_log, run
+from src.main import SweepResult, append_log, run, sweep_past_due
 from src.state import State
 from src.templates import ResolvedTemplate
 from src.todoist import CreateResult
@@ -322,3 +322,220 @@ def test_dashboard_renders_when_paused(tmp_path: Path):
         docs_css_path=tmp_path / "docs" / "assets" / "style.css",
     )
     assert summary.dashboard_status == "ok"
+
+
+# --- Sweep tests --------------------------------------------------------------
+
+
+class _FakeAdmin:
+    def __init__(self, *, token: str, **_):
+        self.token = token
+        self.deleted: list[str] = []
+        self.fail_on: set[str] = set()
+        self.notfound_on: set[str] = set()
+
+    def delete_task(self, task_id: str) -> None:
+        if task_id in self.notfound_on:
+            raise RuntimeError("todoist DELETE /tasks/X 404: not found")
+        if task_id in self.fail_on:
+            raise RuntimeError("todoist DELETE /tasks/X 500: oops")
+        self.deleted.append(task_id)
+
+
+class _FakeCompletion:
+    def __init__(self, completed: set[str] | None = None, *, raises: bool = False):
+        self.completed = completed or set()
+        self.raises = raises
+        self.queried: list[list[str]] = []
+
+    def __call__(self, **_):
+        return self
+
+    def get_completion_status(self, task_ids):
+        self.queried.append(list(task_ids))
+        if self.raises:
+            raise RuntimeError("network down")
+        return {tid: tid in self.completed for tid in task_ids}
+
+
+def _cache_entry(task_id, due, template_id="weekly-read-real-code", **extra):
+    return {
+        "todoist_task_id": task_id,
+        "created_at": "2026-05-01T00:00:00+00:00",
+        "template_id": template_id,
+        "due_date": due,
+        **extra,
+    }
+
+
+def test_sweep_marks_missed_and_deletes_uncompleted_past_due():
+    today = date(2026, 5, 4)
+    cache = {
+        "wrr-2026-04-25": _cache_entry("100", "2026-04-25"),
+        "wrr-2026-05-02": _cache_entry("101", "2026-05-02"),
+    }
+    admin = _FakeAdmin(token="t")
+    comp = _FakeCompletion(completed=set())
+    result = sweep_past_due(
+        cache, today=today,
+        completion_client=comp, admin_client=admin, dry_run=False,
+    )
+    assert result.checked == 2
+    assert result.missed_marked == 2
+    assert result.deleted == 2
+    assert result.completed_marked == 0
+    assert set(admin.deleted) == {"100", "101"}
+    for ext in cache:
+        assert cache[ext]["status"] == "missed"
+        assert cache[ext]["missed_at"] == "2026-05-04"
+
+
+def test_sweep_marks_completed_when_completion_set_has_it():
+    today = date(2026, 5, 4)
+    cache = {"wrr-2026-04-25": _cache_entry("100", "2026-04-25")}
+    admin = _FakeAdmin(token="t")
+    comp = _FakeCompletion(completed={"100"})
+    result = sweep_past_due(
+        cache, today=today,
+        completion_client=comp, admin_client=admin, dry_run=False,
+    )
+    assert result.completed_marked == 1
+    assert result.missed_marked == 0
+    assert result.deleted == 0  # completed tasks are NOT deleted from Todoist
+    assert admin.deleted == []
+    assert cache["wrr-2026-04-25"]["status"] == "completed"
+    assert cache["wrr-2026-04-25"]["completed_at"] == "2026-05-04"
+
+
+def test_sweep_skips_todays_and_future():
+    today = date(2026, 5, 4)
+    cache = {
+        "today":   _cache_entry("200", "2026-05-04"),
+        "future":  _cache_entry("201", "2026-05-10"),
+    }
+    admin = _FakeAdmin(token="t")
+    comp = _FakeCompletion(completed=set())
+    result = sweep_past_due(
+        cache, today=today,
+        completion_client=comp, admin_client=admin, dry_run=False,
+    )
+    assert result.checked == 0
+    assert admin.deleted == []
+    assert "status" not in cache["today"]
+    assert "status" not in cache["future"]
+
+
+def test_sweep_skips_already_marked_entries():
+    today = date(2026, 5, 4)
+    cache = {
+        "old-missed":   _cache_entry("300", "2026-04-01", status="missed"),
+        "old-complete": _cache_entry("301", "2026-04-02", status="completed"),
+    }
+    admin = _FakeAdmin(token="t")
+    comp = _FakeCompletion(completed=set())
+    result = sweep_past_due(
+        cache, today=today,
+        completion_client=comp, admin_client=admin, dry_run=False,
+    )
+    assert result.checked == 0
+    assert comp.queried == []  # never even called
+
+
+def test_sweep_skips_module_due_and_dry_run_task_ids():
+    today = date(2026, 5, 4)
+    cache = {
+        "module": _cache_entry("400", "module:3"),
+        "dryrun": _cache_entry("DRY-RUN-xyz", "2026-04-25"),
+    }
+    admin = _FakeAdmin(token="t")
+    comp = _FakeCompletion(completed=set())
+    result = sweep_past_due(
+        cache, today=today,
+        completion_client=comp, admin_client=admin, dry_run=False,
+    )
+    assert result.checked == 0
+
+
+def test_sweep_dry_run_makes_no_changes():
+    today = date(2026, 5, 4)
+    cache = {"wrr-2026-04-25": _cache_entry("100", "2026-04-25")}
+    admin = _FakeAdmin(token="t")
+    comp = _FakeCompletion(completed=set())
+    result = sweep_past_due(
+        cache, today=today,
+        completion_client=comp, admin_client=admin, dry_run=True,
+    )
+    assert result.checked == 1
+    assert result.skipped == 1
+    assert result.missed_marked == 0
+    assert result.deleted == 0
+    assert admin.deleted == []
+    assert "status" not in cache["wrr-2026-04-25"]
+
+
+def test_sweep_completion_lookup_failure_aborts_sweep():
+    today = date(2026, 5, 4)
+    cache = {"wrr-2026-04-25": _cache_entry("100", "2026-04-25")}
+    admin = _FakeAdmin(token="t")
+    comp = _FakeCompletion(raises=True)
+    result = sweep_past_due(
+        cache, today=today,
+        completion_client=comp, admin_client=admin, dry_run=False,
+    )
+    assert result.errors == 1
+    assert admin.deleted == []
+    assert "status" not in cache["wrr-2026-04-25"]
+
+
+def test_sweep_delete_404_still_marks_missed():
+    today = date(2026, 5, 4)
+    cache = {"wrr-2026-04-25": _cache_entry("100", "2026-04-25")}
+    admin = _FakeAdmin(token="t")
+    admin.notfound_on = {"100"}
+    comp = _FakeCompletion(completed=set())
+    result = sweep_past_due(
+        cache, today=today,
+        completion_client=comp, admin_client=admin, dry_run=False,
+    )
+    # Task already gone — record the miss anyway.
+    assert result.missed_marked == 1
+    assert result.deleted == 0
+    assert cache["wrr-2026-04-25"]["status"] == "missed"
+
+
+def test_sweep_delete_other_error_leaves_cache_for_retry():
+    today = date(2026, 5, 4)
+    cache = {"wrr-2026-04-25": _cache_entry("100", "2026-04-25")}
+    admin = _FakeAdmin(token="t")
+    admin.fail_on = {"100"}
+    comp = _FakeCompletion(completed=set())
+    result = sweep_past_due(
+        cache, today=today,
+        completion_client=comp, admin_client=admin, dry_run=False,
+    )
+    assert result.errors == 1
+    assert result.missed_marked == 0
+    assert "status" not in cache["wrr-2026-04-25"]
+
+
+def test_run_with_sweep_disabled_skips_sweep_pass(tmp_path: Path):
+    tdir = _seed_templates(tmp_path)
+    cache_path = tmp_path / ".task_cache.json"
+    # Seed a past-due cache entry; if sweep ran, it would mutate the cache.
+    cache_path.write_text(json.dumps({
+        "stale": _cache_entry("999", "2026-04-25"),
+    }))
+    refl = tmp_path / "reflections"; refl.mkdir()
+    rtpl = tmp_path / "rtpl"; rtpl.mkdir()
+    summary = run(
+        make_config(), make_state(), date(2026, 5, 4), tdir, cache_path,
+        client_factory=FakeClient,
+        reflections_root=refl, reflection_templates_root=rtpl,
+        completion_cache_path=tmp_path / ".completion_cache.json",
+        docs_html_path=tmp_path / "docs" / "index.html",
+        docs_data_path=tmp_path / "docs" / "assets" / "data.json",
+        docs_css_path=tmp_path / "docs" / "assets" / "style.css",
+        sweep=False,
+    )
+    cache = json.loads(cache_path.read_text())
+    assert "status" not in cache["stale"]

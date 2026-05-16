@@ -243,6 +243,21 @@ Verified via `scripts/probe_completion.py` with one completed task in the window
 
 **No `python -m src.main` invocation against the production Todoist project unless gated by `--dry-run`, a sandbox `--cache-file`, or `--cleanup-project <SANDBOX_ID>`.** This includes smoke tests, sanity checks, and one-off verifications. `--today` freezes the clock but does NOT prevent API writes — it is not a safe substitute. If a real run is genuinely needed, ask the owner first.
 
+**Scope refinement (2026-05-16):** the rule applies to ad-hoc *Claude-initiated* invocations only. The scheduled `.github/workflows/daily.yml` cron is exempt by design — the engine is now expected to issue Todoist writes on every run, both creating new tasks AND sweeping past-due ones (see "Daily sweep of past-due tasks" below).
+
+### Daily sweep of past-due tasks *(2026-05-16)*
+
+Each daily run now resolves cache entries whose `due_date` is before today and whose status is not yet recorded:
+
+- **Completed** (per `/tasks/completed/by_completion_date` lookup): cache entry gets `status: "completed"` + `completed_at: <today>`. The Todoist task is **not** deleted (it's already closed in Todoist's open-list view, and we don't want to risk affecting the completion-history record).
+- **Uncompleted past-due**: cache entry gets `status: "missed"` + `missed_at: <today>`, AND `TodoistAdminClient.delete_task` is called to remove the task from the project so it doesn't accumulate as overdue clutter. 404 on delete is treated as success (user beat us to it).
+
+Flag: `--no-sweep` opts out for a single run. `--dry-run` logs candidates without making API calls or cache mutations.
+
+The dashboard now uses `cache[ext].status == "completed"` as a primary signal for the "Code reading sessions" practice count (falling back to live `completion_set` membership when the field isn't yet recorded), and surfaces a new "Code reading missed" counter for `status == "missed"` entries.
+
+Destructive ops still live on `TodoistAdminClient` — the daily `TodoistClient` remains write-only on task state, idempotency-read only. The new sweep invokes the admin client via `run(..., sweep=True, admin_factory=...)` so the orchestration is the only place both clients meet.
+
 ## Constraints holding
 
 - Python ≥3.11. Stdlib + `requests`, `PyYAML`, `markdown`, `pytest`. No frameworks, no async, no ORMs.

@@ -23,6 +23,7 @@ from src.dashboard import (
     _github_blob_url,
     _last_7_color,
     _paused_summary,
+    _practice_counts,
     render,
     scan_reflections,
     write_css_if_absent,
@@ -391,3 +392,33 @@ def test_render_paused_data_includes_pause_summary(tmp_path: Path):
     today = date(2026, 5, 4)
     _, data = render(*_paused_inputs(today, tmp_path))
     assert data["paused"] == "Paused since 2026-05-01 (3 days)"
+
+
+def test_practice_counts_uses_cache_status_when_completion_set_empty():
+    """Sweep marks completed entries with status=completed. The dashboard
+    must count those even after the completion API window expires and the
+    task id falls out of completion_set."""
+    state = make_state()
+    cache = {
+        "wrr-a": {
+            "todoist_task_id": "100",
+            "template_id": "weekly-read-real-code",
+            "due_date": "2026-04-25",
+            "status": "completed",
+        },
+        "wrr-b": {
+            "todoist_task_id": "101",
+            "template_id": "weekly-read-real-code",
+            "due_date": "2026-05-02",
+            "status": "missed",
+        },
+        "wrr-c": {
+            "todoist_task_id": "102",
+            "template_id": "weekly-read-real-code",
+            "due_date": "2026-05-09",
+            # No status yet — falls back to completion_set membership.
+        },
+    }
+    counts = _practice_counts(state, cache, completion_set={"102"})
+    assert counts["Code reading sessions"] == 2  # status=completed + completion_set hit
+    assert counts["Code reading missed"] == 1

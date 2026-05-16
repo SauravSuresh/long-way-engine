@@ -271,6 +271,8 @@ def run(
     reflections_root: Path | None = None,
     reflection_templates_root: Path | None = None,
     skip_dashboard: bool = False,
+    sweep: bool = True,
+    admin_factory=None,
     completion_factory=None,
     completion_cache_path: Path | None = None,
     docs_html_path: Path | None = None,
@@ -378,6 +380,32 @@ def run(
             dry_run,
             stub_decisions,
         )
+
+    sweep_result = SweepResult()
+    if sweep:
+        sweep_admin = (admin_factory or TodoistAdminClient)(token=config.todoist_token)
+        sweep_completion = (completion_factory or TodoistCompletionClient)(
+            token=config.todoist_token,
+            cache_path=completion_cache_path,
+            project_id=project_id or config.todoist.project_id,
+            clock=clock,
+        )
+        sweep_result = sweep_past_due(
+            cache,
+            today=today,
+            completion_client=sweep_completion,
+            admin_client=sweep_admin,
+            dry_run=dry_run,
+        )
+        if sweep_result.checked:
+            logger.info(
+                "sweep: checked=%d completed=%d missed=%d deleted=%d errors=%d",
+                sweep_result.checked,
+                sweep_result.completed_marked,
+                sweep_result.missed_marked,
+                sweep_result.deleted,
+                sweep_result.errors,
+            )
 
     cache = prune(cache, now=clock.now().astimezone(timezone.utc))
     if not dry_run:
@@ -523,6 +551,16 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Skip the Phase E dashboard render. Default is to render.",
     )
+    p.add_argument(
+        "--no-sweep",
+        action="store_true",
+        help=(
+            "Skip the daily sweep of past-due Todoist tasks. By default each "
+            "run resolves cache entries whose due_date is before today: "
+            "completed ones get status=completed; uncompleted ones get "
+            "status=missed AND are deleted from Todoist."
+        ),
+    )
     return p
 
 
@@ -554,6 +592,113 @@ def _print_dry_run_table(summary: RunSummary, out=None) -> None:
         print(sfmt.format("PATH", "DECISION", "VIA TEMPLATE"), file=out)
         for r in srows:
             print(sfmt.format(*r), file=out)
+
+
+@dataclass
+class SweepResult:
+    checked: int = 0
+    completed_marked: int = 0
+    missed_marked: int = 0
+    deleted: int = 0
+    errors: int = 0
+    skipped: int = 0  # dry-run or sweep disabled
+
+
+def sweep_past_due(
+    cache: dict[str, dict],
+    *,
+    today: date,
+    completion_client,
+    admin_client,
+    dry_run: bool,
+) -> SweepResult:
+    """Daily sweep: for cache entries whose due_date is before today and
+    whose status is not yet recorded, either mark them completed (if the
+    Todoist completion API confirms it) or delete them from Todoist and
+    mark them missed in the cache.
+
+    Mutates `cache` in place. The caller persists it via save_cache().
+    In dry-run: no API calls, no cache writes — just logs.
+    """
+    result = SweepResult()
+
+    candidates: list[tuple[str, str, date]] = []  # (ext_id, task_id, due)
+    for ext_id, entry in cache.items():
+        due_raw = entry.get("due_date")
+        if not isinstance(due_raw, str) or due_raw.startswith("module:"):
+            continue
+        try:
+            due = date.fromisoformat(due_raw)
+        except ValueError:
+            continue
+        if due >= today:
+            continue
+        if entry.get("status") in ("missed", "completed"):
+            continue
+        task_id = str(entry.get("todoist_task_id") or "")
+        if not task_id or task_id.startswith("DRY-RUN-"):
+            continue
+        candidates.append((ext_id, task_id, due))
+
+    result.checked = len(candidates)
+    if not candidates:
+        return result
+
+    if dry_run:
+        result.skipped = len(candidates)
+        for ext_id, task_id, due in candidates:
+            logger.info(
+                "DRY RUN sweep: would resolve past-due task %s (ext=%s, due=%s)",
+                task_id, ext_id, due.isoformat(),
+            )
+        return result
+
+    try:
+        statuses = completion_client.get_completion_status(
+            [task_id for _, task_id, _ in candidates]
+        )
+    except Exception as e:
+        logger.error("sweep: completion lookup failed (%s); skipping sweep", e)
+        result.errors = 1
+        return result
+
+    today_iso = today.isoformat()
+    for ext_id, task_id, due in candidates:
+        if statuses.get(task_id):
+            cache[ext_id]["status"] = "completed"
+            cache[ext_id]["completed_at"] = today_iso
+            result.completed_marked += 1
+            logger.info(
+                "sweep: marked completed (ext=%s, due=%s)", ext_id, due.isoformat(),
+            )
+            continue
+        try:
+            admin_client.delete_task(task_id)
+            result.deleted += 1
+        except Exception as e:
+            msg = str(e)
+            if "404" in msg:
+                # Already gone from Todoist (user deleted manually). Still
+                # record the miss in cache so the dashboard reflects it.
+                logger.info(
+                    "sweep: task %s already 404 in Todoist; marking missed", task_id,
+                )
+            else:
+                logger.error(
+                    "sweep: delete failed for %s (%s); leaving for retry next run",
+                    task_id, e,
+                )
+                result.errors += 1
+                continue
+        cache[ext_id]["status"] = "missed"
+        cache[ext_id]["missed_at"] = today_iso
+        result.missed_marked += 1
+        logger.info(
+            "sweep: marked missed and deleted (ext=%s, due=%s)",
+            ext_id, due.isoformat(),
+        )
+
+    return result
 
 
 def cleanup_project(
@@ -655,6 +800,7 @@ def main(argv: list[str] | None = None) -> int:
         dry_run=args.dry_run,
         project_id=args.project_id,
         skip_dashboard=args.skip_dashboard,
+        sweep=not args.no_sweep,
     )
 
     if args.dry_run:

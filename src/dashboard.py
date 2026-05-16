@@ -266,11 +266,21 @@ def _practice_counts(
         1
         for entry in cache.values()
         if entry.get("template_id") == "weekly-read-real-code"
-        and str(entry.get("todoist_task_id")) in completion_set
+        and (
+            entry.get("status") == "completed"
+            or str(entry.get("todoist_task_id")) in completion_set
+        )
+    )
+    code_reading_missed = sum(
+        1
+        for entry in cache.values()
+        if entry.get("template_id") == "weekly-read-real-code"
+        and entry.get("status") == "missed"
     )
     mc = state.manual_counters
     return {
         "Code reading sessions": code_reading,
+        "Code reading missed": code_reading_missed,
         "Traces completed": int(mc.get("traces_completed", 0) or 0),
         "PRs opened": int(mc.get("prs_opened", 0) or 0),
         "Pair sessions": int(mc.get("pair_sessions", 0) or 0),
