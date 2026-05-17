@@ -1,4 +1,10 @@
 {
+  "adherence": {
+    "done": 8,
+    "expected": 11,
+    "percent": 73,
+    "since": "2026-05-05"
+  },
   "books": [
     {
       "author": "David Agans",
@@ -88,6 +94,8 @@
   "books_state": {},
   "current_book": "Computer Systems: A Programmer's Perspective",
   "current_module": 1,
+  "day_of_journey": 13,
+  "day_total": 1189,
   "last_7_days": [
     {
       "date": "2026-05-10",
@@ -122,7 +130,6 @@
   "paused": null,
   "phase": 1,
   "practices": {
-    "Code reading missed": 1,
     "Code reading sessions": 1,
     "PRs opened": 0,
     "Pair sessions": 0,
@@ -133,6 +140,23 @@
     "Daily": 0,
     "Monthly post": 0,
     "Weekly review": 0
+  },
+  "streaks_view": {
+    "Daily": {
+      "best": 6,
+      "count": 0,
+      "hint": "Sunday \u2014 rest day"
+    },
+    "Monthly post": {
+      "best": 0,
+      "count": 0,
+      "hint": "next post in 15 days"
+    },
+    "Weekly review": {
+      "best": 0,
+      "count": 0,
+      "hint": "next Friday in 5 days"
+    }
   },
   "today": "2026-05-17"
 }

@@ -421,4 +421,4 @@ def test_practice_counts_uses_cache_status_when_completion_set_empty():
     }
     counts = _practice_counts(state, cache, completion_set={"102"})
     assert counts["Code reading sessions"] == 2  # status=completed + completion_set hit
-    assert counts["Code reading missed"] == 1
+    assert "Code reading missed" not in counts

@@ -178,3 +178,181 @@ def monthly_post_streak(
         streak += 1
         d = _previous_month_first_day(d)
     return streak
+
+
+# --- best-streak walkers ------------------------------------------------------
+#
+# "Best" means longest consecutive run from state.start_date up to (but not
+# including) today. A current streak ≤ best by construction; the dashboard
+# uses best as a frame of reference so 0 doesn't read as "engine never
+# worked."
+
+
+def best_daily_streak(
+    today: date,
+    state: State,
+    cache: dict[str, Any],
+    completion_set: set[str],
+) -> int:
+    best = 0
+    cur = 0
+    d = state.start_date
+    while d < today:
+        if _is_skipped_on(d, state):
+            d += timedelta(days=1)
+            continue
+        if _all_required_done(d, cache, completion_set):
+            cur += 1
+            if cur > best:
+                best = cur
+        else:
+            cur = 0
+        d += timedelta(days=1)
+    return best
+
+
+def best_weekly_review_streak(
+    today: date,
+    state: State,
+    cache: dict[str, Any],
+    completion_set: set[str],
+    reflections_root: Path,
+) -> int:
+    best = 0
+    cur = 0
+    yesterday = today - timedelta(days=1)
+    end_friday = _most_recent_friday_le(yesterday)
+    # First Friday on or after start_date.
+    first_friday_delta = (FRIDAY - state.start_date.weekday()) % 7
+    d = state.start_date + timedelta(days=first_friday_delta)
+    while d <= end_friday:
+        if _is_in_pause_window(d, state):
+            d += timedelta(days=7)
+            continue
+        tid = _task_id_for(WEEKLY_REVIEW_TEMPLATE, d, cache)
+        iso_year, iso_week, _ = d.isocalendar()
+        ref_path = reflections_root / "weekly" / f"{iso_year}-W{iso_week:02d}.md"
+        if (
+            tid is not None
+            and tid in completion_set
+            and _reflection_status_filled(ref_path)
+        ):
+            cur += 1
+            if cur > best:
+                best = cur
+        else:
+            cur = 0
+        d += timedelta(days=7)
+    return best
+
+
+def best_monthly_post_streak(
+    today: date,
+    state: State,
+    cache: dict[str, Any],
+    completion_set: set[str],
+) -> int:
+    best = 0
+    cur = 0
+    yesterday = today - timedelta(days=1)
+    end_first = yesterday.replace(day=1)
+    d = state.start_date.replace(day=1)
+    while d <= end_first:
+        if _is_in_pause_window(d, state):
+            d = _next_month_first_day(d)
+            continue
+        tid = _task_id_for(MONTHLY_POST_TEMPLATE, d, cache)
+        if tid is not None and tid in completion_set:
+            cur += 1
+            if cur > best:
+                best = cur
+        else:
+            cur = 0
+        d = _next_month_first_day(d)
+    return best
+
+
+def _next_month_first_day(d: date) -> date:
+    if d.month == 12:
+        return date(d.year + 1, 1, 1)
+    return date(d.year, d.month + 1, 1)
+
+
+# --- one-line hints -----------------------------------------------------------
+#
+# Sub-label rendered under each streak count. Tells the owner *why* the
+# number is what it is and what would change it. Deterministic strings;
+# no randomness or LLM.
+
+
+def _is_currently_paused(state: State, today: date) -> bool:
+    if state.paused:
+        return True
+    return _is_in_pause_window(today, state)
+
+
+def _plural(n: int, unit: str) -> str:
+    return f"{n} {unit}{'s' if n != 1 else ''}"
+
+
+def adherence_since_start(
+    today: date,
+    state: State,
+    cache: dict[str, Any],
+    completion_set: set[str],
+) -> tuple[int, int]:
+    """Returns (done, expected) counted from state.start_date through yesterday.
+
+    Expected = non-Sunday, non-paused days since start. Today itself is
+    excluded because the cron renders at 05:30 and today's tasks aren't
+    done yet.
+    """
+    done = 0
+    expected = 0
+    d = state.start_date
+    while d < today:
+        if _is_skipped_on(d, state):
+            d += timedelta(days=1)
+            continue
+        expected += 1
+        if _all_required_done(d, cache, completion_set):
+            done += 1
+        d += timedelta(days=1)
+    return done, expected
+
+
+def daily_hint(today: date, state: State, current: int) -> str:
+    if today < state.start_date:
+        return f"starts {state.start_date.isoformat()}"
+    if _is_currently_paused(state, today):
+        return "paused"
+    if today.weekday() == SUNDAY:
+        return "Sunday — rest day"
+    if current == 0:
+        return "complete morning reading + Anki today to start"
+    return "morning reading + Anki by 23:59 to keep it"
+
+
+def weekly_hint(today: date, state: State, current: int) -> str:
+    if today < state.start_date:
+        return f"starts {state.start_date.isoformat()}"
+    if _is_currently_paused(state, today):
+        return "paused"
+    if today.weekday() == FRIDAY:
+        return "Friday review + filled reflection due today"
+    days_to_friday = (FRIDAY - today.weekday()) % 7
+    if days_to_friday == 0:
+        days_to_friday = 7
+    return f"next Friday in {_plural(days_to_friday, 'day')}"
+
+
+def monthly_hint(today: date, state: State, current: int) -> str:
+    if today < state.start_date:
+        return f"starts {state.start_date.isoformat()}"
+    if _is_currently_paused(state, today):
+        return "paused"
+    if today.day == 1:
+        return "monthly post due today"
+    next_first = _next_month_first_day(today)
+    days = (next_first - today).days
+    return f"next post in {_plural(days, 'day')}"
