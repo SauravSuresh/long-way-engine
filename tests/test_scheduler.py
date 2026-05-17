@@ -143,9 +143,11 @@ def test_daily_on_monday_returns_true():
     assert should_create_today(daily_template(), monday, make_state(), make_config()) is True
 
 
-def test_daily_without_skip_runs_on_sunday():
+def test_daily_without_skip_still_blocked_by_global_sunday_off():
+    """Global sunday_off gates EVERY template, including dailies that
+    don't carry skip_if=sunday. Owner intent: no learning on Sundays."""
     sunday = date(2026, 5, 3)
-    assert should_create_today(daily_template(skip=None), sunday, make_state(), make_config()) is True
+    assert should_create_today(daily_template(skip=None), sunday, make_state(), make_config()) is False
 
 
 def test_sunday_off_false_runs_daily_on_sunday():
@@ -153,6 +155,26 @@ def test_sunday_off_false_runs_daily_on_sunday():
     cfg = make_config()
     cfg.sunday_off = False
     assert should_create_today(daily_template(), sunday, make_state(), cfg) is True
+
+
+def test_weekly_sunday_template_blocked_by_global_sunday_off():
+    """weekly-trace-one-thing (day_of_week=sunday) must NOT fire when
+    sunday_off=true. Pre-fix this template created tasks every Sunday."""
+    sunday = date(2026, 5, 17)
+    assert sunday.weekday() == 6
+    assert should_create_today(
+        weekly_template("sunday"), sunday, make_state(), make_config()
+    ) is False
+
+
+def test_weekly_sunday_template_fires_when_sunday_off_disabled():
+    """Owner opt-out: setting sunday_off=false re-enables Sunday tasks."""
+    sunday = date(2026, 5, 17)
+    cfg = make_config()
+    cfg.sunday_off = False
+    assert should_create_today(
+        weekly_template("sunday"), sunday, make_state(), cfg
+    ) is True
 
 
 # ---------------------------------------------------------------------------
@@ -356,18 +378,29 @@ def test_annual_does_not_fire_on_jan_2():
 
 
 # ---------------------------------------------------------------------------
-# THE EDGE CASE: 2029-04-01 is a Sunday AND a quarter boundary
+# THE EDGE CASE: 2029-04-01 is a Sunday AND a quarter boundary.
+# Post-fix invariant: global sunday_off blocks ALL cadences on Sunday,
+# including quarter-start tasks. Owner trades the rare Sunday boundary
+# for an unconditional rest day.
 # ---------------------------------------------------------------------------
 
 
-def test_2029_04_01_quarterly_fires_despite_being_sunday():
+def test_2029_04_01_quarterly_blocked_by_global_sunday_off():
     sunday_q2 = date(2029, 4, 1)
     assert sunday_q2.weekday() == 6  # Sunday
-    assert should_create_today(quarterly_template(), sunday_q2, make_state(), make_config()) is True
+    assert should_create_today(quarterly_template(), sunday_q2, make_state(), make_config()) is False
+
+
+def test_2029_04_01_quarterly_fires_when_sunday_off_disabled():
+    """Owner can opt out of the global rest day to recover quarter-boundary tasks."""
+    sunday_q2 = date(2029, 4, 1)
+    cfg = make_config()
+    cfg.sunday_off = False
+    assert should_create_today(quarterly_template(), sunday_q2, make_state(), cfg) is True
 
 
 def test_2029_04_01_daily_with_sunday_skip_does_not_fire():
-    """Same date, daily template: Sunday-off still wins for daily cadence."""
+    """Same date, daily template: Sunday-off still wins."""
     sunday_q2 = date(2029, 4, 1)
     assert should_create_today(daily_template(), sunday_q2, make_state(), make_config()) is False
 

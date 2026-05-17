@@ -98,15 +98,14 @@ def _classify_skip(template, state: State, config: Config, today: date) -> str:
     """Human-readable label for why this template did not fire today."""
     if state.paused:
         return "SKIP (paused)"
+    # Global Sunday-off mirrors scheduler.should_create_today: when set,
+    # NO cadence fires on Sundays — surface this uniformly in the dry-run
+    # table so the operator sees one consistent reason across all rows.
+    if config.sunday_off and today.weekday() == 6:
+        return "SKIP (Sunday)"
     cadence = template.cadence
     if cadence == "daily":
         rules = template.skip_if
-        if (
-            "sunday" in rules
-            and config.sunday_off
-            and today.weekday() == 6
-        ):
-            return "SKIP (Sunday)"
         if (
             "pair_day" in rules
             and config.pair_day

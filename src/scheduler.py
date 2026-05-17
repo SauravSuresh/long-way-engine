@@ -3,8 +3,10 @@
 Cadence dispatch:
 
   - paused short-circuit (highest precedence)
+  - sunday_off short-circuit — if config.sunday_off and today is Sunday,
+    NO template fires regardless of cadence. Hard rest day across the
+    board (daily, weekly, monthly, quarterly, annual, once-per-module).
   - daily          — every day, with optional skip_if rules:
-                       * skip_if=sunday   + sunday_off + Sunday   -> skip
                        * skip_if=pair_day + today is config.pair_day -> skip
   - weekly         — today.weekday() matches template.day_of_week
   - monthly        — template.day_of_month is int 1..28, "last-day", or "last-saturday"
@@ -14,8 +16,9 @@ Cadence dispatch:
   - anything else raises NotImplementedError naming the cadence and the
     offending template id.
 
-Sunday-off applies only to the daily cadence. Quarterly Apr 1 fires
-regardless of weekday — including a Sunday Apr 1 (e.g. 2029-04-01).
+Sunday-off applies GLOBALLY when config.sunday_off=true. A Sunday quarter
+boundary (e.g. 2029-04-01) loses its task; the owner accepts that as the
+price of a real rest day. Owner can opt out by setting sunday_off=false.
 """
 
 from __future__ import annotations
@@ -50,6 +53,12 @@ def should_create_today(
     config: Config,
 ) -> bool:
     if state.paused:
+        return False
+
+    # Global Sunday rest day: blocks every cadence when sunday_off is set.
+    # Lives above cadence dispatch so weekly day_of_week=sunday templates,
+    # monthly day_of_month=1 falling on Sunday, etc. all skip uniformly.
+    if config.sunday_off and today.weekday() == SUNDAY:
         return False
 
     cadence = template.cadence
