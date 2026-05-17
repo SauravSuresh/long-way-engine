@@ -94,13 +94,9 @@
   "books_state": {},
   "current_book": "Computer Systems: A Programmer's Perspective",
   "current_module": 1,
-  "day_of_journey": 13,
+  "day_of_journey": 14,
   "day_total": 1189,
   "last_7_days": [
-    {
-      "date": "2026-05-10",
-      "state": "gray"
-    },
     {
       "date": "2026-05-11",
       "state": "green"
@@ -124,6 +120,10 @@
     {
       "date": "2026-05-16",
       "state": "yellow"
+    },
+    {
+      "date": "2026-05-17",
+      "state": "gray"
     }
   ],
   "month": 1,
@@ -145,18 +145,18 @@
     "Daily": {
       "best": 6,
       "count": 0,
-      "hint": "Sunday \u2014 rest day"
+      "hint": "complete morning reading + Anki today to start"
     },
     "Monthly post": {
       "best": 0,
       "count": 0,
-      "hint": "next post in 15 days"
+      "hint": "next post in 14 days"
     },
     "Weekly review": {
       "best": 0,
       "count": 0,
-      "hint": "next Friday in 5 days"
+      "hint": "next Friday in 4 days"
     }
   },
-  "today": "2026-05-17"
+  "today": "2026-05-18"
 }
