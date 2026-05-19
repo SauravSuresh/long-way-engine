@@ -58,6 +58,8 @@
   "2586ef2b4b0dfbc2": {
     "created_at": "2026-05-18T22:32:39.110646+00:00",
     "due_date": "2026-05-19",
+    "missed_at": "2026-05-20",
+    "status": "missed",
     "template_id": "daily-evening-hands-on",
     "todoist_task_id": "6ggJ5HQ523fWFGXR"
   },
@@ -118,8 +120,10 @@
     "todoist_task_id": "6gfP6rqjwC366GjR"
   },
   "51fe9db22d4ff4fc": {
+    "completed_at": "2026-05-20",
     "created_at": "2026-05-18T22:32:38.059650+00:00",
     "due_date": "2026-05-19",
+    "status": "completed",
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6ggJ5HM8Q9264GxR"
   },
@@ -130,6 +134,12 @@
     "status": "completed",
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6gc36xjw72xq2wpR"
+  },
+  "5687a8d9828e5de4": {
+    "created_at": "2026-05-19T22:45:11.885204+00:00",
+    "due_date": "2026-05-20",
+    "template_id": "daily-anki",
+    "todoist_task_id": "6ggXfC6Jr78rVJGR"
   },
   "5b95d9b9eff9c274": {
     "created_at": "2026-05-15T22:30:19.302994+00:00",
@@ -154,6 +164,12 @@
     "status": "completed",
     "template_id": "weekly-friday-review",
     "todoist_task_id": "6gfP6v6M4c3cGm42"
+  },
+  "661f5b9e185e67ca": {
+    "created_at": "2026-05-19T22:45:12.356210+00:00",
+    "due_date": "2026-05-20",
+    "template_id": "daily-evening-hands-on",
+    "todoist_task_id": "6ggXfC97F6pXF42R"
   },
   "6f9919a18222e1c5": {
     "completed_at": "2026-05-17",
@@ -228,8 +244,10 @@
     "todoist_task_id": "6gX586xVm2Hc2P22"
   },
   "8feba3802218391e": {
+    "completed_at": "2026-05-20",
     "created_at": "2026-05-18T22:32:38.625961+00:00",
     "due_date": "2026-05-19",
+    "status": "completed",
     "template_id": "daily-anki",
     "todoist_task_id": "6ggJ5HJQcqM9fQQ2"
   },
@@ -312,6 +330,12 @@
     "status": "missed",
     "template_id": "daily-evening-hands-on",
     "todoist_task_id": "6gg6WX8jhxv57F8R"
+  },
+  "c7e16f9cd8981ff9": {
+    "created_at": "2026-05-19T22:45:11.130831+00:00",
+    "due_date": "2026-05-20",
+    "template_id": "daily-morning-reading",
+    "todoist_task_id": "6ggXfC6HW5wHH5fR"
   },
   "c880b6f2a122f3d4": {
     "completed_at": "2026-05-17",
