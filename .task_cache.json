@@ -79,6 +79,12 @@
     "template_id": "weekly-saturday-deep-block",
     "todoist_task_id": "6gffXVc9cp3p9F8R"
   },
+  "3e3eb5fe96d5fc75": {
+    "created_at": "2026-05-20T22:53:57.329247+00:00",
+    "due_date": "2026-05-21",
+    "template_id": "weekly-pair-with-engineer",
+    "todoist_task_id": "6ggq8RgXQFJW2X82"
+  },
   "43b13ec81e76b4ea": {
     "completed_at": "2026-05-17",
     "created_at": "2026-05-13T22:46:15.845765+00:00",
@@ -136,8 +142,10 @@
     "todoist_task_id": "6gc36xjw72xq2wpR"
   },
   "5687a8d9828e5de4": {
+    "completed_at": "2026-05-21",
     "created_at": "2026-05-19T22:45:11.885204+00:00",
     "due_date": "2026-05-20",
+    "status": "completed",
     "template_id": "daily-anki",
     "todoist_task_id": "6ggXfC6Jr78rVJGR"
   },
@@ -168,6 +176,8 @@
   "661f5b9e185e67ca": {
     "created_at": "2026-05-19T22:45:12.356210+00:00",
     "due_date": "2026-05-20",
+    "missed_at": "2026-05-21",
+    "status": "missed",
     "template_id": "daily-evening-hands-on",
     "todoist_task_id": "6ggXfC97F6pXF42R"
   },
@@ -194,6 +204,12 @@
     "status": "completed",
     "template_id": "weekly-trace-one-thing",
     "todoist_task_id": "6gcCV2wvh3H6CW6R"
+  },
+  "7406e5f9492991f3": {
+    "created_at": "2026-05-20T22:53:56.636559+00:00",
+    "due_date": "2026-05-21",
+    "template_id": "daily-anki",
+    "todoist_task_id": "6ggq8Rch64m8P9JR"
   },
   "767fd8952ca98a7d": {
     "created_at": "2026-05-15T22:30:20.287975+00:00",
@@ -234,6 +250,12 @@
     "status": "completed",
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6gcR3GGjpwrXGVX2"
+  },
+  "8845f218d27b6bb8": {
+    "created_at": "2026-05-20T22:53:55.524532+00:00",
+    "due_date": "2026-05-21",
+    "template_id": "daily-morning-reading",
+    "todoist_task_id": "6ggq8RWxqM3x8j32"
   },
   "8947fbee4687ed9f": {
     "completed_at": "2026-05-17",
@@ -334,6 +356,8 @@
   "c7e16f9cd8981ff9": {
     "created_at": "2026-05-19T22:45:11.130831+00:00",
     "due_date": "2026-05-20",
+    "missed_at": "2026-05-21",
+    "status": "missed",
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6ggXfC6HW5wHH5fR"
   },
