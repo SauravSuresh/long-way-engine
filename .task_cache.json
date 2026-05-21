@@ -7,6 +7,12 @@
     "template_id": "daily-evening-hands-on",
     "todoist_task_id": "6gX58769wMv4Xhp2"
   },
+  "02726970a29974d0": {
+    "created_at": "2026-05-21T22:49:51.963342+00:00",
+    "due_date": "2026-05-22",
+    "template_id": "daily-anki",
+    "todoist_task_id": "6gh4fcmqG4RXwRwR"
+  },
   "03e7fd968125f338": {
     "completed_at": "2026-05-17",
     "created_at": "2026-05-12T22:41:48.585132+00:00",
@@ -71,6 +77,12 @@
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6gX586rrvChrv73R"
   },
+  "2d05ce3f8ba6402e": {
+    "created_at": "2026-05-21T22:49:52.669785+00:00",
+    "due_date": "2026-05-22",
+    "template_id": "daily-evening-hands-on",
+    "todoist_task_id": "6gh4fcmqQ3q3xXh2"
+  },
   "2de9ab319e6816e1": {
     "created_at": "2026-05-15T22:30:20.938219+00:00",
     "due_date": "2026-05-16",
@@ -82,6 +94,8 @@
   "3e3eb5fe96d5fc75": {
     "created_at": "2026-05-20T22:53:57.329247+00:00",
     "due_date": "2026-05-21",
+    "missed_at": "2026-05-22",
+    "status": "missed",
     "template_id": "weekly-pair-with-engineer",
     "todoist_task_id": "6ggq8RgXQFJW2X82"
   },
@@ -205,9 +219,17 @@
     "template_id": "weekly-trace-one-thing",
     "todoist_task_id": "6gcCV2wvh3H6CW6R"
   },
+  "739fb295a3042e1a": {
+    "created_at": "2026-05-21T22:49:53.184589+00:00",
+    "due_date": "2026-05-22",
+    "template_id": "weekly-friday-review",
+    "todoist_task_id": "6gh4fcrMFWm36jjR"
+  },
   "7406e5f9492991f3": {
     "created_at": "2026-05-20T22:53:56.636559+00:00",
     "due_date": "2026-05-21",
+    "missed_at": "2026-05-22",
+    "status": "missed",
     "template_id": "daily-anki",
     "todoist_task_id": "6ggq8Rch64m8P9JR"
   },
@@ -254,6 +276,8 @@
   "8845f218d27b6bb8": {
     "created_at": "2026-05-20T22:53:55.524532+00:00",
     "due_date": "2026-05-21",
+    "missed_at": "2026-05-22",
+    "status": "missed",
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6ggq8RWxqM3x8j32"
   },
@@ -376,6 +400,12 @@
     "status": "missed",
     "template_id": "daily-evening-hands-on",
     "todoist_task_id": "6gcR3GM5cP4G5mJR"
+  },
+  "d4304bee726f5055": {
+    "created_at": "2026-05-21T22:49:51.261842+00:00",
+    "due_date": "2026-05-22",
+    "template_id": "daily-morning-reading",
+    "todoist_task_id": "6gh4fcjMphhQqP5R"
   },
   "db0b58b8ed32cff3": {
     "created_at": "2026-05-14T22:37:20.137357+00:00",
