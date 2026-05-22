@@ -216,25 +216,64 @@ through one at a time (`state.current_module` only goes up). Give
 each a `name` and an `estimated_hours`. Author one onboarding task
 per module in `modules.yaml`.
 
-**Step 5 — Rituals.** Use this recommended skeleton, adapt to the
-user's life:
+**Step 5 — Rituals.** Use this skeleton. The two rows marked
+**required** must appear in every curriculum you generate, regardless
+of the user's domain. The rest are recommended but flexible.
 
-| Cadence | Suggested ritual |
-|---|---|
-| daily | morning study (~30 min) |
-| daily | spaced-repetition review (~15 min) |
-| daily | evening hands-on (~60–90 min) |
-| weekly | end-of-week retrieval (~20 min) |
-| weekly | deep block (~3–4 hours) |
-| weekly | one active practice (rotates) |
-| monthly | public write-up (1st of month) |
-| monthly | retrieval (last Saturday) |
-| monthly | retrospective (last Saturday) |
-| quarterly | synthesis essay |
-| annual | full review + plan revision |
+| Cadence | Ritual | Status |
+|---|---|---|
+| daily | spaced-repetition review (~10–15 min) | **REQUIRED** |
+| daily | morning study (~30 min) | **REQUIRED** |
+| daily | evening hands-on (~60–90 min) | recommended |
+| weekly | end-of-week retrieval (~20 min) | recommended |
+| weekly | deep block (~3–4 hours) | recommended |
+| weekly | one active practice (rotates) | recommended |
+| monthly | public write-up (1st of month) | recommended |
+| monthly | retrieval (last Saturday) | recommended |
+| monthly | retrospective (last Saturday) | recommended |
+| quarterly | synthesis essay | recommended |
+| annual | full review + plan revision | recommended |
 
-Map each ritual to a `ritual_times` slot in `config.yaml`. Add those
-slot names to `manifest.ritual_times_required`.
+**Why spaced-repetition is required.** Long-horizon learning fails
+without retention reinforcement. Whatever the user is studying — code,
+math, history, languages, medicine — they will forget 80% of it within
+a month unless they review it on a spaced schedule. The daily SRS
+ritual is the single highest-leverage habit in the entire system; a
+curriculum without it ships a hole at the foundation. Default to
+Anki; mention SuperMemo, Mochi, RemNote, or paper-card systems if the
+user pushes back on Anki specifically, but don't drop the cadence.
+
+A sample SRS template (adapt the time slot, adjust the description
+to the user's domain):
+
+```yaml
+- id: daily-srs-review
+  title: "Spaced-repetition review (Anki)"
+  description: |
+    10–15 min. Whenever — commute, lunch, before bed. Add 3–5 new
+    cards per day from what you read and built. No more.
+  due: "today at {ritual_times.srs_review}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday
+```
+
+Add `srs_review` (or equivalent) to `manifest.ritual_times_required`
+and to `config.yaml`'s `ritual_times`.
+
+**Why morning study is required.** Front-loading deep work before
+the day's distractions arrive is the second-most reliable habit in
+sustained-learning research. The "morning study" ritual binds a
+fixed time + a paper book + a paper notebook, and it's what populates
+`{current_book}` from the syllabus.
+
+Map every other ritual you generate to a `ritual_times` slot in
+`config.yaml`. Add those slot names to `manifest.ritual_times_required`.
+
+**If the user objects to either required ritual:** push back once,
+quoting the reasoning above. If they still refuse, document the
+omission in a comment at the top of `rituals/daily.yaml` so the
+gap is visible. Do not silently skip it.
 
 **Step 6 — Practices (optional).** Weekly cadence templates that
 aren't routine — deliberate skill drills like "trace one system
@@ -271,6 +310,10 @@ Confirm a sensible task set fires for today. Done.
 
 ## 6. Anti-patterns
 
+- **Skipping the daily SRS ritual.** This is the most common
+  failure mode and the most expensive. Without spaced repetition,
+  retention collapses inside a month and a 12-month plan delivers
+  ~3 months of durable learning. Always include it. See Step 5.
 - **No artifact = no learning week.** A week of pure reading without
   a writeup, a commit, or a public note is forgotten. Every weekly
   ritual should produce something.

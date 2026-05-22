@@ -8,6 +8,18 @@
   cadence: daily
   skip_if: sunday
 
+- id: ml-daily-srs-review
+  title: "Spaced-repetition review (Anki)"
+  description: |
+    10–15 min. Whenever — commute, lunch, before bed.
+    Add 3–5 new cards per day from what you read and built. No more.
+    Without SRS, you'll forget 80% of this curriculum inside a month.
+    This is the highest-leverage 15 minutes of the day.
+  due: "today at {ritual_times.srs_review}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday
+
 - id: ml-daily-evening-build
   title: "Evening build (60–90 min)"
   description: |

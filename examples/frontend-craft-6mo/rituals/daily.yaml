@@ -7,6 +7,19 @@
   cadence: daily
   skip_if: sunday
 
+- id: fe-daily-srs-review
+  title: "Spaced-repetition review (Anki)"
+  description: |
+    10–15 min. Add 3–5 cards/day from what you read and shipped —
+    CSS quirks, ARIA roles, TypeScript patterns, browser behavior
+    that surprised you. Review the deck before bed.
+    Without SRS the front-end mountain of detail evaporates inside
+    a month.
+  due: "today at {ritual_times.srs_review}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday
+
 - id: fe-daily-evening-build
   title: "Evening build"
   description: |

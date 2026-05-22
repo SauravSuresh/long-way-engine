@@ -96,10 +96,18 @@ agent run the 7-step interview with you:
      can span many months).
    - **Modules.** 2–8 per phase. Discrete units you advance through
      one at a time.
-   - **Rituals.** Which daily / weekly / monthly habits do you want
-     the engine to enforce? (Morning study, spaced repetition,
-     deep block, monthly writeup, etc.) Mapped to time slots in
-     `config.yaml`.
+   - **Rituals.** Daily / weekly / monthly habits the engine
+     enforces. The agent will insist on two daily defaults regardless
+     of your domain:
+     - **Spaced-repetition review (Anki or similar)** — 10–15 min/day.
+       Non-negotiable. Long-horizon learning without SRS loses ~80% of
+       what you covered inside a month. Every curriculum the agent
+       generates includes this ritual; you can adjust the time slot
+       or swap Anki for another SRS tool, but the cadence stays.
+     - **Morning study** — ~30 min/day with the current book.
+     Everything else (evening hands-on, weekly retrievals, monthly
+     writeups, deep blocks, quarterly synthesis) is recommended but
+     adjustable to your life.
    - **Practices.** Optional weekly skill drills outside the
      routine.
 4. The agent writes every YAML file. Validator runs at the end.
