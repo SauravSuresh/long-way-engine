@@ -138,6 +138,9 @@ def _lookup(
             return state.current_book
         from src.syllabus import current_book as _resolve_current_book
         return _resolve_current_book(state.month, syllabus_obj)
+    if name == "current_module":
+        from src.syllabus import current_module_name as _resolve_current_module
+        return _resolve_current_module(state.current_module, syllabus_obj)
     if name.startswith("ritual_times."):
         key = name.split(".", 1)[1]
         if key not in config.ritual_times:
