@@ -1,12 +1,56 @@
 # long-way-engine
 
-Personal task-engine for a 3-year learning syllabus. GitHub Actions creates Todoist tasks daily; reflections live as version-controlled markdown; a static dashboard renders progress.
+A pluggable engine for running multi-month learning plans. You describe
+your plan in YAML (phases, books per month, modules, daily/weekly/monthly
+rituals); the engine creates the right Todoist tasks every morning,
+generates reflection markdown stubs on cadence, and renders a static
+dashboard of your progress.
 
-See `SPEC.md` for the full design and `the-long-way.md` for the syllabus the engine serves. `STATUS.md` tracks what's built versus what's planned.
+**Want to use it for your own plan?** → see [`docs/FORKING.md`](./docs/FORKING.md)
+for a step-by-step setup guide, or [`AGENTS.md`](./AGENTS.md) if you
+want an AI agent to design your curriculum with you.
 
-## Phase A scope
+## How this started
 
-This is the walking skeleton. Two daily Todoist tasks (morning reading, Anki) get created at 03:00 Asia/Kolkata, idempotently, with a content marker for future reconstruction. No weekly/monthly/quarterly cadences yet, no reflections, no dashboard.
+This was originally a single-user system for one specific 39-month
+syllabus — Saurav's [`the-long-way.md`](./the-long-way.md), a personal
+plan to become a serious software engineer the slow, deliberate way:
+mornings on paper books, evenings in a terminal, weekly retrievals,
+monthly public writeups. The whole syllabus, every ritual, every
+phase boundary was baked into Python code.
+
+Around month one, it became clear that the engine itself — the
+"task-template-with-cadences + dashboard + reflection log" machinery —
+was generic. The curriculum was the only opinionated part. So the
+curriculum got lifted out into `curriculum/*.yaml`, and `AGENTS.md`
+was added so an AI agent can interview anyone and produce a complete
+bundle. Fork the repo, write your own `curriculum/`, point the daily
+cron at it, and you have a personal learning system.
+
+The original 39-month plan still lives in this repo as
+[`curriculum/syllabus.yaml`](./curriculum/syllabus.yaml). Two
+hand-built example curricula in [`examples/`](./examples/) (a 12-month
+ML engineer path and a 6-month frontend deep-dive) show what other
+shapes look like.
+
+## What it does
+
+- **Daily Todoist tasks.** Templates declare cadence (`daily`,
+  `weekly`, `monthly`, `quarterly`, `annual`, `once-per-module`) +
+  optional skip rules (`sunday`, `pair_day`, `last-saturday-of-month`).
+  Engine resolves placeholder variables (`{current_book}`,
+  `{ritual_times.morning_reading}`, `{iso_year}-W{iso_week:02d}`) and
+  creates one task per template that fires today. Deduped via local
+  cache.
+- **Reflection markdown stubs.** Weekly / monthly / quarterly /
+  annual ritual templates auto-create empty markdown files at the
+  right path; you fill them in throughout the period.
+- **Static dashboard.** Every successful daily run regenerates
+  `docs/index.html`: current phase, month, module, streaks, books
+  read, completion percentages, reflection log links.
+- **Failure-isolated.** Validator runs at startup; if anything in
+  your curriculum is malformed, you see every problem at once and
+  no Todoist tasks get created until you fix them.
 
 ## Local setup
 
@@ -78,9 +122,9 @@ books_state:
 ```
 
 Valid values: `not_started`, `current`, `done`. The dashboard's Books
-section renders a per-phase list using `parse_books` against
-`the-long-way.md` and tags each entry with the badge from this map.
-Titles must match exactly; absence defaults to `not_started`.
+section renders a per-phase list from `curriculum/syllabus.yaml`'s
+`books:` entries and tags each with the badge from this map. Titles
+must match exactly; absence defaults to `not_started`.
 
 ## Dashboard (Phase E)
 
@@ -104,18 +148,19 @@ https://<github_username>.github.io/<repo_name>/
 must already match your GitHub URL — the reflection-log links use them
 to build per-file blob URLs.
 
-## Fork it for your own curriculum
+## Fork it for your own plan
 
-This repo runs my 39-month "long way" plan, but the engine is generic.
-Forkers can replace `curriculum/` with their own bundle. See
-[`AGENTS.md`](./AGENTS.md) for the full schema and a recommended
-interview protocol you can run with an AI coding agent.
+Full step-by-step setup guide: [`docs/FORKING.md`](./docs/FORKING.md).
 
-Two starter bundles in [`examples/`](./examples):
+Short version: fork the repo, replace `curriculum/` with your own
+bundle (or copy one of the starters in [`examples/`](./examples/)),
+set the `TODOIST_TOKEN` repo secret, push.
 
-- `examples/ml-engineer-12mo/` — 12-month ML engineer path
-- `examples/frontend-craft-6mo/` — 6-month frontend deep-dive
+Starter bundles:
 
-To use one: copy it to `curriculum/`, edit `config.yaml`'s
-`curriculum_dir` if you put it elsewhere, then run
-`python -m src.main --dry-run` to see what fires today.
+- [`examples/ml-engineer-12mo/`](./examples/ml-engineer-12mo/) — 12-month ML engineer path (3 phases, 9 modules)
+- [`examples/frontend-craft-6mo/`](./examples/frontend-craft-6mo/) — 6-month frontend deep-dive (2 phases, 6 modules)
+
+If you'd rather have an AI agent build your curriculum from scratch,
+[`AGENTS.md`](./AGENTS.md) has a 7-step interview protocol you can
+hand to Claude, Cursor, or any agent that reads project files.
