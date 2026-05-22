@@ -1,0 +1,214 @@
+meta:
+  name: The Long Way
+  total_months: 39
+  start_month_index: 1
+phases:
+- number: 1
+  name: Foundations
+  months:
+  - 1
+  - 12
+- number: 2
+  name: Go & the Backend Toolkit
+  months:
+  - 13
+  - 20
+- number: 3
+  name: Distributed Systems & Booking
+  months:
+  - 21
+  - 30
+- number: 4
+  name: Kubernetes, Observability, Synthesis
+  months:
+  - 31
+  - 39
+books:
+- title: Debugging
+  author: David Agans
+  phase: 1
+  months:
+  - 2
+  - 2
+  role: secondary
+- title: 'Computer Systems: A Programmer''s Perspective'
+  author: Bryant & O'Hallaron
+  phase: 1
+  months:
+  - 1
+  - 6
+  role: primary
+- title: 'Computer Networking: A Top-Down Approach'
+  author: Kurose & Ross
+  phase: 1
+  months:
+  - 7
+  - 10
+  role: primary
+- title: The Linux Programming Interface
+  author: Kerrisk
+  phase: 1
+  role: reference
+- title: The Go Programming Language
+  author: Donovan & Kernighan
+  phase: 2
+  months:
+  - 14
+  - 18
+  role: primary
+- title: TCP/IP Illustrated, Vol 1
+  author: Stevens
+  phase: 2
+  role: reference
+- title: Designing Data-Intensive Applications
+  author: Kleppmann
+  phase: 3
+  months:
+  - 21
+  - 26
+  role: primary
+- title: Building Microservices
+  author: Sam Newman
+  phase: 3
+  months:
+  - 24
+  - 28
+  role: primary
+- title: Release It!
+  author: Michael Nygard
+  phase: 3
+  months:
+  - 28
+  - 28
+  role: secondary
+- title: Kubernetes Up & Running
+  author: Burns, Beda, Hightower
+  phase: 4
+  months:
+  - 31
+  - 33
+  role: primary
+- title: Site Reliability Engineering
+  author: Google
+  phase: 4
+  months:
+  - 34
+  - 36
+  role: primary
+- title: A Philosophy of Software Design
+  author: Ousterhout
+  phase: 4
+  months:
+  - 36
+  - 37
+  role: secondary
+primary_book_by_month:
+  1: 'Computer Systems: A Programmer''s Perspective'
+  2: 'Computer Systems: A Programmer''s Perspective'
+  3: 'Computer Systems: A Programmer''s Perspective'
+  4: 'Computer Systems: A Programmer''s Perspective'
+  5: 'Computer Systems: A Programmer''s Perspective'
+  6: 'Computer Systems: A Programmer''s Perspective'
+  7: 'Computer Networking: A Top-Down Approach'
+  8: 'Computer Networking: A Top-Down Approach'
+  9: 'Computer Networking: A Top-Down Approach'
+  10: 'Computer Networking: A Top-Down Approach'
+  11: 'Computer Networking: A Top-Down Approach'
+  12: 'Computer Networking: A Top-Down Approach'
+  13: 'Computer Networking: A Top-Down Approach'
+  14: The Go Programming Language
+  15: The Go Programming Language
+  16: The Go Programming Language
+  17: The Go Programming Language
+  18: The Go Programming Language
+  19: The Go Programming Language
+  20: The Go Programming Language
+  21: Designing Data-Intensive Applications
+  22: Designing Data-Intensive Applications
+  23: Designing Data-Intensive Applications
+  24: Designing Data-Intensive Applications
+  25: Designing Data-Intensive Applications
+  26: Designing Data-Intensive Applications
+  27: Building Microservices
+  28: Building Microservices
+  29: Building Microservices
+  30: Building Microservices
+  31: Kubernetes Up & Running
+  32: Kubernetes Up & Running
+  33: Kubernetes Up & Running
+  34: Site Reliability Engineering
+  35: Site Reliability Engineering
+  36: Site Reliability Engineering
+  37: Designing Data-Intensive Applications
+  38: Designing Data-Intensive Applications
+  39: Designing Data-Intensive Applications
+modules:
+- number: 1
+  name: Python Basics
+  phase: 1
+- number: 2
+  name: Debugging (Agans)
+  phase: 1
+- number: 3
+  name: Data Structures & Algorithms
+  phase: 1
+- number: 4
+  name: C & Memory Management
+  phase: 1
+- number: 5
+  name: CSAPP
+  phase: 1
+- number: 6
+  name: Pi Homelab Stage 1
+  phase: 1
+- number: 7
+  name: Computer Networking (Top-Down)
+  phase: 1
+- number: 8
+  name: Pi Homelab Stage 2 (real server)
+  phase: 1
+- number: 9
+  name: LFCS Certification
+  phase: 1
+- number: 10
+  name: Go Fundamentals
+  phase: 2
+- number: 11
+  name: The Go Programming Language (book)
+  phase: 2
+- number: 12
+  name: SQL & Databases
+  phase: 2
+- number: 13
+  name: HTTP Servers in Go
+  phase: 2
+- number: 14
+  name: Docker, S3 & CDN
+  phase: 2
+- number: 15
+  name: Pub/Sub Architecture
+  phase: 3
+- number: 16
+  name: DDIA
+  phase: 3
+- number: 17
+  name: Building Microservices (Newman)
+  phase: 3
+- number: 18
+  name: Release It! (Nygard)
+  phase: 3
+- number: 19
+  name: The Rental Booking System — start building
+  phase: 3
+- number: 20
+  name: AWS Solutions Architect Associate
+  phase: 3
+- number: 21
+  name: Kubernetes the Hard Way
+  phase: 4
+- number: 22
+  name: Observability
+  phase: 4
+- number: 23
+  name: Synthesis — Writing & Polish
+  phase: 4
