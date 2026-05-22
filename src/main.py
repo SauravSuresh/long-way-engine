@@ -246,6 +246,7 @@ def _render_dashboard_once(
         clock=clock,
         reflections_root=reflections_root,
         module_titles=module_titles,
+        syllabus=syllabus,
     )
 
     docs_html_path.parent.mkdir(parents=True, exist_ok=True)
