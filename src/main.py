@@ -33,7 +33,8 @@ from src.ids import external_id, module_external_id
 from src.reflections import StubResult, create_stub, update_metadata
 from src.scheduler import _is_last_saturday_of_month, should_create_today
 from src.state import State, load_state
-from src.syllabus import parse_books_from_file
+from src.syllabus import Syllabus, load_syllabus
+from src.curriculum_validator import validate as validate_curriculum
 from src.templates import load_templates, resolve_variables
 from src.todoist import (
     CreateResult,
@@ -48,11 +49,13 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_PATH = REPO_ROOT / "config.yaml"
 STATE_PATH = REPO_ROOT / "state.yaml"
 ENV_PATH = REPO_ROOT / ".env"
-TEMPLATES_DIR = REPO_ROOT / "task_templates"
+CURRICULUM_DIR = REPO_ROOT / "curriculum"
+RITUALS_DIR = CURRICULUM_DIR / "rituals"
+MODULES_PATH = CURRICULUM_DIR / "modules.yaml"
 CACHE_PATH = REPO_ROOT / ".task_cache.json"
 LOG_PATH = REPO_ROOT / "LOG.md"
 REFLECTIONS_DIR = REPO_ROOT / "reflections"
-REFLECTION_TEMPLATES_DIR = REPO_ROOT / "reflection_templates"
+REFLECTION_TEMPLATES_DIR = CURRICULUM_DIR / "reflection_templates"
 COMPLETION_CACHE_PATH = REPO_ROOT / ".completion_cache.json"
 DOCS_DIR = REPO_ROOT / "docs"
 DOCS_HTML_PATH = DOCS_DIR / "index.html"
@@ -202,6 +205,7 @@ def _render_dashboard_once(
     docs_css_path: Path,
     completion_factory,
     module_titles: dict[int, str],
+    syllabus: Syllabus | None = None,
 ) -> str:
     """Render dashboard + sidecar JSON. Returns "ok" or "error".
 
@@ -229,10 +233,7 @@ def _render_dashboard_once(
         completion_set = set()
 
     reflections = scan_reflections(reflections_root)
-    try:
-        books = parse_books_from_file()
-    except OSError:
-        books = []
+    books = syllabus.books if syllabus is not None else []
 
     html, data = render_dashboard(
         state=state,
@@ -245,6 +246,7 @@ def _render_dashboard_once(
         clock=clock,
         reflections_root=reflections_root,
         module_titles=module_titles,
+        syllabus=syllabus,
     )
 
     docs_html_path.parent.mkdir(parents=True, exist_ok=True)
@@ -261,7 +263,7 @@ def run(
     config: Config,
     state: State,
     today: date,
-    templates_dir: Path,
+    template_paths: list[Path],
     cache_path: Path,
     client_factory=None,
     clock: Clock | None = None,
@@ -277,6 +279,7 @@ def run(
     docs_html_path: Path | None = None,
     docs_data_path: Path | None = None,
     docs_css_path: Path | None = None,
+    syllabus=None,
 ) -> RunSummary:
     if clock is None:
         clock = Clock(state.timezone)
@@ -299,7 +302,7 @@ def run(
         docs_css_path = DOCS_CSS_PATH
 
     cache = load_cache(cache_path)
-    templates = load_templates(templates_dir)
+    templates = load_templates(template_paths)
     client = client_factory(
         token=config.todoist_token,
         project_id=project_id or config.todoist.project_id,
@@ -327,7 +330,7 @@ def run(
             errors += 1
             continue
 
-        resolved = resolve_variables(tpl, state, config, today)
+        resolved = resolve_variables(tpl, state, config, today, syllabus=syllabus)
         if resolved is None:
             decisions.append(Decision(tpl.id, None, "ERROR (variable)"))
             errors += 1
@@ -441,6 +444,7 @@ def run(
                 docs_css_path=docs_css_path,
                 completion_factory=completion_factory,
                 module_titles=_module_titles_from_templates(templates),
+                syllabus=syllabus,
             )
         except Exception as e:
             logger.warning("dashboard render failed: %s", e)
@@ -772,6 +776,19 @@ def main(argv: list[str] | None = None) -> int:
 
     state = load_state(STATE_PATH)
 
+    # Resolve curriculum_dir as absolute (relative to repo root) and load the
+    # Syllabus instance. Threaded into run() so resolve_variables can use
+    # YAML data via the new current_book(month, syllabus) signature. The
+    # CLI-level validator (run-on-startup safety check) lives in the
+    # __main__ block; main() deliberately skips it so test callers don't
+    # need a fully-valid curriculum bundle in tmp_path.
+    curriculum_dir = (
+        config.curriculum_dir
+        if config.curriculum_dir.is_absolute()
+        else REPO_ROOT / config.curriculum_dir
+    )
+    syllabus = load_syllabus(curriculum_dir)
+
     if args.today is not None:
         clock: Clock = FrozenClock(args.today, state.timezone)
         today = args.today
@@ -793,13 +810,14 @@ def main(argv: list[str] | None = None) -> int:
         config,
         state,
         today,
-        TEMPLATES_DIR,
+        [RITUALS_DIR, MODULES_PATH],
         cache_path,
         clock=clock,
         dry_run=args.dry_run,
         project_id=args.project_id,
         skip_dashboard=args.skip_dashboard,
         sweep=not args.no_sweep,
+        syllabus=syllabus,
     )
 
     if args.dry_run:
@@ -817,4 +835,23 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
+    # Cron / CLI entry: load config + state once, run the curriculum validator
+    # for fail-fast safety, then hand off to main() which re-loads config and
+    # state. The two loads are intentional: main() must remain self-contained
+    # so unit tests that call main() directly with monkeypatched paths don't
+    # need a fully-valid curriculum bundle. Task 16 collapses the legacy
+    # current_book path and may revisit this duplication.
+    _bootstrap_config = load_config(CONFIG_PATH, ENV_PATH)
+    _bootstrap_state = load_state(STATE_PATH)
+    _bootstrap_curriculum_dir = (
+        _bootstrap_config.curriculum_dir
+        if _bootstrap_config.curriculum_dir.is_absolute()
+        else REPO_ROOT / _bootstrap_config.curriculum_dir
+    )
+    validate_curriculum(
+        _bootstrap_curriculum_dir,
+        ritual_times=_bootstrap_config.ritual_times,
+        state_current_module=_bootstrap_state.current_module,
+        state_month=_bootstrap_state.month,
+    )
     sys.exit(main())

@@ -1,0 +1,30 @@
+- id: fe-daily-morning-reading
+  title: "Morning reading: {current_book}"
+  description: |
+    30 min. Today: {current_book}.
+  due: "today at {ritual_times.morning_reading}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday
+
+- id: fe-daily-srs-review
+  title: "Spaced-repetition review (Anki)"
+  description: |
+    10–15 min. Add 3–5 cards/day from what you read and shipped —
+    CSS quirks, ARIA roles, TypeScript patterns, browser behavior
+    that surprised you. Review the deck before bed.
+    Without SRS the front-end mountain of detail evaporates inside
+    a month.
+  due: "today at {ritual_times.srs_review}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday
+
+- id: fe-daily-evening-build
+  title: "Evening build"
+  description: |
+    Push pixels. Ship the current module.
+  due: "today at {ritual_times.evening_hands_on}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday

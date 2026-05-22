@@ -1,0 +1,99 @@
+meta:
+  name: "ML Engineer (12 months)"
+  total_months: 12
+  start_month_index: 1
+
+phases:
+  - number: 1
+    name: "Foundations: Python + Math"
+    months: [1, 4]
+  - number: 2
+    name: "Classical ML + Deep Learning"
+    months: [5, 8]
+  - number: 3
+    name: "Systems + Productionization"
+    months: [9, 12]
+
+books:
+  - title: "Fluent Python"
+    author: "Luciano Ramalho"
+    phase: 1
+    months: [1, 2]
+    role: primary
+  - title: "Mathematics for Machine Learning"
+    author: "Deisenroth, Faisal, Ong"
+    phase: 1
+    months: [3, 4]
+    role: primary
+  - title: "Hands-On Machine Learning"
+    author: "Aurélien Géron"
+    phase: 2
+    months: [5, 6]
+    role: primary
+  - title: "Deep Learning"
+    author: "Goodfellow, Bengio, Courville"
+    phase: 2
+    months: [7, 8]
+    role: primary
+  - title: "Designing Machine Learning Systems"
+    author: "Chip Huyen"
+    phase: 3
+    months: [9, 10]
+    role: primary
+  - title: "Machine Learning Engineering"
+    author: "Andriy Burkov"
+    phase: 3
+    months: [11, 12]
+    role: primary
+
+primary_book_by_month:
+  1: "Fluent Python"
+  2: "Fluent Python"
+  3: "Mathematics for Machine Learning"
+  4: "Mathematics for Machine Learning"
+  5: "Hands-On Machine Learning"
+  6: "Hands-On Machine Learning"
+  7: "Deep Learning"
+  8: "Deep Learning"
+  9: "Designing Machine Learning Systems"
+  10: "Designing Machine Learning Systems"
+  11: "Machine Learning Engineering"
+  12: "Machine Learning Engineering"
+
+modules:
+  - number: 1
+    name: "Python Deep Dive"
+    phase: 1
+    estimated_hours: 60
+  - number: 2
+    name: "Linear Algebra & Probability"
+    phase: 1
+    estimated_hours: 80
+  - number: 3
+    name: "Calculus & Optimization"
+    phase: 1
+    estimated_hours: 60
+  - number: 4
+    name: "Classical ML: Regression, Trees, SVM"
+    phase: 2
+    estimated_hours: 80
+  - number: 5
+    name: "Neural Networks from Scratch"
+    phase: 2
+    estimated_hours: 80
+  - number: 6
+    name: "Transformers & Attention"
+    phase: 2
+    estimated_hours: 60
+  - number: 7
+    name: "Data Pipelines & Feature Stores"
+    phase: 3
+    estimated_hours: 60
+  - number: 8
+    name: "Model Serving & Monitoring"
+    phase: 3
+    estimated_hours: 60
+  - number: 9
+    name: "Capstone: End-to-End Production Model"
+    phase: 3
+    estimated_hours: 100

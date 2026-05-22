@@ -46,17 +46,61 @@ from src.streaks import (
     weekly_hint,
     weekly_review_streak,
 )
-from src.syllabus import Book
+from src.syllabus import Book, Syllabus
 
-# Phase 1 = months 1–12, Phase 2 = 13–20, Phase 3 = 21–30, Phase 4 = 31–39.
-TOTAL_MONTHS = 39
-TOTAL_MODULES = 23
-PHASE_BOUNDARIES = (1, 13, 21, 31, 39)
+# Defaults — kept for any legacy caller that doesn't pass a Syllabus.
+# render() recomputes from the live syllabus and overrides locally before
+# calling helpers. Phase 1 = months 1–12, Phase 2 = 13–20, Phase 3 = 21–30,
+# Phase 4 = 31–39.
+DEFAULT_TOTAL_MONTHS = 39
+DEFAULT_TOTAL_MODULES = 23
+DEFAULT_PHASE_BOUNDARIES = (1, 13, 21, 31, 39)
 PHASE_LABELS = ("Phase 1", "Phase 2", "Phase 3", "Phase 4", "End")
+# Fallback phase-tick labels match the live curriculum/syllabus.yaml so
+# render() output stays byte-identical when syllabus is None.
+DEFAULT_PHASE_RANGES: tuple[tuple[int, int, str], ...] = (
+    (1, 12, "Phase 1 · Foundations"),
+    (13, 20, "Phase 2 · Go & the Backend Toolkit"),
+    (21, 30, "Phase 3 · Distributed Systems & Booking"),
+    (31, 39, "Phase 4 · Kubernetes, Observability, Synthesis"),
+)
 CADENCE_DIRS = ("weekly", "monthly", "quarterly", "annual")
 
 
-def _end_of_journey(start: date, months: int = TOTAL_MONTHS) -> date:
+def _phase_boundaries_from_syllabus(syllabus: Syllabus | None) -> tuple[int, ...]:
+    """Phase tick positions: each phase's start_month, plus the final end_month."""
+    if syllabus is None or not syllabus.phases:
+        return DEFAULT_PHASE_BOUNDARIES
+    phases = sorted(syllabus.phases, key=lambda p: p.number)
+    return tuple([p.months[0] for p in phases] + [phases[-1].months[1]])
+
+
+def _total_months_from_syllabus(syllabus: Syllabus | None) -> int:
+    if syllabus is None or not syllabus.primary_book_by_month:
+        return DEFAULT_TOTAL_MONTHS
+    return max(syllabus.primary_book_by_month)
+
+
+def _total_modules_from_syllabus(syllabus: Syllabus | None) -> int:
+    if syllabus is None or not syllabus.modules:
+        return DEFAULT_TOTAL_MODULES
+    return len(syllabus.modules)
+
+
+def _phase_tick_labels(
+    syllabus: Syllabus | None,
+    fallback: tuple[tuple[int, int, str], ...] = DEFAULT_PHASE_RANGES,
+) -> tuple[tuple[int, int, str], ...]:
+    if syllabus is None or not syllabus.phases:
+        return fallback
+    phases = sorted(syllabus.phases, key=lambda p: p.number)
+    return tuple(
+        (p.months[0], p.months[1], f"Phase {p.number} · {p.name}")
+        for p in phases
+    )
+
+
+def _end_of_journey(start: date, months: int = DEFAULT_TOTAL_MONTHS) -> date:
     """`start` + N calendar months, clamping day-of-month if needed."""
     total = (start.month - 1) + months
     year = start.year + total // 12
@@ -65,9 +109,11 @@ def _end_of_journey(start: date, months: int = TOTAL_MONTHS) -> date:
     return date(year, month, day)
 
 
-def _journey_day(today: date, state: State) -> tuple[int, int]:
+def _journey_day(
+    today: date, state: State, total_months: int = DEFAULT_TOTAL_MONTHS
+) -> tuple[int, int]:
     """Returns (day_n, day_total). Clamped to [0, day_total]."""
-    end = _end_of_journey(state.start_date)
+    end = _end_of_journey(state.start_date, months=total_months)
     day_total = (end - state.start_date).days + 1
     if today < state.start_date:
         return 0, day_total
@@ -148,6 +194,7 @@ def _header(
     config: Config,
     today: date,
     adherence: tuple[int, int],
+    total_months: int = DEFAULT_TOTAL_MONTHS,
 ) -> str:
     """Hero: day-of-journey is orientation; adherence is the headline KPI.
 
@@ -161,7 +208,7 @@ def _header(
         Month 1 of 39 · Phase 1 · Module 1
         Reading: *Computer Systems…*
     """
-    day_n, day_total = _journey_day(today, state)
+    day_n, day_total = _journey_day(today, state, total_months=total_months)
     paused = _paused_summary(state, today)
     paused_html = (
         f'<div class="paused-banner">{_h(paused)}</div>' if paused else ""
@@ -207,7 +254,7 @@ def _header(
         f'</div>'
         f'</div>'
         f'<div class="hero-meta">'
-        f'Month {state.month} of {TOTAL_MONTHS} '
+        f'Month {state.month} of {total_months} '
         f'<span class="dot">&middot;</span> '
         f'Phase {state.phase} '
         f'<span class="dot">&middot;</span> '
@@ -323,15 +370,10 @@ def _streaks_section(values: dict[str, dict[str, Any]]) -> str:
     return f'<section class="streaks"><h2>Streaks</h2>{"".join(cards)}</section>'
 
 
-PHASE_RANGES: tuple[tuple[int, int, str], ...] = (
-    (1, 12, "Phase 1 · Foundations"),
-    (13, 20, "Phase 2 · Go & Backend"),
-    (21, 30, "Phase 3 · Distributed"),
-    (31, 39, "Phase 4 · Synthesis"),
-)
-
-
-def _phase_tree(state: State) -> str:
+def _phase_tree(
+    state: State,
+    phase_ranges: tuple[tuple[int, int, str], ...] = DEFAULT_PHASE_RANGES,
+) -> str:
     """Per-phase segmented progress bar.
 
     Replaces the previous 1.6rem numbered cells (1..39) — the digits were
@@ -341,7 +383,7 @@ def _phase_tree(state: State) -> str:
     cluttering the segments themselves.
     """
     rows: list[str] = []
-    for i, (start, end, label) in enumerate(PHASE_RANGES):
+    for i, (start, end, label) in enumerate(phase_ranges):
         phase_complete = state.month > end
         phase_active = start <= state.month <= end
         node_class = (
@@ -351,7 +393,7 @@ def _phase_tree(state: State) -> str:
         )
         position_class = (
             "first" if i == 0
-            else "last" if i == len(PHASE_RANGES) - 1
+            else "last" if i == len(phase_ranges) - 1
             else "middle"
         )
 
@@ -554,10 +596,14 @@ def _books_section(state: State, books: list[Book]) -> str:
     return f'<section class="books"><h2>Books</h2>{"".join(parts)}</section>'
 
 
-def _module_trunk(state: State, module_titles: dict[int, str]) -> str:
-    """23-module progression spine. Always renders; current_module is required state.
+def _module_trunk(
+    state: State,
+    module_titles: dict[int, str],
+    total_modules: int = DEFAULT_TOTAL_MODULES,
+) -> str:
+    """N-module progression spine. Always renders; current_module is required state.
 
-    Header: 'N/23 — <current title>'. Cells: 1..23 coloured past/current/
+    Header: 'N/total — <current title>'. Cells: 1..total coloured past/current/
     future. n is 'past' if n in completed_modules OR n < current_module
     (the latter handles owners advancing without explicitly backfilling
     completed_modules).
@@ -566,7 +612,7 @@ def _module_trunk(state: State, module_titles: dict[int, str]) -> str:
     completed = set(state.completed_modules)
     title = module_titles.get(current, f"Module {current}")
     cells: list[str] = []
-    for n in range(1, TOTAL_MODULES + 1):
+    for n in range(1, total_modules + 1):
         if n == current:
             cls = "current"
         elif n in completed or n < current:
@@ -579,7 +625,7 @@ def _module_trunk(state: State, module_titles: dict[int, str]) -> str:
     return (
         f'<section class="module-trunk"><h2>Module trunk</h2>'
         f'<div class="trunk-header">'
-        f'<span class="trunk-counter">{current}/{TOTAL_MODULES}</span>'
+        f'<span class="trunk-counter">{current}/{total_modules}</span>'
         f'<span class="trunk-current-title">{_h(title)}</span>'
         f'</div>'
         f'<div class="trunk-cells">{"".join(cells)}</div>'
@@ -671,10 +717,15 @@ def render(
     clock: Clock,
     reflections_root: Path,
     module_titles: dict[int, str] | None = None,
+    syllabus: Syllabus | None = None,
 ) -> tuple[str, dict[str, Any]]:
     """Render dashboard. Returns (html_string, data_json_dict)."""
     if module_titles is None:
         module_titles = {}
+
+    total_months = _total_months_from_syllabus(syllabus)
+    total_modules = _total_modules_from_syllabus(syllabus)
+    phase_tick_labels = _phase_tick_labels(syllabus)
 
     daily_count = daily_streak(today, state, cache, completion_set)
     weekly_count = weekly_review_streak(
@@ -705,16 +756,16 @@ def render(
 
     last7_html, last7_data = _last_7_days(today, state, cache, completion_set)
     practices = _practice_counts(state, cache, completion_set)
-    day_n, day_total = _journey_day(today, state)
+    day_n, day_total = _journey_day(today, state, total_months=total_months)
     adherence = adherence_since_start(today, state, cache, completion_set)
 
     body = "".join(
         (
-            _header(state, config, today, adherence),
+            _header(state, config, today, adherence, total_months=total_months),
             _today_panel(state, config, today, cache, completion_set),
             _streaks_section(streaks_view),
-            _phase_tree(state),
-            _module_trunk(state, module_titles),
+            _phase_tree(state, phase_ranges=phase_tick_labels),
+            _module_trunk(state, module_titles, total_modules=total_modules),
             last7_html,
             _practice_tracker(practices),
             _learning_tracks(state),

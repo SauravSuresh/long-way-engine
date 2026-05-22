@@ -88,11 +88,11 @@ class FakeClient:
         )
 
 
-def _seed_templates(tmp_path: Path) -> Path:
+def _seed_templates(tmp_path: Path) -> list[Path]:
     tdir = tmp_path / "task_templates"
     tdir.mkdir(parents=True, exist_ok=True)
     (tdir / "daily.yaml").write_text(TPL_YAML)
-    return tdir
+    return [tdir]
 
 
 def _isolated_paths(tmp_path: Path) -> dict:

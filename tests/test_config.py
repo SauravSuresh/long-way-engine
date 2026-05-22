@@ -103,3 +103,39 @@ def test_logging_filter_redacts_token(caplog):
         logger.info(f"token literal {token} in fstring")
     for record in caplog.records:
         assert token not in record.getMessage()
+
+
+def test_config_curriculum_dir_default(tmp_path: Path) -> None:
+    """Config defaults curriculum_dir to 'curriculum' when omitted."""
+    cfg_yaml = tmp_path / "config.yaml"
+    cfg_yaml.write_text(
+        "todoist:\n"
+        "  project_id: x\n"
+        "ritual_times: {}\n"
+        "dashboard:\n"
+        "  github_username: u\n"
+        "  repo_name: r\n",
+        encoding="utf-8",
+    )
+    env = tmp_path / ".env"
+    env.write_text("TODOIST_TOKEN=abc\n", encoding="utf-8")
+    cfg = load_config(cfg_yaml, env)
+    assert cfg.curriculum_dir == Path("curriculum")
+
+
+def test_config_curriculum_dir_explicit(tmp_path: Path) -> None:
+    cfg_yaml = tmp_path / "config.yaml"
+    cfg_yaml.write_text(
+        "todoist:\n"
+        "  project_id: x\n"
+        "ritual_times: {}\n"
+        "dashboard:\n"
+        "  github_username: u\n"
+        "  repo_name: r\n"
+        "curriculum_dir: examples/ml-engineer-12mo\n",
+        encoding="utf-8",
+    )
+    env = tmp_path / ".env"
+    env.write_text("TODOIST_TOKEN=abc\n", encoding="utf-8")
+    cfg = load_config(cfg_yaml, env)
+    assert cfg.curriculum_dir == Path("examples/ml-engineer-12mo")

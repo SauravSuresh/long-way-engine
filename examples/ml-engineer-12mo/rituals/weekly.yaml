@@ -1,0 +1,21 @@
+- id: ml-weekly-friday-review
+  title: "Friday review: 20-min retrieval"
+  description: |
+    Without looking at notes, write the 3 most important things from
+    this week. Compare. The gap is your Anki for next week.
+  due: "today at {ritual_times.friday_review}"
+  labels: [weekly-ritual, reflection]
+  cadence: weekly
+  day_of_week: friday
+  reflection:
+    create_stub: true
+    stub_path: "reflections/weekly/{iso_year}-W{iso_week:02d}.md"
+
+- id: ml-weekly-saturday-deep-block
+  title: "Saturday deep block (3–4 hr)"
+  description: |
+    Long uninterrupted block on the current module or the capstone.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [weekly-ritual]
+  cadence: weekly
+  day_of_week: saturday

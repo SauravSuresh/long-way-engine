@@ -23,7 +23,7 @@ from src.templates import Template
 from tests.test_templates import make_config, make_state
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-REFLECTION_TEMPLATES = REPO_ROOT / "reflection_templates"
+REFLECTION_TEMPLATES = REPO_ROOT / "curriculum" / "reflection_templates"
 
 
 def weekly_template_with_stub() -> Template:

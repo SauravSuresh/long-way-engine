@@ -1,0 +1,24 @@
+# Declares which ritual_time slots and template placeholders this
+# curriculum requires from the engine. Engine validates at startup
+# that config.yaml provides every ritual_times_required key.
+
+ritual_times_required:
+  - morning_reading
+  - anki
+  - evening_hands_on
+  - friday_review
+  - saturday_deep_block
+  - sunday_trace
+
+placeholders_used:
+  - current_book
+  - current_module
+  - iso_year
+  - iso_week
+  - year
+  - month
+  - quarter
+
+config_flags:
+  pair_day: thursday
+  sunday_off: true

@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 
 from src.config import Config, DashboardConfig, TodoistConfig
 from src.state import State
+from src.syllabus import Syllabus, Phase, Book as SylBook, Module
 from src.templates import Template, load_templates, resolve_string, resolve_variables
 
 TPL_YAML = """
@@ -48,9 +49,24 @@ def make_config() -> Config:
     )
 
 
+def make_syllabus() -> Syllabus:
+    """Minimal syllabus matching the current_book fallback fixtures below."""
+    return Syllabus(
+        meta={"name": "T", "start_month_index": 1},
+        phases=[Phase(number=1, name="P1", months=(1, 12))],
+        books=[],
+        primary_book_by_month={
+            1: "Computer Systems: A Programmer's Perspective",
+            7: "Computer Networking: A Top-Down Approach",
+            # month 11 deliberately omitted — exercises carry-forward
+        },
+        modules=[Module(number=1, name="M1", phase=1)],
+    )
+
+
 def test_load_templates_reads_directory(tmp_path: Path):
     (tmp_path / "daily.yaml").write_text(TPL_YAML)
-    out = load_templates(tmp_path)
+    out = load_templates([tmp_path])
     assert [t.id for t in out] == ["daily-morning-reading", "daily-anki"]
 
 
@@ -65,7 +81,7 @@ def test_load_template_parses_day_of_week(tmp_path: Path):
   day_of_week: friday
 """
     )
-    [t] = load_templates(tmp_path)
+    [t] = load_templates([tmp_path])
     assert t.day_of_week == "friday"
     assert t.day_of_month is None
 
@@ -81,7 +97,7 @@ def test_load_template_parses_day_of_month_int(tmp_path: Path):
   day_of_month: 1
 """
     )
-    [t] = load_templates(tmp_path)
+    [t] = load_templates([tmp_path])
     assert t.day_of_month == 1
     assert isinstance(t.day_of_month, int)
 
@@ -97,7 +113,7 @@ def test_load_template_parses_day_of_month_string(tmp_path: Path):
   day_of_month: last-saturday
 """
     )
-    [t] = load_templates(tmp_path)
+    [t] = load_templates([tmp_path])
     assert t.day_of_month == "last-saturday"
 
 
@@ -112,7 +128,7 @@ def test_load_template_parses_module_number(tmp_path: Path):
   module_number: 6
 """
     )
-    [t] = load_templates(tmp_path)
+    [t] = load_templates([tmp_path])
     assert t.module_number == 6
     assert isinstance(t.module_number, int)
 
@@ -127,7 +143,7 @@ def test_load_template_module_number_defaults_to_none(tmp_path: Path):
   cadence: daily
 """
     )
-    [t] = load_templates(tmp_path)
+    [t] = load_templates([tmp_path])
     assert t.module_number is None
 
 
@@ -147,7 +163,7 @@ def test_load_template_keeps_reflection_block_in_raw(tmp_path: Path):
     template: weekly_review_template
 """
     )
-    [t] = load_templates(tmp_path)
+    [t] = load_templates([tmp_path])
     assert t.raw["reflection"]["create_stub"] is True
     assert t.raw["reflection"]["stub_path"].startswith("reflections/weekly/")
 
@@ -155,7 +171,7 @@ def test_load_template_keeps_reflection_block_in_raw(tmp_path: Path):
 def test_resolve_current_book_and_ritual_time(tmp_path: Path):
     (tmp_path / "daily.yaml").write_text(TPL_YAML)
     state, config = make_state(), make_config()
-    templates = load_templates(tmp_path)
+    templates = load_templates([tmp_path])
     today = date(2026, 5, 4)
 
     morning = resolve_variables(templates[0], state, config, today)
@@ -269,7 +285,10 @@ def test_current_book_falls_back_to_syllabus_when_state_empty():
     state = make_state()
     state.current_book = ""
     state.month = 1
-    out = resolve_string("{current_book}", state, make_config(), date(2026, 5, 4))
+    out = resolve_string(
+        "{current_book}", state, make_config(), date(2026, 5, 4),
+        syllabus=make_syllabus(),
+    )
     assert out == "Computer Systems: A Programmer's Perspective"
 
 
@@ -277,7 +296,10 @@ def test_current_book_syllabus_month_7_networking():
     state = make_state()
     state.current_book = ""
     state.month = 7
-    out = resolve_string("{current_book}", state, make_config(), date(2026, 5, 4))
+    out = resolve_string(
+        "{current_book}", state, make_config(), date(2026, 5, 4),
+        syllabus=make_syllabus(),
+    )
     assert out == "Computer Networking: A Top-Down Approach"
 
 
@@ -285,5 +307,8 @@ def test_current_book_carry_forward_in_book_less_month():
     state = make_state()
     state.current_book = ""
     state.month = 11  # no main book in syllabus; carry-forward
-    out = resolve_string("{current_book}", state, make_config(), date(2026, 5, 4))
+    out = resolve_string(
+        "{current_book}", state, make_config(), date(2026, 5, 4),
+        syllabus=make_syllabus(),
+    )
     assert out == "Computer Networking: A Top-Down Approach"
