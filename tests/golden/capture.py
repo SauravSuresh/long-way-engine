@@ -18,6 +18,7 @@ from src.clock import Clock
 from src.config import load_config
 from src.scheduler import should_create_today
 from src.state import load_state
+from src.syllabus import load_syllabus
 from src.templates import load_templates, resolve_variables
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -50,6 +51,7 @@ def capture(
     """
     config = load_config(config_path, env_path)
     state = load_state(state_path)
+    syllabus = load_syllabus(REPO_ROOT / "curriculum")
     if templates_dir is None:
         template_paths = [
             REPO_ROOT / "curriculum" / "rituals",
@@ -72,7 +74,7 @@ def capture(
             continue
         entry["fires"] = fires
         if fires:
-            resolved = resolve_variables(tpl, state, config, today)
+            resolved = resolve_variables(tpl, state, config, today, syllabus=syllabus)
             if resolved is None:
                 entry["error"] = "variable resolution failed"
             else:

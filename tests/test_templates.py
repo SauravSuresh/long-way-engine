@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 
 from src.config import Config, DashboardConfig, TodoistConfig
 from src.state import State
+from src.syllabus import Syllabus, Phase, Book as SylBook, Module
 from src.templates import Template, load_templates, resolve_string, resolve_variables
 
 TPL_YAML = """
@@ -45,6 +46,21 @@ def make_config() -> Config:
         sunday_off=True,
         dashboard=DashboardConfig(github_username="u", repo_name="r"),
         todoist_token="t",
+    )
+
+
+def make_syllabus() -> Syllabus:
+    """Minimal syllabus matching the current_book fallback fixtures below."""
+    return Syllabus(
+        meta={"name": "T", "start_month_index": 1},
+        phases=[Phase(number=1, name="P1", months=(1, 12))],
+        books=[],
+        primary_book_by_month={
+            1: "Computer Systems: A Programmer's Perspective",
+            7: "Computer Networking: A Top-Down Approach",
+            # month 11 deliberately omitted — exercises carry-forward
+        },
+        modules=[Module(number=1, name="M1", phase=1)],
     )
 
 
@@ -269,7 +285,10 @@ def test_current_book_falls_back_to_syllabus_when_state_empty():
     state = make_state()
     state.current_book = ""
     state.month = 1
-    out = resolve_string("{current_book}", state, make_config(), date(2026, 5, 4))
+    out = resolve_string(
+        "{current_book}", state, make_config(), date(2026, 5, 4),
+        syllabus=make_syllabus(),
+    )
     assert out == "Computer Systems: A Programmer's Perspective"
 
 
@@ -277,7 +296,10 @@ def test_current_book_syllabus_month_7_networking():
     state = make_state()
     state.current_book = ""
     state.month = 7
-    out = resolve_string("{current_book}", state, make_config(), date(2026, 5, 4))
+    out = resolve_string(
+        "{current_book}", state, make_config(), date(2026, 5, 4),
+        syllabus=make_syllabus(),
+    )
     assert out == "Computer Networking: A Top-Down Approach"
 
 
@@ -285,5 +307,8 @@ def test_current_book_carry_forward_in_book_less_month():
     state = make_state()
     state.current_book = ""
     state.month = 11  # no main book in syllabus; carry-forward
-    out = resolve_string("{current_book}", state, make_config(), date(2026, 5, 4))
+    out = resolve_string(
+        "{current_book}", state, make_config(), date(2026, 5, 4),
+        syllabus=make_syllabus(),
+    )
     assert out == "Computer Networking: A Top-Down Approach"

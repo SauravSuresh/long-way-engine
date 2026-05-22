@@ -42,7 +42,7 @@ from src.clock import FrozenClock  # noqa: E402
 from src.config import load_config  # noqa: E402
 from src.dashboard import render, scan_reflections  # noqa: E402
 from src.state import load_state  # noqa: E402
-from src.syllabus import parse_books_from_file  # noqa: E402
+from src.syllabus import load_syllabus  # noqa: E402
 from src.templates import load_templates  # noqa: E402
 
 CONFIG_PATH = REPO_ROOT / "config.yaml"
@@ -145,7 +145,7 @@ def main(argv: list[str] | None = None) -> int:
 
     reflections = scan_reflections(REFLECTIONS_DIR)
     try:
-        books = parse_books_from_file()
+        books = load_syllabus(CURRICULUM_DIR).books
     except OSError:
         books = []
 
