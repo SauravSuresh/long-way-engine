@@ -19,9 +19,22 @@ paths — overwriting docs/index.html, mutating reflections/, etc.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pytest
+
+
+@pytest.fixture(autouse=True, scope="session")
+def _ensure_todoist_token_for_tests():
+    """CI environments don't have a real TODOIST_TOKEN, but several tests
+    exercise `load_config()` which raises if the token is missing. Set a
+    placeholder so those tests can proceed without hitting the network
+    (the token is never USED — only required to be non-empty).
+    """
+    if not os.environ.get("TODOIST_TOKEN"):
+        os.environ["TODOIST_TOKEN"] = "test-placeholder-token"
+    yield
 
 
 class _FakeCompletionClient:
