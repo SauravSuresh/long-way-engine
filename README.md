@@ -103,3 +103,19 @@ https://<github_username>.github.io/<repo_name>/
 `config.yaml`'s `dashboard.github_username` + `dashboard.repo_name`
 must already match your GitHub URL — the reflection-log links use them
 to build per-file blob URLs.
+
+## Fork it for your own curriculum
+
+This repo runs my 39-month "long way" plan, but the engine is generic.
+Forkers can replace `curriculum/` with their own bundle. See
+[`AGENTS.md`](./AGENTS.md) for the full schema and a recommended
+interview protocol you can run with an AI coding agent.
+
+Two starter bundles in [`examples/`](./examples):
+
+- `examples/ml-engineer-12mo/` — 12-month ML engineer path
+- `examples/frontend-craft-6mo/` — 6-month frontend deep-dive
+
+To use one: copy it to `curriculum/`, edit `config.yaml`'s
+`curriculum_dir` if you put it elsewhere, then run
+`python -m src.main --dry-run` to see what fires today.
