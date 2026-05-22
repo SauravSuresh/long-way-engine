@@ -806,15 +806,31 @@ def main(argv: list[str] | None = None) -> int:
         cache_path,
     )
 
+    # Template + reflection-template paths derive from the (possibly
+    # forker-overridden) curriculum_dir, not from the module-level
+    # CURRICULUM_DIR constant. When config.curriculum_dir is at its
+    # default ("curriculum"), fall back to the module-level constants
+    # so existing test monkeypatches on RITUALS_DIR / MODULES_PATH /
+    # REFLECTION_TEMPLATES_DIR continue to win.
+    if curriculum_dir == CURRICULUM_DIR:
+        rituals_dir = RITUALS_DIR
+        modules_path = MODULES_PATH
+        reflection_templates_root = REFLECTION_TEMPLATES_DIR
+    else:
+        rituals_dir = curriculum_dir / "rituals"
+        modules_path = curriculum_dir / "modules.yaml"
+        reflection_templates_root = curriculum_dir / "reflection_templates"
+
     summary = run(
         config,
         state,
         today,
-        [RITUALS_DIR, MODULES_PATH],
+        [rituals_dir, modules_path],
         cache_path,
         clock=clock,
         dry_run=args.dry_run,
         project_id=args.project_id,
+        reflection_templates_root=reflection_templates_root,
         skip_dashboard=args.skip_dashboard,
         sweep=not args.no_sweep,
         syllabus=syllabus,

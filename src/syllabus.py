@@ -104,3 +104,16 @@ def current_book(month: int, syllabus: "Syllabus") -> str:
         if m in table:
             return table[m]
     return ""
+
+
+def current_module_name(module_number: int, syllabus: "Syllabus") -> str:
+    """Module name for `module_number`. Returns "" if not found.
+
+    Resolver for the `{current_module}` placeholder documented in AGENTS.md.
+    Returns the human-readable module name, mirroring how `{current_book}`
+    returns the title (not the index).
+    """
+    for m in syllabus.modules:
+        if m.number == module_number:
+            return m.name
+    return ""
