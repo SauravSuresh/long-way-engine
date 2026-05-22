@@ -33,7 +33,8 @@ from src.ids import external_id, module_external_id
 from src.reflections import StubResult, create_stub, update_metadata
 from src.scheduler import _is_last_saturday_of_month, should_create_today
 from src.state import State, load_state
-from src.syllabus import parse_books_from_file
+from src.syllabus import load_syllabus, parse_books_from_file
+from src.curriculum_validator import validate as validate_curriculum
 from src.templates import load_templates, resolve_variables
 from src.todoist import (
     CreateResult,
@@ -819,4 +820,19 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
+    config = load_config(CONFIG_PATH, ENV_PATH)
+    state = load_state(STATE_PATH)
+    # Resolve curriculum_dir as absolute (relative to repo root).
+    curriculum_dir = (
+        config.curriculum_dir
+        if config.curriculum_dir.is_absolute()
+        else REPO_ROOT / config.curriculum_dir
+    )
+    syllabus = load_syllabus(curriculum_dir)
+    validate_curriculum(
+        curriculum_dir,
+        ritual_times=config.ritual_times,
+        state_current_module=state.current_module,
+        state_month=state.month,
+    )
     sys.exit(main())
