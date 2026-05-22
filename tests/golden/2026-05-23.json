@@ -1,0 +1,266 @@
+{
+  "date": "2026-05-23",
+  "templates": [
+    {
+      "cadence": "annual",
+      "fires": false,
+      "id": "annual-review"
+    },
+    {
+      "cadence": "daily",
+      "description": "30 min. Paper book, paper notebook, no laptop.\nSame chair, same time. This is sacred.\nToday's book: Computer Systems: A Programmer's Perspective.\n",
+      "due": "today at 06:00",
+      "fires": true,
+      "id": "daily-morning-reading",
+      "labels": [
+        "daily-ritual"
+      ],
+      "title": "Morning reading: Computer Systems: A Programmer's Perspective"
+    },
+    {
+      "cadence": "daily",
+      "description": "10\u201315 min. Whenever \u2014 commute, lunch, before bed.\nAdd 3\u20135 new cards per day from what you read and built. No more.\n",
+      "due": "today at 08:30",
+      "fires": true,
+      "id": "daily-anki",
+      "labels": [
+        "daily-ritual"
+      ],
+      "title": "Anki review"
+    },
+    {
+      "cadence": "daily",
+      "description": "boot.dev, the side build, or the main project. In nvim.\nWithout AI writing code for you (using AI to *explain* concepts is fine).\n\nSkipped on Sunday (rest day) and on pair days (the weekly\npair-with-engineer session replaces solo evening work that day).\n",
+      "due": "today at 19:00",
+      "fires": true,
+      "id": "daily-evening-hands-on",
+      "labels": [
+        "daily-ritual"
+      ],
+      "title": "Evening hands-on (60\u201390 min)"
+    },
+    {
+      "cadence": "once-per-module",
+      "description": "Phase 1, ~60 hrs. boot.dev courses 1\u20137 (Python, Linux, Git, OOP,\nFunctional). Skim chapters where you already know the material;\ndo every exercise where you don't. boot.dev is your runway, not\nyour syllabus. Move fast through this.\n",
+      "due": "today",
+      "fires": true,
+      "id": "module-01-onboarding",
+      "labels": [
+        "module-work"
+      ],
+      "title": "Module 1: Python Basics \u2014 start"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-02-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-03-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-04-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-05-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-06-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-06-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-07-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-07-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-08-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-09-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-10-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-10-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-11-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-12-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-12-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-13-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-14-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-14-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-15-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-16-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-16-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-17-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-18-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-19-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-20-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-21-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-21-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-22-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-23-onboarding"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-blog-post"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-retrieval"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-review"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-trace-one-thing"
+    },
+    {
+      "cadence": "weekly",
+      "description": "Pick a target \u2014 a Go stdlib package, a small canonical project (BoltDB,\ngroupcache), a daily-use tool (git, ripgrep, fzf), or a piece of a\nlarger system (kube-scheduler, SQLite). Read the README, run the\ntests, find the entry point, trace one path. Don't read top-to-bottom.\nCode is a graph, not a book.\n\nWrite a one-page summary in your notebook: what you learned, what was\nconfusing, what was beautiful. Add 1\u20132 Anki cards. Push the notes\nto your public repo.\n\nPicker: https://sauravsuresh.github.io/long-way-engine/repopick/\nSurfaces one curated repo at a time from the 41-entry seed, with a\nscoped entry point and a concrete question. Click \"Mark complete\"\nwhen this week's read is done to unlock the next one.\n",
+      "due": "today at 09:00",
+      "fires": true,
+      "id": "weekly-read-real-code",
+      "labels": [
+        "active-practice"
+      ],
+      "title": "Read real code (1 hr)"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-pair-with-engineer"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-oss-pr"
+    },
+    {
+      "cadence": "quarterly",
+      "fires": false,
+      "id": "quarterly-build-thing-under-thing"
+    },
+    {
+      "cadence": "quarterly",
+      "fires": false,
+      "id": "quarterly-synthesis"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-friday-review"
+    },
+    {
+      "cadence": "weekly",
+      "description": "Bigger project work, or a chapter that needs uninterrupted thought.\n",
+      "due": "today at 09:00",
+      "fires": true,
+      "id": "weekly-saturday-deep-block",
+      "labels": [
+        "weekly-ritual"
+      ],
+      "title": "Saturday deep block (3\u20134 hr)"
+    }
+  ]
+}

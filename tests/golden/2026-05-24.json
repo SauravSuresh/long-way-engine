@@ -1,0 +1,230 @@
+{
+  "date": "2026-05-24",
+  "templates": [
+    {
+      "cadence": "annual",
+      "fires": false,
+      "id": "annual-review"
+    },
+    {
+      "cadence": "daily",
+      "fires": false,
+      "id": "daily-morning-reading"
+    },
+    {
+      "cadence": "daily",
+      "fires": false,
+      "id": "daily-anki"
+    },
+    {
+      "cadence": "daily",
+      "fires": false,
+      "id": "daily-evening-hands-on"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-01-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-02-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-03-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-04-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-05-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-06-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-06-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-07-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-07-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-08-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-09-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-10-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-10-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-11-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-12-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-12-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-13-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-14-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-14-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-15-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-16-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-16-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-17-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-18-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-19-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-20-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-21-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-21-lineage"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-22-onboarding"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-23-onboarding"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-blog-post"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-retrieval"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-review"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-trace-one-thing"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-read-real-code"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-pair-with-engineer"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-oss-pr"
+    },
+    {
+      "cadence": "quarterly",
+      "fires": false,
+      "id": "quarterly-build-thing-under-thing"
+    },
+    {
+      "cadence": "quarterly",
+      "fires": false,
+      "id": "quarterly-synthesis"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-friday-review"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-saturday-deep-block"
+    }
+  ]
+}
