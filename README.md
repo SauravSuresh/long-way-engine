@@ -6,9 +6,36 @@ rituals); the engine creates the right Todoist tasks every morning,
 generates reflection markdown stubs on cadence, and renders a static
 dashboard of your progress.
 
-**Want to use it for your own plan?** → see [`docs/FORKING.md`](./docs/FORKING.md)
-for a step-by-step setup guide, or [`AGENTS.md`](./AGENTS.md) if you
-want an AI agent to design your curriculum with you.
+## Designing your own plan
+
+The hard part of forking this isn't the engine — it's writing the
+curriculum. To make that tractable, the repo ships
+**[`AGENTS.md`](./AGENTS.md)**: a self-contained brief that any
+capable AI agent (Claude, Cursor, Codex, etc.) can read to
+interview you and produce a complete `curriculum/` bundle for your
+fork.
+
+The intended workflow:
+
+1. Fork this repo.
+2. Open it in your AI tool of choice. Tell the agent:
+   > "Read AGENTS.md and run the 7-step interview to build my curriculum."
+3. Answer questions for ~30 minutes — goal, duration, phases, books
+   per month, modules, rituals. The agent writes every YAML file in
+   `curriculum/` as you go.
+4. Run `python -m src.main --dry-run` to verify the agent's output.
+5. Wire up Todoist + GitHub Actions per [`docs/FORKING.md`](./docs/FORKING.md).
+
+`AGENTS.md` is the spec for how the fork should be written. It
+contains the full schema for every file, the validation rules the
+engine enforces, the interview protocol, and anti-patterns to
+avoid. Treat it as the canonical contract — your fork is well-formed
+if and only if its `curriculum/` satisfies what `AGENTS.md` describes.
+
+If you'd rather skip the interview and start from a working example,
+copy one of the starter bundles in [`examples/`](./examples/) into
+`curriculum/` and edit it. Full setup instructions:
+[`docs/FORKING.md`](./docs/FORKING.md).
 
 ## How this started
 
@@ -150,17 +177,15 @@ to build per-file blob URLs.
 
 ## Fork it for your own plan
 
-Full step-by-step setup guide: [`docs/FORKING.md`](./docs/FORKING.md).
+See [`docs/FORKING.md`](./docs/FORKING.md) for the full 10-step
+setup guide.
 
-Short version: fork the repo, replace `curriculum/` with your own
-bundle (or copy one of the starters in [`examples/`](./examples/)),
-set the `TODOIST_TOKEN` repo secret, push.
+The recommended way to come up with your curriculum is the
+AI-agent interview described in [`AGENTS.md`](./AGENTS.md) — see
+[Designing your own plan](#designing-your-own-plan) above.
 
-Starter bundles:
+Starter bundles, if you want to skip the interview and edit a
+working example:
 
 - [`examples/ml-engineer-12mo/`](./examples/ml-engineer-12mo/) — 12-month ML engineer path (3 phases, 9 modules)
 - [`examples/frontend-craft-6mo/`](./examples/frontend-craft-6mo/) — 6-month frontend deep-dive (2 phases, 6 modules)
-
-If you'd rather have an AI agent build your curriculum from scratch,
-[`AGENTS.md`](./AGENTS.md) has a 7-step interview protocol you can
-hand to Claude, Cursor, or any agent that reads project files.

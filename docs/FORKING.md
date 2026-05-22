@@ -4,9 +4,14 @@ This guide walks you from a fresh fork to a daily-running engine that
 creates Todoist tasks against your own curriculum and publishes a
 progress dashboard.
 
-If you'd rather have an AI agent build your curriculum for you,
-read [`AGENTS.md`](../AGENTS.md) instead — that file is written for
-AI agents and describes a 7-step interview they can run with you.
+**The recommended way to design your curriculum is the AI-agent
+interview in [`AGENTS.md`](../AGENTS.md)**. That file is the spec
+for how a well-formed fork should be written — schema, validation
+rules, anti-patterns, and a 7-step interview protocol any capable
+AI agent (Claude, Cursor, Codex, etc.) can run with you to produce
+a complete `curriculum/` bundle. The "Step 4 — Pick or build a
+curriculum" section below covers both that path and the
+copy-an-example shortcut.
 
 ## What you'll end up with
 
@@ -60,11 +65,55 @@ pip install -e ".[dev]"
 echo "TODOIST_TOKEN=your-token-here" > .env
 ```
 
-## Step 4 — Pick or build a curriculum
+## Step 4 — Design your curriculum
 
-Two paths. Pick one.
+Two paths. **Path A is the recommended one** unless you already have
+a curriculum in mind and just want to type it in.
 
-### Path A — Start from an example bundle
+### Path A — AI-agent interview (recommended)
+
+[`AGENTS.md`](../AGENTS.md) is the canonical spec for how a fork's
+`curriculum/` should be written. Hand it to an AI agent and have the
+agent run the 7-step interview with you:
+
+1. Open the cloned repo in your AI tool of choice. Claude Code,
+   Cursor, Codex, Aider — anything that can read files in the repo.
+2. Send the agent this prompt (or similar):
+
+   > Read `AGENTS.md` end-to-end. Then run the 7-step interview
+   > described in section 5 with me to build my curriculum.
+   > Write the resulting YAML files under `curriculum/`. After the
+   > interview, run the validator to confirm everything passes.
+
+3. Answer the agent's questions, roughly in this order:
+   - **Goal & duration.** What do you want to be able to do, by when?
+     Concrete capability ("ship a production ML model"), not vague
+     understanding ("learn ML"). Pin a month count.
+   - **Phase split.** 2–4 phases. Each phase ends in a demonstrable
+     capability.
+   - **Books / primary resources per month.** One primary per month,
+     usually a book or course. Carry-forward is fine (one long book
+     can span many months).
+   - **Modules.** 2–8 per phase. Discrete units you advance through
+     one at a time.
+   - **Rituals.** Which daily / weekly / monthly habits do you want
+     the engine to enforce? (Morning study, spaced repetition,
+     deep block, monthly writeup, etc.) Mapped to time slots in
+     `config.yaml`.
+   - **Practices.** Optional weekly skill drills outside the
+     routine.
+4. The agent writes every YAML file. Validator runs at the end.
+5. Spot-check the output. If anything feels wrong, push back — the
+   agent can revise.
+
+This is the path that produces the best curriculum because the
+interview forces you to make every fuzzy intention concrete before
+the engine starts running it. About 30 minutes of work.
+
+### Path B — Copy an example and edit
+
+If you want to skip the interview, just copy one of the starter
+bundles:
 
 ```bash
 rm -rf curriculum
@@ -73,19 +122,14 @@ cp -r examples/ml-engineer-12mo curriculum
 cp -r examples/frontend-craft-6mo curriculum
 ```
 
-Edit the copied files to your liking. The validator runs at startup
-and will tell you if anything is malformed.
+Edit the copied files to your liking. Use [`AGENTS.md`](../AGENTS.md)
+as the schema reference when you don't know what a field means. The
+validator (Step 7) runs at startup and tells you if anything is
+malformed.
 
-### Path B — Build your own from scratch
+### Either path: end state
 
-Read [`AGENTS.md`](../AGENTS.md). It contains:
-- The full schema for every file in `curriculum/`.
-- A 7-step interview protocol you can either run yourself or hand
-  to an AI agent (Claude, Cursor, etc.) — just point the AI at
-  `AGENTS.md` and say "help me build a curriculum".
-
-Whichever path: by the end of this step you should have these
-files in `curriculum/`:
+By the end of this step you should have these files in `curriculum/`:
 
 ```
 curriculum/
