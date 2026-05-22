@@ -47,6 +47,67 @@ class Book:
         return self.start_month is None
 
 
+@dataclass(frozen=True)
+class Phase:
+    number: int
+    name: str
+    months: tuple[int, int]  # inclusive [start, end]
+
+
+@dataclass(frozen=True)
+class Module:
+    number: int
+    name: str
+    phase: int
+
+
+@dataclass(frozen=True)
+class Syllabus:
+    meta: dict
+    phases: list[Phase]
+    books: list[Book]
+    primary_book_by_month: dict[int, str]
+    modules: list[Module]
+
+
+def load_syllabus(curriculum_dir: Path) -> "Syllabus":
+    """Parse curriculum/syllabus.yaml into a Syllabus dataclass.
+
+    Validation lives in src/curriculum_validator.py — this loader is
+    intentionally permissive so the validator can collect every error
+    in one pass.
+    """
+    import yaml
+    raw = yaml.safe_load(
+        (curriculum_dir / "syllabus.yaml").read_text(encoding="utf-8")
+    )
+    phases = [
+        Phase(number=p["number"], name=p["name"],
+              months=(p["months"][0], p["months"][1]))
+        for p in raw.get("phases", [])
+    ]
+    books: list[Book] = []
+    for b in raw.get("books", []):
+        months = b.get("months")
+        start, end = (months[0], months[1]) if months else (None, None)
+        books.append(Book(
+            phase=b["phase"], title=b["title"], author=b["author"],
+            start_month=start, end_month=end,
+        ))
+    modules = [
+        Module(number=m["number"], name=m["name"], phase=m["phase"])
+        for m in raw.get("modules", [])
+    ]
+    primary = {int(k): str(v) for k, v in (raw.get("primary_book_by_month") or {}).items()}
+    return Syllabus(
+        meta=raw.get("meta", {}),
+        phases=phases,
+        books=books,
+        primary_book_by_month=primary,
+        modules=modules,
+    )
+
+
 # --- regex extractor -----------------------------------------------------------
 
 # Match "### Phase N reading" up to the next "### " or "---" line.
@@ -160,18 +221,20 @@ PRIMARY_BOOK_BY_MONTH: dict[int, str] = {
 }
 
 
-def current_book(month: int) -> str:
-    """Primary book for a given month with carry-forward for unmapped months.
+def current_book(month: int, syllabus: "Syllabus | None" = None) -> str:
+    """Primary book for `month` with carry-forward to the most recent mapped month.
 
-    `month` is the 1-indexed absolute month from `state.start_date`.
-    Returns "" only when no prior month is mapped (i.e. month <= 0).
+    When `syllabus` is provided, look up in syllabus.primary_book_by_month.
+    When `syllabus` is None (legacy callers, removed in Task 16), fall back
+    to the module-level PRIMARY_BOOK_BY_MONTH dict. Returns "" only when no
+    prior month is mapped.
     """
-    if month in PRIMARY_BOOK_BY_MONTH:
-        return PRIMARY_BOOK_BY_MONTH[month]
-    # Carry-forward: walk back to the most recent mapped month.
+    table = syllabus.primary_book_by_month if syllabus is not None else PRIMARY_BOOK_BY_MONTH
+    if month in table:
+        return table[month]
     for m in range(month - 1, 0, -1):
-        if m in PRIMARY_BOOK_BY_MONTH:
-            return PRIMARY_BOOK_BY_MONTH[m]
+        if m in table:
+            return table[m]
     return ""
 
 
