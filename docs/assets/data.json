@@ -1,8 +1,8 @@
 {
   "adherence": {
     "done": 9,
-    "expected": 15,
-    "percent": 60,
+    "expected": 16,
+    "percent": 56,
     "since": "2026-05-05"
   },
   "books": [
@@ -60,7 +60,7 @@
       "end_month": 28,
       "phase": 3,
       "start_month": 24,
-      "title": "Building Microservices, 2nd ed"
+      "title": "Building Microservices"
     },
     {
       "author": "Michael Nygard",
@@ -94,13 +94,9 @@
   "books_state": {},
   "current_book": "Computer Systems: A Programmer's Perspective",
   "current_module": 1,
-  "day_of_journey": 18,
+  "day_of_journey": 19,
   "day_total": 1189,
   "last_7_days": [
-    {
-      "date": "2026-05-15",
-      "state": "green"
-    },
     {
       "date": "2026-05-16",
       "state": "yellow"
@@ -124,6 +120,10 @@
     {
       "date": "2026-05-21",
       "state": "red"
+    },
+    {
+      "date": "2026-05-22",
+      "state": "red"
     }
   ],
   "month": 1,
@@ -135,15 +135,7 @@
     "Pair sessions": 0,
     "Traces completed": 0
   },
-  "reflections": [
-    {
-      "cadence": "weekly",
-      "file": "2026-W21",
-      "relative_path": "weekly/2026-W21.md",
-      "status": "stub",
-      "word_count": 38
-    }
-  ],
+  "reflections": [],
   "streaks": {
     "Daily": 0,
     "Monthly post": 0,
@@ -158,13 +150,13 @@
     "Monthly post": {
       "best": 0,
       "count": 0,
-      "hint": "next post in 10 days"
+      "hint": "next post in 9 days"
     },
     "Weekly review": {
       "best": 0,
       "count": 0,
-      "hint": "Friday review + filled reflection due today"
+      "hint": "next Friday in 6 days"
     }
   },
-  "today": "2026-05-22"
+  "today": "2026-05-23"
 }
