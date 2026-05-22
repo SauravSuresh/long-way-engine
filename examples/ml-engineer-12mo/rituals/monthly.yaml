@@ -1,0 +1,21 @@
+- id: ml-monthly-writeup
+  title: "Monthly write-up: ship a public artifact"
+  description: |
+    800–2000 words. Public, real name. Show your work — code,
+    diagrams, real numbers.
+  due: "today at {ritual_times.morning_reading}"
+  labels: [monthly-ritual]
+  cadence: monthly
+  day_of_month: 1
+
+- id: ml-monthly-review
+  title: "Monthly review: what worked, what didn't"
+  description: |
+    End-of-month retrospective. The plan evolves at month boundaries.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [monthly-ritual, reflection]
+  cadence: monthly
+  day_of_month: last-saturday
+  reflection:
+    create_stub: true
+    stub_path: "reflections/monthly/{year}-{month:02d}.md"

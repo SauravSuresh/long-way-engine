@@ -1,0 +1,18 @@
+- id: ml-daily-morning-reading
+  title: "Morning reading: {current_book}"
+  description: |
+    30 min. Paper book, paper notebook.
+    Today's book: {current_book}.
+  due: "today at {ritual_times.morning_reading}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday
+
+- id: ml-daily-evening-build
+  title: "Evening build (60–90 min)"
+  description: |
+    Work the current module. Code on the keyboard, not in your head.
+  due: "today at {ritual_times.evening_hands_on}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday

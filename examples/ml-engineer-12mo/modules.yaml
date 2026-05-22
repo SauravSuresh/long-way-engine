@@ -1,0 +1,90 @@
+- id: ml-module-01-onboarding
+  module_number: 1
+  title: "Module 1: Python Deep Dive — start"
+  description: |
+    60 hrs. Read Fluent Python cover-to-cover. Every example into a
+    notebook. Skim chapters you know; do exercises for what you don't.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: ml-module-02-onboarding
+  module_number: 2
+  title: "Module 2: Linear Algebra & Probability — start"
+  description: |
+    80 hrs. MIT 18.06 (Strang) + 3Blue1Brown Essence of LA. Hand-derive
+    PCA at the end. Do every problem set.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: ml-module-03-onboarding
+  module_number: 3
+  title: "Module 3: Calculus & Optimization — start"
+  description: |
+    60 hrs. Multivariable calc + gradient descent variants. Implement
+    SGD, momentum, Adam from scratch.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: ml-module-04-onboarding
+  module_number: 4
+  title: "Module 4: Classical ML — start"
+  description: |
+    80 hrs. Géron book + scikit-learn. Build five end-to-end pipelines
+    on real tabular data (UCI, Kaggle).
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: ml-module-05-onboarding
+  module_number: 5
+  title: "Module 5: Neural Networks from Scratch — start"
+  description: |
+    80 hrs. Implement a multi-layer perceptron in NumPy with manual
+    backprop. THEN switch to PyTorch. Karpathy's zero-to-hero series.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: ml-module-06-onboarding
+  module_number: 6
+  title: "Module 6: Transformers & Attention — start"
+  description: |
+    60 hrs. Re-implement attention, build a small transformer from
+    scratch, train it on a tiny dataset. "Attention Is All You Need"
+    + Karpathy nanoGPT walkthrough.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: ml-module-07-onboarding
+  module_number: 7
+  title: "Module 7: Data Pipelines & Feature Stores — start"
+  description: |
+    60 hrs. Build a Feast/Tecton-style feature store from scratch.
+    DAG orchestration with Prefect or Dagster.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: ml-module-08-onboarding
+  module_number: 8
+  title: "Module 8: Model Serving & Monitoring — start"
+  description: |
+    60 hrs. Serve a model behind FastAPI + GPU. Add Prometheus/Grafana.
+    Detect drift.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: ml-module-09-onboarding
+  module_number: 9
+  title: "Module 9: Capstone — start"
+  description: |
+    100 hrs. Pick one real problem. Ship end-to-end: ingestion, train,
+    serve, monitor, retrain. Public repo + write-up.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
