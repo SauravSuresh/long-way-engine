@@ -56,13 +56,12 @@ def build_modules() -> list[dict]:
         if not entry["id"].endswith("-onboarding"):
             continue
         name = _extract_module_name(entry["title"])
-        # Phase derived from PHASES table by month — modules don't carry
-        # their own month, but we can infer phase from existing PHASES
-        # by looking at the module number's typical phase boundaries.
-        # Hand-map (mirrors the current modules.yaml comments):
-        if mod_num <= 11:
+        # Phase derived from `curriculum/modules.yaml` section-header comments:
+        # modules 1–9 are under Phase 1, 10–14 under Phase 2, 15–20 under
+        # Phase 3, 21+ under Phase 4.
+        if mod_num <= 9:
             phase = 1
-        elif mod_num <= 16:
+        elif mod_num <= 14:
             phase = 2
         elif mod_num <= 20:
             phase = 3
