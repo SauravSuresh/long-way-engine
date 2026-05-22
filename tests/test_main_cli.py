@@ -229,7 +229,7 @@ def test_dry_run_table_has_header_and_rows():
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-REAL_REFLECTION_TEMPLATES = REPO_ROOT / "reflection_templates"
+REAL_REFLECTION_TEMPLATES = REPO_ROOT / "curriculum" / "reflection_templates"
 
 
 def _seed_repo(tmp_path: Path, monkeypatch) -> Path:
