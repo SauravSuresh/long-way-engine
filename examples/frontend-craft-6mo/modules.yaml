@@ -1,0 +1,60 @@
+- id: fe-module-01-onboarding
+  module_number: 1
+  title: "Module 1: Vanilla JS & the DOM — start"
+  description: |
+    60 hrs. Eloquent JS first half. Build three vanilla-JS toys
+    without any framework: a draggable kanban, a markdown previewer,
+    a sortable table.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: fe-module-02-onboarding
+  module_number: 2
+  title: "Module 2: TypeScript End to End — start"
+  description: |
+    50 hrs. Cherny + the official TS handbook. Convert one of your
+    vanilla projects to strict TypeScript.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: fe-module-03-onboarding
+  module_number: 3
+  title: "Module 3: React Fundamentals — start"
+  description: |
+    60 hrs. Build a real app — not todos. Routing, forms, optimistic
+    updates, error boundaries.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: fe-module-04-onboarding
+  module_number: 4
+  title: "Module 4: Design Systems & Tokens — start"
+  description: |
+    50 hrs. Refactoring UI cover-to-cover. Build a design token
+    system. Ship a Storybook with 20+ components.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: fe-module-05-onboarding
+  module_number: 5
+  title: "Module 5: Accessibility Deep Dive — start"
+  description: |
+    50 hrs. WAI-ARIA. Screen reader testing with VoiceOver/NVDA.
+    Audit and fix one open-source project.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: fe-module-06-onboarding
+  module_number: 6
+  title: "Module 6: Capstone — start"
+  description: |
+    80 hrs. Ship one production-grade UI to a public URL. Real users,
+    real metrics, real bug reports.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module

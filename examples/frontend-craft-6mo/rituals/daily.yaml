@@ -1,0 +1,17 @@
+- id: fe-daily-morning-reading
+  title: "Morning reading: {current_book}"
+  description: |
+    30 min. Today: {current_book}.
+  due: "today at {ritual_times.morning_reading}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday
+
+- id: fe-daily-evening-build
+  title: "Evening build"
+  description: |
+    Push pixels. Ship the current module.
+  due: "today at {ritual_times.evening_hands_on}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday

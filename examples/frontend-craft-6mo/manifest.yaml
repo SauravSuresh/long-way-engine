@@ -1,0 +1,15 @@
+ritual_times_required:
+  - morning_reading
+  - evening_hands_on
+  - saturday_deep_block
+
+placeholders_used:
+  - current_book
+  - current_module
+  - iso_year
+  - iso_week
+  - year
+  - month
+
+config_flags:
+  sunday_off: true

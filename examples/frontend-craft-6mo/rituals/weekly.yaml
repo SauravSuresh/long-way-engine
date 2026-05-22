@@ -1,0 +1,8 @@
+- id: fe-weekly-saturday-deep-block
+  title: "Saturday deep block: ship something visible"
+  description: |
+    3–4 hours. End the day with something a user could click.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [weekly-ritual]
+  cadence: weekly
+  day_of_week: saturday

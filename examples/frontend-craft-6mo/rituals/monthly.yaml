@@ -1,0 +1,9 @@
+- id: fe-monthly-writeup
+  title: "Monthly write-up + screenshots"
+  description: |
+    Public post with before/after screenshots. Real numbers — Lighthouse
+    scores, bundle size, accessibility violations fixed.
+  due: "today at {ritual_times.morning_reading}"
+  labels: [monthly-ritual]
+  cadence: monthly
+  day_of_month: 1
