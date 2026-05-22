@@ -33,7 +33,7 @@ from src.ids import external_id, module_external_id
 from src.reflections import StubResult, create_stub, update_metadata
 from src.scheduler import _is_last_saturday_of_month, should_create_today
 from src.state import State, load_state
-from src.syllabus import load_syllabus, parse_books_from_file
+from src.syllabus import Syllabus, load_syllabus
 from src.curriculum_validator import validate as validate_curriculum
 from src.templates import load_templates, resolve_variables
 from src.todoist import (
@@ -205,6 +205,7 @@ def _render_dashboard_once(
     docs_css_path: Path,
     completion_factory,
     module_titles: dict[int, str],
+    syllabus: Syllabus | None = None,
 ) -> str:
     """Render dashboard + sidecar JSON. Returns "ok" or "error".
 
@@ -232,10 +233,7 @@ def _render_dashboard_once(
         completion_set = set()
 
     reflections = scan_reflections(reflections_root)
-    try:
-        books = parse_books_from_file()
-    except OSError:
-        books = []
+    books = syllabus.books if syllabus is not None else []
 
     html, data = render_dashboard(
         state=state,
@@ -445,6 +443,7 @@ def run(
                 docs_css_path=docs_css_path,
                 completion_factory=completion_factory,
                 module_titles=_module_titles_from_templates(templates),
+                syllabus=syllabus,
             )
         except Exception as e:
             logger.warning("dashboard render failed: %s", e)
