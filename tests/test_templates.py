@@ -50,7 +50,7 @@ def make_config() -> Config:
 
 def test_load_templates_reads_directory(tmp_path: Path):
     (tmp_path / "daily.yaml").write_text(TPL_YAML)
-    out = load_templates(tmp_path)
+    out = load_templates([tmp_path])
     assert [t.id for t in out] == ["daily-morning-reading", "daily-anki"]
 
 
@@ -65,7 +65,7 @@ def test_load_template_parses_day_of_week(tmp_path: Path):
   day_of_week: friday
 """
     )
-    [t] = load_templates(tmp_path)
+    [t] = load_templates([tmp_path])
     assert t.day_of_week == "friday"
     assert t.day_of_month is None
 
@@ -81,7 +81,7 @@ def test_load_template_parses_day_of_month_int(tmp_path: Path):
   day_of_month: 1
 """
     )
-    [t] = load_templates(tmp_path)
+    [t] = load_templates([tmp_path])
     assert t.day_of_month == 1
     assert isinstance(t.day_of_month, int)
 
@@ -97,7 +97,7 @@ def test_load_template_parses_day_of_month_string(tmp_path: Path):
   day_of_month: last-saturday
 """
     )
-    [t] = load_templates(tmp_path)
+    [t] = load_templates([tmp_path])
     assert t.day_of_month == "last-saturday"
 
 
@@ -112,7 +112,7 @@ def test_load_template_parses_module_number(tmp_path: Path):
   module_number: 6
 """
     )
-    [t] = load_templates(tmp_path)
+    [t] = load_templates([tmp_path])
     assert t.module_number == 6
     assert isinstance(t.module_number, int)
 
@@ -127,7 +127,7 @@ def test_load_template_module_number_defaults_to_none(tmp_path: Path):
   cadence: daily
 """
     )
-    [t] = load_templates(tmp_path)
+    [t] = load_templates([tmp_path])
     assert t.module_number is None
 
 
@@ -147,7 +147,7 @@ def test_load_template_keeps_reflection_block_in_raw(tmp_path: Path):
     template: weekly_review_template
 """
     )
-    [t] = load_templates(tmp_path)
+    [t] = load_templates([tmp_path])
     assert t.raw["reflection"]["create_stub"] is True
     assert t.raw["reflection"]["stub_path"].startswith("reflections/weekly/")
 
@@ -155,7 +155,7 @@ def test_load_template_keeps_reflection_block_in_raw(tmp_path: Path):
 def test_resolve_current_book_and_ritual_time(tmp_path: Path):
     (tmp_path / "daily.yaml").write_text(TPL_YAML)
     state, config = make_state(), make_config()
-    templates = load_templates(tmp_path)
+    templates = load_templates([tmp_path])
     today = date(2026, 5, 4)
 
     morning = resolve_variables(templates[0], state, config, today)

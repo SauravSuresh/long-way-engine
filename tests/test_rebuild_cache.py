@@ -39,7 +39,7 @@ def test_build_index_covers_date_window(tmp_path: Path, rebuild_cache):
         "  skip_if: sunday\n"
     )
     index = rebuild_cache.build_external_id_index(
-        tdir, since=date(2026, 5, 1), until=date(2026, 5, 3)
+        [tdir], since=date(2026, 5, 1), until=date(2026, 5, 3)
     )
     # 1 template × 3 dates = 3 entries.
     assert len(index) == 3
@@ -62,7 +62,7 @@ def test_build_index_includes_module_keyed_templates(tmp_path: Path, rebuild_cac
         "  module_number: 2\n"
     )
     index = rebuild_cache.build_external_id_index(
-        tdir, since=date(2026, 5, 1), until=date(2026, 5, 1)
+        [tdir], since=date(2026, 5, 1), until=date(2026, 5, 1)
     )
     assert index[module_external_id("module-01-onboarding", 1)] == (
         "module-01-onboarding", "module:1"
@@ -83,7 +83,7 @@ def test_build_index_skips_module_template_without_number(
         "  cadence: once-per-module\n"
     )
     index = rebuild_cache.build_external_id_index(
-        tdir, since=date(2026, 5, 1), until=date(2026, 5, 1)
+        [tdir], since=date(2026, 5, 1), until=date(2026, 5, 1)
     )
     assert index == {}
 

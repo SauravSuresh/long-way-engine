@@ -48,7 +48,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_PATH = REPO_ROOT / "config.yaml"
 STATE_PATH = REPO_ROOT / "state.yaml"
 ENV_PATH = REPO_ROOT / ".env"
-TEMPLATES_DIR = REPO_ROOT / "task_templates"
+CURRICULUM_DIR = REPO_ROOT / "curriculum"
+RITUALS_DIR = CURRICULUM_DIR / "rituals"
+MODULES_PATH = CURRICULUM_DIR / "modules.yaml"
 CACHE_PATH = REPO_ROOT / ".task_cache.json"
 LOG_PATH = REPO_ROOT / "LOG.md"
 REFLECTIONS_DIR = REPO_ROOT / "reflections"
@@ -261,7 +263,7 @@ def run(
     config: Config,
     state: State,
     today: date,
-    templates_dir: Path,
+    template_paths: list[Path],
     cache_path: Path,
     client_factory=None,
     clock: Clock | None = None,
@@ -299,7 +301,7 @@ def run(
         docs_css_path = DOCS_CSS_PATH
 
     cache = load_cache(cache_path)
-    templates = load_templates(templates_dir)
+    templates = load_templates(template_paths)
     client = client_factory(
         token=config.todoist_token,
         project_id=project_id or config.todoist.project_id,
@@ -793,7 +795,7 @@ def main(argv: list[str] | None = None) -> int:
         config,
         state,
         today,
-        TEMPLATES_DIR,
+        [RITUALS_DIR, MODULES_PATH],
         cache_path,
         clock=clock,
         dry_run=args.dry_run,

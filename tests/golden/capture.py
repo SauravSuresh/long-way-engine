@@ -51,8 +51,13 @@ def capture(
     config = load_config(config_path, env_path)
     state = load_state(state_path)
     if templates_dir is None:
-        templates_dir = REPO_ROOT / "task_templates"
-    templates = load_templates(templates_dir)
+        template_paths = [
+            REPO_ROOT / "curriculum" / "rituals",
+            REPO_ROOT / "curriculum" / "modules.yaml",
+        ]
+    else:
+        template_paths = [templates_dir]
+    templates = load_templates(template_paths)
 
     out: dict[str, Any] = {"date": today.isoformat(), "templates": []}
 

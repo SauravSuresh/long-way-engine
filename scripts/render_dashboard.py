@@ -50,7 +50,9 @@ STATE_PATH = REPO_ROOT / "state.yaml"
 ENV_PATH = REPO_ROOT / ".env"
 CACHE_PATH = REPO_ROOT / ".task_cache.json"
 REFLECTIONS_DIR = REPO_ROOT / "reflections"
-TEMPLATES_DIR = REPO_ROOT / "task_templates"
+CURRICULUM_DIR = REPO_ROOT / "curriculum"
+RITUALS_DIR = CURRICULUM_DIR / "rituals"
+MODULES_PATH = CURRICULUM_DIR / "modules.yaml"
 DOCS_DIR = REPO_ROOT / "docs"
 DEFAULT_OUT = Path("/tmp/dashboard_synthetic.html")
 
@@ -147,7 +149,7 @@ def main(argv: list[str] | None = None) -> int:
     except OSError:
         books = []
 
-    templates = load_templates(TEMPLATES_DIR)
+    templates = load_templates([RITUALS_DIR, MODULES_PATH])
     module_titles = {
         tpl.module_number: tpl.title
         for tpl in templates

@@ -58,21 +58,23 @@ logger = logging.getLogger("rebuild_cache")
 DEFAULT_WINDOW_DAYS = 90
 DEFAULT_PAGE_LIMIT = 200
 DEFAULT_TIMEOUT = 30
-TEMPLATES_DIR = REPO_ROOT / "task_templates"
+CURRICULUM_DIR = REPO_ROOT / "curriculum"
+RITUALS_DIR = CURRICULUM_DIR / "rituals"
+MODULES_PATH = CURRICULUM_DIR / "modules.yaml"
 
 
 # --- index ------------------------------------------------------------------
 
 
 def build_external_id_index(
-    templates_dir: Path, since: date, until: date
+    template_paths: list[Path], since: date, until: date
 ) -> dict[str, tuple[str, str]]:
     """Pre-compute external_id -> (template_id, due_date_or_module_key).
 
     Walks every loaded template across [since, until] inclusive for
     date-keyed cadences, plus once-per-module ids keyed by module_number.
     """
-    templates = load_templates(templates_dir)
+    templates = load_templates(template_paths)
     index: dict[str, tuple[str, str]] = {}
     for tpl in templates:
         if tpl.cadence == "once-per-module":
@@ -281,7 +283,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     logger.info("completed tasks fetched: %d", len(completed))
 
-    index = build_external_id_index(TEMPLATES_DIR, since, until)
+    index = build_external_id_index([RITUALS_DIR, MODULES_PATH], since, until)
     logger.info("template index size: %d", len(index))
 
     fallback_iso = now.isoformat()

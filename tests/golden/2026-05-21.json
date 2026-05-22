@@ -34,6 +34,67 @@
       "id": "daily-evening-hands-on"
     },
     {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-blog-post"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-retrieval"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-review"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-trace-one-thing"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-read-real-code"
+    },
+    {
+      "cadence": "weekly",
+      "description": "Camera and screen-share if remote. He drives, you observe and ask.\nWatch the meta-moves \u2014 when he hits something unexpected, what's the\n*first* thing he does? Which tool? Reproduce in isolation? Check logs\nat a particular layer? These habits are mostly invisible to him; the\nfastest way to skill transfer is copying them.\n\nWithin 24 hours, write up what you saw \u2014 observations, not instructions.\n\"When he saw the failing test, he ran X first instead of Y. Why?\"\nThese notes are the most concentrated learning material you'll generate.\n\nGoal by month 12: predict his next move during the session.\nGoal by month 24: open PRs to the codebase yourself.\n",
+      "due": "today at 19:00",
+      "fires": true,
+      "id": "weekly-pair-with-engineer",
+      "labels": [
+        "active-practice"
+      ],
+      "title": "Pair with your engineer (60\u201390 min)"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-oss-pr"
+    },
+    {
+      "cadence": "quarterly",
+      "fires": false,
+      "id": "quarterly-build-thing-under-thing"
+    },
+    {
+      "cadence": "quarterly",
+      "fires": false,
+      "id": "quarterly-synthesis"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-friday-review"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-saturday-deep-block"
+    },
+    {
       "cadence": "once-per-module",
       "description": "Phase 1, ~60 hrs. boot.dev courses 1\u20137 (Python, Linux, Git, OOP,\nFunctional). Skim chapters where you already know the material;\ndo every exercise where you don't. boot.dev is your runway, not\nyour syllabus. Move fast through this.\n",
       "due": "today",
@@ -188,67 +249,6 @@
       "cadence": "once-per-module",
       "fires": false,
       "id": "module-23-onboarding"
-    },
-    {
-      "cadence": "monthly",
-      "fires": false,
-      "id": "monthly-blog-post"
-    },
-    {
-      "cadence": "monthly",
-      "fires": false,
-      "id": "monthly-retrieval"
-    },
-    {
-      "cadence": "monthly",
-      "fires": false,
-      "id": "monthly-review"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-trace-one-thing"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-read-real-code"
-    },
-    {
-      "cadence": "weekly",
-      "description": "Camera and screen-share if remote. He drives, you observe and ask.\nWatch the meta-moves \u2014 when he hits something unexpected, what's the\n*first* thing he does? Which tool? Reproduce in isolation? Check logs\nat a particular layer? These habits are mostly invisible to him; the\nfastest way to skill transfer is copying them.\n\nWithin 24 hours, write up what you saw \u2014 observations, not instructions.\n\"When he saw the failing test, he ran X first instead of Y. Why?\"\nThese notes are the most concentrated learning material you'll generate.\n\nGoal by month 12: predict his next move during the session.\nGoal by month 24: open PRs to the codebase yourself.\n",
-      "due": "today at 19:00",
-      "fires": true,
-      "id": "weekly-pair-with-engineer",
-      "labels": [
-        "active-practice"
-      ],
-      "title": "Pair with your engineer (60\u201390 min)"
-    },
-    {
-      "cadence": "monthly",
-      "fires": false,
-      "id": "monthly-oss-pr"
-    },
-    {
-      "cadence": "quarterly",
-      "fires": false,
-      "id": "quarterly-build-thing-under-thing"
-    },
-    {
-      "cadence": "quarterly",
-      "fires": false,
-      "id": "quarterly-synthesis"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-friday-review"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-saturday-deep-block"
     }
   ]
 }

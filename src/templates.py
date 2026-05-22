@@ -63,47 +63,64 @@ class MissingVariable(KeyError):
     """Raised when a placeholder cannot be resolved from state/config."""
 
 
-def load_templates(directory: Path) -> list[Template]:
-    """Load every *.yaml in the directory, in lexical order."""
+def load_templates(paths: list[Path]) -> list[Template]:
+    """Load every *.yaml from a list of paths.
+
+    Each entry in `paths` is either a directory (globbed for *.yaml,
+    non-recursive, lexical order) or a single .yaml file. Output
+    preserves caller-supplied order; within a directory, files are
+    loaded in lexical order.
+    """
+    out: list[Template] = []
+    for p in paths:
+        if p.is_dir():
+            for yaml_path in sorted(p.glob("*.yaml")):
+                out.extend(_load_one_file(yaml_path))
+        else:
+            out.extend(_load_one_file(p))
+    return out
+
+
+def _load_one_file(path: Path) -> list[Template]:
+    """Parse one YAML file into a list of Template instances."""
     templates: list[Template] = []
-    for path in sorted(directory.glob("*.yaml")):
-        with path.open("r", encoding="utf-8") as f:
-            entries = yaml.safe_load(f) or []
-        if not isinstance(entries, list):
-            logger.warning("template file %s is not a list; skipping", path)
-            continue
-        for entry in entries:
-            day_of_month = entry.get("day_of_month")
-            if isinstance(day_of_month, bool):
-                # YAML's `day_of_month: false` would otherwise sneak through as int 0.
-                day_of_month = None
-            module_number = entry.get("module_number")
-            if module_number is not None:
-                module_number = int(module_number)
-            # skip_if accepts either a single string ("sunday") or a list
-            # (["sunday", "pair_day"]). Normalize to list internally.
-            skip_if_raw = entry.get("skip_if")
-            if skip_if_raw is None:
-                skip_if = []
-            elif isinstance(skip_if_raw, list):
-                skip_if = [str(s) for s in skip_if_raw]
-            else:
-                skip_if = [str(skip_if_raw)]
-            templates.append(
-                Template(
-                    id=str(entry["id"]),
-                    title=str(entry["title"]),
-                    description=str(entry.get("description", "")),
-                    due=str(entry.get("due", "")),
-                    labels=list(entry.get("labels", []) or []),
-                    cadence=str(entry["cadence"]),
-                    skip_if=skip_if,
-                    day_of_week=entry.get("day_of_week"),
-                    day_of_month=day_of_month,
-                    module_number=module_number,
-                    raw=entry,
-                )
+    with path.open("r", encoding="utf-8") as f:
+        entries = yaml.safe_load(f) or []
+    if not isinstance(entries, list):
+        logger.warning("template file %s is not a list; skipping", path)
+        return templates
+    for entry in entries:
+        day_of_month = entry.get("day_of_month")
+        if isinstance(day_of_month, bool):
+            # YAML's `day_of_month: false` would otherwise sneak through as int 0.
+            day_of_month = None
+        module_number = entry.get("module_number")
+        if module_number is not None:
+            module_number = int(module_number)
+        # skip_if accepts either a single string ("sunday") or a list
+        # (["sunday", "pair_day"]). Normalize to list internally.
+        skip_if_raw = entry.get("skip_if")
+        if skip_if_raw is None:
+            skip_if = []
+        elif isinstance(skip_if_raw, list):
+            skip_if = [str(s) for s in skip_if_raw]
+        else:
+            skip_if = [str(skip_if_raw)]
+        templates.append(
+            Template(
+                id=str(entry["id"]),
+                title=str(entry["title"]),
+                description=str(entry.get("description", "")),
+                due=str(entry.get("due", "")),
+                labels=list(entry.get("labels", []) or []),
+                cadence=str(entry["cadence"]),
+                skip_if=skip_if,
+                day_of_week=entry.get("day_of_week"),
+                day_of_month=day_of_month,
+                module_number=module_number,
+                raw=entry,
             )
+        )
     return templates
 
 

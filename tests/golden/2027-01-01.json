@@ -47,6 +47,87 @@
       "title": "Evening hands-on (60\u201390 min)"
     },
     {
+      "cadence": "monthly",
+      "description": "One blog post or detailed notes document about something you learned\nlast month. 800\u20132000 words. Public, your real name, your domain.\nShow your work \u2014 code samples, diagrams, real numbers. Don't optimize\nfor going viral; optimize for being useful in five years.\n",
+      "due": "today at 06:00",
+      "fires": true,
+      "id": "monthly-blog-post",
+      "labels": [
+        "monthly-ritual"
+      ],
+      "title": "Monthly post: write about last month"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-retrieval"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-review"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-trace-one-thing"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-read-real-code"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-pair-with-engineer"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-oss-pr"
+    },
+    {
+      "cadence": "quarterly",
+      "description": "Once per quarter, pick a tool or system you use and plan a small\nversion of it from scratch. Time-box: 20\u201360 hours over 4\u20138 weeks.\nThe goal is not to build something useful \u2014 it's to demystify a\ncategory of software. When done, write a blog post about what\nsurprised you.\n\nIdeas (beyond the optional branches in the syllabus):\n- toy DNS resolver (after Phase 1 networking \u2014 strongly recommended)\n- toy git (init / add / commit; see Coglan's Building Git)\n- toy load balancer\n- toy ray tracer (one weekend with Peter Shirley's series)\n- toy regex engine (Russ Cox's series)\n- toy SQL query engine (after DDIA)\n- CHIP-8 emulator\n\nToday's task: pick the target, sketch the scope, set the time-box.\nDon't start coding yet \u2014 synthesis comes first (the quarterly\nsynthesis task), then this.\n",
+      "due": "today at 09:00",
+      "fires": true,
+      "id": "quarterly-build-thing-under-thing",
+      "labels": [
+        "active-practice"
+      ],
+      "title": "Build the thing under the thing \u2014 pick the next target"
+    },
+    {
+      "cadence": "quarterly",
+      "description": "2\u20133 hrs. Re-read three months of journal entries. Re-read three\nmonths of monthly retrospectives. Write a single page: what changed\nabout how you think? What can you now do that you couldn't 90 days\nago? What's still confusing? This page is the most valuable single\nartifact you produce that quarter.\n",
+      "due": "today at 09:00",
+      "fires": true,
+      "id": "quarterly-synthesis",
+      "labels": [
+        "quarterly-ritual",
+        "reflection"
+      ],
+      "title": "Quarterly synthesis"
+    },
+    {
+      "cadence": "weekly",
+      "description": "Without looking at your notes, write down the 3 most important\nthings you learned this week. Then compare to your notes. The gap\nis the diagnostic \u2014 that's what your Anki cards for next week\nshould target.\n",
+      "due": "today at 20:00",
+      "fires": true,
+      "id": "weekly-friday-review",
+      "labels": [
+        "weekly-ritual",
+        "reflection"
+      ],
+      "title": "Friday review: 20-min retrieval"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-saturday-deep-block"
+    },
+    {
       "cadence": "once-per-module",
       "description": "Phase 1, ~60 hrs. boot.dev courses 1\u20137 (Python, Linux, Git, OOP,\nFunctional). Skim chapters where you already know the material;\ndo every exercise where you don't. boot.dev is your runway, not\nyour syllabus. Move fast through this.\n",
       "due": "today",
@@ -201,87 +282,6 @@
       "cadence": "once-per-module",
       "fires": false,
       "id": "module-23-onboarding"
-    },
-    {
-      "cadence": "monthly",
-      "description": "One blog post or detailed notes document about something you learned\nlast month. 800\u20132000 words. Public, your real name, your domain.\nShow your work \u2014 code samples, diagrams, real numbers. Don't optimize\nfor going viral; optimize for being useful in five years.\n",
-      "due": "today at 06:00",
-      "fires": true,
-      "id": "monthly-blog-post",
-      "labels": [
-        "monthly-ritual"
-      ],
-      "title": "Monthly post: write about last month"
-    },
-    {
-      "cadence": "monthly",
-      "fires": false,
-      "id": "monthly-retrieval"
-    },
-    {
-      "cadence": "monthly",
-      "fires": false,
-      "id": "monthly-review"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-trace-one-thing"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-read-real-code"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-pair-with-engineer"
-    },
-    {
-      "cadence": "monthly",
-      "fires": false,
-      "id": "monthly-oss-pr"
-    },
-    {
-      "cadence": "quarterly",
-      "description": "Once per quarter, pick a tool or system you use and plan a small\nversion of it from scratch. Time-box: 20\u201360 hours over 4\u20138 weeks.\nThe goal is not to build something useful \u2014 it's to demystify a\ncategory of software. When done, write a blog post about what\nsurprised you.\n\nIdeas (beyond the optional branches in the syllabus):\n- toy DNS resolver (after Phase 1 networking \u2014 strongly recommended)\n- toy git (init / add / commit; see Coglan's Building Git)\n- toy load balancer\n- toy ray tracer (one weekend with Peter Shirley's series)\n- toy regex engine (Russ Cox's series)\n- toy SQL query engine (after DDIA)\n- CHIP-8 emulator\n\nToday's task: pick the target, sketch the scope, set the time-box.\nDon't start coding yet \u2014 synthesis comes first (the quarterly\nsynthesis task), then this.\n",
-      "due": "today at 09:00",
-      "fires": true,
-      "id": "quarterly-build-thing-under-thing",
-      "labels": [
-        "active-practice"
-      ],
-      "title": "Build the thing under the thing \u2014 pick the next target"
-    },
-    {
-      "cadence": "quarterly",
-      "description": "2\u20133 hrs. Re-read three months of journal entries. Re-read three\nmonths of monthly retrospectives. Write a single page: what changed\nabout how you think? What can you now do that you couldn't 90 days\nago? What's still confusing? This page is the most valuable single\nartifact you produce that quarter.\n",
-      "due": "today at 09:00",
-      "fires": true,
-      "id": "quarterly-synthesis",
-      "labels": [
-        "quarterly-ritual",
-        "reflection"
-      ],
-      "title": "Quarterly synthesis"
-    },
-    {
-      "cadence": "weekly",
-      "description": "Without looking at your notes, write down the 3 most important\nthings you learned this week. Then compare to your notes. The gap\nis the diagnostic \u2014 that's what your Anki cards for next week\nshould target.\n",
-      "due": "today at 20:00",
-      "fires": true,
-      "id": "weekly-friday-review",
-      "labels": [
-        "weekly-ritual",
-        "reflection"
-      ],
-      "title": "Friday review: 20-min retrieval"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-saturday-deep-block"
     }
   ]
 }

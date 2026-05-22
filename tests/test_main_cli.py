@@ -242,6 +242,12 @@ def _seed_repo(tmp_path: Path, monkeypatch) -> Path:
     reflections_dir = tmp_path / "reflections"
     reflections_dir.mkdir()
     tdir = _seed_templates(tmp_path)
+    # _seed_templates returns [<dir>]; main() now calls run() with
+    # [RITUALS_DIR, MODULES_PATH], so monkeypatch RITUALS_DIR to the
+    # seeded ritual dir and MODULES_PATH to an empty modules.yaml so
+    # _load_one_file finds an empty list (no extra templates).
+    empty_modules = tmp_path / "modules.yaml"
+    empty_modules.write_text("[]\n")
 
     config_path.write_text(
         'todoist:\n'
@@ -273,7 +279,8 @@ def _seed_repo(tmp_path: Path, monkeypatch) -> Path:
     monkeypatch.setattr(main_module, "ENV_PATH", env_path)
     monkeypatch.setattr(main_module, "LOG_PATH", log_path)
     monkeypatch.setattr(main_module, "CACHE_PATH", cache_path)
-    monkeypatch.setattr(main_module, "TEMPLATES_DIR", tdir)
+    monkeypatch.setattr(main_module, "RITUALS_DIR", tdir[0])
+    monkeypatch.setattr(main_module, "MODULES_PATH", empty_modules)
     monkeypatch.setattr(main_module, "REFLECTIONS_DIR", reflections_dir)
     monkeypatch.setattr(
         main_module, "REFLECTION_TEMPLATES_DIR", REAL_REFLECTION_TEMPLATES
@@ -436,15 +443,17 @@ def test_cleanup_yes_with_empty_project(tmp_path: Path, monkeypatch, capsys):
 # ---------------------------------------------------------------------------
 
 
-REAL_TEMPLATES = REPO_ROOT / "task_templates"
+REAL_RITUALS = REPO_ROOT / "curriculum" / "rituals"
+REAL_MODULES = REPO_ROOT / "curriculum" / "modules.yaml"
 
 
 def _seed_repo_with_real_templates(tmp_path: Path, monkeypatch) -> Path:
-    """Same as _seed_repo, but TEMPLATES_DIR points at the real task_templates/
-    so the run uses cadence templates with reflection.create_stub.
+    """Same as _seed_repo, but RITUALS_DIR / MODULES_PATH point at the real
+    curriculum/ so the run uses cadence templates with reflection.create_stub.
     """
     _seed_repo(tmp_path, monkeypatch)
-    monkeypatch.setattr(main_module, "TEMPLATES_DIR", REAL_TEMPLATES)
+    monkeypatch.setattr(main_module, "RITUALS_DIR", REAL_RITUALS)
+    monkeypatch.setattr(main_module, "MODULES_PATH", REAL_MODULES)
     return tmp_path
 
 
