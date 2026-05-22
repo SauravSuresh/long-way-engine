@@ -23,7 +23,6 @@ from typing import Any
 
 import yaml
 
-from src import syllabus
 from src.config import Config
 from src.state import State
 
@@ -124,14 +123,21 @@ def _load_one_file(path: Path) -> list[Template]:
     return templates
 
 
-def _lookup(name: str, state: State, config: Config, today: date) -> str | int:
+def _lookup(
+    name: str,
+    state: State,
+    config: Config,
+    today: date,
+    syllabus_obj=None,
+) -> str | int:
     """Resolve a single dotted placeholder name. May return int for format-spec callers."""
     if name == "current_book":
         # Override path: state.current_book wins when non-empty (Phase D Q16).
         # Fallback path: syllabus.current_book(state.month) with carry-forward.
         if state.current_book:
             return state.current_book
-        return syllabus.current_book(state.month)
+        from src.syllabus import current_book as _resolve_current_book
+        return _resolve_current_book(state.month, syllabus_obj)
     if name.startswith("ritual_times."):
         key = name.split(".", 1)[1]
         if key not in config.ritual_times:
@@ -153,13 +159,20 @@ def _lookup(name: str, state: State, config: Config, today: date) -> str | int:
     raise MissingVariable(name)
 
 
-def resolve_string(s: str, state: State, config: Config, today: date) -> str:
+def resolve_string(
+    s: str,
+    state: State,
+    config: Config,
+    today: date,
+    *,
+    syllabus=None,
+) -> str:
     """Resolve placeholders in `s`. Public so reflections.py can reuse."""
 
     def replace(match: re.Match[str]) -> str:
         name = match.group(1)
         fmt = match.group(2)
-        value = _lookup(name, state, config, today)
+        value = _lookup(name, state, config, today, syllabus_obj=syllabus)
         if fmt is not None:
             return format(value, fmt)
         return str(value)
@@ -172,15 +185,22 @@ _resolve_string = resolve_string
 
 
 def resolve_variables(
-    template: Template, state: State, config: Config, today: date
+    template: Template,
+    state: State,
+    config: Config,
+    today: date,
+    *,
+    syllabus=None,
 ) -> ResolvedTemplate | None:
     """Resolve placeholders. Returns None if any variable is missing."""
     try:
         return ResolvedTemplate(
             id=template.id,
-            title=resolve_string(template.title, state, config, today),
-            description=resolve_string(template.description, state, config, today),
-            due=resolve_string(template.due, state, config, today),
+            title=resolve_string(template.title, state, config, today, syllabus=syllabus),
+            description=resolve_string(
+                template.description, state, config, today, syllabus=syllabus
+            ),
+            due=resolve_string(template.due, state, config, today, syllabus=syllabus),
             labels=list(template.labels),
             cadence=template.cadence,
             skip_if=list(template.skip_if),

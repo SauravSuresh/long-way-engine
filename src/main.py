@@ -280,6 +280,7 @@ def run(
     docs_html_path: Path | None = None,
     docs_data_path: Path | None = None,
     docs_css_path: Path | None = None,
+    syllabus=None,
 ) -> RunSummary:
     if clock is None:
         clock = Clock(state.timezone)
@@ -330,7 +331,7 @@ def run(
             errors += 1
             continue
 
-        resolved = resolve_variables(tpl, state, config, today)
+        resolved = resolve_variables(tpl, state, config, today, syllabus=syllabus)
         if resolved is None:
             decisions.append(Decision(tpl.id, None, "ERROR (variable)"))
             errors += 1
@@ -775,6 +776,19 @@ def main(argv: list[str] | None = None) -> int:
 
     state = load_state(STATE_PATH)
 
+    # Resolve curriculum_dir as absolute (relative to repo root) and load the
+    # Syllabus instance. Threaded into run() so resolve_variables can use
+    # YAML data via the new current_book(month, syllabus) signature. The
+    # CLI-level validator (run-on-startup safety check) lives in the
+    # __main__ block; main() deliberately skips it so test callers don't
+    # need a fully-valid curriculum bundle in tmp_path.
+    curriculum_dir = (
+        config.curriculum_dir
+        if config.curriculum_dir.is_absolute()
+        else REPO_ROOT / config.curriculum_dir
+    )
+    syllabus = load_syllabus(curriculum_dir)
+
     if args.today is not None:
         clock: Clock = FrozenClock(args.today, state.timezone)
         today = args.today
@@ -803,6 +817,7 @@ def main(argv: list[str] | None = None) -> int:
         project_id=args.project_id,
         skip_dashboard=args.skip_dashboard,
         sweep=not args.no_sweep,
+        syllabus=syllabus,
     )
 
     if args.dry_run:
@@ -820,19 +835,23 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    config = load_config(CONFIG_PATH, ENV_PATH)
-    state = load_state(STATE_PATH)
-    # Resolve curriculum_dir as absolute (relative to repo root).
-    curriculum_dir = (
-        config.curriculum_dir
-        if config.curriculum_dir.is_absolute()
-        else REPO_ROOT / config.curriculum_dir
+    # Cron / CLI entry: load config + state once, run the curriculum validator
+    # for fail-fast safety, then hand off to main() which re-loads config and
+    # state. The two loads are intentional: main() must remain self-contained
+    # so unit tests that call main() directly with monkeypatched paths don't
+    # need a fully-valid curriculum bundle. Task 16 collapses the legacy
+    # current_book path and may revisit this duplication.
+    _bootstrap_config = load_config(CONFIG_PATH, ENV_PATH)
+    _bootstrap_state = load_state(STATE_PATH)
+    _bootstrap_curriculum_dir = (
+        _bootstrap_config.curriculum_dir
+        if _bootstrap_config.curriculum_dir.is_absolute()
+        else REPO_ROOT / _bootstrap_config.curriculum_dir
     )
-    syllabus = load_syllabus(curriculum_dir)
     validate_curriculum(
-        curriculum_dir,
-        ritual_times=config.ritual_times,
-        state_current_module=state.current_module,
-        state_month=state.month,
+        _bootstrap_curriculum_dir,
+        ritual_times=_bootstrap_config.ritual_times,
+        state_current_module=_bootstrap_state.current_module,
+        state_month=_bootstrap_state.month,
     )
     sys.exit(main())
