@@ -18,19 +18,65 @@ fork.
 The intended workflow:
 
 1. Fork this repo.
-2. Open it in your AI tool of choice. Tell the agent:
-   > "Read AGENTS.md and run the 7-step interview to build my curriculum."
-3. Answer questions for ~30 minutes — goal, duration, phases, books
-   per month, modules, rituals. The agent writes every YAML file in
-   `curriculum/` as you go.
+2. Open it in your AI tool of choice (Claude Code, Cursor, Codex,
+   Aider — anything that can read project files). Send the agent
+   something like:
+
+   > Read `AGENTS.md` end to end. Then run the 7-step interview
+   > with me to build my curriculum. **I want to be a person who
+   > can build a Raspberry-Pi-based home server from bare metal —
+   > pick the chip, solder the board, flash a kernel I compiled
+   > myself, and host my own services on it.** Aim for 9 months.
+
+3. Answer the agent's questions for ~30 minutes — goal, duration,
+   phases, books per month, modules, rituals. The agent writes every
+   YAML file in `curriculum/` as you go.
 4. Run `python -m src.main --dry-run` to verify the agent's output.
 5. Wire up Todoist + GitHub Actions per [`docs/FORKING.md`](./docs/FORKING.md).
 
-`AGENTS.md` is the spec for how the fork should be written. It
-contains the full schema for every file, the validation rules the
-engine enforces, the interview protocol, and anti-patterns to
-avoid. Treat it as the canonical contract — your fork is well-formed
-if and only if its `curriculum/` satisfies what `AGENTS.md` describes.
+### What to actually say to the agent
+
+Pin a concrete capability and a horizon. The interview goes
+better when the goal is identity-shaped ("a person who can X")
+than when it's topical ("learn X"). Some examples that work:
+
+> I want to be a person who can **build my own mechanical keyboard
+> from scratch — schematic, PCB, firmware, the lot.** 6 months.
+
+> I want to be able to **read classical Arabic poetry in the
+> original by month 12, and recite one ode from memory.**
+
+> I want to **ship a small multiplayer game to Steam — net code I
+> wrote myself, art that doesn't embarrass me, paying customers.**
+> 18 months.
+
+> I want to **deploy a 3-node Kubernetes cluster on bare-metal
+> hardware in my apartment** and run my own services on it. 9 months.
+
+> I want to **read modern ML papers fluently and re-implement one
+> paper a month for a year**, ending with a publishable result.
+
+> I want to go from **never having touched a piano to performing a
+> Chopin nocturne live** at an open mic. 12 months.
+
+> I want to **bake bread good enough to sell at a Saturday market**,
+> then actually do it. 8 months.
+
+The agent reads `AGENTS.md`, asks clarifying questions, proposes a
+phase split, lets you push back, then writes a full `curriculum/`
+bundle that matches what the engine knows how to run.
+
+### Why `AGENTS.md` is the contract
+
+`AGENTS.md` is the spec for how a well-formed fork should be
+written. It contains the full schema for every file, the validation
+rules the engine enforces at startup, the interview protocol, and
+anti-patterns to avoid (including a default the agent will insist
+on: **a daily spaced-repetition ritual, regardless of your domain**
+— long-horizon learning without SRS loses ~80% of what you covered
+inside a month). Treat `AGENTS.md` as the canonical contract: your
+fork is well-formed if and only if its `curriculum/` satisfies what
+`AGENTS.md` describes.
 
 If you'd rather skip the interview and start from a working example,
 copy one of the starter bundles in [`examples/`](./examples/) into
