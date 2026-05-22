@@ -40,6 +40,7 @@ class Config:
     dashboard: DashboardConfig
     todoist_token: str
     pair_day: str | None = None  # e.g. "thursday" — daily-evening-hands-on skips on this weekday
+    curriculum_dir: Path = field(default_factory=lambda: Path("curriculum"))
 
     def __repr__(self) -> str:
         return (
@@ -48,6 +49,7 @@ class Config:
             f"sunday_off={self.sunday_off!r}, "
             f"pair_day={self.pair_day!r}, "
             f"dashboard={self.dashboard!r}, "
+            f"curriculum_dir={self.curriculum_dir!r}, "
             f"todoist_token='***REDACTED***')"
         )
 
@@ -103,6 +105,8 @@ def load_config(yaml_path: Path, env_path: Path) -> Config:
     pair_day = raw.get("pair_day")
     if pair_day is not None:
         pair_day = str(pair_day).lower()
+    curriculum_dir = raw.get("curriculum_dir", "curriculum")
+    curriculum_dir = Path(curriculum_dir)
     return Config(
         todoist=todoist,
         ritual_times=dict(raw.get("ritual_times", {})),
@@ -110,6 +114,7 @@ def load_config(yaml_path: Path, env_path: Path) -> Config:
         dashboard=dashboard,
         todoist_token=_read_token(env_path),
         pair_day=pair_day,
+        curriculum_dir=curriculum_dir,
     )
 
 

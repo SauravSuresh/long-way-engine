@@ -25,6 +25,10 @@ sunday_off: true
 # this evening with solo work.
 pair_day: thursday
 
+# Pluggable curriculum bundle directory. Default: "curriculum".
+# Forkers point this at their own bundle, or at one of examples/*.
+curriculum_dir: curriculum
+
 dashboard:
   github_username: "SauravSuresh"
   repo_name: "long-way-engine"
