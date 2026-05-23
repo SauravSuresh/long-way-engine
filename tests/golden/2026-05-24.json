@@ -68,6 +68,18 @@
     },
     {
       "cadence": "weekly",
+      "description": "Check the sub-tasks that apply to your week. Next cron run picks\nthem up and mutates state.yaml: module advance, book transitions,\npause, counter increments, revert. Skip the boxes that don't apply.\n",
+      "due": "today at 10:00",
+      "fires": true,
+      "id": "weekly-state-review",
+      "labels": [
+        "weekly-ritual",
+        "state-review"
+      ],
+      "title": "Weekly state review \u2014 2026-W21"
+    },
+    {
+      "cadence": "weekly",
       "fires": false,
       "id": "weekly-friday-review"
     },

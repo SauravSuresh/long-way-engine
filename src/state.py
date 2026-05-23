@@ -21,13 +21,16 @@ Phase A–D state files keep loading unchanged:
 from __future__ import annotations
 
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import date
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from zoneinfo import ZoneInfo
 
 import yaml
+
+if TYPE_CHECKING:
+    from src.syllabus import Syllabus
 
 
 @dataclass
@@ -49,6 +52,7 @@ class State:
     active_branches: list[str] = field(default_factory=list)
     paused: bool = False
     paused_since: date | None = None
+    paused_until: date | None = None
     pause_history: list[PauseInterval] = field(default_factory=list)
     books_state: dict[str, str] = field(default_factory=dict)
     learning_tracks: dict[str, dict[str, str]] = field(default_factory=dict)
@@ -184,9 +188,90 @@ def load_state(path: Path) -> State:
         active_branches=list(raw.get("active_branches", []) or []),
         paused=bool(raw.get("paused", False)),
         paused_since=_parse_paused_since(raw.get("paused_since")),
+        paused_until=_parse_paused_since(raw.get("paused_until")),
         pause_history=_parse_pause_history(raw.get("pause_history")),
         books_state=_parse_books_state(raw.get("books_state")),
         learning_tracks=_parse_learning_tracks(raw.get("learning_tracks")),
         manual_counters=dict(raw.get("manual_counters", {}) or {}),
         notes=str(raw.get("notes", "") or ""),
     )
+
+
+# --- derived fields + atomic save -------------------------------------------
+
+DAYS_PER_MONTH = 30
+
+
+def derive_month(state: State, today: date) -> int:
+    """Engine-managed month: elapsed days from start_date, minus closed pause
+    intervals, integer-divided by 30, plus 1. Indefinite (open) pauses do not
+    yet contribute pause days; they only do once unset_pause closes the
+    interval and appends to pause_history.
+    """
+    elapsed = (today - state.start_date).days
+    if elapsed < 0:
+        return 1
+    paused_days = sum(
+        (interval.end - interval.start).days
+        for interval in state.pause_history
+    )
+    elapsed -= paused_days
+    if elapsed < 0:
+        elapsed = 0
+    return (elapsed // DAYS_PER_MONTH) + 1
+
+
+def derive_phase(month: int, syllabus: "Syllabus") -> int:
+    """Phase number whose months range contains `month`. Beyond the last
+    phase, return the last phase's number (overflow at curriculum end).
+    """
+    for phase in syllabus.phases:
+        if phase.months[0] <= month <= phase.months[1]:
+            return phase.number
+    if syllabus.phases:
+        return syllabus.phases[-1].number
+    return 1
+
+
+def update_derived_fields(state: State, syllabus: "Syllabus", today: date) -> State:
+    """Replace state.month + state.phase with their derivations."""
+    month = derive_month(state, today)
+    phase = derive_phase(month, syllabus)
+    return replace(state, month=month, phase=phase)
+
+
+def _date_to_yaml(d: date | None) -> Any:
+    return d if d is not None else None
+
+
+def save_state(path: Path, state: State) -> None:
+    """Atomic write of state.yaml. Preserves the dataclass round-trip; field
+    order matches the live file's conventions so diffs stay readable.
+    """
+    payload: dict[str, Any] = {
+        "start_date": state.start_date,
+        "timezone": state.timezone.key,
+        "phase": int(state.phase),
+        "month": int(state.month),
+        "current_module": int(state.current_module),
+        "current_book": state.current_book,
+        "completed_modules": list(state.completed_modules),
+        "active_branches": list(state.active_branches),
+        "paused": bool(state.paused),
+        "paused_since": _date_to_yaml(state.paused_since),
+        "paused_until": _date_to_yaml(state.paused_until),
+        "pause_history": [
+            {"start": iv.start, "end": iv.end, "reason": iv.reason}
+            for iv in state.pause_history
+        ],
+        "books_state": dict(state.books_state),
+        "learning_tracks": {k: dict(v) for k, v in state.learning_tracks.items()},
+        "manual_counters": dict(state.manual_counters),
+        "notes": state.notes,
+    }
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(
+        yaml.safe_dump(payload, sort_keys=False, default_flow_style=False),
+        encoding="utf-8",
+    )
+    tmp.replace(path)

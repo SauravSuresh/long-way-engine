@@ -32,6 +32,13 @@ logger = logging.getLogger(__name__)
 _PLACEHOLDER = re.compile(r"\{([a-zA-Z_][\w.]*)(?::([^}]+))?\}")
 
 
+@dataclass(frozen=True)
+class SubtaskSpec:
+    title: str
+    action: dict[str, Any]
+    show_if: str | None = None
+
+
 @dataclass
 class Template:
     id: str
@@ -44,6 +51,8 @@ class Template:
     day_of_week: str | None = None
     day_of_month: int | str | None = None
     module_number: int | None = None
+    state_review: bool = False
+    sub_tasks: list[SubtaskSpec] = field(default_factory=list)
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -56,6 +65,8 @@ class ResolvedTemplate:
     labels: list[str]
     cadence: str
     skip_if: list[str] = field(default_factory=list)
+    state_review: bool = False
+    sub_tasks: list[SubtaskSpec] = field(default_factory=list)
 
 
 class MissingVariable(KeyError):
@@ -105,6 +116,21 @@ def _load_one_file(path: Path) -> list[Template]:
             skip_if = [str(s) for s in skip_if_raw]
         else:
             skip_if = [str(skip_if_raw)]
+        sub_tasks_raw = entry.get("sub_tasks") or []
+        sub_tasks: list[SubtaskSpec] = []
+        for sub in sub_tasks_raw:
+            if not isinstance(sub, dict):
+                continue
+            action = sub.get("action") or {}
+            if not isinstance(action, dict):
+                action = {}
+            sub_tasks.append(
+                SubtaskSpec(
+                    title=str(sub.get("title", "")),
+                    action=dict(action),
+                    show_if=(str(sub["show_if"]) if sub.get("show_if") else None),
+                )
+            )
         templates.append(
             Template(
                 id=str(entry["id"]),
@@ -117,6 +143,8 @@ def _load_one_file(path: Path) -> list[Template]:
                 day_of_week=entry.get("day_of_week"),
                 day_of_month=day_of_month,
                 module_number=module_number,
+                state_review=bool(entry.get("state_review", False)),
+                sub_tasks=sub_tasks,
                 raw=entry,
             )
         )
@@ -141,6 +169,20 @@ def _lookup(
     if name == "current_module":
         from src.syllabus import current_module_name as _resolve_current_module
         return _resolve_current_module(state.current_module, syllabus_obj)
+    if name == "next_module":
+        return state.current_module + 1
+    if name == "next_book":
+        from src.syllabus import current_book as _resolve_current_book
+        cur = state.current_book or _resolve_current_book(state.month, syllabus_obj)
+        nxt = _resolve_current_book(state.month + 1, syllabus_obj) if syllabus_obj else ""
+        return nxt if nxt and nxt != cur else ""
+    if name == "current_phase_name":
+        if syllabus_obj is None:
+            return ""
+        for phase in syllabus_obj.phases:
+            if phase.months[0] <= state.month <= phase.months[1]:
+                return phase.name
+        return ""
     if name.startswith("ritual_times."):
         key = name.split(".", 1)[1]
         if key not in config.ritual_times:
@@ -197,6 +239,15 @@ def resolve_variables(
 ) -> ResolvedTemplate | None:
     """Resolve placeholders. Returns None if any variable is missing."""
     try:
+        resolved_subs: list[SubtaskSpec] = []
+        for sub in template.sub_tasks:
+            resolved_subs.append(
+                SubtaskSpec(
+                    title=resolve_string(sub.title, state, config, today, syllabus=syllabus),
+                    action=dict(sub.action),
+                    show_if=sub.show_if,
+                )
+            )
         return ResolvedTemplate(
             id=template.id,
             title=resolve_string(template.title, state, config, today, syllabus=syllabus),
@@ -207,6 +258,8 @@ def resolve_variables(
             labels=list(template.labels),
             cadence=template.cadence,
             skip_if=list(template.skip_if),
+            state_review=template.state_review,
+            sub_tasks=resolved_subs,
         )
     except MissingVariable as e:
         logger.warning(

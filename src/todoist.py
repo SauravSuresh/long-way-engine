@@ -107,12 +107,18 @@ class TodoistClient:
         due_date: date,
         external_id: str,
         cache: dict[str, dict[str, Any]],
+        *,
+        parent_id: str | None = None,
     ) -> CreateResult:
         """Create a task, or return a CreateResult marked skipped on cache hit.
 
         The cache is consulted first as the fast path. The marker is
         appended to every created task's description as a safety net for
         future cache reconstruction.
+
+        `parent_id` (optional): create the task as a sub-task of the given
+        Todoist task. Cache key remains the external_id; sub-tasks ship
+        with their own content markers so dedup works the same way.
         """
         cached = cache.get(external_id)
         if cached:
@@ -166,6 +172,8 @@ class TodoistClient:
             body["due_string"] = template.due
         if template.labels:
             body["labels"] = list(template.labels)
+        if parent_id is not None:
+            body["parent_id"] = str(parent_id)
 
         created_at = self._clock.now().astimezone(timezone.utc).isoformat()
 

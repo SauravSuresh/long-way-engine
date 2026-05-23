@@ -18,6 +18,21 @@ SUPPORTED_CADENCES = {
     "daily", "weekly", "monthly", "quarterly", "annual", "once-per-module",
 }
 SUPPORTED_SKIP_IFS = {"sunday", "pair_day", "last-saturday-of-month"}
+SUPPORTED_ACTIONS = {
+    "advance_module",
+    "mark_book_finished",
+    "mark_book_started",
+    "set_pause",
+    "unset_pause",
+    "increment_counter",
+    "revert_last",
+}
+SUPPORTED_SHOW_IFS = {
+    "not_on_last_module",
+    "book_transition_this_month",
+    "not_paused",
+    "paused",
+}
 
 
 class CurriculumError(Exception):
@@ -56,6 +71,9 @@ def validate(
     errors += _check_cadences(all_templates)
     errors += _check_skip_ifs(all_templates)
     errors += _check_unique_ids(all_templates)
+    errors += _check_state_review_singleton(all_templates)
+    errors += _check_state_review_cadence(all_templates)
+    errors += _check_sub_task_vocabulary(all_templates)
 
     if errors:
         joined = "\n  - ".join([""] + errors)
@@ -180,6 +198,61 @@ def _check_skip_ifs(templates: list[dict]) -> list[str]:
                 errors.append(
                     f"template {t.get('id', '?')!r} has unknown skip_if rule {rule!r} "
                     f"(supported: {sorted(SUPPORTED_SKIP_IFS)})"
+                )
+    return errors
+
+
+def _check_state_review_singleton(templates: list[dict]) -> list[str]:
+    review_ids = [t.get("id", "?") for t in templates if t.get("state_review")]
+    if len(review_ids) <= 1:
+        return []
+    return [
+        f"multiple state_review templates: {sorted(review_ids)!r} "
+        f"(at most one allowed per curriculum)"
+    ]
+
+
+def _check_state_review_cadence(templates: list[dict]) -> list[str]:
+    errors: list[str] = []
+    for t in templates:
+        if not t.get("state_review"):
+            continue
+        if t.get("cadence") != "weekly":
+            errors.append(
+                f"state_review template {t.get('id', '?')!r} has "
+                f"cadence={t.get('cadence')!r}; must be 'weekly'"
+            )
+        if not t.get("day_of_week"):
+            errors.append(
+                f"state_review template {t.get('id', '?')!r} must set "
+                f"day_of_week"
+            )
+    return errors
+
+
+def _check_sub_task_vocabulary(templates: list[dict]) -> list[str]:
+    errors: list[str] = []
+    for t in templates:
+        subs = t.get("sub_tasks") or []
+        if not isinstance(subs, list):
+            continue
+        for i, sub in enumerate(subs):
+            if not isinstance(sub, dict):
+                continue
+            action = sub.get("action") or {}
+            atype = action.get("type") if isinstance(action, dict) else None
+            if atype is not None and atype not in SUPPORTED_ACTIONS:
+                errors.append(
+                    f"template {t.get('id', '?')!r} sub_tasks[{i}] has "
+                    f"unknown action.type {atype!r} "
+                    f"(supported: {sorted(SUPPORTED_ACTIONS)})"
+                )
+            show_if = sub.get("show_if")
+            if show_if is not None and show_if not in SUPPORTED_SHOW_IFS:
+                errors.append(
+                    f"template {t.get('id', '?')!r} sub_tasks[{i}] has "
+                    f"unknown show_if {show_if!r} "
+                    f"(supported: {sorted(SUPPORTED_SHOW_IFS)})"
                 )
     return errors
 

@@ -1,3 +1,32 @@
+- id: weekly-state-review
+  title: "Weekly state review — {iso_year}-W{iso_week:02d}"
+  description: |
+    Check the sub-tasks that apply to your week. Next cron run picks
+    them up and mutates state.yaml: module advance, book transitions,
+    pause, counter increments, revert. Skip the boxes that don't apply.
+  due: "today at {ritual_times.weekly_state_review}"
+  labels: [weekly-ritual, state-review]
+  cadence: weekly
+  day_of_week: sunday
+  state_review: true
+  sub_tasks:
+    - title: "I'm ready to advance to Module {next_module}"
+      action: { type: advance_module }
+      show_if: not_on_last_module
+
+    - title: "I finished {current_book}"
+      action: { type: mark_book_finished, book: "{current_book}" }
+
+    - title: "I started a new primary book this week"
+      action: { type: mark_book_started, book: "{next_book}" }
+      show_if: book_transition_this_month
+
+    - title: "Anki cards added this week (put the count in a comment)"
+      action: { type: increment_counter, counter: anki_card_count }
+
+    - title: "Revert last week's state change (only if a mistake)"
+      action: { type: revert_last }
+
 - id: weekly-friday-review
   title: "Friday review: 20-min retrieval"
   description: |

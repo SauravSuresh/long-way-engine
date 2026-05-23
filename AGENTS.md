@@ -275,6 +275,70 @@ quoting the reasoning above. If they still refuse, document the
 omission in a comment at the top of `rituals/daily.yaml` so the
 gap is visible. Do not silently skip it.
 
+**Step 5.5 — State-review template (recommended).** One weekly
+Sunday template whose sub-tasks the engine reads on the next cron
+and uses to mutate `state.yaml` — module advance, book transitions,
+pause, counter increments, revert. After fork setup the user should
+never need to hand-edit `state.yaml`; checking sub-task boxes is the
+interface.
+
+Generate exactly one template with `state_review: true`. It must be
+`cadence: weekly` with `day_of_week: sunday`. (The engine exempts
+state-review templates from the global `sunday_off` gate so the
+review fires on the rest day by design.) Add a `weekly_state_review`
+(or equivalent) slot to `config.yaml`'s `ritual_times` and to
+`manifest.ritual_times_required`.
+
+Sub-task vocabulary:
+
+| `action.type` | Args | Effect |
+|---|---|---|
+| `advance_module` | — | `current_module += 1`. No-op on last module. |
+| `mark_book_finished` | `book` | `books_state[book] = "done"` |
+| `mark_book_started` | `book` | `books_state[book] = "current"` |
+| `set_pause` | `days`, `reason` | `paused: true`; auto-unpause at `paused_until` |
+| `unset_pause` | — | Append closed interval to `pause_history` |
+| `increment_counter` | `counter` | `manual_counters[counter] += int(first comment)` |
+| `revert_last` | — | Restore prior block from most recent log entry |
+
+`show_if` predicates: `not_on_last_module`, `book_transition_this_month`,
+`not_paused`, `paused`. Sub-tasks with a false `show_if` are not created.
+
+Placeholders available in sub-task titles: standard ones plus
+`{next_module}`, `{next_book}`, `{current_phase_name}`.
+
+```yaml
+- id: weekly-state-review
+  title: "Weekly state review — {iso_year}-W{iso_week:02d}"
+  description: |
+    Check the sub-tasks that apply. Engine reads them and mutates
+    state.yaml on the next cron.
+  due: "today at {ritual_times.weekly_state_review}"
+  labels: [weekly-ritual, state-review]
+  cadence: weekly
+  day_of_week: sunday
+  state_review: true
+  sub_tasks:
+    - title: "I'm ready to advance to Module {next_module}"
+      action: { type: advance_module }
+      show_if: not_on_last_module
+    - title: "I finished {current_book}"
+      action: { type: mark_book_finished, book: "{current_book}" }
+    - title: "Anki cards added this week (count in comment)"
+      action: { type: increment_counter, counter: anki_card_count }
+    - title: "Revert last week's state change (only if a mistake)"
+      action: { type: revert_last }
+```
+
+Convention: put `revert_last` LAST in the sub-task list, so it
+reverts the prior week — not anything checked this week.
+
+Engine-built-in tasks the user will also see (NOT curriculum
+templates — do not author them): an always-on "🛑 Emergency pause"
+task that triggers `set_pause` immediately when checked, and a
+"▶️ Resume" task that fires `unset_pause`. They auto-recreate after
+each consumption.
+
 **Step 6 — Practices (optional).** Weekly cadence templates that
 aren't routine — deliberate skill drills like "trace one system
 end-to-end", "read real code", "pair with a senior". Use
@@ -335,6 +399,10 @@ Confirm a sensible task set fires for today. Done.
   ~9 modules
 - `examples/frontend-craft-6mo/` — 6-month frontend deep-dive, 2
   phases, ~6 modules
+- `examples/programmer-to-neuroscience-12mo/` — 12-month
+  programmer-to-neuroscientist path, 3 phases, 12 modules
+  (Python + CS50 + EEG + biomarker classifier)
 
-Both validate cleanly via `python -m src.curriculum_validator`. Copy
-one as a starting point.
+All three validate cleanly via `python -m src.curriculum_validator`
+and include a weekly state-review template. Copy one as a starting
+point.

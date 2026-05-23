@@ -3,10 +3,12 @@ ritual_times_required:
   - srs_review
   - evening_hands_on
   - saturday_deep_block
+  - weekly_state_review
 
 placeholders_used:
   - current_book
   - current_module
+  - next_module
   - iso_year
   - iso_week
   - year
@@ -14,3 +16,5 @@ placeholders_used:
 
 config_flags:
   sunday_off: true
+
+state_review_template_id: fe-weekly-state-review
