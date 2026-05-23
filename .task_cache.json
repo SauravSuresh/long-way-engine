@@ -18,6 +18,8 @@
   "0377264576384520": {
     "created_at": "2026-05-22T22:34:55.601378+00:00",
     "due_date": "2026-05-23",
+    "missed_at": "2026-05-24",
+    "status": "missed",
     "template_id": "weekly-read-real-code",
     "todoist_task_id": "6ghG4x29hPc5F3G2"
   },
@@ -61,6 +63,27 @@
     "template_id": "daily-anki",
     "todoist_task_id": "6gf8gWh9xXphVGj2"
   },
+  "1a0e563e414fa05d": {
+    "created_at": "2026-05-23T22:26:11.008246+00:00",
+    "due_date": "2026-05-24",
+    "state_review_action": {
+      "counter": "anki_card_count",
+      "type": "increment_counter"
+    },
+    "state_review_parent_task_id": "6ghVVG7vqw6w5832",
+    "template_id": "weekly-state-review:sub:3",
+    "todoist_task_id": "6ghVVGJRVM3R79jR"
+  },
+  "1acad85143b9a45f": {
+    "created_at": "2026-05-23T22:26:10.341333+00:00",
+    "due_date": "2026-05-24",
+    "state_review_action": {
+      "type": "advance_module"
+    },
+    "state_review_parent_task_id": "6ghVVG7vqw6w5832",
+    "template_id": "weekly-state-review:sub:0",
+    "todoist_task_id": "6ghVVGF486P538W2"
+  },
   "1cb68587c635dcfb": {
     "completed_at": "2026-05-17",
     "created_at": "2026-05-08T22:30:57.702480+00:00",
@@ -70,8 +93,10 @@
     "todoist_task_id": "6gc36xpxWHHV79f2"
   },
   "21a326f07bfd62be": {
+    "completed_at": "2026-05-24",
     "created_at": "2026-05-22T22:34:54.795802+00:00",
     "due_date": "2026-05-23",
+    "status": "completed",
     "template_id": "daily-anki",
     "todoist_task_id": "6ghG4wvghmcR7c9R"
   },
@@ -134,8 +159,22 @@
   "47f1f200851d591c": {
     "created_at": "2026-05-22T22:34:55.176747+00:00",
     "due_date": "2026-05-23",
+    "missed_at": "2026-05-24",
+    "status": "missed",
     "template_id": "daily-evening-hands-on",
     "todoist_task_id": "6ghG4x3p8cp6x22R"
+  },
+  "4e2ecd0fc3eed11c": {
+    "created_at": "2026-05-23T22:26:11.661324+00:00",
+    "due_date": "2026-05-24",
+    "state_review_action": {
+      "category": "Courses",
+      "item": "boot.dev backend path",
+      "type": "mark_track_finished"
+    },
+    "state_review_parent_task_id": "6ghVVG7vqw6w5832",
+    "template_id": "weekly-state-review:auto-finish:5",
+    "todoist_task_id": "6ghVVGJ4MX29pJV2"
   },
   "4ef4450ca4449ac6": {
     "completed_at": "2026-05-17",
@@ -282,8 +321,10 @@
     "todoist_task_id": "6gcx833g27XF454R"
   },
   "7d7a890582d96bb5": {
+    "completed_at": "2026-05-24",
     "created_at": "2026-05-22T22:34:54.213127+00:00",
     "due_date": "2026-05-23",
+    "status": "completed",
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6ghG4wxMvfp79xWR"
   },
@@ -294,6 +335,17 @@
     "status": "completed",
     "template_id": "daily-anki",
     "todoist_task_id": "6gXW6Pj6xJ6J5gxR"
+  },
+  "84bf9cb677c1388c": {
+    "created_at": "2026-05-23T22:26:10.713116+00:00",
+    "due_date": "2026-05-24",
+    "state_review_action": {
+      "book": "{current_book}",
+      "type": "mark_book_finished"
+    },
+    "state_review_parent_task_id": "6ghVVG7vqw6w5832",
+    "template_id": "weekly-state-review:sub:1",
+    "todoist_task_id": "6ghVVGFP5WfRMpXR"
   },
   "8685e74869e63fd3": {
     "completed_at": "2026-05-17",
@@ -327,6 +379,16 @@
     "template_id": "daily-anki",
     "todoist_task_id": "6ggJ5HJQcqM9fQQ2"
   },
+  "a13c0894de4b6e13": {
+    "created_at": "2026-05-23T22:26:11.319630+00:00",
+    "due_date": "2026-05-24",
+    "state_review_action": {
+      "type": "revert_last"
+    },
+    "state_review_parent_task_id": "6ghVVG7vqw6w5832",
+    "template_id": "weekly-state-review:sub:4",
+    "todoist_task_id": "6ghVVGH3xgHF77P2"
+  },
   "a239c2e8c6bf398c": {
     "created_at": "2026-05-17T22:26:55.000912+00:00",
     "due_date": "2026-05-18",
@@ -358,6 +420,13 @@
     "status": "completed",
     "template_id": "daily-anki",
     "todoist_task_id": "6gffXVJhgpvXFrcR"
+  },
+  "b4d78bcec83d5036": {
+    "created_at": "2026-05-23T22:26:09.723463+00:00",
+    "due_date": "2026-05-24",
+    "state_review_parent": true,
+    "template_id": "weekly-state-review",
+    "todoist_task_id": "6ghVVG7vqw6w5832"
   },
   "ba4181a001ac6def": {
     "completed_at": "2026-05-17",
@@ -456,10 +525,25 @@
     "todoist_task_id": "6gXGfXvfV4jPw95R"
   },
   "e20108ae5e3f21d6": {
+    "completed_at": "2026-05-24",
     "created_at": "2026-05-22T22:34:56.013661+00:00",
     "due_date": "2026-05-23",
+    "status": "completed",
     "template_id": "weekly-saturday-deep-block",
     "todoist_task_id": "6ghG4x4W7HjQxJM2"
+  },
+  "e4c514e73fdeeb67": {
+    "created_at": "2026-05-23T22:26:12.012681+00:00",
+    "due_date": "persistent",
+    "persistent_action": {
+      "days": 365,
+      "reason": "emergency",
+      "type": "set_pause"
+    },
+    "persistent_category": "emergency-pause",
+    "persistent_consumed": false,
+    "template_id": "persistent-emergency-pause",
+    "todoist_task_id": "6ghVVGJvPHjm22GR"
   },
   "ee300869ddec639a": {
     "created_at": "2026-05-04T22:33:20.461189+00:00",
