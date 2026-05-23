@@ -14,7 +14,7 @@ runtime read path.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 
@@ -46,12 +46,21 @@ class Module:
 
 
 @dataclass(frozen=True)
+class TrackDeclaration:
+    title: str
+    category: str
+    phase: int
+    months: tuple[int, int] | None  # None = manual lifecycle
+
+
+@dataclass(frozen=True)
 class Syllabus:
     meta: dict
     phases: list[Phase]
     books: list[Book]
     primary_book_by_month: dict[int, str]
     modules: list[Module]
+    tracks: list[TrackDeclaration] = field(default_factory=list)
 
 
 def load_syllabus(curriculum_dir: Path) -> "Syllabus":
@@ -83,12 +92,23 @@ def load_syllabus(curriculum_dir: Path) -> "Syllabus":
         for m in raw.get("modules", [])
     ]
     primary = {int(k): str(v) for k, v in (raw.get("primary_book_by_month") or {}).items()}
+    tracks: list[TrackDeclaration] = []
+    for t in raw.get("tracks") or []:
+        months_raw = t.get("months")
+        months = (int(months_raw[0]), int(months_raw[1])) if months_raw else None
+        tracks.append(TrackDeclaration(
+            title=str(t["title"]),
+            category=str(t["category"]),
+            phase=int(t["phase"]),
+            months=months,
+        ))
     return Syllabus(
         meta=raw.get("meta", {}),
         phases=phases,
         books=books,
         primary_book_by_month=primary,
         modules=modules,
+        tracks=tracks,
     )
 
 

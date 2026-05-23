@@ -67,6 +67,16 @@ def should_create_today(
     ):
         return False
 
+    # gated_by: AND-composed track / module gates. Evaluated AFTER
+    # paused + sunday_off so existing tests on those branches keep
+    # the same skip reason ordering.
+    gates = getattr(template, "gated_by", None) or []
+    if gates:
+        from src.tracks import evaluate_gates
+        passes, _reason = evaluate_gates(gates, state)
+        if not passes:
+            return False
+
     cadence = template.cadence
     if cadence == "daily":
         return _daily_fires(template, today, config)

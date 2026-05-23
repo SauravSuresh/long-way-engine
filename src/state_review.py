@@ -143,6 +143,10 @@ def _dispatch(
         kwargs["counter"] = str(action_spec.get("counter", "anki_card_count"))
         kwargs["delta"] = comment_value
         return handler(state, **kwargs)
+    if atype in ("mark_track_started", "mark_track_finished"):
+        kwargs["category"] = str(action_spec.get("category", ""))
+        kwargs["item"] = str(action_spec.get("item", ""))
+        return handler(state, **kwargs)
     if atype == "revert_last":
         return handler(state, log_entries, **kwargs)
     logger.error("no dispatch path for action type %r", atype)
@@ -213,6 +217,38 @@ def run_state_review_phase(
             summary.auto_unpaused = True
             summary.mutations_applied += 1
             summary.messages.append(f"auto-unpause: {result.user_message}")
+
+    # 1.5 Track auto-lifecycle (only when not paused — see spec).
+    if not new_state.paused and syllabus.tracks:
+        from src.state import derive_month
+        from src.tracks import compute_lifecycle_transitions
+        derived = derive_month(new_state, today)
+        transitions = compute_lifecycle_transitions(
+            new_state, syllabus.tracks, derived, applied_task_ids,
+        )
+        for transition in transitions:
+            handler_name = (
+                "mark_track_started" if transition.to_state == "current"
+                else "mark_track_finished"
+            )
+            handler = ACTION_HANDLERS[handler_name]
+            try:
+                result = handler(
+                    new_state,
+                    category=transition.category,
+                    item=transition.title,
+                    todoist_task_id=transition.todoist_task_id,
+                    today=today,
+                )
+            except Exception as e:
+                logger.error("track lifecycle dispatch failed for %s: %s", transition.todoist_task_id, e)
+                summary.mutations_skipped += 1
+                continue
+            new_state = result.new_state
+            pending_entries.append(result.log_entry)
+            applied_task_ids.add(transition.todoist_task_id)
+            summary.mutations_applied += 1
+            summary.messages.append(f"track auto-lifecycle: {result.user_message}")
 
     # 2. State-review parent: find newest in cache, fetch sub-tasks, dispatch.
     review_client = None

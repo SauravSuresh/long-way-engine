@@ -212,3 +212,9 @@ modules:
 - number: 23
   name: Synthesis — Writing & Polish
   phase: 4
+tracks:
+- title: boot.dev backend path
+  category: Courses
+  phase: 1
+  # No months: owner-controlled lifecycle. Matches the value
+  # already in state.yaml.learning_tracks (current).

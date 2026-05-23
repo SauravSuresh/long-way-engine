@@ -53,6 +53,7 @@ class Template:
     module_number: int | None = None
     state_review: bool = False
     sub_tasks: list[SubtaskSpec] = field(default_factory=list)
+    gated_by: list[dict[str, Any]] = field(default_factory=list)
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -67,6 +68,7 @@ class ResolvedTemplate:
     skip_if: list[str] = field(default_factory=list)
     state_review: bool = False
     sub_tasks: list[SubtaskSpec] = field(default_factory=list)
+    gated_by: list[dict[str, Any]] = field(default_factory=list)
 
 
 class MissingVariable(KeyError):
@@ -131,6 +133,12 @@ def _load_one_file(path: Path) -> list[Template]:
                     show_if=(str(sub["show_if"]) if sub.get("show_if") else None),
                 )
             )
+        gated_by_raw = entry.get("gated_by") or []
+        gated_by: list[dict[str, Any]] = []
+        if isinstance(gated_by_raw, list):
+            for gate in gated_by_raw:
+                if isinstance(gate, dict):
+                    gated_by.append(dict(gate))
         templates.append(
             Template(
                 id=str(entry["id"]),
@@ -145,6 +153,7 @@ def _load_one_file(path: Path) -> list[Template]:
                 module_number=module_number,
                 state_review=bool(entry.get("state_review", False)),
                 sub_tasks=sub_tasks,
+                gated_by=gated_by,
                 raw=entry,
             )
         )
@@ -260,6 +269,7 @@ def resolve_variables(
             skip_if=list(template.skip_if),
             state_review=template.state_review,
             sub_tasks=resolved_subs,
+            gated_by=[dict(g) for g in template.gated_by],
         )
     except MissingVariable as e:
         logger.warning(

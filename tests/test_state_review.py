@@ -71,13 +71,14 @@ def _state(**overrides):
     return State(**base)
 
 
-def _syllabus():
+def _syllabus(tracks=None):
     return Syllabus(
         meta={},
         phases=[Phase(number=1, name="P1", months=(1, 12))],
         books=[],
         primary_book_by_month={},
         modules=[Module(number=i, name=f"M{i}", phase=1) for i in range(1, 5)],
+        tracks=tracks or [],
     )
 
 
@@ -387,3 +388,91 @@ def test_state_log_round_trip(tmp_path: Path):
 
 def test_state_log_missing_file_returns_empty(tmp_path: Path):
     assert load_state_log(tmp_path / "nope.yaml") == []
+
+
+def test_track_auto_lifecycle_fires_at_month_boundary(tmp_path: Path):
+    """Owner's not_started track flips to current when derived_month >= start."""
+    from src.syllabus import TrackDeclaration
+    state = _state(
+        start_date=date(2026, 5, 1),
+        learning_tracks={"Courses": {"X": "not_started"}},
+    )
+    state_path = tmp_path / "state.yaml"
+    save_state(state_path, state)
+    log_path = tmp_path / "state_log.yaml"
+
+    syl = _syllabus(tracks=[
+        TrackDeclaration(title="X", category="Courses", phase=1, months=(1, 3))
+    ])
+
+    new_state, summary = run_state_review_phase(
+        config=_config(), state=state, syllabus=syl,
+        today=date(2026, 5, 8),  # derived month 1, inside [1,3]
+        cache={}, state_path=state_path, state_log_path=log_path,
+        review_factory=lambda **kw: FakeReviewClient(),
+        completion_factory=lambda **kw: FakeCompletionClient(),
+        todoist_token="tok", project_id="p1",
+    )
+    assert summary.mutations_applied >= 1
+    assert new_state.learning_tracks["Courses"]["X"] == "current"
+
+
+def test_track_auto_lifecycle_idempotent(tmp_path: Path):
+    """Second cron after a transition must not duplicate the log entry."""
+    from src.syllabus import TrackDeclaration
+    state = _state(learning_tracks={})
+    state_path = tmp_path / "state.yaml"
+    save_state(state_path, state)
+    log_path = tmp_path / "state_log.yaml"
+    syl = _syllabus(tracks=[
+        TrackDeclaration(title="X", category="Courses", phase=1, months=(1, 3))
+    ])
+
+    state_v1, _ = run_state_review_phase(
+        config=_config(), state=state, syllabus=syl,
+        today=date(2026, 5, 8), cache={},
+        state_path=state_path, state_log_path=log_path,
+        review_factory=lambda **kw: FakeReviewClient(),
+        completion_factory=lambda **kw: FakeCompletionClient(),
+        todoist_token="tok", project_id="p1",
+    )
+    log_v1 = load_state_log(log_path)
+
+    _, summary2 = run_state_review_phase(
+        config=_config(), state=state_v1, syllabus=syl,
+        today=date(2026, 5, 9), cache={},
+        state_path=state_path, state_log_path=log_path,
+        review_factory=lambda **kw: FakeReviewClient(),
+        completion_factory=lambda **kw: FakeCompletionClient(),
+        todoist_token="tok", project_id="p1",
+    )
+    assert summary2.mutations_applied == 0
+    assert load_state_log(log_path) == log_v1
+
+
+def test_track_lifecycle_skipped_while_paused(tmp_path: Path):
+    """Engine should not auto-transition tracks during a pause window."""
+    from src.syllabus import TrackDeclaration
+    state = _state(
+        learning_tracks={},
+        paused=True,
+        paused_since=date(2026, 5, 1),
+        paused_until=date(2026, 12, 1),  # far future; no auto-unpause
+    )
+    state_path = tmp_path / "state.yaml"
+    save_state(state_path, state)
+    log_path = tmp_path / "state_log.yaml"
+    syl = _syllabus(tracks=[
+        TrackDeclaration(title="X", category="Courses", phase=1, months=(1, 3))
+    ])
+
+    new_state, _ = run_state_review_phase(
+        config=_config(), state=state, syllabus=syl,
+        today=date(2026, 5, 8), cache={},
+        state_path=state_path, state_log_path=log_path,
+        review_factory=lambda **kw: FakeReviewClient(),
+        completion_factory=lambda **kw: FakeCompletionClient(),
+        todoist_token="tok", project_id="p1",
+    )
+    # No transition — track stays not_started.
+    assert new_state.learning_tracks.get("Courses", {}).get("X") in (None, "not_started")

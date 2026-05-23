@@ -128,6 +128,28 @@ def test_increment_counter_initializes_zero():
     assert result.new_state.manual_counters["prs_opened"] == 3
 
 
+def test_mark_track_started_sets_current():
+    from src.state_mutations import mark_track_started
+    s = _state(learning_tracks={})
+    result = mark_track_started(s, category="Courses", item="boot.dev", todoist_task_id="t1", today=TODAY)
+    assert result.new_state.learning_tracks["Courses"]["boot.dev"] == "current"
+    assert result.log_entry["category"] == "Courses"
+
+
+def test_mark_track_finished_sets_done():
+    from src.state_mutations import mark_track_finished
+    s = _state(learning_tracks={"Courses": {"boot.dev": "current"}})
+    result = mark_track_finished(s, category="Courses", item="boot.dev", todoist_task_id="t1", today=TODAY)
+    assert result.new_state.learning_tracks["Courses"]["boot.dev"] == "done"
+
+
+def test_mark_track_noop_when_already_in_state():
+    from src.state_mutations import mark_track_started
+    s = _state(learning_tracks={"Courses": {"X": "current"}})
+    result = mark_track_started(s, category="Courses", item="X", todoist_task_id="t1", today=TODAY)
+    assert result.log_entry.get("noop") is True
+
+
 def test_revert_last_restores_prior_module():
     s = _state(current_module=2, completed_modules=[1])
     log = [{
@@ -179,6 +201,8 @@ def test_action_handlers_table_complete():
         "advance_module",
         "mark_book_finished",
         "mark_book_started",
+        "mark_track_started",
+        "mark_track_finished",
         "set_pause",
         "unset_pause",
         "increment_counter",
