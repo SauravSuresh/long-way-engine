@@ -92,6 +92,54 @@ fact. The dashboard considers any date inside a closed interval — and
 any date on or after `paused_since` while `paused: true` — as a "skip
 day": neither counted toward streaks nor a break in them.
 
+## Modules vs `learning_tracks` — the spine and the parallel surfaces
+
+The curriculum has two orthogonal kinds of work, and the engine
+models them differently on purpose.
+
+**Modules are the linear spine.** `current_module` is a single
+integer pointer that only advances. Each module defines the work of
+a time block (~2–6 weeks). The validator enforces dense `1..N`
+numbering and one phase per module. Module names carry whatever
+the work is about — a course, a project, a deep dive into a book.
+
+```yaml
+# curriculum/syllabus.yaml
+modules:
+  - number: 7
+    name: "Neuromatch Academy (or self-paced compneuro)"
+    phase: 2
+    estimated_hours: 90
+```
+
+**Learning tracks are the parallel always-on surfaces.** Courses
+you're auditing across months, certifications you're chasing
+across years, branches off the trunk, lineage detours. They live
+in `state.yaml` under arbitrary owner-defined categories:
+
+```yaml
+# state.yaml
+learning_tracks:
+  Courses:
+    "boot.dev backend path": current
+  Certifications:
+    "LFCS": current
+  Active branches:
+    "Text editor in C": current
+  Lineage detours:
+    "Module 6 detour: bytecode VM": not_started
+```
+
+Categories and item names are arbitrary strings — the engine never
+validates them. A typo in `Lineage detours` produces a silent extra
+category at first render rather than an error (this is
+intentional; the field is uniformly owner-agency).
+
+**Rule of thumb:** if the thing IS the work of a defined time
+block, it's a module. If it runs in parallel with the spine, it's
+a `learning_tracks` entry. Books have their own surface
+(`books_state`) — see below.
+
 ## `books_state`
 
 `state.yaml` carries an owner-maintained map from book title to one of

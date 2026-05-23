@@ -208,9 +208,24 @@ completed_modules: []
 active_branches: []
 paused: false
 
-# Optional parallel-learning categories (kanban-style buckets).
-# Engine doesn't validate names — typos just produce extra
-# categories in the dashboard.
+# Parallel always-on surfaces (courses, certs, branches, detours).
+# Distinct from modules — modules are the linear spine that
+# advances one number at a time, learning_tracks are things that
+# run in parallel with the spine across months. Categories and
+# item names are arbitrary; the engine never validates them, so a
+# typo produces a silent extra category at first render.
+#
+# Examples:
+#   learning_tracks:
+#     Courses:
+#       "boot.dev backend path": current
+#     Certifications:
+#       "LFCS": not_started
+#     Active branches:
+#       "Text editor in C": current
+#
+# Valid leaf states: not_started | current | done. Leave empty if
+# nothing parallel is in flight at day one.
 learning_tracks: {}
 
 manual_counters:
@@ -317,6 +332,14 @@ never open `state.yaml`.
 - **Change phases / books mid-stream.** Edit `curriculum/syllabus.yaml`
   directly. The validator catches inconsistencies (titles, phase
   numbers, etc.) at startup.
+- **Track a course or certification in parallel.** Add or update an
+  entry under `learning_tracks` in `state.yaml`. Modules are the
+  linear spine (one `current_module` pointer that advances);
+  `learning_tracks` is the parallel surface for anything running
+  alongside — auditing a boot.dev path, chasing an LFCS, working an
+  active branch. Categories are arbitrary; leaf state is
+  `not_started | current | done`. The dashboard renders each
+  category as its own list.
 - **Audit / undo deeper than one step.** `state_log.yaml` records
   every mutation (timestamp, action, prior/new). Use `git revert` of
   the cron commit to roll back further.
