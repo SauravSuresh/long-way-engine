@@ -1,0 +1,42 @@
+- id: pn-monthly-writeup
+  title: "Monthly write-up: ship a public artifact"
+  description: |
+    800–2000 words. Public, real name. Show your work — code,
+    diagrams, real numbers. The repo for this month's keystone
+    project must have a README explaining what it does and what
+    you learned.
+
+    By month 12 your GitHub profile has ten of these. That's what
+    makes you a programmer who does neuroscience, not a script-runner.
+  due: "today at {ritual_times.morning_reading}"
+  labels: [monthly-ritual]
+  cadence: monthly
+  day_of_month: 1
+
+- id: pn-monthly-retrieval
+  title: "Monthly retrieval: 60 min, no notes"
+  description: |
+    Without looking at notes, write everything you remember about
+    the month: concepts, debug stories, what {current_book} taught
+    you, what's in your current project repo. Then compare. Gaps
+    become next month's Anki seeds.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [monthly-ritual]
+  cadence: monthly
+  day_of_month: last-saturday
+
+- id: pn-monthly-retrospective
+  title: "Monthly retrospective: what worked, what didn't"
+  description: |
+    Write up: what worked, what didn't, what to change next month.
+    Did the daily 3-hour rhythm hold? Did the project ship? Did
+    Track C eat Tracks A and B?
+
+    The plan evolves at month boundaries — not mid-month.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [monthly-ritual, reflection]
+  cadence: monthly
+  day_of_month: last-saturday
+  reflection:
+    create_stub: true
+    stub_path: "reflections/monthly/{year}-{month:02d}.md"

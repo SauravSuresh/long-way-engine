@@ -1,0 +1,69 @@
+- id: pn-weekly-state-review
+  title: "Weekly state review — {iso_year}-W{iso_week:02d}"
+  description: |
+    Sunday planning, 10 min. Check the sub-tasks that apply to your week.
+    Next cron picks them up and mutates state.yaml — module advance,
+    book transition, Anki count, pause, revert. No YAML edits required.
+  due: "today at {ritual_times.weekly_state_review}"
+  labels: [weekly-ritual, state-review]
+  cadence: weekly
+  day_of_week: sunday
+  state_review: true
+  sub_tasks:
+    - title: "I'm ready to advance to Module {next_module}"
+      action: { type: advance_module }
+      show_if: not_on_last_module
+    - title: "I finished {current_book}"
+      action: { type: mark_book_finished, book: "{current_book}" }
+    - title: "I started a new primary book this week"
+      action: { type: mark_book_started, book: "{next_book}" }
+      show_if: book_transition_this_month
+    - title: "Anki cards added this week (count in a comment)"
+      action: { type: increment_counter, counter: anki_card_count }
+    - title: "Revert last week's state change (only if a mistake)"
+      action: { type: revert_last }
+
+- id: pn-weekly-friday-retrieval
+  title: "Friday retrieval: 20 min, no notes"
+  description: |
+    Without looking at notes, write the 3 most important things from
+    this week. Compare to your lab-notebook entries. The gap is your
+    Anki for next week.
+
+    No artifact = no learning week. If you can't name three things,
+    next week needs an artifact, not more input.
+  due: "today at {ritual_times.friday_review}"
+  labels: [weekly-ritual, reflection]
+  cadence: weekly
+  day_of_week: friday
+  reflection:
+    create_stub: true
+    stub_path: "reflections/weekly/{iso_year}-W{iso_week:02d}.md"
+
+- id: pn-weekly-saturday-deep-block
+  title: "Saturday deep block (3–4 hr): {current_module}"
+  description: |
+    Long uninterrupted block on {current_module}. The 3-hour daily
+    sessions are good for accretion; the Saturday block is where
+    debugging that "ends right as you reach the interesting part"
+    actually finishes.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [weekly-ritual]
+  cadence: weekly
+  day_of_week: saturday
+
+- id: pn-weekly-active-practice
+  title: "Active practice: one deliberate drill"
+  description: |
+    Rotate weekly. Pick one:
+      - Trace one system end-to-end (one HTTP request, one Python
+        import, one np.mean call, one MNE filter)
+      - Read real code in someone else's repo for 60 min
+      - Pair with a senior or do a 60-min code review on Exercism
+      - Re-implement one thing you've used this week from scratch
+
+    Deliberate practice ≠ routine practice. Pick what stretches you.
+  due: "today at {ritual_times.sunday_trace}"
+  labels: [weekly-ritual, active-practice]
+  cadence: weekly
+  day_of_week: wednesday

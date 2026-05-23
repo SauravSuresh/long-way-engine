@@ -1,0 +1,16 @@
+- id: pn-quarterly-synthesis-essay
+  title: "Quarterly synthesis essay"
+  description: |
+    1500–3000 words. Pull together what the last three months
+    taught you. Not a recap — a synthesis: what changed in how
+    you think, what would you tell yourself 90 days ago, what's
+    the through-line from one project to the next.
+
+    Public. Same place as the monthly writeups. The act of
+    forcing prose is the act of finding the holes.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [quarterly-ritual, reflection]
+  cadence: quarterly
+  reflection:
+    create_stub: true
+    stub_path: "reflections/quarterly/{iso_year}-Q{quarter}.md"
