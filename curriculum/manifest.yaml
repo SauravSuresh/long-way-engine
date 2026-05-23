@@ -9,10 +9,14 @@ ritual_times_required:
   - friday_review
   - saturday_deep_block
   - sunday_trace
+  - weekly_state_review
 
 placeholders_used:
   - current_book
   - current_module
+  - next_module
+  - next_book
+  - current_phase_name
   - iso_year
   - iso_week
   - year
@@ -22,3 +26,7 @@ placeholders_used:
 config_flags:
   pair_day: thursday
   sunday_off: true
+
+# The weekly state-review template; the engine reads its sub-tasks
+# checkboxes during the next cron and mutates state.yaml accordingly.
+state_review_template_id: weekly-state-review

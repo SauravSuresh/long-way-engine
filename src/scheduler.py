@@ -58,7 +58,13 @@ def should_create_today(
     # Global Sunday rest day: blocks every cadence when sunday_off is set.
     # Lives above cadence dispatch so weekly day_of_week=sunday templates,
     # monthly day_of_month=1 falling on Sunday, etc. all skip uniformly.
-    if config.sunday_off and today.weekday() == SUNDAY:
+    # Exception: state_review templates fire on Sunday by design (the
+    # weekly review IS the rest-day's planning ritual, not study work).
+    if (
+        config.sunday_off
+        and today.weekday() == SUNDAY
+        and not getattr(template, "state_review", False)
+    ):
         return False
 
     cadence = template.cadence

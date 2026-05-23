@@ -32,16 +32,29 @@ from src.dashboard import (
 from src.ids import external_id, module_external_id
 from src.reflections import StubResult, create_stub, update_metadata
 from src.scheduler import _is_last_saturday_of_month, should_create_today
-from src.state import State, load_state
+from src.state import State, load_state, update_derived_fields, save_state
+from src.state_review import (
+    PERSISTENT_EMERGENCY_PAUSE_DESC,
+    PERSISTENT_EMERGENCY_PAUSE_TITLE,
+    PERSISTENT_RESUME_DESC,
+    PERSISTENT_RESUME_TITLE,
+    StateReviewSummary,
+    evaluate_show_if,
+    open_persistent_cache_entry,
+    persistent_pause_external_id,
+    persistent_resume_external_id,
+    run_state_review_phase,
+)
 from src.syllabus import Syllabus, load_syllabus
 from src.curriculum_validator import validate as validate_curriculum
-from src.templates import load_templates, resolve_variables
+from src.templates import ResolvedTemplate, load_templates, resolve_variables
 from src.todoist import (
     CreateResult,
     TodoistAdminClient,
     TodoistClient,
     TodoistCompletionClient,
 )
+from src.todoist_review import TodoistReviewClient
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +66,7 @@ CURRICULUM_DIR = REPO_ROOT / "curriculum"
 RITUALS_DIR = CURRICULUM_DIR / "rituals"
 MODULES_PATH = CURRICULUM_DIR / "modules.yaml"
 CACHE_PATH = REPO_ROOT / ".task_cache.json"
+STATE_LOG_PATH = REPO_ROOT / "state_log.yaml"
 LOG_PATH = REPO_ROOT / "LOG.md"
 REFLECTIONS_DIR = REPO_ROOT / "reflections"
 REFLECTION_TEMPLATES_DIR = CURRICULUM_DIR / "reflection_templates"
@@ -87,6 +101,7 @@ class RunSummary:
     stub_decisions: list[StubDecision] = field(default_factory=list)
     metadata_updated: int = 0
     dashboard_status: str | None = None  # "ok" | "error" | "skipped" | None (dry-run)
+    state_review: StateReviewSummary | None = None
 
 
 def _setup_logging(token: str, verbose: bool = False) -> None:
@@ -177,6 +192,80 @@ def _record_stub(
             via_template_id=tpl.id,
         )
     )
+
+
+def _ensure_persistent_tasks(
+    client,
+    cache: dict,
+    state: State,
+    today: date,
+) -> None:
+    """Create emergency-pause + resume tasks if none currently open.
+
+    `resume` is only created when state.paused is true. Both tasks have
+    no due date — they sit in the Todoist inbox until checked.
+    """
+    if open_persistent_cache_entry(cache, "emergency-pause") is None:
+        ext_id = persistent_pause_external_id(today)
+        tpl = ResolvedTemplate(
+            id="persistent-emergency-pause",
+            title=PERSISTENT_EMERGENCY_PAUSE_TITLE,
+            description=PERSISTENT_EMERGENCY_PAUSE_DESC,
+            due="",
+            labels=["state-review"],
+            cadence="daily",
+        )
+        try:
+            result = client.create_task_idempotent(tpl, today, ext_id, cache)
+        except Exception as e:
+            logger.warning("persistent emergency-pause create failed: %s", e)
+            return
+        cache.setdefault(ext_id, {})
+        if not result.skipped:
+            cache[ext_id].update({
+                "todoist_task_id": result.todoist_task_id,
+                "created_at": result.created_at,
+                "template_id": tpl.id,
+                "due_date": "persistent",
+            })
+        cache[ext_id].update({
+            "persistent_category": "emergency-pause",
+            "persistent_action": {
+                "type": "set_pause",
+                "days": 365,
+                "reason": "emergency",
+            },
+            "persistent_consumed": False,
+        })
+
+    if state.paused and open_persistent_cache_entry(cache, "resume") is None:
+        ext_id = persistent_resume_external_id(today)
+        tpl = ResolvedTemplate(
+            id="persistent-resume",
+            title=PERSISTENT_RESUME_TITLE,
+            description=PERSISTENT_RESUME_DESC,
+            due="",
+            labels=["state-review"],
+            cadence="daily",
+        )
+        try:
+            result = client.create_task_idempotent(tpl, today, ext_id, cache)
+        except Exception as e:
+            logger.warning("persistent resume create failed: %s", e)
+            return
+        cache.setdefault(ext_id, {})
+        if not result.skipped:
+            cache[ext_id].update({
+                "todoist_task_id": result.todoist_task_id,
+                "created_at": result.created_at,
+                "template_id": tpl.id,
+                "due_date": "persistent",
+            })
+        cache[ext_id].update({
+            "persistent_category": "resume",
+            "persistent_action": {"type": "unset_pause"},
+            "persistent_consumed": False,
+        })
 
 
 def _module_titles_from_templates(templates) -> dict[int, str]:
@@ -275,10 +364,13 @@ def run(
     sweep: bool = True,
     admin_factory=None,
     completion_factory=None,
+    review_factory=None,
     completion_cache_path: Path | None = None,
     docs_html_path: Path | None = None,
     docs_data_path: Path | None = None,
     docs_css_path: Path | None = None,
+    state_path: Path | None = None,
+    state_log_path: Path | None = None,
     syllabus=None,
 ) -> RunSummary:
     if clock is None:
@@ -288,6 +380,8 @@ def run(
         client_factory = TodoistClient
     if completion_factory is None:
         completion_factory = TodoistCompletionClient
+    if review_factory is None:
+        review_factory = TodoistReviewClient
     if reflections_root is None:
         reflections_root = REFLECTIONS_DIR
     if reflection_templates_root is None:
@@ -300,9 +394,37 @@ def run(
         docs_data_path = DOCS_DATA_PATH
     if docs_css_path is None:
         docs_css_path = DOCS_CSS_PATH
+    if state_path is None:
+        state_path = STATE_PATH
+    if state_log_path is None:
+        state_log_path = STATE_LOG_PATH
 
     cache = load_cache(cache_path)
     templates = load_templates(template_paths)
+
+    # PHASE 1: state-mutation. Runs before task creation so today's tasks
+    # reflect any module advance / pause that fired in the prior week's review.
+    state_review_summary: StateReviewSummary | None = None
+    if syllabus is not None:
+        state, state_review_summary = run_state_review_phase(
+            config=config,
+            state=state,
+            syllabus=syllabus,
+            today=today,
+            cache=cache,
+            state_path=state_path,
+            state_log_path=state_log_path,
+            review_factory=review_factory,
+            completion_factory=completion_factory,
+            dry_run=dry_run,
+            todoist_token=config.todoist_token,
+            project_id=project_id or config.todoist.project_id,
+        )
+        # Derive month/phase from calendar minus closed pauses. Engine-managed
+        # fields: overwrite whatever state.yaml had before.
+        state = update_derived_fields(state, syllabus, today)
+        if not dry_run:
+            save_state(state_path, state)
     client = client_factory(
         token=config.todoist_token,
         project_id=project_id or config.todoist.project_id,
@@ -369,6 +491,48 @@ def run(
                 "due_date": cache_due,
             }
 
+        # state-review sub-tasks: create one Todoist sub-task per resolved
+        # SubtaskSpec whose show_if predicate is true today. Mark each
+        # cache entry with `state_review_action` so the next cron can
+        # dispatch the mutation when the sub-task is checked. The parent
+        # entry gets `state_review_parent: true` for orchestrator lookup.
+        if resolved.state_review and syllabus is not None and tpl.cadence == "weekly":
+            cache.setdefault(ext_id, {})["state_review_parent"] = True
+            parent_task_id = (
+                cache[ext_id].get("todoist_task_id") or result.todoist_task_id
+            )
+            for i, sub in enumerate(resolved.sub_tasks):
+                if not evaluate_show_if(sub.show_if, state, syllabus):
+                    continue
+                sub_ext_id = external_id(f"{tpl.id}:sub:{i}", today)
+                sub_resolved = ResolvedTemplate(
+                    id=f"{tpl.id}:sub:{i}",
+                    title=sub.title,
+                    description="",
+                    due="",
+                    labels=list(resolved.labels),
+                    cadence=resolved.cadence,
+                    skip_if=[],
+                )
+                try:
+                    sub_result = client.create_task_idempotent(
+                        sub_resolved, today, sub_ext_id, cache,
+                        parent_id=str(parent_task_id),
+                    )
+                except Exception as e:
+                    logger.error("sub-task %s create failed: %s", sub_ext_id, e)
+                    errors += 1
+                    continue
+                if not sub_result.skipped:
+                    cache[sub_ext_id] = {
+                        "todoist_task_id": sub_result.todoist_task_id,
+                        "created_at": sub_result.created_at,
+                        "template_id": sub_resolved.id,
+                        "due_date": today.isoformat(),
+                    }
+                cache[sub_ext_id]["state_review_action"] = dict(sub.action)
+                cache[sub_ext_id]["state_review_parent_task_id"] = str(parent_task_id)
+
         # Stub creation is template-fired, not task-creation-fired:
         # it runs whether the task was created, marker-deduped, or cache-hit.
         _record_stub(
@@ -382,6 +546,14 @@ def run(
             dry_run,
             stub_decisions,
         )
+
+    # Persistent emergency-pause / resume tasks. Created once per
+    # consumption cycle; the state-review phase marks them consumed on
+    # completion, and the next cron creates a fresh instance with a new
+    # versioned external_id. Always-on (no Sunday gate) — emergencies
+    # don't respect rest days.
+    if not dry_run and syllabus is not None:
+        _ensure_persistent_tasks(client, cache, state, today)
 
     sweep_result = SweepResult()
     if sweep:
@@ -459,6 +631,7 @@ def run(
         stub_decisions=stub_decisions,
         metadata_updated=metadata_updated,
         dashboard_status=dashboard_status,
+        state_review=state_review_summary,
     )
 
 

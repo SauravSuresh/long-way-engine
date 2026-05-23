@@ -1,0 +1,41 @@
+- id: pn-daily-morning-study
+  title: "Morning study: {current_book}"
+  description: |
+    30 min. Paper book, paper notebook. Today's primary resource:
+    {current_book}.
+
+    Open lab-notebook first. Write 2 lines: what you'll do today,
+    yesterday's end-note. Close the loop.
+  due: "today at {ritual_times.morning_reading}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday
+
+- id: pn-daily-srs-review
+  title: "Spaced-repetition review (Anki)"
+  description: |
+    10–15 min. Whenever — commute, lunch, before bed.
+    Add 3–5 new cards per day from what you read and built. No more.
+
+    Without SRS, you'll forget 80% of this curriculum inside a month.
+    Long-horizon learning collapses without retention reinforcement.
+    This is the highest-leverage 15 minutes of the day.
+  due: "today at {ritual_times.anki}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if: sunday
+
+- id: pn-daily-evening-hands-on
+  title: "Evening hands-on (60–90 min): {current_module}"
+  description: |
+    Code on the keyboard, not in your head. Work the current module:
+    {current_module}.
+
+    Before you close: commit your work, write 2 lines on what's stuck
+    and what's next. The bookend is the thread between days.
+  due: "today at {ritual_times.evening_hands_on}"
+  labels: [daily-ritual]
+  cadence: daily
+  skip_if:
+    - sunday
+    - pair_day

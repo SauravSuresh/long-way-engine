@@ -128,6 +128,8 @@ rm -rf curriculum
 cp -r examples/ml-engineer-12mo curriculum
 # or:
 cp -r examples/frontend-craft-6mo curriculum
+# or:
+cp -r examples/programmer-to-neuroscience-12mo curriculum
 ```
 
 Edit the copied files to your liking. Use [`AGENTS.md`](../AGENTS.md)
@@ -282,21 +284,47 @@ After the next cron run, your dashboard is at
 
 ## Step 10 — Maintenance
 
-- **Advancing modules.** When you finish a module, edit `state.yaml`:
-  bump `current_module` to the next number. The engine's
-  `module-N-onboarding` task for the new module will fire on the
-  next run.
-- **Advancing months.** Same idea: bump `month`. `current_book` is
-  computed from `syllabus.primary_book_by_month` with carry-forward
-  unless you've put an explicit override in `state.yaml`.
-- **Pause / unpause.** Edit `state.yaml`'s `paused` and
-  `pause_history` — see the section in the main [README](../README.md#pause--unpause).
+After fork setup the engine does state maintenance for you. The
+**weekly state-review** Todoist task fires every Sunday with a
+checkbox per state mutation; the next cron picks up your checked
+boxes and edits `state.yaml` on your behalf. Two persistent tasks —
+**🛑 Emergency pause** and **▶️ Resume** — sit always-on in the
+inbox for unplanned breaks. Result: in the steady-state flow, you
+never open `state.yaml`.
+
+- **Advance a module.** On Sunday, check the "I'm ready to advance
+  to Module N+1" sub-task on the weekly state-review parent. Next
+  cron bumps `current_module`, the new module's onboarding task
+  fires the following morning. `revert_last` (also on the Sunday
+  review) undoes it if you checked the box by accident.
+- **Mark a book finished or started.** Check the corresponding
+  sub-task on the Sunday review.
+- **Increment a counter** (e.g. Anki cards added this week). Check
+  the sub-task, drop the integer count into a Todoist comment on
+  that sub-task; engine reads the first comment and adds it.
+- **Pause unexpectedly.** Check the persistent **🛑 Emergency pause**
+  task. Next cron sets `paused: true` and stops creating study tasks.
+  When you're back, check **▶️ Resume**.
+- **Planned pause** (vacation, etc.). Author a `set_pause` action
+  with explicit `days` on a one-off sub-task — engine auto-unpauses
+  when the timer elapses (no need to manually resume).
+- **Month + phase.** Engine-managed. `month` and `phase` derive from
+  calendar elapsed days minus closed pause intervals; you no longer
+  edit them.
 - **Add a new ritual.** Append a template to the appropriate
   `curriculum/rituals/*.yaml`. The id must be unique across the
   whole curriculum.
 - **Change phases / books mid-stream.** Edit `curriculum/syllabus.yaml`
   directly. The validator catches inconsistencies (titles, phase
   numbers, etc.) at startup.
+- **Audit / undo deeper than one step.** `state_log.yaml` records
+  every mutation (timestamp, action, prior/new). Use `git revert` of
+  the cron commit to roll back further.
+
+**Escape hatch.** If you do want sub-day-latency state changes,
+edit `state.yaml` directly and commit. The next cron picks up the
+edit immediately. Useful when correcting a runaway counter or
+unwinding a botched series of mutations.
 
 ## When things break
 

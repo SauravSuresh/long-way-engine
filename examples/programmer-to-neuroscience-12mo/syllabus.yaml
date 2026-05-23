@@ -1,0 +1,135 @@
+meta:
+  name: "The Long Year — Programmer-Neuroscientist (12 months)"
+  total_months: 12
+  start_month_index: 1
+
+phases:
+  - number: 1
+    name: "Foundations: Computer literacy + CS50"
+    months: [1, 3]
+  - number: 2
+    name: "Python depth + neuroscience domain entry"
+    months: [4, 8]
+  - number: 3
+    name: "Translational ML + public artifact"
+    months: [9, 12]
+
+books:
+  - title: "Code: The Hidden Language of Computer Hardware and Software"
+    author: "Charles Petzold"
+    phase: 1
+    months: [1, 2]
+    role: primary
+  - title: "Think Python (3rd ed)"
+    author: "Allen B. Downey"
+    phase: 1
+    months: [3, 4]
+    role: primary
+  - title: "From Python to Numpy"
+    author: "Nicolas P. Rougier"
+    phase: 2
+    months: [5, 5]
+    role: primary
+  - title: "Crafting Interpreters"
+    author: "Robert Nystrom"
+    phase: 2
+    months: [6, 8]
+    role: primary
+  - title: "An Introduction to Statistical Learning"
+    author: "James, Witten, Hastie, Tibshirani"
+    phase: 3
+    months: [9, 11]
+    role: primary
+  - title: "Implementation Science for the Non-Specialist"
+    author: "Bauer & Kirchner"
+    phase: 3
+    months: [12, 12]
+    role: primary
+  - title: "R for Data Science (2e)"
+    author: "Wickham, Çetinkaya-Rundel, Grolemund"
+    phase: 2
+    role: reference
+  - title: "Statistical Rethinking"
+    author: "Richard McElreath"
+    phase: 2
+    role: reference
+  - title: "Principles of Neural Science"
+    author: "Kandel et al."
+    phase: 2
+    role: reference
+  - title: "An Introduction to the ERP Technique"
+    author: "Steven J. Luck"
+    phase: 2
+    role: reference
+  - title: "Analyzing Neural Time Series Data"
+    author: "Mike X Cohen"
+    phase: 2
+    role: reference
+  - title: "Effective Pandas"
+    author: "Matt Harrison"
+    phase: 2
+    role: reference
+
+primary_book_by_month:
+  1: "Code: The Hidden Language of Computer Hardware and Software"
+  2: "Code: The Hidden Language of Computer Hardware and Software"
+  3: "Think Python (3rd ed)"
+  4: "Think Python (3rd ed)"
+  5: "From Python to Numpy"
+  6: "Crafting Interpreters"
+  7: "Crafting Interpreters"
+  8: "Crafting Interpreters"
+  9: "An Introduction to Statistical Learning"
+  10: "An Introduction to Statistical Learning"
+  11: "An Introduction to Statistical Learning"
+  12: "Implementation Science for the Non-Specialist"
+
+modules:
+  - number: 1
+    name: "tiny-tools: small Python scripts + CS50 weeks 0-3"
+    phase: 1
+    estimated_hours: 72
+  - number: 2
+    name: "data-structures-c: linked lists, hash tables, trees in C (CS50 deep weeks)"
+    phase: 1
+    estimated_hours: 72
+  - number: 3
+    name: "cs50-final: Python CLI tool + earn CS50x Harvard certificate"
+    phase: 1
+    estimated_hours: 72
+  - number: 4
+    name: "paper-trail: PubMed CLI, Python depth, R first contact, domain decision"
+    phase: 2
+    estimated_hours: 72
+  - number: 5
+    name: "from-scratch-stats: hand-built statistics in numpy"
+    phase: 2
+    estimated_hours: 72
+  - number: 6
+    name: "mini-lang: scanner + parser (Crafting Interpreters part I)"
+    phase: 2
+    estimated_hours: 72
+  - number: 7
+    name: "Neuromatch Academy (or self-paced computational neuroscience)"
+    phase: 2
+    estimated_hours: 90
+  - number: 8
+    name: "lox: complete tree-walking interpreter + eeg-pipeline begins"
+    phase: 2
+    estimated_hours: 72
+  - number: 9
+    name: "eeg-pipeline: reproduce one published figure"
+    phase: 3
+    estimated_hours: 72
+  - number: 10
+    name: "biomarker-classifier v1: honest CV, no leakage"
+    phase: 3
+    estimated_hours: 72
+  - number: 11
+    name: "biomarker-classifier v2: tests, packaging, reproducibility"
+    phase: 3
+    estimated_hours: 72
+  - number: 12
+    name: "Public writeup: blog post / preprint + lab applications"
+    phase: 3
+    estimated_hours: 72

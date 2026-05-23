@@ -1,0 +1,358 @@
+- id: pn-module-01-onboarding
+  module_number: 1
+  title: "Module 1: tiny-tools + CS50 weeks 0-3 — start"
+  description: |
+    ~72 hrs over month 1.
+
+    Week 1: Setup. Install Miniforge, VSCode, git. Make GitHub
+    account. Create `lab-notebook` repo with README; commit and
+    push. Write hello.py; run it; push it.
+
+    Weeks 1-3: Start the `tiny-tools` repo. Each script is a
+    single-file Python program that does one useful thing.
+    Aim for 6-8 scripts by month end. Use argparse for args,
+    pathlib for paths. Read the stdlib docs, not Stack Overflow.
+
+    First three scripts: wordcount.py, rename-files.py,
+    notes-today.py.
+
+    Weeks 2-4: Begin CS50x. Submit psets via cs50.harvard.edu
+    (NOT edX) so the free Harvard certificate accumulates. Work
+    through weeks 0 (Scratch), 1 (C), 2-3 (arrays, algorithms).
+
+    Week 4: Missing Semester (MIT) lectures 1, 2, 4 — shell,
+    scripting, git. Petzold's Code chapter 1 in the input slot.
+
+    Done = tiny-tools repo with 6-8 scripts + READMEs, CS50
+    psets through week 3 submitted.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: pn-module-02-onboarding
+  module_number: 2
+  title: "Module 2: data-structures-c (CS50 deep weeks) — start"
+  description: |
+    ~72 hrs over month 2. The hardest month for someone new.
+    The C exposure here is what makes Python feel like a gift later.
+
+    CS50 problem sets this month: pset4 (memory), pset5 (data
+    structures in C). Pset5 — implementing a hash table from
+    scratch — will take 8-10 days. Push through. Most CS50
+    quitters quit here.
+
+    Then lift CS50 pset5 implementations into a standalone
+    `data-structures-c` GitHub repo with a proper README. Add
+    one or two more from scratch: linked list, binary tree. It's
+    in C, not Python, on purpose — it demonstrates you've seen
+    the layer underneath Python.
+
+    Read alongside (input slot): Petzold's Code chapters 2-7.
+
+    Done = data-structures-c repo pushed, CS50 psets through
+    week 5 or 6 submitted.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: pn-module-03-onboarding
+  module_number: 3
+  title: "Module 3: cs50-final + Harvard certificate — start"
+  description: |
+    ~72 hrs over month 3.
+
+    Weeks 1-2: Remaining CS50 psets — Python (week 6), SQL
+    (week 7), HTML/CSS/JS (week 8), Flask (week 9). After C,
+    these feel fast.
+
+    Weeks 3-4: CS50 final project — `cs50-final` repo. Do
+    something a little ambitious. Suggested: `eeg-plotter` —
+    loads CSV of fake EEG channels, computes power spectrum
+    via scipy.fft, plots with matplotlib, saves PDF report.
+    README + requirements.txt.
+
+    Alongside: start Python for Everybody on weekends; CS50's
+    Python is a survey, py4e is the consolidation.
+
+    Done = CS50 final project submitted, free Harvard CS50x
+    Certificate earned (>=70% on each pset and the final), added
+    to LinkedIn. Three repos on GitHub: tiny-tools,
+    data-structures-c, cs50-final.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: pn-module-04-onboarding
+  module_number: 4
+  title: "Module 4: paper-trail + R + domain decision — start"
+  description: |
+    ~72 hrs over month 4. Three things in parallel.
+
+    Python depth: finish Python for Everybody. Start Think
+    Python (chapters 1-8). Submit at least one Exercism Python
+    solution per week for human mentor review.
+
+    The `paper-trail` project: CLI that takes a PubMed query
+    or DOI, fetches metadata, adds to local SQLite with tags.
+    Supports `paper-trail add`, `paper-trail list --tag eeg`,
+    `paper-trail open <id>`. Uses: requests, sqlite3, argparse,
+    pathlib, json. (Easier alternative if too ambitious:
+    `eeg-fetcher` — download an OpenNeuro EEG file, verify
+    checksum, unpack.)
+
+    R first contact: install RStudio. R for Data Science (2e)
+    chapters 1-6. Exercises in lab-notebook/r/.
+
+    Week 1 (TIME-SENSITIVE): check Neuromatch Academy 2026
+    application window at neuromatch.io. Submit application
+    + financial aid request. Pick July 2026 cohort.
+
+    Week 4: domain decision. EEG / fMRI / Electrophys /
+    Computational modeling. The plan defaults to EEG given the
+    biomarker/translation goal. Write the decision in
+    lab-notebook/decisions/. Do not change.
+
+    Read alongside: Kandel chapters 1, 4, 7.
+
+    Done = paper-trail repo, domain written in lab-notebook,
+    Neuromatch application submitted (if window open).
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: pn-module-05-onboarding
+  module_number: 5
+  title: "Module 5: from-scratch-stats — start"
+  description: |
+    ~72 hrs over month 5. The Long Way discipline starts paying off.
+
+    Build a single repo `from-scratch-stats` containing:
+      - mean.py, variance.py, correlation.py — pure Python
+        impl, then numpy impl, then speed comparisons
+      - ols.py — OLS via beta = (X'X)^-1 X'y in numpy.
+        Match sklearn LinearRegression on a test case.
+      - t_test.py — two-sample t-test from scratch. Match
+        scipy.stats.ttest_ind.
+      - bootstrap.py — bootstrap CI from scratch.
+      - pvalue_simulation.py — 1000 fake studies under the null
+        (uniform p-values), 1000 with a real small effect
+        (skewed). The picture IS what a p-value is.
+
+    Each file: docstring with the math, an if __name__ block
+    demonstrating the function. This is the single best
+    "I understand the layer under numpy" signal in the year.
+
+    Read alongside: Rougier From Python to Numpy. Begin
+    Statistical Rethinking (one chapter/week, runs months 5-7).
+
+    Done = from-scratch-stats repo with all five files plus
+    README explaining the math.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: pn-module-06-onboarding
+  module_number: 6
+  title: "Module 6: mini-lang scanner + parser + EEG first contact — start"
+  description: |
+    ~72 hrs over month 6. The densest month by design.
+
+    The interpreter project begins. Crafting Interpreters
+    parts I and II. Pace: ~45 min/day, every day, for 3 months
+    (months 6-8). Slow and steady. Full tree-walking
+    interpreter typically 40-60 hr focused work.
+
+    Month 6's slice: scanner + parser. By end of month, the
+    `mini-lang` repo has a working tokenizer (source -> tokens)
+    and a parser (tokens -> AST). Push WIP; partial impls fine.
+
+    EEG first contact: MNE-Python tutorials, first 4-5,
+    starting from "Introduction to MNE-Python." Read Steven
+    Luck's An Introduction to the ERP Technique alongside.
+
+    Statistical Rethinking: chapters 4-6.
+
+    Done = mini-lang with working scanner + parser; first MNE
+    tutorials done; Luck book in progress.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: pn-module-07-onboarding
+  module_number: 7
+  title: "Module 7: Neuromatch Academy (or self-paced) — start"
+  description: |
+    ~90 hrs over month 7. Neuromatch runs ~3 weeks in July,
+    ~30 hr/week. If accepted, this IS the month — pause
+    Tracks A and B for the duration.
+
+    Neuromatch covers a huge swath of computational neuroscience
+    faster than solo learning could. Lectures, group projects,
+    pods of working researchers.
+
+    If not accepted or window missed: free curriculum at
+    compneuro.neuromatch.io at normal pace, spread months 7-8.
+
+    Either way: mini-lang continues. 30 min/day on Crafting
+    Interpreters. This month — starting AST evaluation. By end:
+    scanner + parser + basic interpreter (expressions and
+    statements) all working.
+
+    Done = Neuromatch projects (if attended) or self-paced
+    notes; mini-lang running its first programs.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: pn-module-08-onboarding
+  module_number: 8
+  title: "Module 8: lox complete + eeg-pipeline begins — start"
+  description: |
+    ~72 hrs over month 8. Two big things by month end.
+
+    mini-lang becomes lox. Finish Crafting Interpreters part II
+    — functions, closures, classes, inheritance. Repo renamed
+    to `lox`, full README on what it does and what you learned.
+    This is the project that says "I built a programming
+    language." Rare and real.
+
+    The EEG pipeline begins. Pick the dataset: Healthy Brain
+    Network, TUH EEG corpus, or OpenNeuro. Start the
+    `eeg-pipeline` repo.
+
+    From-scratch EEG exercises (the from-scratch-stats muscle
+    pays off now):
+      - Open an EDF file with numpy alone, no MNE. Look at
+        bytes. Then load with MNE; notice what MNE adds.
+      - Implement a bandpass filter from scratch with
+        scipy.signal.butter + filtfilt, BEFORE MNE's
+        raw.filter(). Plot the frequency response.
+      - FFT-based power spectrum from scratch on one channel.
+        Compare to MNE's compute_psd().
+
+    Read alongside: Cohen Analyzing Neural Time Series Data,
+    first 8 chapters. Free YouTube lectures available.
+
+    Done = lox interpreter complete + pushed; eeg-pipeline
+    started with first preprocessing scripts.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: pn-module-09-onboarding
+  module_number: 9
+  title: "Module 9: eeg-pipeline complete + ML prep — start"
+  description: |
+    ~72 hrs over month 9.
+
+    eeg-pipeline complete: raw EDF -> cleaned epochs, every
+    step explained in markdown. Reproduce ONE figure from a
+    published paper using your dataset. "I reproduced figure 2
+    of Smith et al. 2021" is a real claim with a real demo.
+
+    ML prep: ISL chapters 1-4. Do the labs in R first (R is
+    the original), then redo in Python (ISLP edition, free).
+
+    From-scratch ML (extend from-scratch-stats):
+      - Linear regression with gradient descent in numpy.
+      - Logistic regression with gradient descent in numpy.
+
+    Done = eeg-pipeline with reproducible paper-figure
+    reproduction; hand-built gradient-descent regressions
+    added to portfolio.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: pn-module-10-onboarding
+  module_number: 10
+  title: "Module 10: biomarker-classifier v1 — start"
+  description: |
+    ~72 hrs over month 10. The methodological core of
+    translational work. Clinical ML is full of leakage,
+    overfitting, optimistic test sets. Doing it well is the
+    differentiator.
+
+    Reading: ISL chapters 5 (cross-validation), 6
+    (regularization). Then Poldrack et al. (2020) on
+    prediction best practices — read it TWICE.
+
+    biomarker-classifier project: pick a question with a clean
+    target in the dataset (e.g., "distinguish ADHD from TD using
+    resting-state EEG features"). Build:
+      - Subject-level features from the cleaned epochs.
+      - Train/test split with SUBJECT-LEVEL grouping. Never
+        leak subjects across splits.
+      - Nested CV for hyperparameter tuning.
+      - Honest test-set evaluation.
+
+    Critical from-scratch exercise: implement CV from scratch.
+    Then write a deliberately-wrong version (feature selection
+    BEFORE CV instead of inside it). Measure the apparent
+    performance gap. This single exercise inoculates you against
+    a mistake in ~40% of clinical ML papers.
+
+    Done = biomarker-classifier v1 running with honest
+    evaluation; writeup in progress.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: pn-module-11-onboarding
+  module_number: 11
+  title: "Module 11: biomarker-classifier v2 (software engineering) — start"
+  description: |
+    ~72 hrs over month 11. The layer almost no academic
+    programmer learns — and the real differentiator.
+
+    Learn pytest. Write tests for the from-scratch t-test,
+    OLS, bootstrap, CV. They will catch a bug. They always do.
+
+    Learn uv (or poetry). Make pyproject.toml for the major
+    repos.
+
+    Read: Greg Wilson "Good enough practices in scientific
+    computing" + Lorena Barba on reproducible research.
+
+    biomarker-classifier v2: refactor with tests, environment
+    file, clean module structure, README that lets someone
+    else clone-and-run. Write up EVERYTHING you tried that
+    didn't work. The "what failed" writeup matters as much
+    as the result.
+
+    Done = biomarker-classifier v2 tested + reproducible +
+    packaged; tests/ folder on at least two earlier repos
+    (from-scratch-stats, eeg-pipeline).
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module
+
+- id: pn-module-12-onboarding
+  module_number: 12
+  title: "Module 12: public writeup + lab applications — start"
+  description: |
+    ~72 hrs over month 12. The final month. The classifier
+    becomes a public artifact and the year ends in applications.
+
+    Read: Bauer & Kirchner — Implementation science for the
+    non-specialist (short, free). Then the CFIR framework on
+    cfirguide.org.
+
+    Public artifact: blog post or OSF preprint of the
+    biomarker classifier work. Frame HONESTLY: what would it
+    take to deploy this in a clinic? What's the gap between
+    what the model does and what a clinician needs? What's the
+    implementation-science theory of change? This artifact
+    says: "I think about translation, not just accuracy."
+
+    Apply for things: reach out to 10-20 labs whose work
+    overlaps with yours. Send the GitHub link. Pitch: "I'm a
+    self-taught researcher with a portfolio at [link]. I'd love
+    to talk about your work on X." Works better than people
+    expect, because most applicants don't have public portfolios.
+
+    Done = public blog post or preprint shipped; 10+ repos on
+    GitHub; 10-20 labs contacted in writing.
+  due: "today"
+  labels: [module-work]
+  cadence: once-per-module

@@ -17,6 +17,7 @@ ritual_times:
   friday_review: "20:00"
   saturday_deep_block: "09:00"
   sunday_trace: "19:00"
+  weekly_state_review: "10:00"
 
 sunday_off: true
 

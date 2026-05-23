@@ -215,5 +215,11 @@ copy one of the starter bundles in [`examples/`](./examples/) into
 
 - [`examples/ml-engineer-12mo/`](./examples/ml-engineer-12mo/) — 12-month ML engineer path (3 phases, 9 modules)
 - [`examples/frontend-craft-6mo/`](./examples/frontend-craft-6mo/) — 6-month frontend deep-dive (2 phases, 6 modules)
+- [`examples/programmer-to-neuroscience-12mo/`](./examples/programmer-to-neuroscience-12mo/) — 12-month programmer-to-neuroscientist path (3 phases, 12 modules)
+
+Each example includes a **weekly state-review** task whose sub-task
+checkboxes mutate `state.yaml` on the next cron — module advance,
+book transitions, pause, Anki counter, revert. After fork setup
+you never hand-edit `state.yaml`.
 
 Full setup walkthrough: [`docs/FORKING.md`](./docs/FORKING.md).

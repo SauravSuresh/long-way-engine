@@ -1,0 +1,15 @@
+- id: pn-annual-review
+  title: "Annual review: full year retrospective + plan revision"
+  description: |
+    The big one. A full day. Re-read every monthly retrospective.
+    Re-read the original Long Year README. What was true 12 months
+    ago? What was wrong? What changed in your direction?
+
+    Then: rewrite the plan for year 2. The next year's plan is
+    built on this year's debugging of the plan, not on hopes.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [annual-ritual, reflection]
+  cadence: annual
+  reflection:
+    create_stub: true
+    stub_path: "reflections/annual/{year}.md"

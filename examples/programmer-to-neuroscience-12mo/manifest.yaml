@@ -1,20 +1,26 @@
 ritual_times_required:
   - morning_reading
-  - srs_review
+  - anki
   - evening_hands_on
+  - friday_review
   - saturday_deep_block
+  - sunday_trace
   - weekly_state_review
 
 placeholders_used:
   - current_book
   - current_module
   - next_module
+  - next_book
   - iso_year
   - iso_week
   - year
   - month
+  - quarter
+  - date
 
 config_flags:
   sunday_off: true
+  pair_day: thursday
 
-state_review_template_id: fe-weekly-state-review
+state_review_template_id: pn-weekly-state-review

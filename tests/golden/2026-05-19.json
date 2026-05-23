@@ -87,6 +87,11 @@
     {
       "cadence": "weekly",
       "fires": false,
+      "id": "weekly-state-review"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
       "id": "weekly-friday-review"
     },
     {

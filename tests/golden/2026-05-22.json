@@ -86,6 +86,11 @@
     },
     {
       "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-state-review"
+    },
+    {
+      "cadence": "weekly",
       "description": "Without looking at your notes, write down the 3 most important\nthings you learned this week. Then compare to your notes. The gap\nis the diagnostic \u2014 that's what your Anki cards for next week\nshould target.\n",
       "due": "today at 20:00",
       "fires": true,
