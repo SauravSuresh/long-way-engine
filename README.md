@@ -140,6 +140,17 @@ block, it's a module. If it runs in parallel with the spine, it's
 a `learning_tracks` entry. Books have their own surface
 (`books_state`) — see below.
 
+Tracks the curriculum acknowledges are declared in
+`syllabus.yaml` under `tracks:`; the validator rejects entries in
+`state.learning_tracks` that don't match a declaration, so typos
+fail fast. Ritual templates can gate on track state via
+`gated_by:` — e.g., a `weekly-bootdev-session` template that only
+fires while the boot.dev track is `current`. Declarations with
+`months: [start, end]` opt into automatic `not_started -> current
+-> done` transitions at month boundaries; absence keeps the
+lifecycle manual. See [`AGENTS.md`](./AGENTS.md) Step 5.75 for
+the full vocabulary.
+
 ## `books_state`
 
 `state.yaml` carries an owner-maintained map from book title to one of

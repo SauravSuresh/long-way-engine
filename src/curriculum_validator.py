@@ -22,6 +22,8 @@ SUPPORTED_ACTIONS = {
     "advance_module",
     "mark_book_finished",
     "mark_book_started",
+    "mark_track_started",
+    "mark_track_finished",
     "set_pause",
     "unset_pause",
     "increment_counter",
@@ -33,6 +35,8 @@ SUPPORTED_SHOW_IFS = {
     "not_paused",
     "paused",
 }
+SUPPORTED_GATE_TYPES = {"track", "module_eq", "module_gte", "module_lte"}
+SUPPORTED_LIFECYCLE_STATES = {"not_started", "current", "done"}
 
 
 class CurriculumError(Exception):
@@ -45,12 +49,17 @@ def validate(
     ritual_times: dict[str, str] | None = None,
     state_current_module: int | None = None,
     state_month: int | None = None,
+    state_learning_tracks: dict[str, dict[str, str]] | None = None,
 ) -> None:
     """Validate every aspect of a curriculum bundle.
 
     ritual_times: config.ritual_times to cross-check the manifest against.
     state_current_module / state_month: from state.yaml; if provided,
     we check they fall within the syllabus' ranges.
+    state_learning_tracks: from state.yaml; if provided, rule 14
+    requires every (category, title) pair to match a declaration in
+    syllabus.tracks. Skipped (rule 14) when None — examples tests
+    pass no state.
 
     Raises CurriculumError listing every violation. No-op on success.
     """
@@ -74,6 +83,12 @@ def validate(
     errors += _check_state_review_singleton(all_templates)
     errors += _check_state_review_cadence(all_templates)
     errors += _check_sub_task_vocabulary(all_templates)
+    errors += _check_tracks_unique(syllabus)
+    errors += _check_tracks_phase(syllabus)
+    errors += _check_tracks_months(syllabus)
+    if state_learning_tracks is not None:
+        errors += _check_state_tracks_declared(syllabus, state_learning_tracks)
+    errors += _check_gated_by_vocabulary(all_templates, syllabus)
 
     if errors:
         joined = "\n  - ".join([""] + errors)
@@ -254,6 +269,109 @@ def _check_sub_task_vocabulary(templates: list[dict]) -> list[str]:
                     f"unknown show_if {show_if!r} "
                     f"(supported: {sorted(SUPPORTED_SHOW_IFS)})"
                 )
+    return errors
+
+
+def _check_tracks_unique(syllabus) -> list[str]:
+    seen: dict[tuple[str, str], int] = {}
+    for t in syllabus.tracks:
+        key = (t.category, t.title)
+        seen[key] = seen.get(key, 0) + 1
+    return [
+        f"duplicate track declaration ({cat!r}, {title!r}) appears {n} times"
+        for (cat, title), n in sorted(seen.items())
+        if n > 1
+    ]
+
+
+def _check_tracks_phase(syllabus) -> list[str]:
+    phase_numbers = {p.number for p in syllabus.phases}
+    return [
+        f"track ({t.category!r}, {t.title!r}) references unknown phase {t.phase}"
+        for t in syllabus.tracks
+        if t.phase not in phase_numbers
+    ]
+
+
+def _check_tracks_months(syllabus) -> list[str]:
+    if not syllabus.phases:
+        return []
+    max_month = max(p.months[1] for p in syllabus.phases)
+    errors: list[str] = []
+    for t in syllabus.tracks:
+        if t.months is None:
+            continue
+        start, end = t.months
+        if start < 1 or end > max_month:
+            errors.append(
+                f"track ({t.category!r}, {t.title!r}) months "
+                f"[{start}, {end}] out of range [1, {max_month}]"
+            )
+        if start > end:
+            errors.append(
+                f"track ({t.category!r}, {t.title!r}) months "
+                f"start ({start}) > end ({end})"
+            )
+    return errors
+
+
+def _check_state_tracks_declared(syllabus, state_learning_tracks: dict) -> list[str]:
+    declared = {(t.category, t.title) for t in syllabus.tracks}
+    errors: list[str] = []
+    for category, items in (state_learning_tracks or {}).items():
+        if not isinstance(items, dict):
+            continue
+        for title in items:
+            if (category, title) not in declared:
+                errors.append(
+                    f"state.learning_tracks[{category!r}][{title!r}] has "
+                    f"no matching declaration in syllabus.tracks"
+                )
+    return errors
+
+
+def _check_gated_by_vocabulary(templates: list[dict], syllabus) -> list[str]:
+    declared = {(t.category, t.title) for t in syllabus.tracks}
+    errors: list[str] = []
+    for t in templates:
+        gates = t.get("gated_by") or []
+        if not isinstance(gates, list):
+            continue
+        for i, gate in enumerate(gates):
+            if not isinstance(gate, dict):
+                continue
+            gtype = gate.get("type")
+            if gtype not in SUPPORTED_GATE_TYPES:
+                errors.append(
+                    f"template {t.get('id', '?')!r} gated_by[{i}] has "
+                    f"unknown type {gtype!r} "
+                    f"(supported: {sorted(SUPPORTED_GATE_TYPES)})"
+                )
+                continue
+            if gtype == "track":
+                cat = gate.get("category")
+                item = gate.get("item")
+                if (cat, item) not in declared:
+                    errors.append(
+                        f"template {t.get('id', '?')!r} gated_by[{i}] "
+                        f"references undeclared track ({cat!r}, {item!r})"
+                    )
+                states = gate.get("states") or ["current"]
+                if not isinstance(states, list):
+                    states = [states]
+                for s in states:
+                    if s not in SUPPORTED_LIFECYCLE_STATES:
+                        errors.append(
+                            f"template {t.get('id', '?')!r} gated_by[{i}] "
+                            f"has unknown state {s!r} "
+                            f"(supported: {sorted(SUPPORTED_LIFECYCLE_STATES)})"
+                        )
+            elif gtype in {"module_eq", "module_gte", "module_lte"}:
+                if not isinstance(gate.get("value"), int):
+                    errors.append(
+                        f"template {t.get('id', '?')!r} gated_by[{i}] "
+                        f"of type {gtype} requires integer 'value'"
+                    )
     return errors
 
 

@@ -332,14 +332,19 @@ never open `state.yaml`.
 - **Change phases / books mid-stream.** Edit `curriculum/syllabus.yaml`
   directly. The validator catches inconsistencies (titles, phase
   numbers, etc.) at startup.
-- **Track a course or certification in parallel.** Add or update an
-  entry under `learning_tracks` in `state.yaml`. Modules are the
-  linear spine (one `current_module` pointer that advances);
-  `learning_tracks` is the parallel surface for anything running
-  alongside — auditing a boot.dev path, chasing an LFCS, working an
-  active branch. Categories are arbitrary; leaf state is
-  `not_started | current | done`. The dashboard renders each
-  category as its own list.
+- **Track a course or certification in parallel.** Declare it once
+  in `curriculum/syllabus.yaml` under `tracks:` (title, category,
+  phase, optional `months: [start, end]`). The validator then
+  requires every entry in `state.learning_tracks` to match a
+  declaration — typos fail fast. Lifecycle states are
+  `not_started | current | done`. With `months:` the engine
+  auto-transitions at month boundaries (owner state always wins on
+  conflict); without `months:` the owner advances state manually
+  via the weekly state-review (the review parent auto-injects one
+  finish-checkbox per `current` track). Gate any ritual template
+  on track state via `gated_by:` — e.g., a weekly boot.dev
+  session that only fires while the track is `current`. See
+  [`AGENTS.md`](../AGENTS.md) Step 5.75 for the full schema.
 - **Audit / undo deeper than one step.** `state_log.yaml` records
   every mutation (timestamp, action, prior/new). Use `git revert` of
   the cron commit to roll back further.

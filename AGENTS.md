@@ -103,6 +103,14 @@ modules:
     name: string
     phase: int                     # must reference an existing phase
     estimated_hours: int           # optional, dashboard-only
+
+tracks:                            # optional; see Step 5.75
+  - title: string                  # unique within tracks
+    category: string               # free string; the set of distinct
+                                   # categories is implicit per-curriculum
+    phase: int                     # must reference an existing phase
+    months: [start, end]           # optional; opt-in auto-lifecycle
+                                   # (not_started -> current -> done)
 ```
 
 ### `manifest.yaml`
@@ -145,6 +153,11 @@ Each file is a YAML list of templates. A template:
                                    # may be int 1..28, "last-day",
                                    # or "last-saturday"
   module_number: int               # required for cadence: once-per-module
+  gated_by:                        # optional; ANDed list of gates
+    - { type: track, category: Courses, item: "boot.dev backend path", states: [current] }
+    - { type: module_eq, value: 5 }              # only when current_module == 5
+    - { type: module_gte, value: 3 }             # only at/after module 3
+    - { type: module_lte, value: 10 }            # only at/before module 10
   reflection:                      # optional
     create_stub: true
     stub_path: "reflections/weekly/{iso_year}-W{iso_week:02d}.md"
@@ -186,6 +199,22 @@ every violation into a single error message.
 8. Every `cadence` value is in the supported set.
 9. Every `skip_if` rule is in the supported vocabulary.
 10. Every template `id` is unique across the curriculum.
+11. At most one template across the bundle has `state_review: true`.
+12. Any `state_review: true` template has `cadence: weekly` and a
+    `day_of_week`.
+13. Every sub-task `action.type` and `show_if` is in the supported
+    vocabulary.
+14. Every `(category, title)` pair in `state.learning_tracks`
+    matches a declaration in `syllabus.tracks` (skipped when
+    state is unavailable, e.g. examples-validation).
+15. Every `syllabus.tracks[].phase` references an existing phase;
+    `(category, title)` pairs are unique within the section.
+16. `syllabus.tracks[].months` (if present) has both endpoints in
+    `[1, max_phase_month]` and `start <= end`.
+17. Every `gated_by[*].type` is in `{track, module_eq, module_gte,
+    module_lte}`. Every `track`-typed gate's `(category, item)`
+    resolves to a declared track; every `states[]` value is in
+    `{not_started, current, done}`.
 
 ---
 
@@ -338,6 +367,54 @@ templates — do not author them): an always-on "🛑 Emergency pause"
 task that triggers `set_pause` immediately when checked, and a
 "▶️ Resume" task that fires `unset_pause`. They auto-recreate after
 each consumption.
+
+**Step 5.75 — Parallel tracks (recommended when applicable).**
+Courses (boot.dev, CS50), certifications (LFCS, AWS SAA), active
+branches, lineage detours — anything the owner does **alongside**
+the module spine, sometimes for many months. Declared in
+`syllabus.yaml` under `tracks:` so the curriculum captures the
+whole plan rather than splitting half of it into `state.yaml`.
+
+```yaml
+# curriculum/syllabus.yaml
+tracks:
+  - title: "boot.dev backend path"
+    category: Courses
+    phase: 1
+    # No months: -> owner controls lifecycle manually via the
+    # weekly state-review sub-tasks.
+
+  - title: "LFCS"
+    category: Certifications
+    phase: 1
+    months: [9, 9]   # auto-current at month 9, auto-done at month 10.
+```
+
+Lifecycle vocabulary is `not_started | current | done`.
+Declarations with `months: [start, end]` opt into automatic
+transitions; absence keeps it manual. Owner state always wins on
+conflict — engine never overwrites a `done` track or re-opens a
+finished one.
+
+Ritual templates can gate on track state via `gated_by:`:
+
+```yaml
+- id: weekly-bootdev-session
+  title: "boot.dev session"
+  cadence: weekly
+  day_of_week: tuesday
+  gated_by:
+    - { type: track, category: Courses, item: "boot.dev backend path", states: [current] }
+```
+
+Gate vocabulary (locked): `track`, `module_eq`, `module_gte`,
+`module_lte`. Multiple gates ANDed.
+
+When designing the curriculum, ask the user: "Anything you'll be
+doing in parallel — courses, certs, branches?" Author one
+declaration per. The weekly state-review template's auto-injection
+will create a finish-checkbox per `current` track at parent
+creation — no need to author one sub-task per track.
 
 **Step 6 — Practices (optional).** Weekly cadence templates that
 aren't routine — deliberate skill drills like "trace one system

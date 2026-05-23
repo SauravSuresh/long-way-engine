@@ -208,6 +208,59 @@ def increment_counter(
     return MutationResult(new_state, entry, entry["message"])
 
 
+def mark_track_started(
+    state: State,
+    *,
+    category: str,
+    item: str,
+    todoist_task_id: str,
+    today: date,
+) -> MutationResult:
+    return _set_track_state(state, category, item, "current", todoist_task_id, today)
+
+
+def mark_track_finished(
+    state: State,
+    *,
+    category: str,
+    item: str,
+    todoist_task_id: str,
+    today: date,
+) -> MutationResult:
+    return _set_track_state(state, category, item, "done", todoist_task_id, today)
+
+
+def _set_track_state(
+    state: State,
+    category: str,
+    item: str,
+    new_value: str,
+    todoist_task_id: str,
+    today: date,
+) -> MutationResult:
+    cat_dict = state.learning_tracks.get(category, {})
+    prior_value = cat_dict.get(item, "not_started")
+    action = "mark_track_started" if new_value == "current" else "mark_track_finished"
+    if prior_value == new_value:
+        entry = _entry(
+            action, todoist_task_id, today,
+            category=category, item=item,
+            noop=True, message=f"{category}/{item} already {new_value}",
+        )
+        return MutationResult(state, entry, entry["message"])
+    new_tracks = {k: dict(v) for k, v in state.learning_tracks.items()}
+    new_tracks.setdefault(category, {})[item] = new_value
+    new_state = replace(state, learning_tracks=new_tracks)
+    entry = _entry(
+        action, todoist_task_id, today,
+        category=category, item=item,
+        prior={"learning_tracks": {category: {item: prior_value}}},
+        new={"learning_tracks": {category: {item: new_value}}},
+        message=f"{category}/{item}: {prior_value} -> {new_value}",
+    )
+    return MutationResult(new_state, entry, entry["message"])
+
+
 def revert_last(
     state: State,
     log_entries: list[dict[str, Any]],
@@ -258,10 +311,17 @@ def revert_last(
             for iv in prior["pause_history"]
         ]
         new_state = replace(new_state, pause_history=history)
+    if "learning_tracks" in prior:
+        merged = {k: dict(v) for k, v in new_state.learning_tracks.items()}
+        for cat, items in prior["learning_tracks"].items():
+            merged.setdefault(cat, {})
+            for item, val in items.items():
+                merged[cat][item] = val
+        new_state = replace(new_state, learning_tracks=merged)
     # Counter prior is keyed by counter name; pull from manual_counters
     counter_keys = [k for k in prior if k not in {
         "current_module", "completed_modules", "books_state", "paused",
-        "paused_since", "paused_until", "pause_history",
+        "paused_since", "paused_until", "pause_history", "learning_tracks",
     }]
     if counter_keys:
         merged = dict(new_state.manual_counters)
@@ -282,6 +342,8 @@ ACTION_HANDLERS: dict[str, Callable[..., MutationResult]] = {
     "advance_module": advance_module,
     "mark_book_finished": mark_book_finished,
     "mark_book_started": mark_book_started,
+    "mark_track_started": mark_track_started,
+    "mark_track_finished": mark_track_finished,
     "set_pause": set_pause,
     "unset_pause": unset_pause,
     "increment_counter": increment_counter,

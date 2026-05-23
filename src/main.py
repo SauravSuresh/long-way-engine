@@ -533,6 +533,51 @@ def run(
                 cache[sub_ext_id]["state_review_action"] = dict(sub.action)
                 cache[sub_ext_id]["state_review_parent_task_id"] = str(parent_task_id)
 
+            # Auto-inject one mark_track_finished sub-task per `current`
+            # track. Narrow carve-out from the curriculum-authored rule
+            # (spec section 5). Stable external_id keyed off
+            # (parent_ext_id, "auto-finish", category, title) so the same
+            # current track produces the same sub-task each week.
+            sub_idx = len(resolved.sub_tasks)
+            for category, items in sorted(state.learning_tracks.items()):
+                for title, lifecycle_state in sorted(items.items()):
+                    if lifecycle_state != "current":
+                        continue
+                    auto_key = f"{tpl.id}:auto-finish:{category}:{title}"
+                    auto_ext_id = external_id(auto_key, today)
+                    auto_resolved = ResolvedTemplate(
+                        id=f"{tpl.id}:auto-finish:{sub_idx}",
+                        title=f"I finished [{category}: {title}]",
+                        description="",
+                        due="",
+                        labels=list(resolved.labels),
+                        cadence=resolved.cadence,
+                        skip_if=[],
+                    )
+                    try:
+                        auto_result = client.create_task_idempotent(
+                            auto_resolved, today, auto_ext_id, cache,
+                            parent_id=str(parent_task_id),
+                        )
+                    except Exception as e:
+                        logger.error("auto-finish sub-task %s create failed: %s", auto_ext_id, e)
+                        errors += 1
+                        continue
+                    if not auto_result.skipped:
+                        cache[auto_ext_id] = {
+                            "todoist_task_id": auto_result.todoist_task_id,
+                            "created_at": auto_result.created_at,
+                            "template_id": auto_resolved.id,
+                            "due_date": today.isoformat(),
+                        }
+                    cache[auto_ext_id]["state_review_action"] = {
+                        "type": "mark_track_finished",
+                        "category": category,
+                        "item": title,
+                    }
+                    cache[auto_ext_id]["state_review_parent_task_id"] = str(parent_task_id)
+                    sub_idx += 1
+
         # Stub creation is template-fired, not task-creation-fired:
         # it runs whether the task was created, marker-deduped, or cache-hit.
         _record_stub(
@@ -1042,5 +1087,6 @@ if __name__ == "__main__":
         ritual_times=_bootstrap_config.ritual_times,
         state_current_module=_bootstrap_state.current_module,
         state_month=_bootstrap_state.month,
+        state_learning_tracks=_bootstrap_state.learning_tracks,
     )
     sys.exit(main())
