@@ -10,6 +10,8 @@
   "0265ba67dc64228a": {
     "created_at": "2026-05-24T22:30:27.078351+00:00",
     "due_date": "2026-05-25",
+    "missed_at": "2026-05-26",
+    "status": "missed",
     "template_id": "daily-evening-hands-on",
     "todoist_task_id": "6ghm3pxJC9XVMJM2"
   },
@@ -141,6 +143,12 @@
     "status": "missed",
     "template_id": "weekly-saturday-deep-block",
     "todoist_task_id": "6gffXVc9cp3p9F8R"
+  },
+  "30f8f5da1e1986b1": {
+    "created_at": "2026-05-25T22:35:30.465605+00:00",
+    "due_date": "2026-05-26",
+    "template_id": "daily-anki",
+    "todoist_task_id": "6gj2WQgP4W8C9w3R"
   },
   "3e3eb5fe96d5fc75": {
     "created_at": "2026-05-20T22:53:57.329247+00:00",
@@ -340,6 +348,12 @@
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6ghG4wxMvfp79xWR"
   },
+  "80360c7df82bb190": {
+    "created_at": "2026-05-25T22:35:30.972439+00:00",
+    "due_date": "2026-05-26",
+    "template_id": "daily-evening-hands-on",
+    "todoist_task_id": "6gj2WQmG9wv758HR"
+  },
   "819092dda91ed6aa": {
     "completed_at": "2026-05-17",
     "created_at": "2026-05-06T22:25:26.364352+00:00",
@@ -388,6 +402,8 @@
   "8d7a7895d17dda0f": {
     "created_at": "2026-05-24T22:30:26.444780+00:00",
     "due_date": "2026-05-25",
+    "missed_at": "2026-05-26",
+    "status": "missed",
     "template_id": "daily-anki",
     "todoist_task_id": "6ghm3prcw4W5jmPR"
   },
@@ -402,6 +418,8 @@
   "91a114765970e756": {
     "created_at": "2026-05-24T22:30:25.875023+00:00",
     "due_date": "2026-05-25",
+    "missed_at": "2026-05-26",
+    "status": "missed",
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6ghm3pjG3Jw3mPP2"
   },
@@ -489,6 +507,12 @@
     "status": "completed",
     "template_id": "daily-evening-hands-on",
     "todoist_task_id": "6gXmg2RVwF5vmGv2"
+  },
+  "bf47ab5bca42bd56": {
+    "created_at": "2026-05-25T22:35:29.739791+00:00",
+    "due_date": "2026-05-26",
+    "template_id": "daily-morning-reading",
+    "todoist_task_id": "6gj2WQcq675ww772"
   },
   "bfbd1a9f173ad6aa": {
     "completed_at": "2026-05-17",

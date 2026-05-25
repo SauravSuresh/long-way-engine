@@ -1,8 +1,8 @@
 {
   "adherence": {
     "done": 10,
-    "expected": 17,
-    "percent": 59,
+    "expected": 18,
+    "percent": 56,
     "since": "2026-05-05"
   },
   "books": [
@@ -94,13 +94,9 @@
   "books_state": {},
   "current_book": "Computer Systems: A Programmer's Perspective",
   "current_module": 1,
-  "day_of_journey": 21,
+  "day_of_journey": 22,
   "day_total": 1189,
   "last_7_days": [
-    {
-      "date": "2026-05-18",
-      "state": "yellow"
-    },
     {
       "date": "2026-05-19",
       "state": "green"
@@ -124,6 +120,10 @@
     {
       "date": "2026-05-24",
       "state": "gray"
+    },
+    {
+      "date": "2026-05-25",
+      "state": "red"
     }
   ],
   "month": 1,
@@ -137,26 +137,26 @@
   },
   "reflections": [],
   "streaks": {
-    "Daily": 1,
+    "Daily": 0,
     "Monthly post": 0,
     "Weekly review": 0
   },
   "streaks_view": {
     "Daily": {
       "best": 6,
-      "count": 1,
-      "hint": "morning reading + Anki by 23:59 to keep it"
+      "count": 0,
+      "hint": "complete morning reading + Anki today to start"
     },
     "Monthly post": {
       "best": 0,
       "count": 0,
-      "hint": "next post in 7 days"
+      "hint": "next post in 6 days"
     },
     "Weekly review": {
       "best": 0,
       "count": 0,
-      "hint": "next Friday in 4 days"
+      "hint": "next Friday in 3 days"
     }
   },
-  "today": "2026-05-25"
+  "today": "2026-05-26"
 }
