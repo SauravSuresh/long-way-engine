@@ -147,6 +147,8 @@
   "30f8f5da1e1986b1": {
     "created_at": "2026-05-25T22:35:30.465605+00:00",
     "due_date": "2026-05-26",
+    "missed_at": "2026-05-27",
+    "status": "missed",
     "template_id": "daily-anki",
     "todoist_task_id": "6gj2WQgP4W8C9w3R"
   },
@@ -351,6 +353,8 @@
   "80360c7df82bb190": {
     "created_at": "2026-05-25T22:35:30.972439+00:00",
     "due_date": "2026-05-26",
+    "missed_at": "2026-05-27",
+    "status": "missed",
     "template_id": "daily-evening-hands-on",
     "todoist_task_id": "6gj2WQmG9wv758HR"
   },
@@ -422,6 +426,12 @@
     "status": "missed",
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6ghm3pjG3Jw3mPP2"
+  },
+  "93264d66ddf5ac2c": {
+    "created_at": "2026-05-26T22:49:58.616546+00:00",
+    "due_date": "2026-05-27",
+    "template_id": "daily-evening-hands-on",
+    "todoist_task_id": "6gjC6gcvGmJjc5WR"
   },
   "a13c0894de4b6e13": {
     "created_at": "2026-05-23T22:26:11.319630+00:00",
@@ -511,6 +521,8 @@
   "bf47ab5bca42bd56": {
     "created_at": "2026-05-25T22:35:29.739791+00:00",
     "due_date": "2026-05-26",
+    "missed_at": "2026-05-27",
+    "status": "missed",
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6gj2WQcq675ww772"
   },
@@ -599,11 +611,23 @@
     "template_id": "persistent-emergency-pause",
     "todoist_task_id": "6ghVVGJvPHjm22GR"
   },
+  "e85b29cdf39545d0": {
+    "created_at": "2026-05-26T22:49:56.986440+00:00",
+    "due_date": "2026-05-27",
+    "template_id": "daily-morning-reading",
+    "todoist_task_id": "6gjC6gc3r75Mvmw2"
+  },
   "ee300869ddec639a": {
     "created_at": "2026-05-04T22:33:20.461189+00:00",
     "due_date": "module:1",
     "template_id": "module-01-onboarding",
     "todoist_task_id": "6gX58747f54fv282"
+  },
+  "efdd0dee51b75810": {
+    "created_at": "2026-05-26T22:49:57.909905+00:00",
+    "due_date": "2026-05-27",
+    "template_id": "daily-anki",
+    "todoist_task_id": "6gjC6gg6pR5vxrmR"
   },
   "f41b7930bd8af5f9": {
     "completed_at": "2026-05-17",
