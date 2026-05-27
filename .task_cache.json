@@ -104,6 +104,12 @@
     "template_id": "weekly-read-real-code",
     "todoist_task_id": "6gc36xpxWHHV79f2"
   },
+  "2081cb8f6868de03": {
+    "created_at": "2026-05-27T22:56:58.304108+00:00",
+    "due_date": "2026-05-28",
+    "template_id": "daily-anki",
+    "todoist_task_id": "6gjQffrRWHP46gWR"
+  },
   "21a326f07bfd62be": {
     "completed_at": "2026-05-24",
     "created_at": "2026-05-22T22:34:54.795802+00:00",
@@ -419,6 +425,12 @@
     "template_id": "daily-anki",
     "todoist_task_id": "6ggJ5HJQcqM9fQQ2"
   },
+  "9023d32983d9dc47": {
+    "created_at": "2026-05-27T22:56:57.523425+00:00",
+    "due_date": "2026-05-28",
+    "template_id": "daily-morning-reading",
+    "todoist_task_id": "6gjQffmJ86qwF4CR"
+  },
   "91a114765970e756": {
     "created_at": "2026-05-24T22:30:25.875023+00:00",
     "due_date": "2026-05-25",
@@ -430,6 +442,8 @@
   "93264d66ddf5ac2c": {
     "created_at": "2026-05-26T22:49:58.616546+00:00",
     "due_date": "2026-05-27",
+    "missed_at": "2026-05-28",
+    "status": "missed",
     "template_id": "daily-evening-hands-on",
     "todoist_task_id": "6gjC6gcvGmJjc5WR"
   },
@@ -566,6 +580,12 @@
     "template_id": "daily-evening-hands-on",
     "todoist_task_id": "6gcR3GM5cP4G5mJR"
   },
+  "d05fc7c201a42031": {
+    "created_at": "2026-05-27T22:56:58.727276+00:00",
+    "due_date": "2026-05-28",
+    "template_id": "weekly-pair-with-engineer",
+    "todoist_task_id": "6gjQffr4pJfpMwh2"
+  },
   "d4304bee726f5055": {
     "created_at": "2026-05-21T22:49:51.261842+00:00",
     "due_date": "2026-05-22",
@@ -614,6 +634,8 @@
   "e85b29cdf39545d0": {
     "created_at": "2026-05-26T22:49:56.986440+00:00",
     "due_date": "2026-05-27",
+    "missed_at": "2026-05-28",
+    "status": "missed",
     "template_id": "daily-morning-reading",
     "todoist_task_id": "6gjC6gc3r75Mvmw2"
   },
@@ -624,8 +646,10 @@
     "todoist_task_id": "6gX58747f54fv282"
   },
   "efdd0dee51b75810": {
+    "completed_at": "2026-05-28",
     "created_at": "2026-05-26T22:49:57.909905+00:00",
     "due_date": "2026-05-27",
+    "status": "completed",
     "template_id": "daily-anki",
     "todoist_task_id": "6gjC6gg6pR5vxrmR"
   },
