@@ -55,21 +55,23 @@ class NamespacedCache:
         self.data.setdefault(syllabus, {})[external_id] = record
 
     def for_syllabus(self, syllabus: str) -> dict[str, dict[str, Any]]:
-        return self.data.setdefault(syllabus, {})
+        """Read-only view of records for one syllabus. Returns {} if unknown.
+
+        To insert, use `.set()` instead — mutating the returned dict has no effect
+        on cache state when the syllabus is absent (a fresh empty dict is returned).
+        """
+        return self.data.get(syllabus, {})
 
 
 def _looks_like_flat_cache(d: dict[str, Any]) -> bool:
-    """A flat (legacy) cache has values that are records (dicts with 'todoist_id')
-    rather than per-syllabus sub-dicts.
+    """True if `d` looks like a legacy flat cache (top-level values are records).
+
+    A record contains a `todoist_id` key; a namespace bucket is itself a dict
+    of records, so it will NOT contain `todoist_id` at the top level.
     """
     if not d:
         return False
-    for v in d.values():
-        if isinstance(v, dict) and "todoist_id" in v:
-            return True
-        if isinstance(v, dict) and all(isinstance(vv, dict) and "todoist_id" not in vv for vv in v.values()):
-            return False
-    return False
+    return any(isinstance(v, dict) and "todoist_id" in v for v in d.values())
 
 
 def load_namespaced_cache(path: Path) -> NamespacedCache:
@@ -86,7 +88,12 @@ def load_namespaced_cache(path: Path) -> NamespacedCache:
         raise ValueError(
             "legacy flat cache detected; run scripts/migrate_to_multi_syllabus.py first"
         )
-    return NamespacedCache(data={k: dict(v) for k, v in data.items()})
+    return NamespacedCache(
+        data={
+            sk: {ek: dict(rec) for ek, rec in entries.items()}
+            for sk, entries in data.items()
+        }
+    )
 
 
 def save_namespaced_cache(path: Path, nc: NamespacedCache) -> None:

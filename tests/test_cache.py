@@ -2,7 +2,17 @@ import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from src.cache import load_cache, prune, save_cache
+import pytest
+
+from src.cache import (
+    NamespacedCache,
+    lift_flat_cache_under_syllabus,
+    load_cache,
+    load_namespaced_cache,
+    prune,
+    save_cache,
+    save_namespaced_cache,
+)
 
 
 def test_load_missing_returns_empty(tmp_path: Path):
@@ -64,13 +74,6 @@ def test_prune_keeps_entries_missing_created_at():
 
 # ── NamespacedCache tests ─────────────────────────────────────────────────────
 
-from src.cache import (
-    NamespacedCache,
-    lift_flat_cache_under_syllabus,
-    load_namespaced_cache,
-    save_namespaced_cache,
-)
-
 
 def test_lift_flat_cache_under_syllabus():
     flat = {"ext-1": {"todoist_id": "100"}, "ext-2": {"todoist_id": "101"}}
@@ -112,3 +115,30 @@ def test_save_and_round_trip(tmp_path):
 def test_load_missing_file_returns_empty(tmp_path):
     nc = load_namespaced_cache(tmp_path / "absent.json")
     assert nc.get("any", "ext-1") is None
+
+
+def test_load_namespaced_cache_corrupt_json_returns_empty(tmp_path):
+    p = tmp_path / "task_cache.json"
+    p.write_text("{not valid json")
+    nc = load_namespaced_cache(p)
+    assert nc.get("any", "ext") is None
+
+
+def test_load_namespaced_cache_non_dict_top_level_returns_empty(tmp_path):
+    p = tmp_path / "task_cache.json"
+    p.write_text(json.dumps(["not", "a", "dict"]))
+    nc = load_namespaced_cache(p)
+    assert nc.get("any", "ext") is None
+
+
+def test_load_namespaced_cache_detects_mixed_flat_record(tmp_path):
+    """A file where one top-level entry is a flat record (legacy) must still be rejected,
+    even if another top-level entry looks like a namespace.
+    """
+    p = tmp_path / "task_cache.json"
+    p.write_text(json.dumps({
+        "long-way": {"ext-a": {"todoist_id": "100"}},
+        "ext-b": {"todoist_id": "200"},  # flat record at top level — should trigger detector
+    }))
+    with pytest.raises(ValueError, match="legacy flat cache"):
+        load_namespaced_cache(p)
