@@ -285,6 +285,16 @@ def revert_last(
         )
         return MutationResult(state, entry, "no-op: nothing to revert")
 
+    if target.get("action") == "increment_counter":
+        msg = "cannot revert: increment_counter targets are shared state, not per-syllabus"
+        entry = _entry(
+            "revert_last", todoist_task_id, today,
+            noop=True,
+            reverted_action="increment_counter",
+            message=msg,
+        )
+        return MutationResult(state, entry, msg)
+
     prior = target.get("prior") or {}
     new_state = state
     if "current_module" in prior:

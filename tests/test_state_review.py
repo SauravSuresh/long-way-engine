@@ -306,6 +306,10 @@ def test_increment_counter_parses_comment(tmp_path: Path):
     assert summary.mutations_applied == 1
     assert new_shared.manual_counters["anki_card_count"] == 125
 
+    from src.state import load_shared_state
+    reloaded = load_shared_state(shared_path)
+    assert reloaded.manual_counters.get("anki_card_count") == 125
+
 
 def test_increment_counter_skips_unparseable_comment(tmp_path: Path):
     cache = {

@@ -390,8 +390,8 @@ def run_state_review_phase(
         entry["persistent_consumed"] = True
         summary.persistent_recreated.append(ext_id_str)
 
-    # 4. Atomic write: syllabus state, shared state, and state_log.
-    if pending_entries or new_state is not state:
+    # 4. Atomic write: only write each file when its slice actually changed.
+    if new_state is not state:
         save_syllabus_state(state_path, new_state)
     if new_shared is not shared:
         save_shared_state(shared_path, new_shared)

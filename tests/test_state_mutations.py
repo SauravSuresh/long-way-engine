@@ -204,6 +204,37 @@ def test_revert_last_empty_log_noop():
     assert result.log_entry.get("noop") is True
 
 
+def test_revert_last_on_increment_counter_is_explicit_noop(tmp_path):
+    """Counter increments live on SharedState; revert_last can't undo them
+    via the per-syllabus path. It should noop loudly, not silently."""
+    from datetime import date
+    from src.state import SyllabusState
+    from src.state_mutations import revert_last
+
+    sy = SyllabusState(
+        start_date=date(2026, 5, 1), phase=1, month=1,
+        current_module=2, current_book="x",
+    )
+    log_entries = [
+        {
+            "action": "increment_counter",
+            "todoist_task_id": "t-1",
+            "counter": "anki_card_count",
+            "delta": 10,
+            "today": "2026-05-27",
+        },
+    ]
+    result = revert_last(
+        sy, log_entries,
+        todoist_task_id="rev-1",
+        today=date(2026, 5, 28),
+    )
+    assert result is not None
+    assert result.new_state is sy  # no per-syllabus mutation
+    assert result.log_entry.get("noop") is True
+    assert "shared" in result.user_message.lower() or "counter" in result.user_message.lower()
+
+
 def test_action_handlers_table_complete():
     expected = {
         "advance_module",
