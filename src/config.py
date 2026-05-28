@@ -131,7 +131,14 @@ class SyllabusEntry:
 
 @dataclass
 class MultiSyllabusConfig:
-    ritual_times: dict[str, str]
+    """Repo-wide config for the multi-syllabus engine.
+
+    `default_ritual_times` is the top-level fallback. Per-syllabus effective
+    times live on `syllabuses[key].ritual_times` after override merging — use
+    those when scheduling tasks, not this field.
+    """
+
+    default_ritual_times: dict[str, str]
     priority_order: list[str]
     syllabuses: dict[str, SyllabusEntry]
     sunday_off: bool
@@ -202,7 +209,7 @@ def load_multi_syllabus_config(yaml_path: Path, env_path: Path) -> MultiSyllabus
         pair_day = str(pair_day).lower()
 
     return MultiSyllabusConfig(
-        ritual_times=top_rt,
+        default_ritual_times=top_rt,
         priority_order=priority_order,
         syllabuses=syllabuses,
         sunday_off=bool(raw.get("sunday_off", True)),
