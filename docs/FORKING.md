@@ -73,8 +73,8 @@ a curriculum in mind and just want to type it in.
 ### Path A — AI-agent interview (recommended)
 
 [`AGENTS.md`](../AGENTS.md) is the canonical spec for how a fork's
-`curriculum/` should be written. Hand it to an AI agent and have the
-agent run the 7-step interview with you:
+`curricula/<name>/` bundle should be written. Hand it to an AI agent
+and have the agent run the 7-step interview with you:
 
 1. Open the cloned repo in your AI tool of choice. Claude Code,
    Cursor, Codex, Aider — anything that can read files in the repo.

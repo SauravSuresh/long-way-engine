@@ -258,8 +258,8 @@ The hard part of forking isn't the engine — it's writing the
 curriculum. To make that tractable, the repo ships
 **[`AGENTS.md`](./AGENTS.md)**: a self-contained brief that any
 capable AI agent (Claude Code, Cursor, Codex, Aider) can read to
-interview you and produce a complete `curriculum/` bundle for your
-fork.
+interview you and produce a complete `curricula/<name>/` bundle for
+your fork.
 
 ### The workflow
 
