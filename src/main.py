@@ -78,7 +78,7 @@ from src.state_review import (
     run_state_review_phase,
 )
 from src.syllabus import Syllabus, load_syllabus, load_syllabus_for_entry
-from src.curriculum_validator import validate as validate_curriculum
+from src.curriculum_validator import validate as validate_curriculum, validate_multi_syllabus
 from src.templates import ResolvedTemplate, load_templates, resolve_variables
 from src.todoist import (
     CreateResult,
@@ -1371,6 +1371,13 @@ def main(argv: list[str] | None = None) -> int:
             confirm=args.yes,
             cache_path=args.cache_file,
         )
+
+    errors = validate_multi_syllabus(cfg.syllabuses, repo_root=REPO_ROOT)
+    if errors:
+        for e in errors:
+            logger.error("config: %s", e)
+        print("config validation failed:\n  " + "\n  ".join(errors), file=sys.stderr)
+        return 2
 
     shared = load_shared_state(SHARED_STATE_PATH)
     nc = load_namespaced_cache(args.cache_file or CACHE_PATH)

@@ -203,3 +203,98 @@ def test_aggregates_multiple_violations(tmp_path: Path) -> None:
     msg = str(exc_info.value)
     assert "GHOST" in msg
     assert "phase 99" in msg
+
+
+# ---------------------------------------------------------------------------
+# validate_multi_syllabus tests
+# ---------------------------------------------------------------------------
+
+
+def test_validate_multi_syllabus_errors_when_path_missing(tmp_path):
+    from src.curriculum_validator import validate_multi_syllabus
+    from src.config import SyllabusEntry
+    entry = SyllabusEntry(
+        key="long-way",
+        path=tmp_path / "does-not-exist",
+        todoist_project_id="X",
+        state_file=tmp_path / "state.yaml",
+        enabled=True,
+        ritual_times={},
+    )
+    errs = validate_multi_syllabus({"long-way": entry}, repo_root=tmp_path)
+    assert any("path" in e and "does-not-exist" in e for e in errs)
+
+
+def test_validate_multi_syllabus_errors_when_state_file_missing(tmp_path):
+    from src.curriculum_validator import validate_multi_syllabus
+    from src.config import SyllabusEntry
+    (tmp_path / "curricula" / "long-way").mkdir(parents=True)
+    (tmp_path / "curricula" / "long-way" / "reflection_templates").mkdir()
+    entry = SyllabusEntry(
+        key="long-way",
+        path=tmp_path / "curricula" / "long-way",
+        todoist_project_id="X",
+        state_file=tmp_path / "state" / "long-way.yaml",  # doesn't exist
+        enabled=True,
+        ritual_times={},
+    )
+    errs = validate_multi_syllabus({"long-way": entry}, repo_root=tmp_path)
+    assert any("state_file" in e for e in errs)
+
+
+def test_validate_multi_syllabus_errors_on_empty_project_id(tmp_path):
+    from src.curriculum_validator import validate_multi_syllabus
+    from src.config import SyllabusEntry
+    (tmp_path / "curricula" / "long-way").mkdir(parents=True)
+    (tmp_path / "curricula" / "long-way" / "reflection_templates").mkdir()
+    (tmp_path / "state").mkdir()
+    (tmp_path / "state" / "long-way.yaml").write_text(
+        "start_date: 2026-01-01\ncurrent_module: 1\ncurrent_book: x\n"
+    )
+    entry = SyllabusEntry(
+        key="long-way",
+        path=tmp_path / "curricula" / "long-way",
+        todoist_project_id="",
+        state_file=tmp_path / "state" / "long-way.yaml",
+        enabled=True,
+        ritual_times={},
+    )
+    errs = validate_multi_syllabus({"long-way": entry}, repo_root=tmp_path)
+    assert any("todoist_project_id" in e and "long-way" in e for e in errs)
+
+
+def test_validate_multi_syllabus_skips_disabled(tmp_path):
+    """Disabled syllabuses skipped entirely — missing path/state_file/project_id are tolerated."""
+    from src.curriculum_validator import validate_multi_syllabus
+    from src.config import SyllabusEntry
+    entry = SyllabusEntry(
+        key="ghost",
+        path=tmp_path / "missing",
+        todoist_project_id="",
+        state_file=tmp_path / "missing.yaml",
+        enabled=False,
+        ritual_times={},
+    )
+    errs = validate_multi_syllabus({"ghost": entry}, repo_root=tmp_path)
+    assert errs == []
+
+
+def test_validate_multi_syllabus_returns_empty_on_clean_config(tmp_path):
+    from src.curriculum_validator import validate_multi_syllabus
+    from src.config import SyllabusEntry
+    (tmp_path / "curricula" / "long-way").mkdir(parents=True)
+    (tmp_path / "curricula" / "long-way" / "reflection_templates").mkdir()
+    (tmp_path / "state").mkdir()
+    (tmp_path / "state" / "long-way.yaml").write_text(
+        "start_date: 2026-01-01\ncurrent_module: 1\ncurrent_book: x\n"
+    )
+    entry = SyllabusEntry(
+        key="long-way",
+        path=tmp_path / "curricula" / "long-way",
+        todoist_project_id="ABC",
+        state_file=tmp_path / "state" / "long-way.yaml",
+        enabled=True,
+        ritual_times={},
+    )
+    errs = validate_multi_syllabus({"long-way": entry}, repo_root=tmp_path)
+    assert errs == []
