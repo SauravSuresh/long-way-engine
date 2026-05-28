@@ -17,13 +17,13 @@ from dataclasses import dataclass, replace
 from datetime import date, timedelta
 from typing import Any, Callable
 
-from src.state import PauseInterval, State
+from src.state import PauseInterval, SharedState, SyllabusState
 from src.syllabus import Syllabus
 
 
 @dataclass(frozen=True)
 class MutationResult:
-    new_state: State
+    new_state: SyllabusState | SharedState
     log_entry: dict[str, Any]
     user_message: str
 
@@ -39,7 +39,7 @@ def _entry(action: str, todoist_task_id: str, today: date, **extra: Any) -> dict
 
 
 def advance_module(
-    state: State,
+    state: SyllabusState,
     syllabus: Syllabus,
     *,
     todoist_task_id: str,
@@ -72,7 +72,7 @@ def advance_module(
 
 
 def mark_book_finished(
-    state: State,
+    state: SyllabusState,
     *,
     book: str,
     todoist_task_id: str,
@@ -82,7 +82,7 @@ def mark_book_finished(
 
 
 def mark_book_started(
-    state: State,
+    state: SyllabusState,
     *,
     book: str,
     todoist_task_id: str,
@@ -92,7 +92,7 @@ def mark_book_started(
 
 
 def _set_book_state(
-    state: State,
+    state: SyllabusState,
     book: str,
     new_value: str,
     todoist_task_id: str,
@@ -114,7 +114,7 @@ def _set_book_state(
 
 
 def set_pause(
-    state: State,
+    state: SyllabusState,
     *,
     days: int,
     reason: str,
@@ -139,7 +139,7 @@ def set_pause(
 
 
 def unset_pause(
-    state: State,
+    state: SyllabusState,
     *,
     todoist_task_id: str,
     today: date,
@@ -186,18 +186,18 @@ def unset_pause(
 
 
 def increment_counter(
-    state: State,
+    shared: SharedState,
     *,
     counter: str,
     delta: int,
     todoist_task_id: str,
     today: date,
 ) -> MutationResult:
-    prior_value = int(state.manual_counters.get(counter, 0) or 0)
+    prior_value = int(shared.manual_counters.get(counter, 0) or 0)
     new_value = prior_value + int(delta)
-    new_counters = dict(state.manual_counters)
+    new_counters = dict(shared.manual_counters)
     new_counters[counter] = new_value
-    new_state = replace(state, manual_counters=new_counters)
+    new_shared = replace(shared, manual_counters=new_counters)
     entry = _entry(
         "increment_counter", todoist_task_id, today,
         counter=counter, delta=int(delta),
@@ -205,11 +205,11 @@ def increment_counter(
         new={counter: new_value},
         message=f"{counter}: {prior_value} -> {new_value} (+{delta})",
     )
-    return MutationResult(new_state, entry, entry["message"])
+    return MutationResult(new_shared, entry, entry["message"])
 
 
 def mark_track_started(
-    state: State,
+    state: SyllabusState,
     *,
     category: str,
     item: str,
@@ -220,7 +220,7 @@ def mark_track_started(
 
 
 def mark_track_finished(
-    state: State,
+    state: SyllabusState,
     *,
     category: str,
     item: str,
@@ -231,7 +231,7 @@ def mark_track_finished(
 
 
 def _set_track_state(
-    state: State,
+    state: SyllabusState,
     category: str,
     item: str,
     new_value: str,
@@ -262,7 +262,7 @@ def _set_track_state(
 
 
 def revert_last(
-    state: State,
+    state: SyllabusState,
     log_entries: list[dict[str, Any]],
     *,
     todoist_task_id: str,
@@ -318,16 +318,6 @@ def revert_last(
             for item, val in items.items():
                 merged[cat][item] = val
         new_state = replace(new_state, learning_tracks=merged)
-    # Counter prior is keyed by counter name; pull from manual_counters
-    counter_keys = [k for k in prior if k not in {
-        "current_module", "completed_modules", "books_state", "paused",
-        "paused_since", "paused_until", "pause_history", "learning_tracks",
-    }]
-    if counter_keys:
-        merged = dict(new_state.manual_counters)
-        for k in counter_keys:
-            merged[k] = prior[k]
-        new_state = replace(new_state, manual_counters=merged)
 
     entry = _entry(
         "revert_last", todoist_task_id, today,

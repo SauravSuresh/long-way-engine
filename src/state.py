@@ -334,6 +334,16 @@ def _date_to_yaml(d: date | None) -> Any:
     return d if d is not None else None
 
 
+def _atomic_write_yaml(path: Path, data: dict[str, Any]) -> None:
+    """Write `data` as YAML to `path` atomically (write to .tmp then replace)."""
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(
+        yaml.safe_dump(data, sort_keys=False, default_flow_style=False),
+        encoding="utf-8",
+    )
+    tmp.replace(path)
+
+
 def save_state(path: Path, state: State) -> None:
     """Atomic write of state.yaml. Preserves the dataclass round-trip; field
     order matches the live file's conventions so diffs stay readable.
@@ -359,9 +369,42 @@ def save_state(path: Path, state: State) -> None:
         "manual_counters": dict(state.manual_counters),
         "notes": state.notes,
     }
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(
-        yaml.safe_dump(payload, sort_keys=False, default_flow_style=False),
-        encoding="utf-8",
-    )
-    tmp.replace(path)
+    _atomic_write_yaml(path, payload)
+
+
+def save_syllabus_state(path: Path, state: SyllabusState) -> None:
+    """Persist per-syllabus state atomically."""
+    data: dict[str, Any] = {
+        "start_date": state.start_date.isoformat(),
+        "phase": state.phase,
+        "month": state.month,
+        "current_module": state.current_module,
+        "current_book": state.current_book,
+        "completed_modules": list(state.completed_modules),
+        "active_branches": list(state.active_branches),
+        "paused": state.paused,
+        "paused_since": state.paused_since.isoformat() if state.paused_since else None,
+        "paused_until": state.paused_until.isoformat() if state.paused_until else None,
+        "pause_history": [
+            {
+                "start": pi.start.isoformat(),
+                "end": pi.end.isoformat(),
+                "reason": pi.reason,
+            }
+            for pi in state.pause_history
+        ],
+        "books_state": dict(state.books_state),
+        "learning_tracks": {k: dict(v) for k, v in state.learning_tracks.items()},
+    }
+    _atomic_write_yaml(path, data)
+
+
+def save_shared_state(path: Path, shared: SharedState) -> None:
+    """Persist shared (user-life-wide) state atomically."""
+    data: dict[str, Any] = {
+        "timezone": str(shared.timezone),
+        "manual_counters": dict(shared.manual_counters),
+    }
+    if shared.notes:
+        data["notes"] = shared.notes
+    _atomic_write_yaml(path, data)

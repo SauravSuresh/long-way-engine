@@ -1,7 +1,7 @@
 from datetime import date
 from pathlib import Path
 
-from src.state import SyllabusState, load_syllabus_state
+from src.state import SyllabusState, load_syllabus_state, save_syllabus_state, PauseInterval
 
 
 YAML = """
@@ -43,3 +43,25 @@ def test_load_syllabus_state_missing_required(tmp_path: Path):
     p.write_text("phase: 1\n")  # missing start_date, current_module, current_book
     with pytest.raises(KeyError):
         load_syllabus_state(p)
+
+
+def test_save_syllabus_state_round_trips(tmp_path):
+    from datetime import date
+    from src.state import SyllabusState, save_syllabus_state, load_syllabus_state, PauseInterval
+    s = SyllabusState(
+        start_date=date(2026, 5, 5),
+        phase=1, month=1,
+        current_module=3,
+        current_book="CSAPP",
+        completed_modules=[1, 2],
+        books_state={"CSAPP": "current"},
+        learning_tracks={"Courses": {"boot.dev": "current"}},
+        paused=False,
+        pause_history=[PauseInterval(start=date(2026, 3, 1), end=date(2026, 3, 7), reason="travel")],
+    )
+    p = tmp_path / "long-way.yaml"
+    save_syllabus_state(p, s)
+    s2 = load_syllabus_state(p)
+    assert s2.current_module == 3
+    assert s2.completed_modules == [1, 2]
+    assert s2.pause_history[0].reason == "travel"

@@ -1,7 +1,7 @@
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from src.state import SharedState, load_shared_state
+from src.state import SharedState, load_shared_state, save_shared_state
 
 
 def test_load_shared_state_basic(tmp_path: Path):
@@ -48,3 +48,19 @@ def test_load_shared_state_invalid_timezone(tmp_path: Path):
     with pytest.raises(ValueError) as exc:
         load_shared_state(p)
     assert "Mars/Olympus" in str(exc.value)
+
+
+def test_save_shared_state_round_trips(tmp_path):
+    from zoneinfo import ZoneInfo
+    from src.state import SharedState, save_shared_state, load_shared_state
+    s = SharedState(
+        timezone=ZoneInfo("Asia/Kolkata"),
+        manual_counters={"anki_card_count": 42, "prs_opened": 3},
+        notes="hi",
+    )
+    p = tmp_path / "shared.yaml"
+    save_shared_state(p, s)
+    s2 = load_shared_state(p)
+    assert s2.timezone == ZoneInfo("Asia/Kolkata")
+    assert s2.manual_counters["anki_card_count"] == 42
+    assert s2.notes == "hi"
