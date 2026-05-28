@@ -124,6 +124,12 @@ def test_wrap_cache_empty_returns_empty():
     assert wrap_cache({}, "long-way") == {}
 
 
+def test_wrap_cache_already_wrapped_empty_namespace():
+    """A wrapped-but-empty namespace must not be double-wrapped."""
+    already = {"long-way": {}}
+    assert wrap_cache(already, "long-way") == {"long-way": {}}
+
+
 def test_split_state_yaml_only_shared_keys():
     """Keys that belong to neither bucket are silently dropped."""
     old = {"timezone": "UTC", "unknown_field": "x"}

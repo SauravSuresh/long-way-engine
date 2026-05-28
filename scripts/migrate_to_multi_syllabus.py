@@ -40,6 +40,12 @@ def split_state_yaml(old: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any
 
 
 def rewrite_config_yaml(old: dict[str, Any], *, syllabus_name: str) -> dict[str, Any]:
+    todoist_block = old.get("todoist") or {}
+    project_id = todoist_block.get("project_id")
+    if not project_id:
+        raise ValueError(
+            "config.yaml has no todoist.project_id — migration source is malformed"
+        )
     new: dict[str, Any] = {}
     if "ritual_times" in old:
         new["ritual_times"] = dict(old["ritual_times"])
@@ -47,7 +53,7 @@ def rewrite_config_yaml(old: dict[str, Any], *, syllabus_name: str) -> dict[str,
     new["syllabuses"] = {
         syllabus_name: {
             "path": f"curricula/{syllabus_name}",
-            "todoist_project_id": str(old["todoist"]["project_id"]),
+            "todoist_project_id": str(project_id),
             "state_file": f"state/{syllabus_name}.yaml",
             "enabled": True,
         }
@@ -64,15 +70,7 @@ def rewrite_config_yaml(old: dict[str, Any], *, syllabus_name: str) -> dict[str,
 def wrap_cache(content: dict[str, Any], syllabus_name: str) -> dict[str, Any]:
     if not content:
         return {}
-    # Already wrapped? Heuristic: the top-level value is itself a dict of records.
-    # A record contains `todoist_id`; a namespace bucket does not at its top level.
-    first_val = next(iter(content.values()))
-    if (
-        isinstance(first_val, dict)
-        and first_val
-        and isinstance(next(iter(first_val.values()), {}), dict)
-        and "todoist_id" not in first_val
-    ):
+    if syllabus_name in content:
         return content
     return {syllabus_name: dict(content)}
 
@@ -117,13 +115,15 @@ def run_migration(repo_root: Path, *, syllabus_name: str, dry_run: bool) -> int:
     old_state = repo_root / "state.yaml"
     new_shared = repo_root / "state" / "shared.yaml"
     new_syllabus_state = repo_root / "state" / f"{syllabus_name}.yaml"
-    if old_state.exists() and not new_shared.exists():
+    if old_state.exists():
         plan.append(f"split {old_state} -> {new_shared} + {new_syllabus_state}")
 
     old_config = repo_root / "config.yaml"
+    new_cfg: dict[str, Any] | None = None
     if old_config.exists():
         raw = _read_yaml(old_config)
         if "syllabuses" not in raw:
+            new_cfg = rewrite_config_yaml(raw, syllabus_name=syllabus_name)
             plan.append(f"rewrite {old_config}")
 
     for cache_name in (".task_cache.json", ".completion_cache.json"):
@@ -161,18 +161,15 @@ def run_migration(repo_root: Path, *, syllabus_name: str, dry_run: bool) -> int:
         new_curriculum.parent.mkdir(parents=True, exist_ok=True)
         shutil.move(str(old_curriculum), str(new_curriculum))
 
-    if old_state.exists() and not new_shared.exists():
-        old = _read_yaml(old_state)
-        shared, syllabus_data = split_state_yaml(old)
+    if old_state.exists():
+        old_data = _read_yaml(old_state)
+        shared, syllabus_data = split_state_yaml(old_data)
         _write_yaml(new_shared, shared)
         _write_yaml(new_syllabus_state, syllabus_data)
         old_state.unlink()
 
-    if old_config.exists():
-        raw = _read_yaml(old_config)
-        if "syllabuses" not in raw:
-            new_cfg = rewrite_config_yaml(raw, syllabus_name=syllabus_name)
-            _write_yaml(old_config, new_cfg)
+    if new_cfg is not None:
+        _write_yaml(old_config, new_cfg)
 
     for cache_name in (".task_cache.json", ".completion_cache.json"):
         p = repo_root / cache_name
