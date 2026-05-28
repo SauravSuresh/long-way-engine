@@ -50,8 +50,9 @@ A second syllabus needs all of those.
   computed from its own completion + pause history.
 - Auto-resolving slot conflicts. The validator errors when two enabled
   syllabuses resolve to the same `(ritual_times_key, clock_time)`
-  pair. The owner must override one or set `allow_slot_overlap: true`
-  on a syllabus block.
+  pair. The owner must either override one syllabus's time or set
+  `allow_slot_overlap: true` on at least one of the two syllabuses
+  (setting it on either suppresses the error for that pair).
 - Dynamic add/remove of syllabuses via Todoist checkbox. Adding a
   syllabus is a `config.yaml` edit + new `curricula/<name>/` bundle.
 - Multi-tenant. Still one owner, one Todoist account, one GitHub Pages
@@ -148,14 +149,17 @@ per-syllabus override. Missing keys inherit; present keys override.
 
 ```yaml
 timezone: Asia/Kolkata
-anki_card_count: 0
 manual_counters:
+  anki_card_count: 0
   prs_opened: 0
   traces_completed: 0
   lineage_detours_done: []
 notes: |
   ...
 ```
+
+`manual_counters` keeps its existing shape from `state.yaml` — no
+field-level reorganization, just a file move.
 
 `state/<syllabus>.yaml` — one per syllabus.
 
@@ -272,7 +276,7 @@ reflections/
 
 1. `git mv curriculum/ curricula/long-way/` (preserves history).
 2. Split `state.yaml`:
-   - `timezone`, `manual_counters`, `notes`, `anki_card_count` → `state/shared.yaml`.
+   - `timezone`, `manual_counters` (including its existing `anki_card_count`), `notes` → `state/shared.yaml`.
    - `start_date`, `phase`, `month`, `current_module`, `current_book`, `completed_modules`, `books_state`, `learning_tracks`, `paused`, `paused_since`, `pause_history` → `state/long-way.yaml`.
 3. Rewrite `config.yaml` to new shape. Single entry under `syllabuses:` keyed `long-way`. Copy existing `project_id` and `ritual_times` over.
 4. Move existing `reflections/<file>` → `reflections/long-way/<cadence>/<file>`.
