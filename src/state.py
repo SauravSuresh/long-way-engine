@@ -89,6 +89,7 @@ class SyllabusState:
     pause_history: list[PauseInterval] = field(default_factory=list)
     books_state: dict[str, str] = field(default_factory=dict)
     learning_tracks: dict[str, dict[str, str]] = field(default_factory=dict)
+    manual_counters: dict[str, Any] = field(default_factory=dict)
 
 
 def load_syllabus_state(path: Path) -> SyllabusState:
@@ -127,6 +128,7 @@ def load_syllabus_state(path: Path) -> SyllabusState:
         pause_history=pause_history,
         books_state=dict(raw.get("books_state") or {}),
         learning_tracks=dict(raw.get("learning_tracks") or {}),
+        manual_counters=dict(raw.get("manual_counters") or {}),
     )
 
 
@@ -395,6 +397,7 @@ def save_syllabus_state(path: Path, state: SyllabusState) -> None:
         ],
         "books_state": dict(state.books_state),
         "learning_tracks": {k: dict(v) for k, v in state.learning_tracks.items()},
+        "manual_counters": dict(state.manual_counters),
     }
     _atomic_write_yaml(path, data)
 

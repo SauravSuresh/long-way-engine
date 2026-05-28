@@ -718,6 +718,8 @@ def _render_inner(
     reflections_root: Path,
     module_titles: dict[int, str],
     syllabus: Syllabus | None,
+    *,
+    show_practice_tracker: bool = True,
 ) -> tuple[str, dict[str, Any]]:
     """Render the dashboard body (no doctype wrapper). Returns (body_html, data)."""
     total_months = _total_months_from_syllabus(syllabus)
@@ -756,21 +758,23 @@ def _render_inner(
     day_n, day_total = _journey_day(today, state, total_months=total_months)
     adherence = adherence_since_start(today, state, cache, completion_set)
 
-    body = "".join(
-        (
-            _header(state, config, today, adherence, total_months=total_months),
-            _today_panel(state, config, today, cache, completion_set),
-            _streaks_section(streaks_view),
-            _phase_tree(state, phase_ranges=phase_tick_labels),
-            _module_trunk(state, module_titles, total_modules=total_modules),
-            last7_html,
-            _practice_tracker(practices),
-            _learning_tracks(state),
-            _books_section(state, books),
-            _reflection_log(config, reflections),
-            _footer(today),
-        )
-    )
+    body_parts = [
+        _header(state, config, today, adherence, total_months=total_months),
+        _today_panel(state, config, today, cache, completion_set),
+        _streaks_section(streaks_view),
+        _phase_tree(state, phase_ranges=phase_tick_labels),
+        _module_trunk(state, module_titles, total_modules=total_modules),
+        last7_html,
+    ]
+    if show_practice_tracker:
+        body_parts.append(_practice_tracker(practices))
+    body_parts.extend([
+        _learning_tracks(state),
+        _books_section(state, books),
+        _reflection_log(config, reflections),
+        _footer(today),
+    ])
+    body = "".join(body_parts)
 
     adh_done, adh_expected = adherence
     adh_pct = round(100 * adh_done / adh_expected) if adh_expected > 0 else None
@@ -876,11 +880,18 @@ def render_multi_syllabus(
 
     Returns the full HTML doc and a combined data dict.
     """
+    shared_practice_values = {
+        "Traces completed": int(shared.manual_counters.get("traces_completed", 0) or 0),
+        "PRs opened": int(shared.manual_counters.get("prs_opened", 0) or 0),
+        "Pair sessions": int(shared.manual_counters.get("pair_sessions", 0) or 0),
+        "Anki": int(shared.manual_counters.get("anki_card_count", 0) or 0),
+    }
     shared_band = (
         '<header class="shared-band">'
         f'<span class="tz">{_h(str(shared.timezone))}</span>'
         f'<span class="counter">Anki: {shared.manual_counters.get("anki_card_count", 0):,}</span>'
         f'<span class="counter">PRs opened: {shared.manual_counters.get("prs_opened", 0)}</span>'
+        f'{_practice_tracker(shared_practice_values)}'
         '</header>'
     )
 
@@ -917,6 +928,7 @@ def render_multi_syllabus(
             reflections_root=reflections_root / key,
             module_titles=(module_titles_by_syllabus or {}).get(key, {}),
             syllabus=syllabuses.get(key),
+            show_practice_tracker=False,
         )
         sections.append(
             f'<section class="syllabus-card" data-syllabus="{_h(key)}">'
