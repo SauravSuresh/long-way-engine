@@ -12,16 +12,24 @@ points at a single `curriculum_dir`; `state.yaml` carries a flat
 the daily cron walks one template tree and fires into one Todoist
 project; the dashboard renders one phase/month/module view.
 
-The owner wants to run a second syllabus — a shorter, job-readiness
-plan — in parallel with the existing 39-month "Long Way" path. That is
-not expressible today: there is one set of state pointers, one Todoist
-target, one dashboard surface, one weekly state-review task.
+A single-syllabus repo cannot express the general shape of pursuing
+multiple long-horizon learning paths in parallel — a deep-and-slow
+spine alongside a short-and-sharp sprint, or two unrelated paths at
+different cadences, or three rotating focuses across a year. Each path
+needs its own modules, its own current book, its own Todoist project,
+its own streak, its own pause behavior, its own reflections — none of
+which the current schema supports.
 
 `state.yaml`'s `learning_tracks` already models *parallel surfaces*,
 but only as status badges (`current` / `done` / `not_started`). A
 learning track does not fire its own daily tasks, advance through its
 own modules, render its own dashboard card, or own a Todoist project.
-A second syllabus needs all of those.
+First-class parallel paths need all of those.
+
+A concrete motivating example for the immediate owner is adding a
+shorter job-readiness path alongside the existing 39-month "Long Way",
+but the design is for arbitrary N — the engine should not privilege
+any specific number, ordering, or shape of syllabuses.
 
 ## Goal
 
@@ -270,6 +278,62 @@ reflections/
     └── weekly/2026-W21.md
 ```
 
+## Local tooling
+
+### `scripts/show_timetable.py` — timetable visualizer
+
+A standalone CLI for previewing the resolved per-syllabus schedule
+before committing a `config.yaml` change. Loads `config.yaml`, resolves
+each enabled syllabus's effective `ritual_times` (top-level merged with
+per-syllabus override), and prints a weekly timetable showing which
+syllabus fires which ritual at which clock time. Collisions render with
+a visible marker.
+
+The visualizer never calls Todoist, never writes state, and never reads
+existing caches. It is read-only over `config.yaml` and the
+`curricula/<name>/` bundles.
+
+```
+$ python -m scripts.show_timetable
+
+Effective schedule (priority_order: job-readiness, long-way)
+
+  Time   Mon  Tue  Wed  Thu  Fri  Sat  Sun    Syllabus       Ritual
+  ────   ───  ───  ───  ───  ───  ───  ───    ──────────     ─────────────────
+  06:00  ●    ●    ●    ●    ●    ●    -      long-way       morning_reading
+  08:30  ●    ●    ●    ●    ●    ●    -      (shared)       anki
+  09:00  -    -    -    -    -    ●    -      long-way       saturday_deep_block
+  10:00  -    -    -    -    -    ●    -      long-way       weekly_state_review
+  10:00  -    -    -    -    -    ●    -      job-readiness  weekly_state_review  ⚠ COLLISION
+  13:00  ●    ●    ●    ●    ●    ●    -      job-readiness  morning_reading
+  19:00  ●    ●    ●    -    ●    -    ●      long-way       evening_hands_on
+  20:00  -    -    -    -    ●    -    -      long-way       friday_review
+  21:00  ●    ●    ●    ●    ●    -    -      job-readiness  evening_hands_on
+
+Collisions: 1
+  10:00 Sat — long-way:weekly_state_review and job-readiness:weekly_state_review
+  Resolve: change clock time on one, OR set allow_slot_overlap: true on one
+```
+
+Exit code 0 if no collisions, non-zero if any (so it can be wired into
+a pre-commit hook by users who want it). `--json` flag emits the same
+data as JSON for tooling.
+
+Flags:
+- `--config PATH` — override `config.yaml` path (default: repo root).
+- `--syllabus KEY` — show only one syllabus's rows.
+- `--json` — emit machine-readable output.
+
+### README documentation
+
+The README gains a "Local tooling" section that lists both scripts
+with a one-paragraph usage description each:
+
+- `scripts/show_timetable.py` — preview the resolved schedule and
+  detect slot collisions before pushing a `config.yaml` change.
+- `scripts/migrate_to_multi_syllabus.py` — one-shot migration for
+  existing single-syllabus forks (described below).
+
 ## Migration
 
 `scripts/migrate_to_multi_syllabus.py`:
@@ -298,6 +362,7 @@ the second path.
   - `cache.py`: namespacing, migration shim idempotency.
   - `dashboard.py`: renderer with 1, 2, N syllabuses; paused state; disabled syllabus.
   - `scripts/migrate_to_multi_syllabus.py`: idempotency, rollback on validation failure.
+  - `scripts/show_timetable.py`: correct effective time resolution, collision detection, exit-code semantics, `--json` output shape, never touches Todoist or state.
 - All existing tests must pass against the migrated single-syllabus shape (semantics-preserving migration).
 
 ## Forker impact
