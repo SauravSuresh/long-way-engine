@@ -294,7 +294,7 @@ def load_state(path: Path) -> State:
 DAYS_PER_MONTH = 30
 
 
-def derive_month(state: State, today: date) -> int:
+def derive_month(state: "State | SyllabusState", today: date) -> int:
     """Engine-managed month: elapsed days from start_date, minus closed pause
     intervals, integer-divided by 30, plus 1. Indefinite (open) pauses do not
     yet contribute pause days; they only do once unset_pause closes the
@@ -325,8 +325,12 @@ def derive_phase(month: int, syllabus: "Syllabus") -> int:
     return 1
 
 
-def update_derived_fields(state: State, syllabus: "Syllabus", today: date) -> State:
-    """Replace state.month + state.phase with their derivations."""
+def update_derived_fields(state: "State | SyllabusState", syllabus: "Syllabus", today: date) -> "State | SyllabusState":
+    """Replace state.month + state.phase with their derivations.
+
+    Accepts both State and SyllabusState — both have `start_date`,
+    `pause_history`, `month`, and `phase` fields.
+    """
     month = derive_month(state, today)
     phase = derive_phase(month, syllabus)
     return replace(state, month=month, phase=phase)

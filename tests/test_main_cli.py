@@ -229,58 +229,88 @@ def test_dry_run_table_has_header_and_rows():
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-REAL_REFLECTION_TEMPLATES = REPO_ROOT / "curriculum" / "reflection_templates"
+REAL_REFLECTION_TEMPLATES = REPO_ROOT / "curricula" / "long-way" / "reflection_templates"
+
+# Syllabus key used by test harness.
+_TEST_SYLLABUS_KEY = "main"
 
 
 def _seed_repo(tmp_path: Path, monkeypatch) -> Path:
-    """Set up a minimal repo layout in tmp and point main's globals at it."""
-    config_path = tmp_path / "config.yaml"
-    state_path = tmp_path / "state.yaml"
-    env_path = tmp_path / ".env"
-    log_path = tmp_path / "LOG.md"
-    cache_path = tmp_path / ".task_cache.json"
-    reflections_dir = tmp_path / "reflections"
-    reflections_dir.mkdir()
-    tdir = _seed_templates(tmp_path)
-    # _seed_templates returns [<dir>]; main() now calls run() with
-    # [RITUALS_DIR, MODULES_PATH], so monkeypatch RITUALS_DIR to the
-    # seeded ritual dir and MODULES_PATH to an empty modules.yaml so
-    # _load_one_file finds an empty list (no extra templates).
-    empty_modules = tmp_path / "modules.yaml"
-    empty_modules.write_text("[]\n")
+    """Set up a minimal multi-syllabus repo layout in tmp_path.
 
-    config_path.write_text(
-        'todoist:\n'
-        '  project_id: "PROD-ID"\n'
-        '  labels: {daily: "daily-ritual"}\n'
-        'ritual_times:\n'
-        '  morning_reading: "06:00"\n'
-        '  anki: "08:30"\n'
-        '  friday_review: "20:00"\n'
-        '  saturday_deep_block: "09:00"\n'
-        '  evening_hands_on: "19:00"\n'
-        'sunday_off: true\n'
-        'dashboard:\n'
-        '  github_username: "u"\n'
-        '  repo_name: "r"\n'
+    Creates:
+      - tmp_path/curriculum/rituals/   with the two test daily templates
+      - tmp_path/curriculum/modules.yaml  (empty list)
+      - tmp_path/state/shared.yaml        with Asia/Kolkata timezone
+      - tmp_path/state/main.yaml          per-syllabus state
+      - tmp_path/config.yaml              multi-syllabus format
+      - tmp_path/.env                     with TODOIST_TOKEN
+
+    Monkeypatches main module globals so main() uses tmp_path.
+    Reflections land in tmp_path/reflections/main/...
+    """
+    curriculum_dir = tmp_path / "curriculum"
+    rituals_dir = curriculum_dir / "rituals"
+    rituals_dir.mkdir(parents=True, exist_ok=True)
+    (curriculum_dir / "modules.yaml").write_text("[]\n")
+    (curriculum_dir / "reflection_templates").mkdir(exist_ok=True)
+    # Minimal syllabus.yaml so load_syllabus() succeeds.
+    (curriculum_dir / "syllabus.yaml").write_text(
+        "meta: {}\nphases:\n  - number: 1\n    name: Phase1\n    months: [1, 12]\n"
+        "books: []\nprimary_book_by_month: {1: CSAPP}\nmodules: []\n"
     )
-    state_path.write_text(
-        "start_date: 2026-05-04\n"
+
+    # Seed the two daily task templates used by existing tests.
+    from tests.test_templates import TPL_YAML
+    (rituals_dir / "daily.yaml").write_text(TPL_YAML)
+
+    state_dir = tmp_path / "state"
+    state_dir.mkdir(exist_ok=True)
+    (state_dir / "shared.yaml").write_text(
         "timezone: Asia/Kolkata\n"
+        "manual_counters:\n"
+        "  anki_card_count: 0\n"
+    )
+    (state_dir / f"{_TEST_SYLLABUS_KEY}.yaml").write_text(
+        "start_date: 2026-05-04\n"
         "phase: 1\n"
         "month: 1\n"
         "current_module: 1\n"
         'current_book: "CSAPP"\n'
     )
+
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text(
+        f'ritual_times:\n'
+        f'  morning_reading: "06:00"\n'
+        f'  anki: "08:30"\n'
+        f'  friday_review: "20:00"\n'
+        f'  saturday_deep_block: "09:00"\n'
+        f'  evening_hands_on: "19:00"\n'
+        f'sunday_off: true\n'
+        f'priority_order:\n'
+        f'  - {_TEST_SYLLABUS_KEY}\n'
+        f'syllabuses:\n'
+        f'  {_TEST_SYLLABUS_KEY}:\n'
+        f'    path: "{curriculum_dir}"\n'
+        f'    todoist_project_id: "PROD-ID"\n'
+        f'    state_file: "{state_dir / (_TEST_SYLLABUS_KEY + ".yaml")}"\n'
+        f'    enabled: true\n'
+        f'dashboard:\n'
+        f'  github_username: "u"\n'
+        f'  repo_name: "r"\n'
+    )
+    env_path = tmp_path / ".env"
     env_path.write_text("TODOIST_TOKEN=tok-from-env\n")
 
+    reflections_dir = tmp_path / "reflections"
+    reflections_dir.mkdir(exist_ok=True)
+
     monkeypatch.setattr(main_module, "CONFIG_PATH", config_path)
-    monkeypatch.setattr(main_module, "STATE_PATH", state_path)
+    monkeypatch.setattr(main_module, "SHARED_STATE_PATH", state_dir / "shared.yaml")
     monkeypatch.setattr(main_module, "ENV_PATH", env_path)
-    monkeypatch.setattr(main_module, "LOG_PATH", log_path)
-    monkeypatch.setattr(main_module, "CACHE_PATH", cache_path)
-    monkeypatch.setattr(main_module, "RITUALS_DIR", tdir[0])
-    monkeypatch.setattr(main_module, "MODULES_PATH", empty_modules)
+    monkeypatch.setattr(main_module, "LOG_PATH", tmp_path / "LOG.md")
+    monkeypatch.setattr(main_module, "CACHE_PATH", tmp_path / ".task_cache.json")
     monkeypatch.setattr(main_module, "REFLECTIONS_DIR", reflections_dir)
     monkeypatch.setattr(
         main_module, "REFLECTION_TEMPLATES_DIR", REAL_REFLECTION_TEMPLATES
@@ -337,7 +367,8 @@ def test_main_cache_file_override(tmp_path: Path, monkeypatch):
     assert not (tmp_path / ".task_cache.json").exists()
 
 
-def test_main_project_id_override(tmp_path: Path, monkeypatch):
+def test_main_project_id_comes_from_config(tmp_path: Path, monkeypatch):
+    """In multi-syllabus mode, the project_id comes from the config, not --project-id."""
     _seed_repo(tmp_path, monkeypatch)
 
     seen: dict[str, str] = {}
@@ -348,11 +379,10 @@ def test_main_project_id_override(tmp_path: Path, monkeypatch):
             seen["project_id"] = kwargs["project_id"]
 
     with patch("src.main.TodoistClient", CapturingClient):
-        rc = main_module.main(
-            ["--today", "2026-05-04", "--project-id", "SANDBOX-ID"]
-        )
+        rc = main_module.main(["--today", "2026-05-04"])
     assert rc == 0
-    assert seen["project_id"] == "SANDBOX-ID"
+    # Project ID comes from the seeded config YAML ("PROD-ID").
+    assert seen["project_id"] == "PROD-ID"
 
 
 # ---------------------------------------------------------------------------
@@ -443,17 +473,39 @@ def test_cleanup_yes_with_empty_project(tmp_path: Path, monkeypatch, capsys):
 # ---------------------------------------------------------------------------
 
 
-REAL_RITUALS = REPO_ROOT / "curriculum" / "rituals"
-REAL_MODULES = REPO_ROOT / "curriculum" / "modules.yaml"
+REAL_CURRICULUM_DIR = REPO_ROOT / "curricula" / "long-way"
 
 
 def _seed_repo_with_real_templates(tmp_path: Path, monkeypatch) -> Path:
-    """Same as _seed_repo, but RITUALS_DIR / MODULES_PATH point at the real
-    curriculum/ so the run uses cadence templates with reflection.create_stub.
+    """Same as _seed_repo, but the syllabus entry path points at the real
+    curriculum dir so the run uses the full cadence templates (reflection stubs, etc).
     """
     _seed_repo(tmp_path, monkeypatch)
-    monkeypatch.setattr(main_module, "RITUALS_DIR", REAL_RITUALS)
-    monkeypatch.setattr(main_module, "MODULES_PATH", REAL_MODULES)
+    # Rewrite config to point entry path at the real curriculum dir.
+    state_dir = tmp_path / "state"
+    config_path = tmp_path / "config.yaml"
+    env_path = tmp_path / ".env"
+    config_path.write_text(
+        f'ritual_times:\n'
+        f'  morning_reading: "06:00"\n'
+        f'  anki: "08:30"\n'
+        f'  friday_review: "20:00"\n'
+        f'  saturday_deep_block: "09:00"\n'
+        f'  evening_hands_on: "19:00"\n'
+        f'  weekly_state_review: "10:00"\n'
+        f'sunday_off: true\n'
+        f'priority_order:\n'
+        f'  - {_TEST_SYLLABUS_KEY}\n'
+        f'syllabuses:\n'
+        f'  {_TEST_SYLLABUS_KEY}:\n'
+        f'    path: "{REAL_CURRICULUM_DIR}"\n'
+        f'    todoist_project_id: "PROD-ID"\n'
+        f'    state_file: "{state_dir / (_TEST_SYLLABUS_KEY + ".yaml")}"\n'
+        f'    enabled: true\n'
+        f'dashboard:\n'
+        f'  github_username: "u"\n'
+        f'  repo_name: "r"\n'
+    )
     return tmp_path
 
 
@@ -463,7 +515,7 @@ def test_friday_run_creates_weekly_stub(tmp_path: Path, monkeypatch):
         rc = main_module.main(["--today", "2026-05-08"])  # Friday, ISO W19
     assert rc == 0
 
-    stub = tmp_path / "reflections" / "weekly" / "2026-W19.md"
+    stub = tmp_path / "reflections" / _TEST_SYLLABUS_KEY / "weekly" / "2026-W19.md"
     assert stub.exists()
     from src.reflections import _baseline_word_count, split_frontmatter
 
@@ -483,7 +535,7 @@ def test_friday_rerun_does_not_clobber_stub(tmp_path: Path, monkeypatch):
     with patch("src.main.TodoistClient", FakeClient):
         main_module.main(["--today", "2026-05-08"])
 
-    stub = tmp_path / "reflections" / "weekly" / "2026-W19.md"
+    stub = tmp_path / "reflections" / _TEST_SYLLABUS_KEY / "weekly" / "2026-W19.md"
     # Owner edits the stub.
     text = stub.read_text()
     edited = text.replace("status: stub", "status: stub").replace(
@@ -513,7 +565,7 @@ def test_dry_run_prints_stub_table_and_writes_no_files(tmp_path: Path, monkeypat
     assert "WOULD CREATE STUB" in out
     assert "weekly-friday-review" in out
 
-    stub = tmp_path / "reflections" / "weekly" / "2026-W19.md"
+    stub = tmp_path / "reflections" / _TEST_SYLLABUS_KEY / "weekly" / "2026-W19.md"
     assert not stub.exists()
 
 
@@ -532,7 +584,7 @@ def test_dry_run_last_saturday_shared_path_pending_collision(
     # Exactly one WOULD CREATE STUB line for the monthly path.
     assert out.count("WOULD CREATE STUB") >= 1
     assert "WOULD SKIP STUB (pending)" in out
-    assert "reflections/monthly/2026-05.md" in out
+    assert f"reflections/{_TEST_SYLLABUS_KEY}/monthly/2026-05.md" in out
 
 
 def test_paused_metadata_walk_still_updates(tmp_path: Path, monkeypatch):
@@ -540,7 +592,7 @@ def test_paused_metadata_walk_still_updates(tmp_path: Path, monkeypatch):
     _seed_repo_with_real_templates(tmp_path, monkeypatch)
 
     # Pre-populate a stub with prose past the threshold.
-    stub = tmp_path / "reflections" / "weekly" / "2026-W19.md"
+    stub = tmp_path / "reflections" / _TEST_SYLLABUS_KEY / "weekly" / "2026-W19.md"
     stub.parent.mkdir(parents=True, exist_ok=True)
     fm = (
         "---\n"
@@ -558,10 +610,10 @@ def test_paused_metadata_walk_still_updates(tmp_path: Path, monkeypatch):
     body = "word " * (baseline + WORD_COUNT_THRESHOLD + 10)
     stub.write_text(fm + body)
 
-    # Set state.paused: true.
-    state_path = tmp_path / "state.yaml"
-    state_path.write_text(
-        state_path.read_text().replace("phase: 1\n", "phase: 1\npaused: true\n")
+    # Set state.paused: true in the per-syllabus state file.
+    syllabus_state_path = tmp_path / "state" / f"{_TEST_SYLLABUS_KEY}.yaml"
+    syllabus_state_path.write_text(
+        syllabus_state_path.read_text().replace("phase: 1\n", "phase: 1\npaused: true\n")
     )
 
     with patch("src.main.TodoistClient", FakeClient):
@@ -591,7 +643,7 @@ def test_metadata_walk_runs_after_stub_creation_ordering(
     with patch("src.main.TodoistClient", FakeClient):
         main_module.main(["--today", "2026-05-08"])
 
-    stub = tmp_path / "reflections" / "weekly" / "2026-W19.md"
+    stub = tmp_path / "reflections" / _TEST_SYLLABUS_KEY / "weekly" / "2026-W19.md"
     assert stub.exists()
     from src.reflections import _baseline_word_count, split_frontmatter
 
