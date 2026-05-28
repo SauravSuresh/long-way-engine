@@ -1,8 +1,8 @@
 {
   "adherence": {
     "done": 10,
-    "expected": 20,
-    "percent": 50,
+    "expected": 21,
+    "percent": 48,
     "since": "2026-05-05"
   },
   "books": [
@@ -94,13 +94,9 @@
   "books_state": {},
   "current_book": "Computer Systems: A Programmer's Perspective",
   "current_module": 1,
-  "day_of_journey": 24,
+  "day_of_journey": 25,
   "day_total": 1189,
   "last_7_days": [
-    {
-      "date": "2026-05-21",
-      "state": "red"
-    },
     {
       "date": "2026-05-22",
       "state": "red"
@@ -124,6 +120,10 @@
     {
       "date": "2026-05-27",
       "state": "yellow"
+    },
+    {
+      "date": "2026-05-28",
+      "state": "yellow"
     }
   ],
   "month": 1,
@@ -135,7 +135,15 @@
     "Pair sessions": 0,
     "Traces completed": 0
   },
-  "reflections": [],
+  "reflections": [
+    {
+      "cadence": "weekly",
+      "file": "2026-W22",
+      "relative_path": "weekly/2026-W22.md",
+      "status": "stub",
+      "word_count": 38
+    }
+  ],
   "streaks": {
     "Daily": 0,
     "Monthly post": 0,
@@ -150,13 +158,13 @@
     "Monthly post": {
       "best": 0,
       "count": 0,
-      "hint": "next post in 4 days"
+      "hint": "next post in 3 days"
     },
     "Weekly review": {
       "best": 0,
       "count": 0,
-      "hint": "next Friday in 1 day"
+      "hint": "Friday review + filled reflection due today"
     }
   },
-  "today": "2026-05-28"
+  "today": "2026-05-29"
 }
