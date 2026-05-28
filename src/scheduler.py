@@ -51,6 +51,7 @@ def should_create_today(
     today: date,
     state: State,
     config: Config,
+    syllabus_key: str = "",
 ) -> bool:
     if state.paused:
         return False
