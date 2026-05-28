@@ -1,9 +1,8 @@
 from datetime import date
 from pathlib import Path
-from zoneinfo import ZoneInfo
 
 from src.ids import external_id
-from src.state import PauseInterval, State
+from src.state import PauseInterval, SyllabusState
 from src.streaks import (
     _is_skipped_on,
     _most_recent_friday_le,
@@ -12,18 +11,15 @@ from src.streaks import (
     weekly_review_streak,
 )
 
-IST = ZoneInfo("Asia/Kolkata")
-
 
 def make_state(
     start: date = date(2026, 1, 1),
     paused: bool = False,
     paused_since: date | None = None,
     pause_history: list[PauseInterval] | None = None,
-) -> State:
-    return State(
+) -> SyllabusState:
+    return SyllabusState(
         start_date=start,
-        timezone=IST,
         phase=1,
         month=1,
         current_module=1,
@@ -348,3 +344,25 @@ def test_monthly_streak_excludes_current_month():
     done.add("mb-may")
     streak = monthly_post_streak(date(2026, 5, 4), state, cache, done)
     assert streak == 1
+
+
+# --- per-syllabus streak: SyllabusState -------------------------------------------
+
+
+def test_daily_streak_works_with_syllabus_state():
+    """daily_streak accepts SyllabusState directly; 3 consecutive days returns 3."""
+    sy = SyllabusState(
+        start_date=date(2026, 5, 1),
+        phase=1,
+        month=1,
+        current_module=1,
+        current_book="x",
+        pause_history=[],
+    )
+    cache: dict = {}
+    done: set[str] = set()
+    # Mon 2026-05-18, Tue 2026-05-19, Wed 2026-05-20 all done; today = Thu 2026-05-21.
+    for d in (date(2026, 5, 18), date(2026, 5, 19), date(2026, 5, 20)):
+        a, m = add_daily_pair(cache, d)
+        done.update([a, m])
+    assert daily_streak(date(2026, 5, 21), sy, cache, done) == 3
