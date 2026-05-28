@@ -65,6 +65,8 @@ jobs:
           git add .task_cache.json LOG.md || true
           git add docs/index.html docs/assets/data.json || true
           # docs/assets/style.css is laid down once and committed manually.
+          git add state/ || true
+          git add reflections/ || true
 
           if git diff --cached --quiet; then
             echo "no state changes"

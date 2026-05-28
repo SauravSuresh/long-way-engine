@@ -1,4 +1,4 @@
-"""CLI surface for src.main: argparse, --dry-run, --today, --project-id, --cache-file."""
+"""CLI surface for src.main: argparse, --dry-run, --today, --cache-file."""
 
 from __future__ import annotations
 
@@ -24,7 +24,6 @@ def test_parser_defaults():
     args = _build_parser().parse_args([])
     assert args.dry_run is False
     assert args.today is None
-    assert args.project_id is None
     assert args.cache_file is None
     assert args.verbose is False
 
@@ -46,8 +45,6 @@ def test_parser_overrides():
             "--dry-run",
             "--today",
             "2026-05-04",
-            "--project-id",
-            "sandbox-id",
             "--cache-file",
             "/tmp/sandbox.json",
             "--verbose",
@@ -55,7 +52,6 @@ def test_parser_overrides():
     )
     assert args.dry_run is True
     assert args.today == date(2026, 5, 4)
-    assert args.project_id == "sandbox-id"
     assert args.cache_file == Path("/tmp/sandbox.json")
     assert args.verbose is True
 
@@ -383,6 +379,26 @@ def test_main_project_id_comes_from_config(tmp_path: Path, monkeypatch):
     assert rc == 0
     # Project ID comes from the seeded config YAML ("PROD-ID").
     assert seen["project_id"] == "PROD-ID"
+
+
+def test_run_for_syllabus_sets_syllabus_key_on_every_template(tmp_path: Path, monkeypatch):
+    """Every ResolvedTemplate passed to create_task_idempotent has syllabus_key set."""
+    _seed_repo(tmp_path, monkeypatch)
+
+    seen_keys: list[str] = []
+
+    class SpyingClient(FakeClient):
+        def create_task_idempotent(self, template, *args, **kwargs):
+            seen_keys.append(template.syllabus_key)
+            return super().create_task_idempotent(template, *args, **kwargs)
+
+    with patch("src.main.TodoistClient", SpyingClient):
+        rc = main_module.main(["--today", "2026-05-04"])
+    assert rc == 0
+    assert len(seen_keys) > 0, "expected at least one task to be created"
+    assert all(k == _TEST_SYLLABUS_KEY for k in seen_keys), (
+        f"expected all syllabus_key={_TEST_SYLLABUS_KEY!r}, got {seen_keys}"
+    )
 
 
 # ---------------------------------------------------------------------------

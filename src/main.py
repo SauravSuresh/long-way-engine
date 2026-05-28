@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
+import dataclasses
 from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -270,6 +271,7 @@ def _ensure_persistent_tasks(
     cache: dict,
     state: State | SyllabusState,
     today: date,
+    syllabus_key: str = "",
 ) -> None:
     """Create emergency-pause + resume tasks if none currently open.
 
@@ -285,6 +287,7 @@ def _ensure_persistent_tasks(
             due="",
             labels=["state-review"],
             cadence="daily",
+            syllabus_key=syllabus_key,
         )
         try:
             result = client.create_task_idempotent(tpl, today, ext_id, cache)
@@ -318,6 +321,7 @@ def _ensure_persistent_tasks(
             due="",
             labels=["state-review"],
             cadence="daily",
+            syllabus_key=syllabus_key,
         )
         try:
             result = client.create_task_idempotent(tpl, today, ext_id, cache)
@@ -479,29 +483,15 @@ def run(
     cache = load_cache(cache_path)
     templates = load_templates(template_paths)
 
-    # PHASE 1: state-mutation. Runs before task creation so today's tasks
-    # reflect any module advance / pause that fired in the prior week's review.
+    # PHASE 1: state-mutation.
+    # NOTE: state-review is only available via run_for_syllabus().
+    # The legacy run() is retained for backwards-compatibility with tests that
+    # call it directly with Config + State + flat cache_path. The old
+    # `if syllabus is not None:` branch that called run_state_review_phase()
+    # with a 2-tuple unpack was removed here because run_state_review_phase()
+    # now returns a 3-tuple (state, shared, summary) and requires shared/shared_path
+    # kwargs. Use run_for_syllabus() for any code path that needs state-review.
     state_review_summary: StateReviewSummary | None = None
-    if syllabus is not None:
-        state, state_review_summary = run_state_review_phase(
-            config=config,
-            state=state,
-            syllabus=syllabus,
-            today=today,
-            cache=cache,
-            state_path=state_path,
-            state_log_path=state_log_path,
-            review_factory=review_factory,
-            completion_factory=completion_factory,
-            dry_run=dry_run,
-            todoist_token=config.todoist_token,
-            project_id=project_id or config.todoist.project_id,
-        )
-        # Derive month/phase from calendar minus closed pauses. Engine-managed
-        # fields: overwrite whatever state.yaml had before.
-        state = update_derived_fields(state, syllabus, today)
-        if not dry_run:
-            save_state(state_path, state)
     client = client_factory(
         token=config.todoist_token,
         project_id=project_id or config.todoist.project_id,
@@ -775,7 +765,6 @@ def run_for_syllabus(
     template_paths: list[Path] | None = None,
     client_factory=None,
     dry_run: bool = False,
-    skip_dashboard: bool = False,
     sweep: bool = True,
     admin_factory=None,
     completion_factory=None,
@@ -879,6 +868,7 @@ def run_for_syllabus(
             decisions.append(Decision(tpl.id, None, "ERROR (variable)"))
             errors += 1
             continue
+        resolved = dataclasses.replace(resolved, syllabus_key=entry.key)
 
         if tpl.cadence == "once-per-module":
             assert tpl.module_number is not None
@@ -999,7 +989,7 @@ def run_for_syllabus(
         )
 
     if not dry_run:
-        _ensure_persistent_tasks(client, syllabus_cache, state, today)
+        _ensure_persistent_tasks(client, syllabus_cache, state, today, syllabus_key=entry.key)
 
     if sweep:
         sweep_admin = (admin_factory or TodoistAdminClient)(token=cfg.todoist_token)
@@ -1127,11 +1117,6 @@ def _build_parser() -> argparse.ArgumentParser:
         type=_parse_today,
         metavar="YYYY-MM-DD",
         help="Override the clock. Time-of-day defaults to 05:30 in owner TZ.",
-    )
-    p.add_argument(
-        "--project-id",
-        metavar="ID",
-        help="Override config.yaml todoist.project_id.",
     )
     p.add_argument(
         "--cache-file",
@@ -1461,6 +1446,7 @@ def main(argv: list[str] | None = None) -> int:
                 per_syllabus_cache_data: dict[str, dict] = {
                     key: nc.data.get(key, {})
                     for key in cfg.priority_order
+                    if cfg.syllabuses[key].enabled
                 }
 
                 html, data = render_multi_syllabus(
