@@ -41,6 +41,86 @@ class PauseInterval:
 
 
 @dataclass
+class SharedState:
+    timezone: ZoneInfo
+    manual_counters: dict[str, Any] = field(default_factory=dict)
+    notes: str = ""
+
+
+def load_shared_state(path: Path) -> SharedState:
+    with path.open("r", encoding="utf-8") as f:
+        raw = yaml.safe_load(f) or {}
+    tz_str = str(raw.get("timezone", "UTC"))
+    return SharedState(
+        timezone=ZoneInfo(tz_str),
+        manual_counters=dict(raw.get("manual_counters") or {}),
+        notes=str(raw.get("notes", "") or ""),
+    )
+
+
+@dataclass
+class SyllabusState:
+    start_date: date
+    phase: int
+    month: int
+    current_module: int
+    current_book: str
+    completed_modules: list[int] = field(default_factory=list)
+    active_branches: list[str] = field(default_factory=list)
+    paused: bool = False
+    paused_since: date | None = None
+    paused_until: date | None = None
+    pause_history: list[PauseInterval] = field(default_factory=list)
+    books_state: dict[str, str] = field(default_factory=dict)
+    learning_tracks: dict[str, dict[str, str]] = field(default_factory=dict)
+
+
+def load_syllabus_state(path: Path) -> SyllabusState:
+    with path.open("r", encoding="utf-8") as f:
+        raw = yaml.safe_load(f) or {}
+    # Required keys — raise KeyError on absence.
+    start_date_raw = raw["start_date"]
+    current_module = raw["current_module"]
+    current_book = raw["current_book"]
+    pause_history_raw = raw.get("pause_history") or []
+    pause_history = [
+        PauseInterval(
+            start=_coerce_date(pi["start"]),
+            end=_coerce_date(pi["end"]),
+            reason=str(pi.get("reason", "")),
+        )
+        for pi in pause_history_raw
+    ]
+    return SyllabusState(
+        start_date=_coerce_date(start_date_raw),
+        phase=int(raw.get("phase", 1)),
+        month=int(raw.get("month", 1)),
+        current_module=int(current_module),
+        current_book=str(current_book),
+        completed_modules=list(raw.get("completed_modules") or []),
+        active_branches=list(raw.get("active_branches") or []),
+        paused=bool(raw.get("paused", False)),
+        paused_since=_coerce_optional_date(raw.get("paused_since")),
+        paused_until=_coerce_optional_date(raw.get("paused_until")),
+        pause_history=pause_history,
+        books_state=dict(raw.get("books_state") or {}),
+        learning_tracks=dict(raw.get("learning_tracks") or {}),
+    )
+
+
+def _coerce_date(v: Any) -> date:
+    if isinstance(v, date):
+        return v
+    return date.fromisoformat(str(v))
+
+
+def _coerce_optional_date(v: Any) -> date | None:
+    if v is None or v == "":
+        return None
+    return _coerce_date(v)
+
+
+@dataclass
 class State:
     start_date: date
     timezone: ZoneInfo
