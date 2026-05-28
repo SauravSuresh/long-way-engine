@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import logging
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -41,6 +42,65 @@ def save_cache(path: Path, cache: dict[str, dict[str, Any]]) -> None:
         json.dump(cache, f, indent=2, sort_keys=True)
         f.write("\n")
     tmp.replace(path)
+
+
+@dataclass
+class NamespacedCache:
+    data: dict[str, dict[str, dict[str, Any]]] = field(default_factory=dict)
+
+    def get(self, syllabus: str, external_id: str) -> dict[str, Any] | None:
+        return self.data.get(syllabus, {}).get(external_id)
+
+    def set(self, syllabus: str, external_id: str, record: dict[str, Any]) -> None:
+        self.data.setdefault(syllabus, {})[external_id] = record
+
+    def for_syllabus(self, syllabus: str) -> dict[str, dict[str, Any]]:
+        return self.data.setdefault(syllabus, {})
+
+
+def _looks_like_flat_cache(d: dict[str, Any]) -> bool:
+    """A flat (legacy) cache has values that are records (dicts with 'todoist_id')
+    rather than per-syllabus sub-dicts.
+    """
+    if not d:
+        return False
+    for v in d.values():
+        if isinstance(v, dict) and "todoist_id" in v:
+            return True
+        if isinstance(v, dict) and all(isinstance(vv, dict) and "todoist_id" not in vv for vv in v.values()):
+            return False
+    return False
+
+
+def load_namespaced_cache(path: Path) -> NamespacedCache:
+    if not path.exists():
+        return NamespacedCache()
+    with path.open("r", encoding="utf-8") as f:
+        try:
+            data = json.load(f)
+        except json.JSONDecodeError:
+            return NamespacedCache()
+    if not isinstance(data, dict):
+        return NamespacedCache()
+    if _looks_like_flat_cache(data):
+        raise ValueError(
+            "legacy flat cache detected; run scripts/migrate_to_multi_syllabus.py first"
+        )
+    return NamespacedCache(data={k: dict(v) for k, v in data.items()})
+
+
+def save_namespaced_cache(path: Path, nc: NamespacedCache) -> None:
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with tmp.open("w", encoding="utf-8") as f:
+        json.dump(nc.data, f, indent=2, sort_keys=True)
+        f.write("\n")
+    tmp.replace(path)
+
+
+def lift_flat_cache_under_syllabus(
+    flat: dict[str, dict[str, Any]], syllabus_key: str
+) -> dict[str, dict[str, dict[str, Any]]]:
+    return {syllabus_key: dict(flat)}
 
 
 def prune(

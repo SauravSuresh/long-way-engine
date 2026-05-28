@@ -60,3 +60,55 @@ def test_prune_keeps_entries_missing_created_at():
     cache = {"old_format": {"template_id": "x"}}
     out = prune(cache, days=60, now=now)
     assert "old_format" in out
+
+
+# ── NamespacedCache tests ─────────────────────────────────────────────────────
+
+from src.cache import (
+    NamespacedCache,
+    lift_flat_cache_under_syllabus,
+    load_namespaced_cache,
+    save_namespaced_cache,
+)
+
+
+def test_lift_flat_cache_under_syllabus():
+    flat = {"ext-1": {"todoist_id": "100"}, "ext-2": {"todoist_id": "101"}}
+    namespaced = lift_flat_cache_under_syllabus(flat, "long-way")
+    assert namespaced == {"long-way": flat}
+
+
+def test_load_namespaced_cache_existing(tmp_path):
+    import json
+    p = tmp_path / "task_cache.json"
+    p.write_text(json.dumps({"long-way": {"ext-1": {"todoist_id": "100"}}}))
+    nc = load_namespaced_cache(p)
+    assert isinstance(nc, NamespacedCache)
+    assert nc.get("long-way", "ext-1") == {"todoist_id": "100"}
+    assert nc.get("long-way", "ext-missing") is None
+    assert nc.get("missing-syllabus", "ext-1") is None
+
+
+def test_load_namespaced_cache_flat_legacy(tmp_path):
+    """Legacy flat cache (no syllabus layer) is detected and rejected — migrate first."""
+    import json
+    import pytest
+    p = tmp_path / "task_cache.json"
+    p.write_text(json.dumps({"ext-1": {"todoist_id": "100"}}))
+    with pytest.raises(ValueError, match="legacy flat cache"):
+        load_namespaced_cache(p)
+
+
+def test_save_and_round_trip(tmp_path):
+    p = tmp_path / "task_cache.json"
+    nc = NamespacedCache(data={"long-way": {"ext-1": {"todoist_id": "100"}}})
+    nc.set("long-way", "ext-2", {"todoist_id": "101"})
+    save_namespaced_cache(p, nc)
+    nc2 = load_namespaced_cache(p)
+    assert nc2.get("long-way", "ext-1") == {"todoist_id": "100"}
+    assert nc2.get("long-way", "ext-2") == {"todoist_id": "101"}
+
+
+def test_load_missing_file_returns_empty(tmp_path):
+    nc = load_namespaced_cache(tmp_path / "absent.json")
+    assert nc.get("any", "ext-1") is None
