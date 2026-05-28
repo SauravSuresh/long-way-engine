@@ -62,13 +62,30 @@ def test_current_book_with_syllabus(tmp_path: Path) -> None:
 
 
 def test_load_syllabus_against_live_curriculum() -> None:
-    """The repo's own curriculum/syllabus.yaml loads cleanly."""
+    """The repo's own curricula/long-way/syllabus.yaml loads cleanly."""
     from pathlib import Path as P
     from src.syllabus import load_syllabus
     REPO_ROOT = P(__file__).resolve().parent.parent
-    syl = load_syllabus(REPO_ROOT / "curriculum")
+    syl = load_syllabus(REPO_ROOT / "curricula" / "long-way")
     # Sanity: matches what we expect about the Long Way curriculum.
     assert len(syl.phases) == 4
     assert len(syl.modules) == 23
     assert 1 in syl.primary_book_by_month
     assert 39 in syl.primary_book_by_month
+
+
+def test_load_syllabus_for_entry_returns_parsed() -> None:
+    from pathlib import Path
+    from src.config import SyllabusEntry
+    from src.syllabus import load_syllabus_for_entry
+
+    entry = SyllabusEntry(
+        key="long-way",
+        path=Path("curricula/long-way"),
+        todoist_project_id="X",
+        state_file=Path("state/long-way.yaml"),
+        enabled=True,
+        ritual_times={},
+    )
+    sy = load_syllabus_for_entry(entry)
+    assert sy.meta["name"]  # parsed without error
