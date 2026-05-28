@@ -151,7 +151,7 @@ class SlotCollisionError(ValueError):
     """Two enabled syllabuses claim the same (ritual_times_key, clock_time)."""
 
 
-def load_multi_syllabus_config(yaml_path: Path, env_path: Path) -> MultiSyllabusConfig:
+def load_multi_syllabus_config(yaml_path: Path, env_path: Path, *, strict: bool = True) -> MultiSyllabusConfig:
     with yaml_path.open("r", encoding="utf-8") as f:
         raw: dict[str, Any] = yaml.safe_load(f) or {}
 
@@ -183,21 +183,23 @@ def load_multi_syllabus_config(yaml_path: Path, env_path: Path) -> MultiSyllabus
 
     # Slot-collision check: (slot, clock_time) unique across enabled syllabuses
     # unless at least one party has allow_slot_overlap=True.
-    seen: dict[tuple[str, str], str] = {}
-    for key in priority_order:
-        sy = syllabuses[key]
-        for slot, when in sy.ritual_times.items():
-            existing = seen.get((slot, when))
-            if existing is None:
-                seen[(slot, when)] = key
-                continue
-            other = syllabuses[existing]
-            if sy.allow_slot_overlap or other.allow_slot_overlap:
-                continue
-            raise SlotCollisionError(
-                f"slot collision: {existing}:{slot}@{when} and {key}:{slot}@{when} "
-                f"— change one clock time or set allow_slot_overlap on one side"
-            )
+    # Skip when strict=False (e.g. the timetable visualizer wants to show collisions).
+    if strict:
+        seen: dict[tuple[str, str], str] = {}
+        for key in priority_order:
+            sy = syllabuses[key]
+            for slot, when in sy.ritual_times.items():
+                existing = seen.get((slot, when))
+                if existing is None:
+                    seen[(slot, when)] = key
+                    continue
+                other = syllabuses[existing]
+                if sy.allow_slot_overlap or other.allow_slot_overlap:
+                    continue
+                raise SlotCollisionError(
+                    f"slot collision: {existing}:{slot}@{when} and {key}:{slot}@{when} "
+                    f"— change one clock time or set allow_slot_overlap on one side"
+                )
 
     dashboard_raw = raw["dashboard"]
     dashboard = DashboardConfig(
