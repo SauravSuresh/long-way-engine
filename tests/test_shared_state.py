@@ -38,3 +38,13 @@ def test_load_shared_state_missing_file(tmp_path: Path):
     p = tmp_path / "missing.yaml"
     with pytest.raises(FileNotFoundError):
         load_shared_state(p)
+
+
+def test_load_shared_state_invalid_timezone(tmp_path: Path):
+    import pytest
+
+    p = tmp_path / "shared.yaml"
+    p.write_text("timezone: Mars/Olympus\n")
+    with pytest.raises(ValueError) as exc:
+        load_shared_state(p)
+    assert "Mars/Olympus" in str(exc.value)

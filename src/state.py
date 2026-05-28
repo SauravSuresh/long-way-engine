@@ -47,12 +47,28 @@ class SharedState:
     notes: str = ""
 
 
+def _coerce_date(v: Any) -> date:
+    if isinstance(v, date):
+        return v
+    return date.fromisoformat(str(v))
+
+
+def _coerce_optional_date(v: Any) -> date | None:
+    if v is None or v == "":
+        return None
+    return _coerce_date(v)
+
+
 def load_shared_state(path: Path) -> SharedState:
     with path.open("r", encoding="utf-8") as f:
         raw = yaml.safe_load(f) or {}
     tz_str = str(raw.get("timezone", "UTC"))
+    try:
+        tz = ZoneInfo(tz_str)
+    except Exception as e:
+        raise ValueError(f"shared.yaml: invalid timezone {tz_str!r}: {e}") from e
     return SharedState(
-        timezone=ZoneInfo(tz_str),
+        timezone=tz,
         manual_counters=dict(raw.get("manual_counters") or {}),
         notes=str(raw.get("notes", "") or ""),
     )
@@ -83,14 +99,20 @@ def load_syllabus_state(path: Path) -> SyllabusState:
     current_module = raw["current_module"]
     current_book = raw["current_book"]
     pause_history_raw = raw.get("pause_history") or []
-    pause_history = [
-        PauseInterval(
-            start=_coerce_date(pi["start"]),
-            end=_coerce_date(pi["end"]),
-            reason=str(pi.get("reason", "")),
-        )
-        for pi in pause_history_raw
-    ]
+    pause_history: list[PauseInterval] = []
+    for i, pi in enumerate(pause_history_raw):
+        try:
+            pause_history.append(
+                PauseInterval(
+                    start=_coerce_date(pi["start"]),
+                    end=_coerce_date(pi["end"]),
+                    reason=str(pi.get("reason", "")),
+                )
+            )
+        except (KeyError, ValueError, TypeError) as e:
+            raise ValueError(
+                f"syllabus state {path}: pause_history[{i}] is malformed: {e}"
+            ) from e
     return SyllabusState(
         start_date=_coerce_date(start_date_raw),
         phase=int(raw.get("phase", 1)),
@@ -106,18 +128,6 @@ def load_syllabus_state(path: Path) -> SyllabusState:
         books_state=dict(raw.get("books_state") or {}),
         learning_tracks=dict(raw.get("learning_tracks") or {}),
     )
-
-
-def _coerce_date(v: Any) -> date:
-    if isinstance(v, date):
-        return v
-    return date.fromisoformat(str(v))
-
-
-def _coerce_optional_date(v: Any) -> date | None:
-    if v is None or v == "":
-        return None
-    return _coerce_date(v)
 
 
 @dataclass
