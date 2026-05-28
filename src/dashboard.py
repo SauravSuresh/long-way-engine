@@ -28,10 +28,10 @@ from pathlib import Path
 from typing import Any
 
 from src.clock import Clock
-from src.config import Config
+from src.config import Config, MultiSyllabusConfig, TodoistConfig
 from src.ids import external_id
 from src.reflections import split_frontmatter
-from src.state import State
+from src.state import SharedState, State, SyllabusState
 from src.streaks import (
     DAILY_TEMPLATES_REQUIRED,
     _is_in_pause_window,
@@ -110,7 +110,7 @@ def _end_of_journey(start: date, months: int = DEFAULT_TOTAL_MONTHS) -> date:
 
 
 def _journey_day(
-    today: date, state: State, total_months: int = DEFAULT_TOTAL_MONTHS
+    today: date, state: SyllabusState, total_months: int = DEFAULT_TOTAL_MONTHS
 ) -> tuple[int, int]:
     """Returns (day_n, day_total). Clamped to [0, day_total]."""
     end = _end_of_journey(state.start_date, months=total_months)
@@ -142,7 +142,7 @@ def _github_blob_url(config: Config, relative_path: str) -> str:
     )
 
 
-def _paused_summary(state: State, today: date) -> str | None:
+def _paused_summary(state: SyllabusState, today: date) -> str | None:
     if state.paused and state.paused_since is not None:
         days = (today - state.paused_since).days
         return f"Paused since {state.paused_since.isoformat()} ({days} days)"
@@ -190,7 +190,7 @@ def _adherence_class(percent: int | None) -> str:
 
 
 def _header(
-    state: State,
+    state: SyllabusState,
     config: Config,
     today: date,
     adherence: tuple[int, int],
@@ -269,7 +269,7 @@ def _header(
 
 
 def _today_panel(
-    state: State,
+    state: SyllabusState,
     config: Config,
     today: date,
     cache: dict[str, Any],
@@ -371,7 +371,7 @@ def _streaks_section(values: dict[str, dict[str, Any]]) -> str:
 
 
 def _phase_tree(
-    state: State,
+    state: SyllabusState,
     phase_ranges: tuple[tuple[int, int, str], ...] = DEFAULT_PHASE_RANGES,
 ) -> str:
     """Per-phase segmented progress bar.
@@ -440,7 +440,7 @@ def _phase_tree(
 
 def _last_7_color(
     d: date,
-    state: State,
+    state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
 ) -> str:
@@ -476,7 +476,7 @@ _LAST7_LEGEND = (
 
 def _last_7_days(
     today: date,
-    state: State,
+    state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
 ) -> tuple[str, list[dict[str, str]]]:
@@ -525,7 +525,7 @@ def _last_7_days(
 
 
 def _practice_counts(
-    state: State, cache: dict[str, Any], completion_set: set[str]
+    state: SyllabusState, cache: dict[str, Any], completion_set: set[str]
 ) -> dict[str, int]:
     code_reading = sum(
         1
@@ -536,7 +536,7 @@ def _practice_counts(
             or str(entry.get("todoist_task_id")) in completion_set
         )
     )
-    mc = state.manual_counters
+    mc: dict[str, Any] = getattr(state, "manual_counters", {})
     return {
         "Code reading sessions": code_reading,
         "Traces completed": int(mc.get("traces_completed", 0) or 0),
@@ -556,7 +556,7 @@ def _practice_tracker(values: dict[str, int]) -> str:
     return f'<section class="practices"><h2>Active practices</h2>{cards}</section>'
 
 
-def _books_section(state: State, books: list[Book]) -> str:
+def _books_section(state: SyllabusState, books: list[Book]) -> str:
     """Per-phase reading list. "not_started" books fade rather than flag.
 
     A NOT STARTED pill on every future book read as failure, so the
@@ -597,7 +597,7 @@ def _books_section(state: State, books: list[Book]) -> str:
 
 
 def _module_trunk(
-    state: State,
+    state: SyllabusState,
     module_titles: dict[int, str],
     total_modules: int = DEFAULT_TOTAL_MODULES,
 ) -> str:
@@ -633,7 +633,7 @@ def _module_trunk(
     )
 
 
-def _learning_tracks(state: State) -> str:
+def _learning_tracks(state: SyllabusState) -> str:
     """Owner-curated multi-track panel. Hides when no non-empty categories.
 
     Empty inner dicts and the entirely-empty learning_tracks both yield
@@ -706,8 +706,8 @@ def _footer(today: date) -> str:
 # --- top-level render ---------------------------------------------------------
 
 
-def render(
-    state: State,
+def _render_inner(
+    state: SyllabusState,
     config: Config,
     completion_set: set[str],
     cache: dict[str, Any],
@@ -716,13 +716,10 @@ def render(
     today: date,
     clock: Clock,
     reflections_root: Path,
-    module_titles: dict[int, str] | None = None,
-    syllabus: Syllabus | None = None,
+    module_titles: dict[int, str],
+    syllabus: Syllabus | None,
 ) -> tuple[str, dict[str, Any]]:
-    """Render dashboard. Returns (html_string, data_json_dict)."""
-    if module_titles is None:
-        module_titles = {}
-
+    """Render the dashboard body (no doctype wrapper). Returns (body_html, data)."""
     total_months = _total_months_from_syllabus(syllabus)
     total_modules = _total_modules_from_syllabus(syllabus)
     phase_tick_labels = _phase_tick_labels(syllabus)
@@ -774,15 +771,6 @@ def render(
             _footer(today),
         )
     )
-    html_doc = (
-        '<!doctype html>\n'
-        '<html lang="en"><head>'
-        '<meta charset="utf-8">'
-        f'<title>The Long Way &mdash; {_h(today.isoformat())}</title>'
-        '<meta name="viewport" content="width=device-width,initial-scale=1">'
-        '<link rel="stylesheet" href="assets/style.css">'
-        f'</head><body><main class="dashboard">{body}</main></body></html>\n'
-    )
 
     adh_done, adh_expected = adherence
     adh_pct = round(100 * adh_done / adh_expected) if adh_expected > 0 else None
@@ -810,7 +798,160 @@ def render(
         "books_state": state.books_state,
         "reflections": [asdict(r) for r in reflections],
     }
+    return body, data
+
+
+def render(
+    state: SyllabusState,
+    config: Config,
+    completion_set: set[str],
+    cache: dict[str, Any],
+    reflections: list[ReflectionMeta],
+    books: list[Book],
+    today: date,
+    clock: Clock,
+    reflections_root: Path,
+    module_titles: dict[int, str] | None = None,
+    syllabus: Syllabus | None = None,
+) -> tuple[str, dict[str, Any]]:
+    """Render dashboard. Returns (html_string, data_json_dict)."""
+    if module_titles is None:
+        module_titles = {}
+
+    body, data = _render_inner(
+        state=state,
+        config=config,
+        completion_set=completion_set,
+        cache=cache,
+        reflections=reflections,
+        books=books,
+        today=today,
+        clock=clock,
+        reflections_root=reflections_root,
+        module_titles=module_titles,
+        syllabus=syllabus,
+    )
+    html_doc = (
+        '<!doctype html>\n'
+        '<html lang="en"><head>'
+        '<meta charset="utf-8">'
+        f'<title>The Long Way &mdash; {_h(today.isoformat())}</title>'
+        '<meta name="viewport" content="width=device-width,initial-scale=1">'
+        '<link rel="stylesheet" href="assets/style.css">'
+        f'</head><body><main class="dashboard">{body}</main></body></html>\n'
+    )
     return html_doc, data
+
+
+def _shared_data(shared: SharedState) -> dict[str, Any]:
+    return {
+        "timezone": str(shared.timezone),
+        "anki_card_count": shared.manual_counters.get("anki_card_count", 0),
+        "prs_opened": shared.manual_counters.get("prs_opened", 0),
+        "manual_counters": dict(shared.manual_counters),
+    }
+
+
+def render_multi_syllabus(
+    *,
+    cfg: MultiSyllabusConfig,
+    shared: SharedState,
+    syllabus_states: dict[str, SyllabusState],
+    syllabuses: dict[str, Syllabus],
+    completion_by_syllabus: dict[str, set[str]],
+    cache_by_syllabus: dict[str, dict[str, Any]],
+    reflections_by_syllabus: dict[str, list[ReflectionMeta]],
+    books_by_syllabus: dict[str, list[Book]],
+    today: date,
+    clock: Clock,
+    reflections_root: Path,
+    module_titles_by_syllabus: dict[str, dict[int, str]] | None = None,
+) -> tuple[str, dict[str, Any]]:
+    """Render the multi-syllabus dashboard.
+
+    Emits:
+      - <header class="shared-band">…shared counters + timezone…</header>
+      - one <section class="syllabus-card" data-syllabus="<key>">…</section>
+        per priority_order entry.
+
+    Returns the full HTML doc and a combined data dict.
+    """
+    shared_band = (
+        '<header class="shared-band">'
+        f'<span class="tz">{_h(str(shared.timezone))}</span>'
+        f'<span class="counter">Anki: {shared.manual_counters.get("anki_card_count", 0):,}</span>'
+        f'<span class="counter">PRs opened: {shared.manual_counters.get("prs_opened", 0)}</span>'
+        '</header>'
+    )
+
+    sections: list[str] = []
+    combined_data: dict[str, Any] = {
+        "shared": _shared_data(shared),
+        "syllabuses": {},
+        "priority_order": list(cfg.priority_order),
+    }
+
+    for key in cfg.priority_order:
+        syllabus_entry = cfg.syllabuses[key]
+        per_syllabus_config = Config(
+            todoist=TodoistConfig(
+                project_id=syllabus_entry.todoist_project_id,
+                labels={},
+            ),
+            ritual_times=syllabus_entry.ritual_times,
+            sunday_off=cfg.sunday_off,
+            pair_day=cfg.pair_day,
+            dashboard=cfg.dashboard,
+            todoist_token="",
+            curriculum_dir=syllabus_entry.path,
+        )
+        inner_html, per_data = _render_inner(
+            state=syllabus_states[key],
+            config=per_syllabus_config,
+            completion_set=completion_by_syllabus.get(key, set()),
+            cache=cache_by_syllabus.get(key, {}),
+            reflections=reflections_by_syllabus.get(key, []),
+            books=books_by_syllabus.get(key, []),
+            today=today,
+            clock=clock,
+            reflections_root=reflections_root / key,
+            module_titles=(module_titles_by_syllabus or {}).get(key, {}),
+            syllabus=syllabuses.get(key),
+        )
+        sections.append(
+            f'<section class="syllabus-card" data-syllabus="{_h(key)}">'
+            f'{inner_html}'
+            f'</section>'
+        )
+        combined_data["syllabuses"][key] = per_data
+
+    html_doc = (
+        '<!doctype html>\n'
+        '<html lang="en"><head>'
+        '<meta charset="utf-8">'
+        f'<title>long-way-engine &mdash; {_h(today.isoformat())}</title>'
+        '<meta name="viewport" content="width=device-width,initial-scale=1">'
+        '<link rel="stylesheet" href="assets/style.css">'
+        f'</head><body><main class="dashboard">'
+        f'{shared_band}'
+        f'{"".join(sections)}'
+        f'</main></body></html>\n'
+    )
+    return html_doc, combined_data
+
+
+def build_data_multi_syllabus(
+    *,
+    cfg: MultiSyllabusConfig,
+    shared: SharedState,
+    per_syllabus_data: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    """Build the combined data dict for a multi-syllabus render (no HTML)."""
+    return {
+        "shared": _shared_data(shared),
+        "syllabuses": dict(per_syllabus_data),
+        "priority_order": list(cfg.priority_order),
+    }
 
 
 # --- CSS lifecycle ------------------------------------------------------------
