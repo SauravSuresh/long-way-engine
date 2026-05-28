@@ -5,7 +5,7 @@ software engineer the slow, deliberate way: mornings on paper books,
 evenings in a terminal, weekly retrievals, monthly public writeups,
 quarterly synthesis essays. The full syllabus lives in
 [`the-long-way.md`](./the-long-way.md); the curriculum data the
-engine reads lives in [`curriculum/`](./curriculum/).
+engine reads lives in [`curricula/long-way/`](./curricula/long-way/).
 
 Every morning a GitHub Action creates today's Todoist tasks for me —
 the right ones for whichever month, module, and weekday I'm on, with
@@ -13,6 +13,37 @@ the right book name interpolated into the morning-reading task.
 Reflection markdown stubs auto-generate on cadence. A static
 dashboard at the repo's GitHub Pages site shows my current phase,
 streaks, books read, and the full reflection log.
+
+## Multiple syllabuses
+
+The engine runs N syllabuses in parallel from one repo, one daily cron, one
+GitHub Pages site. Each syllabus is a self-contained content bundle at
+`curricula/<key>/` with its own modules, books, rituals, and reflection
+templates; each gets its own Todoist project, streak, pause state, and
+dashboard card.
+
+`config.yaml` declares the ordering and per-syllabus overrides:
+
+    priority_order:
+      - long-way
+    syllabuses:
+      long-way:
+        path: curricula/long-way
+        todoist_project_id: "<your project id>"
+        state_file: state/long-way.yaml
+        enabled: true
+        ritual_times:
+          morning_reading: "06:00"   # overrides top-level if set
+
+`priority_order` controls dashboard card order and Todoist task creation
+order. Shared rhythm comes from the top-level `ritual_times`; each syllabus
+inherits unless its `ritual_times` block overrides a slot. Two syllabuses
+declaring the same `(slot, clock_time)` pair without `allow_slot_overlap`
+on at least one side fails fast at startup.
+
+Per-syllabus state lives at `state/<key>.yaml`; user-life-wide state
+(timezone, Anki count, manual counters, notes) lives at `state/shared.yaml`.
+Pause and streak are per-syllabus.
 
 ## What it does
 
@@ -62,9 +93,32 @@ pytest
 and on `workflow_dispatch`. The repo secret `TODOIST_TOKEN` must be
 set.
 
+## Local tooling
+
+Two scripts run locally and never call Todoist.
+
+- **`scripts/show_timetable.py`** — Preview the resolved weekly schedule
+  before pushing a `config.yaml` change. Surfaces `(slot, time)` collisions
+  across enabled syllabuses with a visible marker. Exit code is non-zero
+  if any collision exists, so it can be wired into a pre-commit hook.
+
+      python -m scripts.show_timetable
+      python -m scripts.show_timetable --syllabus long-way
+      python -m scripts.show_timetable --json
+
+- **`scripts/migrate_to_multi_syllabus.py`** — One-shot migration for an
+  existing single-syllabus fork. Moves `curriculum/` → `curricula/<name>/`,
+  splits `state.yaml` into `state/shared.yaml` + `state/<name>.yaml`,
+  rewrites `config.yaml` to the new shape, wraps caches and reflections
+  under the syllabus key. Idempotent.
+
+      python -m scripts.migrate_to_multi_syllabus --dry-run
+      python -m scripts.migrate_to_multi_syllabus --name long-way
+
 ## Pause / unpause ritual
 
-Pause and unpause are owner edits to `state.yaml`. The dashboard reads
+Pause and unpause are per-syllabus. Edit the appropriate
+`state/<key>.yaml` (e.g. `state/long-way.yaml`). The dashboard reads
 both the open and the closed pause windows so streak walks are not
 broken by genuine off-time.
 
@@ -104,7 +158,7 @@ numbering and one phase per module. Module names carry whatever
 the work is about — a course, a project, a deep dive into a book.
 
 ```yaml
-# curriculum/syllabus.yaml
+# curricula/<name>/syllabus.yaml
 modules:
   - number: 7
     name: "Neuromatch Academy (or self-paced compneuro)"
@@ -115,10 +169,10 @@ modules:
 **Learning tracks are the parallel always-on surfaces.** Courses
 you're auditing across months, certifications you're chasing
 across years, branches off the trunk, lineage detours. They live
-in `state.yaml` under arbitrary owner-defined categories:
+in `state/<key>.yaml` under arbitrary owner-defined categories:
 
 ```yaml
-# state.yaml
+# state/<key>.yaml
 learning_tracks:
   Courses:
     "boot.dev backend path": current
@@ -153,7 +207,7 @@ the full vocabulary.
 
 ## `books_state`
 
-`state.yaml` carries an owner-maintained map from book title to one of
+`state/<key>.yaml` carries an owner-maintained map from book title to one of
 three values:
 
 ```yaml
@@ -164,7 +218,7 @@ books_state:
 ```
 
 Valid values: `not_started`, `current`, `done`. The dashboard's Books
-section renders a per-phase list from `curriculum/syllabus.yaml`'s
+section renders a per-phase list from `curricula/<name>/syllabus.yaml`'s
 `books:` entries and tags each with the badge from this map. Titles
 must match exactly; absence defaults to `not_started`.
 
@@ -196,8 +250,8 @@ to build per-file blob URLs.
 
 I built this for me, but the engine itself is generic. The curriculum
 data is the only opinionated part, and it lives in YAML you can
-replace wholesale. Fork the repo, write your own `curriculum/`, point
-the daily cron at it, and you have your own personal learning system
+replace wholesale. Fork the repo, write your own `curricula/<name>/`,
+point the daily cron at it, and you have your own personal learning system
 firing tasks at you every morning.
 
 The hard part of forking isn't the engine — it's writing the
@@ -220,7 +274,7 @@ fork.
 
 3. Answer the agent's questions for ~30 minutes — goal, duration,
    phases, books per month, modules, rituals. The agent writes every
-   YAML file in `curriculum/` as you go.
+   YAML file in `curricula/<name>/` as you go.
 4. Run `python -m src.main --dry-run` to verify the agent's output.
 5. Wire up Todoist + GitHub Actions per [`docs/FORKING.md`](./docs/FORKING.md).
 
@@ -254,7 +308,7 @@ it's topical ("learn X"). Some examples that work:
 > then actually do it. 8 months.
 
 The agent reads `AGENTS.md`, asks clarifying questions, proposes a
-phase split, lets you push back, then writes a full `curriculum/`
+phase split, lets you push back, then writes a full `curricula/<name>/`
 bundle that matches what the engine knows how to run.
 
 ### Why `AGENTS.md` is the contract
@@ -270,15 +324,41 @@ includes it.
 
 If you'd rather skip the interview and start from a working example,
 copy one of the starter bundles in [`examples/`](./examples/) into
-`curriculum/` and edit it:
+`curricula/<name>/` and edit it:
 
 - [`examples/ml-engineer-12mo/`](./examples/ml-engineer-12mo/) — 12-month ML engineer path (3 phases, 9 modules)
 - [`examples/frontend-craft-6mo/`](./examples/frontend-craft-6mo/) — 6-month frontend deep-dive (2 phases, 6 modules)
 - [`examples/programmer-to-neuroscience-12mo/`](./examples/programmer-to-neuroscience-12mo/) — 12-month programmer-to-neuroscientist path (3 phases, 12 modules)
 
 Each example includes a **weekly state-review** task whose sub-task
-checkboxes mutate `state.yaml` on the next cron — module advance,
+checkboxes mutate `state/<key>.yaml` on the next cron — module advance,
 book transitions, pause, Anki counter, revert. After fork setup
-you never hand-edit `state.yaml`.
+you never hand-edit `state/<key>.yaml`.
 
 Full setup walkthrough: [`docs/FORKING.md`](./docs/FORKING.md).
+
+## Adding another syllabus
+
+To run a second path alongside your current one:
+
+1. Copy or scaffold a new bundle at `curricula/<new-key>/` (use one of
+   `examples/` or run the `AGENTS.md` interview to generate it).
+2. Create `state/<new-key>.yaml` seeded with that syllabus's start date,
+   current module, and current book.
+3. Add a block under `syllabuses:` in `config.yaml`:
+
+       syllabuses:
+         long-way:
+           ...
+         <new-key>:
+           path: curricula/<new-key>
+           todoist_project_id: "<new project id>"
+           state_file: state/<new-key>.yaml
+           enabled: true
+
+4. Add `<new-key>` to `priority_order` in the position you want.
+5. Run `python -m scripts.show_timetable` to verify no slot collisions.
+6. Commit.
+
+The next cron run will fire tasks for both syllabuses into their own
+Todoist projects and render both as cards on the dashboard.

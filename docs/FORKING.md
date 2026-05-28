@@ -7,9 +7,9 @@ progress dashboard.
 **The recommended way to design your curriculum is the AI-agent
 interview in [`AGENTS.md`](../AGENTS.md)**. That file is the spec
 for how a well-formed fork should be written — schema, validation
-rules, anti-patterns, and a 7-step interview protocol any capable
+rules, anti-patterns, and an interview protocol any capable
 AI agent (Claude, Cursor, Codex, etc.) can run with you to produce
-a complete `curriculum/` bundle. The "Step 4 — Pick or build a
+a complete `curricula/<name>/` bundle. The "Step 4 — Pick or build a
 curriculum" section below covers both that path and the
 copy-an-example shortcut.
 
@@ -22,7 +22,7 @@ copy-an-example shortcut.
   and reflection log.
 - Reflection markdown stubs auto-generated for weekly / monthly /
   quarterly / annual rituals.
-- All of it driven by YAML files you edit in `curriculum/` — no
+- All of it driven by YAML files you edit in `curricula/<name>/` — no
   Python code changes required.
 
 ## Prerequisites
@@ -80,10 +80,10 @@ agent run the 7-step interview with you:
    Cursor, Codex, Aider — anything that can read files in the repo.
 2. Send the agent this prompt (or similar):
 
-   > Read `AGENTS.md` end-to-end. Then run the 7-step interview
-   > described in section 5 with me to build my curriculum.
-   > Write the resulting YAML files under `curriculum/`. After the
-   > interview, run the validator to confirm everything passes.
+   > Read `AGENTS.md` end-to-end. Then run the interview described
+   > in section 5 with me to build my curriculum. Write the resulting
+   > YAML files under `curricula/<name>/`. After the interview, run
+   > `python -m scripts.show_timetable` to confirm everything passes.
 
 3. Answer the agent's questions, roughly in this order:
    - **Goal & duration.** What do you want to be able to do, by when?
@@ -121,28 +121,28 @@ the engine starts running it. About 30 minutes of work.
 ### Path B — Copy an example and edit
 
 If you want to skip the interview, just copy one of the starter
-bundles:
+bundles into `curricula/<name>/`:
 
 ```bash
-rm -rf curriculum
-cp -r examples/ml-engineer-12mo curriculum
+cp -r examples/ml-engineer-12mo curricula/my-path
 # or:
-cp -r examples/frontend-craft-6mo curriculum
+cp -r examples/frontend-craft-6mo curricula/my-path
 # or:
-cp -r examples/programmer-to-neuroscience-12mo curriculum
+cp -r examples/programmer-to-neuroscience-12mo curricula/my-path
 ```
 
 Edit the copied files to your liking. Use [`AGENTS.md`](../AGENTS.md)
 as the schema reference when you don't know what a field means. The
-validator (Step 7) runs at startup and tells you if anything is
-malformed.
+validator runs at startup and tells you if anything is malformed.
 
 ### Either path: end state
 
-By the end of this step you should have these files in `curriculum/`:
+By the end of this step you should have these files in
+`curricula/<name>/`, a matching `state/<name>.yaml`, and the syllabus
+registered in `config.yaml`:
 
 ```
-curriculum/
+curricula/<name>/
 ├── syllabus.yaml             # phases, books, modules
 ├── manifest.yaml             # required ritual_times
 ├── modules.yaml              # one onboarding task per module
@@ -161,22 +161,24 @@ curriculum/
 Edit `config.yaml`:
 
 ```yaml
-todoist:
-  project_id: "YOUR_TODOIST_PROJECT_ID"      # from Step 3
-  labels:                                     # optional Todoist labels
-    daily: "daily-ritual"
-    weekly: "weekly-ritual"
-    monthly: "monthly-ritual"
-    practice: "active-practice"
-    module: "module-work"
-    reflection: "reflection"
-
 # Times of day for ritual templates. Keys must match what your
-# curriculum/manifest.yaml lists under `ritual_times_required`.
+# curricula/<name>/manifest.yaml lists under `ritual_times_required`.
 ritual_times:
   morning_reading: "06:00"
   evening_hands_on: "19:00"
   # ... add whatever slots your curriculum needs
+
+# Controls dashboard card order and Todoist task creation order.
+priority_order:
+  - my-path
+
+# One entry per syllabus.
+syllabuses:
+  my-path:
+    path: curricula/my-path
+    todoist_project_id: "YOUR_TODOIST_PROJECT_ID"   # from Step 3
+    state_file: state/my-path.yaml
+    enabled: true
 
 # Optional: which weekday counts as your "pair-with-someone" day.
 # Templates with `skip_if: [pair_day]` won't fire on this day.
@@ -188,18 +190,16 @@ sunday_off: true
 dashboard:
   github_username: "YOUR_GITHUB_USERNAME"
   repo_name: "long-way-engine"               # or whatever you renamed the fork
-
-# Points at the active curriculum bundle. Default is `curriculum`.
-curriculum_dir: curriculum
 ```
 
-## Step 6 — Initialize `state.yaml`
+## Step 6 — Initialize state files
 
-Edit `state.yaml` to mark day one:
+Two state files. Create both.
+
+**`state/<name>.yaml`** — per-syllabus state (module, book, pause, streak):
 
 ```yaml
 start_date: 2026-06-01           # today, in YYYY-MM-DD
-timezone: "Asia/Kolkata"          # your tz, used by daily cron
 phase: 1
 month: 1
 current_module: 1
@@ -227,6 +227,14 @@ paused: false
 # Valid leaf states: not_started | current | done. Leave empty if
 # nothing parallel is in flight at day one.
 learning_tracks: {}
+
+books_state: {}
+```
+
+**`state/shared.yaml`** — user-life-wide state (not syllabus-specific):
+
+```yaml
+timezone: "Asia/Kolkata"          # your tz, used by daily cron
 
 manual_counters:
   anki_card_count: 0
@@ -302,10 +310,10 @@ After the next cron run, your dashboard is at
 After fork setup the engine does state maintenance for you. The
 **weekly state-review** Todoist task fires every Sunday with a
 checkbox per state mutation; the next cron picks up your checked
-boxes and edits `state.yaml` on your behalf. Two persistent tasks —
-**🛑 Emergency pause** and **▶️ Resume** — sit always-on in the
-inbox for unplanned breaks. Result: in the steady-state flow, you
-never open `state.yaml`.
+boxes and edits `state/<name>.yaml` on your behalf. Two persistent
+tasks — **🛑 Emergency pause** and **▶️ Resume** — sit always-on in
+the inbox for unplanned breaks. Result: in the steady-state flow, you
+never open `state/<name>.yaml`.
 
 - **Advance a module.** On Sunday, check the "I'm ready to advance
   to Module N+1" sub-task on the weekly state-review parent. Next
@@ -327,15 +335,15 @@ never open `state.yaml`.
   calendar elapsed days minus closed pause intervals; you no longer
   edit them.
 - **Add a new ritual.** Append a template to the appropriate
-  `curriculum/rituals/*.yaml`. The id must be unique across the
+  `curricula/<name>/rituals/*.yaml`. The id must be unique across the
   whole curriculum.
-- **Change phases / books mid-stream.** Edit `curriculum/syllabus.yaml`
-  directly. The validator catches inconsistencies (titles, phase
-  numbers, etc.) at startup.
+- **Change phases / books mid-stream.** Edit
+  `curricula/<name>/syllabus.yaml` directly. The validator catches
+  inconsistencies (titles, phase numbers, etc.) at startup.
 - **Track a course or certification in parallel.** Declare it once
-  in `curriculum/syllabus.yaml` under `tracks:` (title, category,
+  in `curricula/<name>/syllabus.yaml` under `tracks:` (title, category,
   phase, optional `months: [start, end]`). The validator then
-  requires every entry in `state.learning_tracks` to match a
+  requires every entry in `state/<name>.learning_tracks` to match a
   declaration — typos fail fast. Lifecycle states are
   `not_started | current | done`. With `months:` the engine
   auto-transitions at month boundaries (owner state always wins on
@@ -350,8 +358,8 @@ never open `state.yaml`.
   the cron commit to roll back further.
 
 **Escape hatch.** If you do want sub-day-latency state changes,
-edit `state.yaml` directly and commit. The next cron picks up the
-edit immediately. Useful when correcting a runaway counter or
+edit `state/<name>.yaml` directly and commit. The next cron picks up
+the edit immediately. Useful when correcting a runaway counter or
 unwinding a botched series of mutations.
 
 ## When things break
