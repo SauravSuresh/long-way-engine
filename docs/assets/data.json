@@ -1,170 +1,188 @@
 {
-  "adherence": {
-    "done": 10,
-    "expected": 21,
-    "percent": 48,
-    "since": "2026-05-05"
-  },
-  "books": [
-    {
-      "author": "David Agans",
-      "end_month": 2,
-      "phase": 1,
-      "start_month": 2,
-      "title": "Debugging"
-    },
-    {
-      "author": "Bryant & O'Hallaron",
-      "end_month": 6,
-      "phase": 1,
-      "start_month": 1,
-      "title": "Computer Systems: A Programmer's Perspective"
-    },
-    {
-      "author": "Kurose & Ross",
-      "end_month": 10,
-      "phase": 1,
-      "start_month": 7,
-      "title": "Computer Networking: A Top-Down Approach"
-    },
-    {
-      "author": "Kerrisk",
-      "end_month": null,
-      "phase": 1,
-      "start_month": null,
-      "title": "The Linux Programming Interface"
-    },
-    {
-      "author": "Donovan & Kernighan",
-      "end_month": 18,
-      "phase": 2,
-      "start_month": 14,
-      "title": "The Go Programming Language"
-    },
-    {
-      "author": "Stevens",
-      "end_month": null,
-      "phase": 2,
-      "start_month": null,
-      "title": "TCP/IP Illustrated, Vol 1"
-    },
-    {
-      "author": "Kleppmann",
-      "end_month": 26,
-      "phase": 3,
-      "start_month": 21,
-      "title": "Designing Data-Intensive Applications"
-    },
-    {
-      "author": "Sam Newman",
-      "end_month": 28,
-      "phase": 3,
-      "start_month": 24,
-      "title": "Building Microservices"
-    },
-    {
-      "author": "Michael Nygard",
-      "end_month": 28,
-      "phase": 3,
-      "start_month": 28,
-      "title": "Release It!"
-    },
-    {
-      "author": "Burns, Beda, Hightower",
-      "end_month": 33,
-      "phase": 4,
-      "start_month": 31,
-      "title": "Kubernetes Up & Running"
-    },
-    {
-      "author": "Google",
-      "end_month": 36,
-      "phase": 4,
-      "start_month": 34,
-      "title": "Site Reliability Engineering"
-    },
-    {
-      "author": "Ousterhout",
-      "end_month": 37,
-      "phase": 4,
-      "start_month": 36,
-      "title": "A Philosophy of Software Design"
-    }
+  "priority_order": [
+    "long-way"
   ],
-  "books_state": {},
-  "current_book": "Computer Systems: A Programmer's Perspective",
-  "current_module": 1,
-  "day_of_journey": 25,
-  "day_total": 1189,
-  "last_7_days": [
-    {
-      "date": "2026-05-22",
-      "state": "red"
+  "shared": {
+    "anki_card_count": 0,
+    "manual_counters": {
+      "anki_card_count": 0,
+      "lineage_detours_done": [],
+      "prs_opened": 0,
+      "traces_completed": 0
     },
-    {
-      "date": "2026-05-23",
-      "state": "green"
-    },
-    {
-      "date": "2026-05-24",
-      "state": "gray"
-    },
-    {
-      "date": "2026-05-25",
-      "state": "red"
-    },
-    {
-      "date": "2026-05-26",
-      "state": "red"
-    },
-    {
-      "date": "2026-05-27",
-      "state": "yellow"
-    },
-    {
-      "date": "2026-05-28",
-      "state": "yellow"
-    }
-  ],
-  "month": 1,
-  "paused": null,
-  "phase": 1,
-  "practices": {
-    "Code reading sessions": 1,
-    "PRs opened": 0,
-    "Pair sessions": 0,
-    "Traces completed": 0
+    "prs_opened": 0,
+    "timezone": "Asia/Kolkata"
   },
-  "reflections": [
-    {
-      "cadence": "weekly",
-      "file": "2026-W22",
-      "relative_path": "weekly/2026-W22.md",
-      "status": "stub",
-      "word_count": 38
+  "syllabuses": {
+    "long-way": {
+      "adherence": {
+        "done": 21,
+        "expected": 22,
+        "percent": 95,
+        "since": "2026-05-05"
+      },
+      "books": [
+        {
+          "author": "David Agans",
+          "end_month": 2,
+          "phase": 1,
+          "start_month": 2,
+          "title": "Debugging"
+        },
+        {
+          "author": "Bryant & O'Hallaron",
+          "end_month": 6,
+          "phase": 1,
+          "start_month": 1,
+          "title": "Computer Systems: A Programmer's Perspective"
+        },
+        {
+          "author": "Kurose & Ross",
+          "end_month": 10,
+          "phase": 1,
+          "start_month": 7,
+          "title": "Computer Networking: A Top-Down Approach"
+        },
+        {
+          "author": "Kerrisk",
+          "end_month": null,
+          "phase": 1,
+          "start_month": null,
+          "title": "The Linux Programming Interface"
+        },
+        {
+          "author": "Donovan & Kernighan",
+          "end_month": 18,
+          "phase": 2,
+          "start_month": 14,
+          "title": "The Go Programming Language"
+        },
+        {
+          "author": "Stevens",
+          "end_month": null,
+          "phase": 2,
+          "start_month": null,
+          "title": "TCP/IP Illustrated, Vol 1"
+        },
+        {
+          "author": "Kleppmann",
+          "end_month": 26,
+          "phase": 3,
+          "start_month": 21,
+          "title": "Designing Data-Intensive Applications"
+        },
+        {
+          "author": "Sam Newman",
+          "end_month": 28,
+          "phase": 3,
+          "start_month": 24,
+          "title": "Building Microservices"
+        },
+        {
+          "author": "Michael Nygard",
+          "end_month": 28,
+          "phase": 3,
+          "start_month": 28,
+          "title": "Release It!"
+        },
+        {
+          "author": "Burns, Beda, Hightower",
+          "end_month": 33,
+          "phase": 4,
+          "start_month": 31,
+          "title": "Kubernetes Up & Running"
+        },
+        {
+          "author": "Google",
+          "end_month": 36,
+          "phase": 4,
+          "start_month": 34,
+          "title": "Site Reliability Engineering"
+        },
+        {
+          "author": "Ousterhout",
+          "end_month": 37,
+          "phase": 4,
+          "start_month": 36,
+          "title": "A Philosophy of Software Design"
+        }
+      ],
+      "books_state": {},
+      "current_book": "Computer Systems: A Programmer's Perspective",
+      "current_module": 1,
+      "day_of_journey": 26,
+      "day_total": 1189,
+      "last_7_days": [
+        {
+          "date": "2026-05-23",
+          "state": "green"
+        },
+        {
+          "date": "2026-05-24",
+          "state": "gray"
+        },
+        {
+          "date": "2026-05-25",
+          "state": "green"
+        },
+        {
+          "date": "2026-05-26",
+          "state": "green"
+        },
+        {
+          "date": "2026-05-27",
+          "state": "green"
+        },
+        {
+          "date": "2026-05-28",
+          "state": "green"
+        },
+        {
+          "date": "2026-05-29",
+          "state": "red"
+        }
+      ],
+      "month": 1,
+      "paused": null,
+      "phase": 1,
+      "practices": {
+        "Code reading sessions": 4,
+        "PRs opened": 0,
+        "Pair sessions": 0,
+        "Traces completed": 0
+      },
+      "reflections": [
+        {
+          "cadence": "monthly",
+          "file": "2026-05",
+          "relative_path": "monthly/2026-05.md",
+          "status": "stub",
+          "word_count": 54
+        }
+      ],
+      "streaks": {
+        "Daily": 0,
+        "Monthly post": 0,
+        "Weekly review": 0
+      },
+      "streaks_view": {
+        "Daily": {
+          "best": 21,
+          "count": 0,
+          "hint": "complete morning reading + Anki today to start"
+        },
+        "Monthly post": {
+          "best": 0,
+          "count": 0,
+          "hint": "next post in 2 days"
+        },
+        "Weekly review": {
+          "best": 0,
+          "count": 0,
+          "hint": "next Friday in 6 days"
+        }
+      },
+      "today": "2026-05-30"
     }
-  ],
-  "streaks": {
-    "Daily": 0,
-    "Monthly post": 0,
-    "Weekly review": 0
-  },
-  "streaks_view": {
-    "Daily": {
-      "best": 6,
-      "count": 0,
-      "hint": "complete morning reading + Anki today to start"
-    },
-    "Monthly post": {
-      "best": 0,
-      "count": 0,
-      "hint": "next post in 3 days"
-    },
-    "Weekly review": {
-      "best": 0,
-      "count": 0,
-      "hint": "Friday review + filled reflection due today"
-    }
-  },
-  "today": "2026-05-29"
+  }
 }

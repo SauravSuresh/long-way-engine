@@ -1,11 +1,16 @@
-current_module: 1
+start_date: '2026-05-05'
 phase: 1
+month: 1
+current_module: 1
 current_book: 'Computer Systems: A Programmer''s Perspective'
-start_date: 2026-05-05
+completed_modules: []
 active_branches: []
 paused: false
-month: 1
-completed_modules: []
+paused_since: null
+paused_until: null
+pause_history: []
+books_state: {}
 learning_tracks:
   Courses:
     boot.dev backend path: current
+manual_counters: {}
