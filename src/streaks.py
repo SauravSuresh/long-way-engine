@@ -27,7 +27,7 @@ from typing import Any
 
 from src.ids import external_id
 from src.reflections import split_frontmatter
-from src.state import State
+from src.state import SyllabusState
 
 DAILY_TEMPLATES_REQUIRED = ("daily-anki", "daily-morning-reading")
 WEEKLY_REVIEW_TEMPLATE = "weekly-friday-review"
@@ -37,7 +37,7 @@ FRIDAY = 4
 SUNDAY = 6
 
 
-def _is_in_pause_window(d: date, state: State) -> bool:
+def _is_in_pause_window(d: date, state: SyllabusState) -> bool:
     """Inside a closed pause_history interval, or in the open paused_since window."""
     for interval in state.pause_history:
         if interval.start <= d <= interval.end:
@@ -47,7 +47,7 @@ def _is_in_pause_window(d: date, state: State) -> bool:
     return False
 
 
-def _is_skipped_on(d: date, state: State) -> bool:
+def _is_skipped_on(d: date, state: SyllabusState) -> bool:
     """Daily-streak skip-day: Sunday OR inside a pause window.
 
     Sunday-skip applies only to daily streaks (anki + morning-reading both
@@ -87,7 +87,7 @@ def _all_required_done(
 
 def daily_streak(
     today: date,
-    state: State,
+    state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
 ) -> int:
@@ -132,7 +132,7 @@ def _reflection_status_filled(path: Path) -> bool:
 
 def weekly_review_streak(
     today: date,
-    state: State,
+    state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
     reflections_root: Path,
@@ -159,7 +159,7 @@ def weekly_review_streak(
 
 def monthly_post_streak(
     today: date,
-    state: State,
+    state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
 ) -> int:
@@ -190,7 +190,7 @@ def monthly_post_streak(
 
 def best_daily_streak(
     today: date,
-    state: State,
+    state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
 ) -> int:
@@ -213,7 +213,7 @@ def best_daily_streak(
 
 def best_weekly_review_streak(
     today: date,
-    state: State,
+    state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
     reflections_root: Path,
@@ -248,7 +248,7 @@ def best_weekly_review_streak(
 
 def best_monthly_post_streak(
     today: date,
-    state: State,
+    state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
 ) -> int:
@@ -285,7 +285,7 @@ def _next_month_first_day(d: date) -> date:
 # no randomness or LLM.
 
 
-def _is_currently_paused(state: State, today: date) -> bool:
+def _is_currently_paused(state: SyllabusState, today: date) -> bool:
     if state.paused:
         return True
     return _is_in_pause_window(today, state)
@@ -297,7 +297,7 @@ def _plural(n: int, unit: str) -> str:
 
 def adherence_since_start(
     today: date,
-    state: State,
+    state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
 ) -> tuple[int, int]:
@@ -321,7 +321,7 @@ def adherence_since_start(
     return done, expected
 
 
-def daily_hint(today: date, state: State, current: int) -> str:
+def daily_hint(today: date, state: SyllabusState, current: int) -> str:
     if today < state.start_date:
         return f"starts {state.start_date.isoformat()}"
     if _is_currently_paused(state, today):
@@ -333,7 +333,7 @@ def daily_hint(today: date, state: State, current: int) -> str:
     return "morning reading + Anki by 23:59 to keep it"
 
 
-def weekly_hint(today: date, state: State, current: int) -> str:
+def weekly_hint(today: date, state: SyllabusState, current: int) -> str:
     if today < state.start_date:
         return f"starts {state.start_date.isoformat()}"
     if _is_currently_paused(state, today):
@@ -346,7 +346,7 @@ def weekly_hint(today: date, state: State, current: int) -> str:
     return f"next Friday in {_plural(days_to_friday, 'day')}"
 
 
-def monthly_hint(today: date, state: State, current: int) -> str:
+def monthly_hint(today: date, state: SyllabusState, current: int) -> str:
     if today < state.start_date:
         return f"starts {state.start_date.isoformat()}"
     if _is_currently_paused(state, today):

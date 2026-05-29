@@ -19,11 +19,22 @@ from src.reflections import (
     split_frontmatter,
     update_metadata,
 )
+from src.state import SyllabusState
 from src.templates import Template
-from tests.test_templates import make_config, make_state
+from tests.test_templates import make_config
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-REFLECTION_TEMPLATES = REPO_ROOT / "curriculum" / "reflection_templates"
+REFLECTION_TEMPLATES = REPO_ROOT / "curricula" / "long-way" / "reflection_templates"
+
+
+def make_state() -> SyllabusState:
+    return SyllabusState(
+        start_date=date(2026, 5, 4),
+        phase=1,
+        month=1,
+        current_module=1,
+        current_book="CSAPP",
+    )
 
 
 def weekly_template_with_stub() -> Template:

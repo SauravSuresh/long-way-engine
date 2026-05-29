@@ -172,6 +172,10 @@ class TodoistClient:
             body["due_string"] = template.due
         if template.labels:
             body["labels"] = list(template.labels)
+        if template.syllabus_key:
+            labels = list(body.get("labels") or [])
+            labels.append(f"syllabus:{template.syllabus_key}")
+            body["labels"] = labels
         if parent_id is not None:
             body["parent_id"] = str(parent_id)
 

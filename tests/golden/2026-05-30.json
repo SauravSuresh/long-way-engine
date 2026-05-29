@@ -4,7 +4,8 @@
     {
       "cadence": "annual",
       "fires": false,
-      "id": "annual-review"
+      "id": "annual-review",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "daily",
@@ -15,6 +16,7 @@
       "labels": [
         "daily-ritual"
       ],
+      "syllabus_key": "long-way",
       "title": "Morning reading: Computer Systems: A Programmer's Perspective"
     },
     {
@@ -26,6 +28,7 @@
       "labels": [
         "daily-ritual"
       ],
+      "syllabus_key": "long-way",
       "title": "Anki review"
     },
     {
@@ -37,12 +40,14 @@
       "labels": [
         "daily-ritual"
       ],
+      "syllabus_key": "long-way",
       "title": "Evening hands-on (60\u201390 min)"
     },
     {
       "cadence": "monthly",
       "fires": false,
-      "id": "monthly-blog-post"
+      "id": "monthly-blog-post",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "monthly",
@@ -54,6 +59,7 @@
         "monthly-ritual",
         "reflection"
       ],
+      "syllabus_key": "long-way",
       "title": "Monthly retrieval: re-read 4 weeks of notes"
     },
     {
@@ -66,12 +72,14 @@
         "monthly-ritual",
         "reflection"
       ],
+      "syllabus_key": "long-way",
       "title": "Monthly review: what worked, what didn't"
     },
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-trace-one-thing"
+      "id": "weekly-trace-one-thing",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "weekly",
@@ -82,42 +90,50 @@
       "labels": [
         "active-practice"
       ],
+      "syllabus_key": "long-way",
       "title": "Read real code (1 hr)"
     },
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-pair-with-engineer"
+      "id": "weekly-pair-with-engineer",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "monthly",
       "fires": false,
-      "id": "monthly-oss-pr"
+      "id": "monthly-oss-pr",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "quarterly",
       "fires": false,
-      "id": "quarterly-build-thing-under-thing"
+      "id": "quarterly-build-thing-under-thing",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "quarterly",
       "fires": false,
-      "id": "quarterly-synthesis"
+      "id": "quarterly-synthesis",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-state-review"
+      "id": "weekly-state-review",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-friday-review"
+      "id": "weekly-friday-review",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-saturday-deep-block"
+      "id": "weekly-saturday-deep-block",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
@@ -128,152 +144,182 @@
       "labels": [
         "module-work"
       ],
+      "syllabus_key": "long-way",
       "title": "Module 1: Python Basics \u2014 start"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-02-onboarding"
+      "id": "module-02-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-03-onboarding"
+      "id": "module-03-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-04-onboarding"
+      "id": "module-04-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-05-onboarding"
+      "id": "module-05-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-06-onboarding"
+      "id": "module-06-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-06-lineage"
+      "id": "module-06-lineage",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-07-onboarding"
+      "id": "module-07-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-07-lineage"
+      "id": "module-07-lineage",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-08-onboarding"
+      "id": "module-08-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-09-onboarding"
+      "id": "module-09-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-10-onboarding"
+      "id": "module-10-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-10-lineage"
+      "id": "module-10-lineage",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-11-onboarding"
+      "id": "module-11-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-12-onboarding"
+      "id": "module-12-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-12-lineage"
+      "id": "module-12-lineage",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-13-onboarding"
+      "id": "module-13-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-14-onboarding"
+      "id": "module-14-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-14-lineage"
+      "id": "module-14-lineage",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-15-onboarding"
+      "id": "module-15-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-16-onboarding"
+      "id": "module-16-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-16-lineage"
+      "id": "module-16-lineage",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-17-onboarding"
+      "id": "module-17-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-18-onboarding"
+      "id": "module-18-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-19-onboarding"
+      "id": "module-19-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-20-onboarding"
+      "id": "module-20-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-21-onboarding"
+      "id": "module-21-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-21-lineage"
+      "id": "module-21-lineage",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-22-onboarding"
+      "id": "module-22-onboarding",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",
       "fires": false,
-      "id": "module-23-onboarding"
+      "id": "module-23-onboarding",
+      "syllabus_key": "long-way"
     }
   ]
 }

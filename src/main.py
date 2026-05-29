@@ -1,11 +1,12 @@
 """Daily run entrypoint.
 
-Loads state, config, and templates; computes today in the owner's TZ;
-for each daily template that should fire, creates the Todoist task
-idempotently; persists the cache and appends a LOG.md entry.
+Loads multi-syllabus config and shared state; iterates over enabled
+syllabuses in priority order; for each, creates Todoist tasks idempotently,
+manages state mutations, persists cache / state / shared-state; then renders
+the multi-syllabus dashboard.
 
-Phase A scope: daily cadence + Sunday skip only. No reflections, no
-dashboard, no weekly/monthly/quarterly cadences, no `paused` short-circuit.
+Legacy `run()` (single-syllabus, takes Config + State + flat cache_path) is
+kept intact so existing tests continue to pass without modification.
 """
 
 from __future__ import annotations
@@ -13,26 +14,57 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
+import dataclasses
 from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
 from pathlib import Path
+from typing import Any
 
 from zoneinfo import ZoneInfo
 
 import json
 
-from src.cache import load_cache, prune, save_cache
+from src.cache import (
+    NamespacedCache,
+    load_cache,
+    load_namespaced_cache,
+    prune,
+    save_cache,
+    save_namespaced_cache,
+)
 from src.clock import Clock, FrozenClock
-from src.config import Config, TokenRedactingFilter, load_config
+from src.config import (
+    Config,
+    DashboardConfig,
+    MultiSyllabusConfig,
+    SyllabusEntry,
+    TodoistConfig,
+    TokenRedactingFilter,
+    load_config,
+    load_multi_syllabus_config,
+)
 from src.dashboard import (
+    ReflectionMeta,
     render as render_dashboard,
+    render_multi_syllabus,
     scan_reflections,
     write_css_if_absent,
 )
 from src.ids import external_id, module_external_id
 from src.reflections import StubResult, create_stub, update_metadata
 from src.scheduler import _is_last_saturday_of_month, should_create_today
-from src.state import State, load_state, update_derived_fields, save_state
+from src.state import (
+    SharedState,
+    State,
+    SyllabusState,
+    load_shared_state,
+    load_state,
+    load_syllabus_state,
+    save_shared_state,
+    save_state,
+    save_syllabus_state,
+    update_derived_fields,
+)
 from src.state_review import (
     PERSISTENT_EMERGENCY_PAUSE_DESC,
     PERSISTENT_EMERGENCY_PAUSE_TITLE,
@@ -45,8 +77,8 @@ from src.state_review import (
     persistent_resume_external_id,
     run_state_review_phase,
 )
-from src.syllabus import Syllabus, load_syllabus
-from src.curriculum_validator import validate as validate_curriculum
+from src.syllabus import Syllabus, load_syllabus, load_syllabus_for_entry
+from src.curriculum_validator import validate as validate_curriculum, validate_multi_syllabus
 from src.templates import ResolvedTemplate, load_templates, resolve_variables
 from src.todoist import (
     CreateResult,
@@ -60,8 +92,11 @@ logger = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_PATH = REPO_ROOT / "config.yaml"
+# Legacy single-syllabus state path — kept so test monkeypatches still work.
 STATE_PATH = REPO_ROOT / "state.yaml"
+SHARED_STATE_PATH = REPO_ROOT / "state" / "shared.yaml"
 ENV_PATH = REPO_ROOT / ".env"
+# Legacy curriculum paths — kept so test monkeypatches still work.
 CURRICULUM_DIR = REPO_ROOT / "curriculum"
 RITUALS_DIR = CURRICULUM_DIR / "rituals"
 MODULES_PATH = CURRICULUM_DIR / "modules.yaml"
@@ -104,6 +139,43 @@ class RunSummary:
     state_review: StateReviewSummary | None = None
 
 
+@dataclass
+class AggregateSummary:
+    """Combined summary across all syllabuses in the loop."""
+    today: date | None = None
+    created: list[CreateResult] = field(default_factory=list)
+    skipped: list[CreateResult] = field(default_factory=list)
+    errors: int = 0
+    decisions: list[Decision] = field(default_factory=list)
+    stub_decisions: list[StubDecision] = field(default_factory=list)
+    metadata_updated: int = 0
+    dashboard_status: str | None = None
+
+    def merge(self, summary: RunSummary) -> None:
+        if self.today is None:
+            self.today = summary.today
+        self.created.extend(summary.created)
+        self.skipped.extend(summary.skipped)
+        self.errors += summary.errors
+        self.decisions.extend(summary.decisions)
+        self.stub_decisions.extend(summary.stub_decisions)
+        self.metadata_updated += summary.metadata_updated
+        if summary.dashboard_status is not None:
+            self.dashboard_status = summary.dashboard_status
+
+    def to_run_summary(self) -> RunSummary:
+        return RunSummary(
+            today=self.today or date.today(),
+            created=self.created,
+            skipped=self.skipped,
+            errors=self.errors,
+            decisions=self.decisions,
+            stub_decisions=self.stub_decisions,
+            metadata_updated=self.metadata_updated,
+            dashboard_status=self.dashboard_status,
+        )
+
+
 def _setup_logging(token: str, verbose: bool = False) -> None:
     logging.basicConfig(
         level=logging.DEBUG if verbose else logging.INFO,
@@ -112,7 +184,7 @@ def _setup_logging(token: str, verbose: bool = False) -> None:
     logging.getLogger().addFilter(TokenRedactingFilter(token))
 
 
-def _classify_skip(template, state: State, config: Config, today: date) -> str:
+def _classify_skip(template, state: State | SyllabusState, config: Config, today: date) -> str:
     """Human-readable label for why this template did not fire today."""
     if state.paused:
         return "SKIP (paused)"
@@ -163,7 +235,7 @@ _STUB_DECISION_LABELS = {
 
 def _record_stub(
     tpl,
-    state: State,
+    state: State | SyllabusState,
     config: Config,
     today: date,
     reflections_root: Path,
@@ -197,8 +269,9 @@ def _record_stub(
 def _ensure_persistent_tasks(
     client,
     cache: dict,
-    state: State,
+    state: State | SyllabusState,
     today: date,
+    syllabus_key: str = "",
 ) -> None:
     """Create emergency-pause + resume tasks if none currently open.
 
@@ -214,6 +287,7 @@ def _ensure_persistent_tasks(
             due="",
             labels=["state-review"],
             cadence="daily",
+            syllabus_key=syllabus_key,
         )
         try:
             result = client.create_task_idempotent(tpl, today, ext_id, cache)
@@ -247,6 +321,7 @@ def _ensure_persistent_tasks(
             due="",
             labels=["state-review"],
             cadence="daily",
+            syllabus_key=syllabus_key,
         )
         try:
             result = client.create_task_idempotent(tpl, today, ext_id, cache)
@@ -348,6 +423,12 @@ def _render_dashboard_once(
     return "ok"
 
 
+# ---------------------------------------------------------------------------
+# Legacy single-syllabus run() — kept for backward compatibility.
+# Tests import and call this directly with Config + State + cache_path.
+# ---------------------------------------------------------------------------
+
+
 def run(
     config: Config,
     state: State,
@@ -402,29 +483,15 @@ def run(
     cache = load_cache(cache_path)
     templates = load_templates(template_paths)
 
-    # PHASE 1: state-mutation. Runs before task creation so today's tasks
-    # reflect any module advance / pause that fired in the prior week's review.
+    # PHASE 1: state-mutation.
+    # NOTE: state-review is only available via run_for_syllabus().
+    # The legacy run() is retained for backwards-compatibility with tests that
+    # call it directly with Config + State + flat cache_path. The old
+    # `if syllabus is not None:` branch that called run_state_review_phase()
+    # with a 2-tuple unpack was removed here because run_state_review_phase()
+    # now returns a 3-tuple (state, shared, summary) and requires shared/shared_path
+    # kwargs. Use run_for_syllabus() for any code path that needs state-review.
     state_review_summary: StateReviewSummary | None = None
-    if syllabus is not None:
-        state, state_review_summary = run_state_review_phase(
-            config=config,
-            state=state,
-            syllabus=syllabus,
-            today=today,
-            cache=cache,
-            state_path=state_path,
-            state_log_path=state_log_path,
-            review_factory=review_factory,
-            completion_factory=completion_factory,
-            dry_run=dry_run,
-            todoist_token=config.todoist_token,
-            project_id=project_id or config.todoist.project_id,
-        )
-        # Derive month/phase from calendar minus closed pauses. Engine-managed
-        # fields: overwrite whatever state.yaml had before.
-        state = update_derived_fields(state, syllabus, today)
-        if not dry_run:
-            save_state(state_path, state)
     client = client_factory(
         token=config.todoist_token,
         project_id=project_id or config.todoist.project_id,
@@ -680,6 +747,319 @@ def run(
     )
 
 
+# ---------------------------------------------------------------------------
+# Per-syllabus run — used by the multi-syllabus main() loop.
+# ---------------------------------------------------------------------------
+
+
+def run_for_syllabus(
+    *,
+    cfg: MultiSyllabusConfig,
+    entry: SyllabusEntry,
+    state: SyllabusState,
+    shared: SharedState,
+    syllabus: Syllabus,
+    today: date,
+    clock: Clock,
+    cache: NamespacedCache,
+    template_paths: list[Path] | None = None,
+    client_factory=None,
+    dry_run: bool = False,
+    sweep: bool = True,
+    admin_factory=None,
+    completion_factory=None,
+    review_factory=None,
+    state_log_path: Path | None = None,
+    reflections_root_override: Path | None = None,
+) -> tuple[RunSummary, SyllabusState, SharedState, dict[str, Any]]:
+    """Execute one syllabus' daily run.
+
+    Returns (summary, new_state, new_shared, dashboard_data).
+
+    `dashboard_data` is a dict with keys: completion_set, module_titles,
+    books — consumed by main() when assembling the multi-syllabus render.
+    """
+    if client_factory is None:
+        client_factory = TodoistClient
+    if completion_factory is None:
+        completion_factory = TodoistCompletionClient
+    if review_factory is None:
+        review_factory = TodoistReviewClient
+
+    # Per-syllabus paths derived from entry.
+    if template_paths is None:
+        template_paths = [entry.path / "rituals", entry.path / "modules.yaml"]
+    reflections_root = reflections_root_override or (REFLECTIONS_DIR / entry.key)
+    reflection_templates_root = entry.path / "reflection_templates"
+    if state_log_path is None:
+        state_log_path = REPO_ROOT / "state" / f"{entry.key}_state_log.yaml"
+
+    # Per-syllabus cache slice: a live mutable dict inside nc.data.
+    # Downstream mutations land directly in the namespaced structure.
+    syllabus_cache = cache.data.setdefault(entry.key, {})
+
+    # Config shim so legacy callees (scheduler, templates, state_review) keep
+    # working. Config is NOT removed — it acts as an internal adapter here.
+    per_syllabus_cfg_shim = Config(
+        todoist=TodoistConfig(project_id=entry.todoist_project_id, labels={}),
+        ritual_times=entry.ritual_times,
+        sunday_off=cfg.sunday_off,
+        pair_day=cfg.pair_day,
+        dashboard=cfg.dashboard,
+        todoist_token=cfg.todoist_token,
+        curriculum_dir=entry.path,
+    )
+
+    templates = load_templates(template_paths)
+
+    # PHASE 1: state-mutation.
+    state_review_summary: StateReviewSummary | None = None
+    state, shared, state_review_summary = run_state_review_phase(
+        config=per_syllabus_cfg_shim,
+        state=state,
+        shared=shared,
+        syllabus=syllabus,
+        today=today,
+        cache=syllabus_cache,
+        state_path=entry.state_file,
+        shared_path=SHARED_STATE_PATH,
+        state_log_path=state_log_path,
+        review_factory=review_factory,
+        completion_factory=completion_factory,
+        dry_run=dry_run,
+        todoist_token=cfg.todoist_token,
+        project_id=entry.todoist_project_id,
+    )
+
+    # Derive month/phase and persist per-syllabus state.
+    state = update_derived_fields(state, syllabus, today)  # type: ignore[assignment]
+    if not dry_run:
+        save_syllabus_state(entry.state_file, state)
+
+    client = client_factory(
+        token=cfg.todoist_token,
+        project_id=entry.todoist_project_id,
+        clock=clock,
+        dry_run=dry_run,
+    )
+
+    created: list[CreateResult] = []
+    skipped: list[CreateResult] = []
+    decisions: list[Decision] = []
+    stub_decisions: list[StubDecision] = []
+    pending_paths: set[Path] = set()
+    errors = 0
+
+    for tpl in templates:
+        try:
+            if not should_create_today(tpl, today, state, per_syllabus_cfg_shim):
+                label = _classify_skip(tpl, state, per_syllabus_cfg_shim, today)
+                logger.info("[%s] template %s: %s", entry.key, tpl.id, label.lower())
+                decisions.append(Decision(tpl.id, None, label))
+                continue
+        except NotImplementedError as e:
+            logger.warning("[%s] template %s: %s", entry.key, tpl.id, e)
+            decisions.append(Decision(tpl.id, None, "ERROR (cadence)"))
+            errors += 1
+            continue
+
+        resolved = resolve_variables(tpl, state, per_syllabus_cfg_shim, today, syllabus=syllabus)
+        if resolved is None:
+            decisions.append(Decision(tpl.id, None, "ERROR (variable)"))
+            errors += 1
+            continue
+        resolved = dataclasses.replace(resolved, syllabus_key=entry.key)
+
+        if tpl.cadence == "once-per-module":
+            assert tpl.module_number is not None
+            ext_id = module_external_id(tpl.id, tpl.module_number)
+            cache_due = f"module:{tpl.module_number}"
+        else:
+            ext_id = external_id(tpl.id, today)
+            cache_due = today.isoformat()
+
+        try:
+            result = client.create_task_idempotent(resolved, today, ext_id, syllabus_cache)
+        except Exception as e:
+            logger.error("[%s] template %s: create failed: %s", entry.key, tpl.id, e)
+            decisions.append(Decision(tpl.id, ext_id, "ERROR (api)"))
+            errors += 1
+            continue
+
+        if result.skipped:
+            skipped.append(result)
+            decisions.append(Decision(tpl.id, ext_id, "SKIP (cache hit)"))
+        else:
+            created.append(result)
+            decisions.append(Decision(tpl.id, ext_id, "WOULD CREATE" if dry_run else "CREATED"))
+            syllabus_cache[ext_id] = {
+                "todoist_task_id": result.todoist_task_id,
+                "created_at": result.created_at,
+                "template_id": result.template_id,
+                "due_date": cache_due,
+            }
+
+        if resolved.state_review and tpl.cadence == "weekly":
+            syllabus_cache.setdefault(ext_id, {})["state_review_parent"] = True
+            parent_task_id = (
+                syllabus_cache[ext_id].get("todoist_task_id") or result.todoist_task_id
+            )
+            for i, sub in enumerate(resolved.sub_tasks):
+                if not evaluate_show_if(sub.show_if, state, syllabus):
+                    continue
+                sub_ext_id = external_id(f"{tpl.id}:sub:{i}", today)
+                sub_resolved = ResolvedTemplate(
+                    id=f"{tpl.id}:sub:{i}",
+                    title=sub.title,
+                    description="",
+                    due="",
+                    labels=list(resolved.labels),
+                    cadence=resolved.cadence,
+                    skip_if=[],
+                )
+                try:
+                    sub_result = client.create_task_idempotent(
+                        sub_resolved, today, sub_ext_id, syllabus_cache,
+                        parent_id=str(parent_task_id),
+                    )
+                except Exception as e:
+                    logger.error("[%s] sub-task %s create failed: %s", entry.key, sub_ext_id, e)
+                    errors += 1
+                    continue
+                if not sub_result.skipped:
+                    syllabus_cache[sub_ext_id] = {
+                        "todoist_task_id": sub_result.todoist_task_id,
+                        "created_at": sub_result.created_at,
+                        "template_id": sub_resolved.id,
+                        "due_date": today.isoformat(),
+                    }
+                syllabus_cache[sub_ext_id]["state_review_action"] = dict(sub.action)
+                syllabus_cache[sub_ext_id]["state_review_parent_task_id"] = str(parent_task_id)
+
+            sub_idx = len(resolved.sub_tasks)
+            for category, items in sorted(state.learning_tracks.items()):
+                for title_item, lifecycle_state in sorted(items.items()):
+                    if lifecycle_state != "current":
+                        continue
+                    auto_key = f"{tpl.id}:auto-finish:{category}:{title_item}"
+                    auto_ext_id = external_id(auto_key, today)
+                    auto_resolved = ResolvedTemplate(
+                        id=f"{tpl.id}:auto-finish:{sub_idx}",
+                        title=f"I finished [{category}: {title_item}]",
+                        description="",
+                        due="",
+                        labels=list(resolved.labels),
+                        cadence=resolved.cadence,
+                        skip_if=[],
+                    )
+                    try:
+                        auto_result = client.create_task_idempotent(
+                            auto_resolved, today, auto_ext_id, syllabus_cache,
+                            parent_id=str(parent_task_id),
+                        )
+                    except Exception as e:
+                        logger.error("[%s] auto-finish %s create failed: %s", entry.key, auto_ext_id, e)
+                        errors += 1
+                        continue
+                    if not auto_result.skipped:
+                        syllabus_cache[auto_ext_id] = {
+                            "todoist_task_id": auto_result.todoist_task_id,
+                            "created_at": auto_result.created_at,
+                            "template_id": auto_resolved.id,
+                            "due_date": today.isoformat(),
+                        }
+                    syllabus_cache[auto_ext_id]["state_review_action"] = {
+                        "type": "mark_track_finished",
+                        "category": category,
+                        "item": title_item,
+                    }
+                    syllabus_cache[auto_ext_id]["state_review_parent_task_id"] = str(parent_task_id)
+                    sub_idx += 1
+
+        _record_stub(
+            tpl,
+            state,
+            per_syllabus_cfg_shim,
+            today,
+            reflections_root,
+            reflection_templates_root,
+            pending_paths,
+            dry_run,
+            stub_decisions,
+        )
+
+    if not dry_run:
+        _ensure_persistent_tasks(client, syllabus_cache, state, today, syllabus_key=entry.key)
+
+    if sweep:
+        sweep_admin = (admin_factory or TodoistAdminClient)(token=cfg.todoist_token)
+        sweep_completion = (completion_factory or TodoistCompletionClient)(
+            token=cfg.todoist_token,
+            cache_path=COMPLETION_CACHE_PATH,
+            project_id=entry.todoist_project_id,
+            clock=clock,
+        )
+        sweep_result = sweep_past_due(
+            syllabus_cache,
+            today=today,
+            completion_client=sweep_completion,
+            admin_client=sweep_admin,
+            dry_run=dry_run,
+        )
+        if sweep_result.checked:
+            logger.info(
+                "[%s] sweep: checked=%d completed=%d missed=%d deleted=%d errors=%d",
+                entry.key,
+                sweep_result.checked,
+                sweep_result.completed_marked,
+                sweep_result.missed_marked,
+                sweep_result.deleted,
+                sweep_result.errors,
+            )
+
+    # Prune per-syllabus cache slice in place.
+    pruned = prune(syllabus_cache, now=clock.now().astimezone(timezone.utc))
+    syllabus_cache.clear()
+    syllabus_cache.update(pruned)
+
+    metadata_updated = 0
+    if not dry_run:
+        metadata_updated = update_metadata(reflections_root, reflection_templates_root)
+
+    summary = RunSummary(
+        today=today,
+        created=created,
+        skipped=skipped,
+        errors=errors,
+        decisions=decisions,
+        stub_decisions=stub_decisions,
+        metadata_updated=metadata_updated,
+        dashboard_status=None,  # dashboard rendered once in main() after all syllabuses
+        state_review=state_review_summary,
+    )
+
+    # Build per-syllabus dashboard inputs for the post-loop render.
+    completion_set: set[str] = {
+        str(entry_v["todoist_task_id"])
+        for entry_v in syllabus_cache.values()
+        if entry_v.get("todoist_task_id")
+        and not str(entry_v["todoist_task_id"]).startswith("DRY-RUN")
+    }
+    dashboard_data: dict[str, Any] = {
+        "completion_set": completion_set,
+        "module_titles": _module_titles_from_templates(templates),
+        "books": syllabus.books,
+        "reflections_root": reflections_root,
+    }
+
+    return summary, state, shared, dashboard_data
+
+
+# ---------------------------------------------------------------------------
+# Shared helpers
+# ---------------------------------------------------------------------------
+
+
 def append_log(
     log_path: Path,
     summary: RunSummary,
@@ -737,11 +1117,6 @@ def _build_parser() -> argparse.ArgumentParser:
         type=_parse_today,
         metavar="YYYY-MM-DD",
         help="Override the clock. Time-of-day defaults to 05:30 in owner TZ.",
-    )
-    p.add_argument(
-        "--project-id",
-        metavar="ID",
-        help="Override config.yaml todoist.project_id.",
     )
     p.add_argument(
         "--cache-file",
@@ -978,86 +1353,145 @@ def cleanup_project(
     return 0 if errors == 0 else 1
 
 
+# ---------------------------------------------------------------------------
+# Multi-syllabus main()
+# ---------------------------------------------------------------------------
+
+
 def main(argv: list[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
 
-    config = load_config(CONFIG_PATH, ENV_PATH)
-    _setup_logging(config.todoist_token, verbose=args.verbose)
+    cfg = load_multi_syllabus_config(CONFIG_PATH, ENV_PATH)
+    _setup_logging(cfg.todoist_token, verbose=args.verbose)
 
     if args.cleanup_project:
         return cleanup_project(
             project_id=args.cleanup_project,
-            token=config.todoist_token,
+            token=cfg.todoist_token,
             confirm=args.yes,
             cache_path=args.cache_file,
         )
 
-    state = load_state(STATE_PATH)
+    errors = validate_multi_syllabus(cfg.syllabuses, repo_root=REPO_ROOT)
+    if errors:
+        for e in errors:
+            logger.error("config: %s", e)
+        print("config validation failed:\n  " + "\n  ".join(errors), file=sys.stderr)
+        return 2
 
-    # Resolve curriculum_dir as absolute (relative to repo root) and load the
-    # Syllabus instance. Threaded into run() so resolve_variables can use
-    # YAML data via the new current_book(month, syllabus) signature. The
-    # CLI-level validator (run-on-startup safety check) lives in the
-    # __main__ block; main() deliberately skips it so test callers don't
-    # need a fully-valid curriculum bundle in tmp_path.
-    curriculum_dir = (
-        config.curriculum_dir
-        if config.curriculum_dir.is_absolute()
-        else REPO_ROOT / config.curriculum_dir
-    )
-    syllabus = load_syllabus(curriculum_dir)
+    shared = load_shared_state(SHARED_STATE_PATH)
+    nc = load_namespaced_cache(args.cache_file or CACHE_PATH)
 
     if args.today is not None:
-        clock: Clock = FrozenClock(args.today, state.timezone)
+        clock: Clock = FrozenClock(args.today, shared.timezone)
         today = args.today
     else:
-        clock = Clock(state.timezone)
+        clock = Clock(shared.timezone)
         today = clock.today()
 
-    cache_path = args.cache_file or CACHE_PATH
-
     logger.info(
-        "daily run start: today=%s tz=%s dry_run=%s cache=%s",
+        "daily run start: today=%s tz=%s dry_run=%s syllabuses=%s",
         today,
-        state.timezone.key,
+        shared.timezone.key,
         args.dry_run,
-        cache_path,
+        list(cfg.priority_order),
     )
 
-    # Template + reflection-template paths derive from the (possibly
-    # forker-overridden) curriculum_dir, not from the module-level
-    # CURRICULUM_DIR constant. When config.curriculum_dir is at its
-    # default ("curriculum"), fall back to the module-level constants
-    # so existing test monkeypatches on RITUALS_DIR / MODULES_PATH /
-    # REFLECTION_TEMPLATES_DIR continue to win.
-    if curriculum_dir == CURRICULUM_DIR:
-        rituals_dir = RITUALS_DIR
-        modules_path = MODULES_PATH
-        reflection_templates_root = REFLECTION_TEMPLATES_DIR
-    else:
-        rituals_dir = curriculum_dir / "rituals"
-        modules_path = curriculum_dir / "modules.yaml"
-        reflection_templates_root = curriculum_dir / "reflection_templates"
+    # Accumulators for the dashboard render and log.
+    per_syllabus_states: dict[str, SyllabusState] = {}
+    syllabuses_parsed: dict[str, Syllabus] = {}
+    per_syllabus_completion: dict[str, set[str]] = {}
+    per_syllabus_module_titles: dict[str, dict[int, str]] = {}
+    per_syllabus_books: dict[str, list] = {}
+    per_syllabus_reflections_root: dict[str, Path] = {}
 
-    summary = run(
-        config,
-        state,
-        today,
-        [rituals_dir, modules_path],
-        cache_path,
-        clock=clock,
-        dry_run=args.dry_run,
-        project_id=args.project_id,
-        reflection_templates_root=reflection_templates_root,
-        skip_dashboard=args.skip_dashboard,
-        sweep=not args.no_sweep,
-        syllabus=syllabus,
-    )
+    aggregate = AggregateSummary()
+    new_shared = shared
+
+    for key in cfg.priority_order:
+        entry = cfg.syllabuses[key]
+        if not entry.enabled:
+            continue
+
+        state = load_syllabus_state(entry.state_file)
+        syllabus = load_syllabus_for_entry(entry)
+
+        per_summary, state, new_shared, dash_data = run_for_syllabus(
+            cfg=cfg,
+            entry=entry,
+            state=state,
+            shared=new_shared,
+            syllabus=syllabus,
+            today=today,
+            clock=clock,
+            cache=nc,
+            dry_run=args.dry_run,
+            sweep=not args.no_sweep,
+        )
+
+        aggregate.merge(per_summary)
+        per_syllabus_states[key] = state
+        syllabuses_parsed[key] = syllabus
+        per_syllabus_completion[key] = dash_data["completion_set"]
+        per_syllabus_module_titles[key] = dash_data["module_titles"]
+        per_syllabus_books[key] = dash_data["books"]
+        per_syllabus_reflections_root[key] = dash_data["reflections_root"]
+
+    # After all syllabuses: persist cache + shared state, render dashboard.
+    if not args.dry_run:
+        save_namespaced_cache(args.cache_file or CACHE_PATH, nc)
+        if new_shared is not shared:
+            save_shared_state(SHARED_STATE_PATH, new_shared)
+
+        if not args.skip_dashboard:
+            try:
+                per_syllabus_reflections: dict[str, list[ReflectionMeta]] = {
+                    key: scan_reflections(per_syllabus_reflections_root[key])
+                    for key in cfg.priority_order
+                    if cfg.syllabuses[key].enabled
+                }
+                per_syllabus_cache_data: dict[str, dict] = {
+                    key: nc.data.get(key, {})
+                    for key in cfg.priority_order
+                    if cfg.syllabuses[key].enabled
+                }
+
+                html, data = render_multi_syllabus(
+                    cfg=cfg,
+                    shared=new_shared,
+                    syllabus_states=per_syllabus_states,
+                    syllabuses=syllabuses_parsed,
+                    completion_by_syllabus=per_syllabus_completion,
+                    cache_by_syllabus=per_syllabus_cache_data,
+                    reflections_by_syllabus=per_syllabus_reflections,
+                    books_by_syllabus=per_syllabus_books,
+                    today=today,
+                    clock=clock,
+                    reflections_root=REFLECTIONS_DIR,
+                    module_titles_by_syllabus=per_syllabus_module_titles,
+                )
+                DOCS_HTML_PATH.parent.mkdir(parents=True, exist_ok=True)
+                DOCS_DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
+                DOCS_HTML_PATH.write_text(html, encoding="utf-8")
+                DOCS_DATA_PATH.write_text(
+                    json.dumps(data, indent=2, sort_keys=True, default=str) + "\n",
+                    encoding="utf-8",
+                )
+                write_css_if_absent(DOCS_CSS_PATH)
+                aggregate.dashboard_status = "ok"
+            except Exception as e:
+                logger.warning("dashboard render failed: %s", e)
+                aggregate.dashboard_status = "error"
+        else:
+            aggregate.dashboard_status = "skipped"
+
+    summary = aggregate.to_run_summary()
 
     if args.dry_run:
         _print_dry_run_table(summary)
     else:
-        append_log(LOG_PATH, summary, state.timezone.key, clock=clock)
+        # Use timezone from shared state for the log timestamp.
+        append_log(LOG_PATH, summary, shared.timezone.key, clock=clock)
 
     logger.info(
         "daily run done: created=%d skipped=%d errors=%d",
@@ -1069,24 +1503,20 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    # Cron / CLI entry: load config + state once, run the curriculum validator
-    # for fail-fast safety, then hand off to main() which re-loads config and
-    # state. The two loads are intentional: main() must remain self-contained
-    # so unit tests that call main() directly with monkeypatched paths don't
-    # need a fully-valid curriculum bundle. Task 16 collapses the legacy
-    # current_book path and may revisit this duplication.
-    _bootstrap_config = load_config(CONFIG_PATH, ENV_PATH)
-    _bootstrap_state = load_state(STATE_PATH)
-    _bootstrap_curriculum_dir = (
-        _bootstrap_config.curriculum_dir
-        if _bootstrap_config.curriculum_dir.is_absolute()
-        else REPO_ROOT / _bootstrap_config.curriculum_dir
-    )
-    validate_curriculum(
-        _bootstrap_curriculum_dir,
-        ritual_times=_bootstrap_config.ritual_times,
-        state_current_module=_bootstrap_state.current_module,
-        state_month=_bootstrap_state.month,
-        state_learning_tracks=_bootstrap_state.learning_tracks,
-    )
+    # Cron / CLI entry: load config once, run the curriculum validator for
+    # fail-fast safety, then hand off to main() which re-loads config.
+    _bootstrap_cfg = load_multi_syllabus_config(CONFIG_PATH, ENV_PATH)
+    _bootstrap_shared = load_shared_state(SHARED_STATE_PATH)
+    for _key in _bootstrap_cfg.priority_order:
+        _entry = _bootstrap_cfg.syllabuses[_key]
+        if not _entry.enabled:
+            continue
+        _bootstrap_state = load_syllabus_state(_entry.state_file)
+        validate_curriculum(
+            _entry.path,
+            ritual_times=_entry.ritual_times,
+            state_current_module=_bootstrap_state.current_module,
+            state_month=_bootstrap_state.month,
+            state_learning_tracks=_bootstrap_state.learning_tracks,
+        )
     sys.exit(main())

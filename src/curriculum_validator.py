@@ -8,11 +8,14 @@ short-circuit on first failure — forkers see every problem at once.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Iterable
+from typing import TYPE_CHECKING, Iterable
 
 import yaml
 
 from src.syllabus import load_syllabus
+
+if TYPE_CHECKING:
+    from src.config import SyllabusEntry  # noqa: F401
 
 SUPPORTED_CADENCES = {
     "daily", "weekly", "monthly", "quarterly", "annual", "once-per-module",
@@ -96,6 +99,50 @@ def validate(
             f"Curriculum at {curriculum_dir} has {len(errors)} violation(s):"
             + joined
         )
+
+
+def validate_multi_syllabus(
+    syllabuses: "dict[str, SyllabusEntry]",
+    *,
+    repo_root: Path,
+) -> list[str]:
+    """Cross-cutting startup checks across all configured syllabuses.
+
+    Only enabled syllabuses are checked. Returns a list of error strings;
+    an empty list means valid.
+    """
+    errors: list[str] = []
+    for key, entry in syllabuses.items():
+        if not entry.enabled:
+            continue
+
+        # Check 1: path exists and is a directory.
+        if not entry.path.exists() or not entry.path.is_dir():
+            errors.append(
+                f"[{key}] path does not exist or is not a directory: {entry.path}"
+            )
+
+        # Check 2: state_file exists.
+        if not entry.state_file.exists():
+            errors.append(
+                f"[{key}] state_file does not exist: {entry.state_file}"
+            )
+
+        # Check 3: todoist_project_id is a non-empty string.
+        if not str(entry.todoist_project_id).strip():
+            errors.append(
+                f"[{key}] todoist_project_id is empty"
+            )
+
+        # Check 4 (best-effort): reflection_templates/ exists.
+        if entry.path.exists() and entry.path.is_dir():
+            rt_dir = entry.path / "reflection_templates"
+            if not rt_dir.exists():
+                errors.append(
+                    f"[{key}] reflection_templates/ directory missing: {rt_dir}"
+                )
+
+    return errors
 
 
 # --- per-check helpers --------------------------------------------------------

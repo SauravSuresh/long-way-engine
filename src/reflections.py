@@ -31,7 +31,7 @@ from typing import Any
 import yaml
 
 from src.config import Config
-from src.state import State
+from src.state import SyllabusState
 from src.templates import MissingVariable, Template, resolve_string
 
 logger = logging.getLogger(__name__)
@@ -48,7 +48,7 @@ class StubResult:
 
 def create_stub(
     template: Template,
-    state: State,
+    state: SyllabusState,
     config: Config,
     today: date,
     reflections_root: Path,
@@ -146,7 +146,7 @@ def update_metadata(reflections_root: Path, reflection_templates_root: Path) -> 
 def _render_template(
     reflection_templates_root: Path,
     cadence: str,
-    state: State,
+    state: SyllabusState,
     config: Config,
     today: date,
     template_id: str,

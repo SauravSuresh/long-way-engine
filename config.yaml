@@ -1,35 +1,21 @@
-todoist:
-  project_id: "6gWxC2wh5WRvjfw2"
-  labels:
-    daily: "daily-ritual"
-    weekly: "weekly-ritual"
-    monthly: "monthly-ritual"
-    quarterly: "quarterly-ritual"
-    annual: "annual-ritual"
-    practice: "active-practice"
-    module: "module-work"
-    reflection: "reflection"
-
 ritual_times:
-  morning_reading: "06:00"
-  anki: "08:30"
-  evening_hands_on: "19:00"
-  friday_review: "20:00"
-  saturday_deep_block: "09:00"
-  sunday_trace: "19:00"
-  weekly_state_review: "10:00"
-
+  morning_reading: 06:00
+  anki: 08:30
+  evening_hands_on: '19:00'
+  friday_review: '20:00'
+  saturday_deep_block: 09:00
+  sunday_trace: '19:00'
+  weekly_state_review: '10:00'
+priority_order:
+- long-way
+syllabuses:
+  long-way:
+    path: curricula/long-way
+    todoist_project_id: 6gWxC2wh5WRvjfw2
+    state_file: state/long-way.yaml
+    enabled: true
 sunday_off: true
-
-# Day of the week for the weekly pair-with-engineer session.
-# daily-evening-hands-on uses skip_if=pair_day to avoid double-booking
-# this evening with solo work.
 pair_day: thursday
-
-# Pluggable curriculum bundle directory. Default: "curriculum".
-# Forkers point this at their own bundle, or at one of examples/*.
-curriculum_dir: curriculum
-
 dashboard:
-  github_username: "SauravSuresh"
-  repo_name: "long-way-engine"
+  github_username: SauravSuresh
+  repo_name: long-way-engine

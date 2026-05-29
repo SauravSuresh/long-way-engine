@@ -37,22 +37,19 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
-from src.cache import load_cache  # noqa: E402
+from src.cache import load_namespaced_cache  # noqa: E402
 from src.clock import FrozenClock  # noqa: E402
-from src.config import load_config  # noqa: E402
-from src.dashboard import render, scan_reflections  # noqa: E402
-from src.state import load_state  # noqa: E402
-from src.syllabus import load_syllabus  # noqa: E402
+from src.config import load_multi_syllabus_config  # noqa: E402
+from src.dashboard import render_multi_syllabus, scan_reflections  # noqa: E402
+from src.state import load_shared_state, load_syllabus_state  # noqa: E402
+from src.syllabus import load_syllabus_for_entry  # noqa: E402
 from src.templates import load_templates  # noqa: E402
 
 CONFIG_PATH = REPO_ROOT / "config.yaml"
-STATE_PATH = REPO_ROOT / "state.yaml"
+SHARED_STATE_PATH = REPO_ROOT / "state" / "shared.yaml"
 ENV_PATH = REPO_ROOT / ".env"
 CACHE_PATH = REPO_ROOT / ".task_cache.json"
 REFLECTIONS_DIR = REPO_ROOT / "reflections"
-CURRICULUM_DIR = REPO_ROOT / "curriculum"
-RITUALS_DIR = CURRICULUM_DIR / "rituals"
-MODULES_PATH = CURRICULUM_DIR / "modules.yaml"
 DOCS_DIR = REPO_ROOT / "docs"
 DEFAULT_OUT = Path("/tmp/dashboard_synthetic.html")
 
@@ -91,7 +88,7 @@ def inject_banner(html: str) -> str:
 
 
 def synthetic_completion_set(cache: dict) -> set[str]:
-    """Treat every non-DRY-RUN cache task_id as a completion."""
+    """Treat every non-DRY-RUN cache task_id as a completion (flat cache)."""
     return {
         str(entry["todoist_task_id"])
         for entry in cache.values()
@@ -132,43 +129,73 @@ def main(argv: list[str] | None = None) -> int:
     sys.stdout.write(BANNER_STDOUT)
     sys.stdout.flush()
 
-    config = load_config(CONFIG_PATH, ENV_PATH)
-    state = load_state(STATE_PATH)
-    cache = load_cache(CACHE_PATH)
-    today = args.today or datetime.now(state.timezone).date()
-    clock = FrozenClock(today, state.timezone)
+    cfg = load_multi_syllabus_config(CONFIG_PATH, ENV_PATH)
+    shared = load_shared_state(SHARED_STATE_PATH)
+    nc = load_namespaced_cache(CACHE_PATH)
+    today = args.today or datetime.now(shared.timezone).date()
+    clock = FrozenClock(today, shared.timezone)
 
-    completion = synthetic_completion_set(cache)
-    sys.stdout.write(f"  cache entries: {len(cache)}\n")
-    sys.stdout.write(f"  synthetic completion_set size: {len(completion)}\n")
+    syllabus_states = {}
+    syllabuses = {}
+    completion_by_syllabus = {}
+    cache_by_syllabus = {}
+    reflections_by_syllabus = {}
+    books_by_syllabus = {}
+    module_titles_by_syllabus = {}
+
+    total_entries = 0
+    total_completion = 0
+
+    for key in cfg.priority_order:
+        entry = cfg.syllabuses[key]
+        if not entry.enabled:
+            continue
+
+        syllabus_states[key] = load_syllabus_state(entry.state_file)
+        syllabuses[key] = load_syllabus_for_entry(entry)
+
+        syl_cache = nc.data.get(key, {})
+        cache_by_syllabus[key] = syl_cache
+
+        syl_completion = synthetic_completion_set(syl_cache)
+        completion_by_syllabus[key] = syl_completion
+        total_entries += len(syl_cache)
+        total_completion += len(syl_completion)
+
+        reflections_by_syllabus[key] = scan_reflections(REFLECTIONS_DIR / key)
+        books_by_syllabus[key] = syllabuses[key].books
+
+        template_paths = [entry.path / "rituals", entry.path / "modules.yaml"]
+        try:
+            templates = load_templates(template_paths)
+        except OSError:
+            templates = []
+        module_titles_by_syllabus[key] = {
+            tpl.module_number: tpl.title
+            for tpl in templates
+            if tpl.cadence == "once-per-module"
+            and tpl.module_number is not None
+            and tpl.id.endswith("-onboarding")
+        }
+
+    sys.stdout.write(f"  total cache entries: {total_entries}\n")
+    sys.stdout.write(f"  synthetic completion_set size: {total_completion}\n")
     sys.stdout.write(f"  today: {today.isoformat()}\n")
+    sys.stdout.flush()
 
-    reflections = scan_reflections(REFLECTIONS_DIR)
-    try:
-        books = load_syllabus(CURRICULUM_DIR).books
-    except OSError:
-        books = []
-
-    templates = load_templates([RITUALS_DIR, MODULES_PATH])
-    module_titles = {
-        tpl.module_number: tpl.title
-        for tpl in templates
-        if tpl.cadence == "once-per-module"
-        and tpl.module_number is not None
-        and tpl.id.endswith("-onboarding")
-    }
-
-    html, _data = render(
-        state=state,
-        config=config,
-        completion_set=completion,
-        cache=cache,
-        reflections=reflections,
-        books=books,
+    html, _data = render_multi_syllabus(
+        cfg=cfg,
+        shared=shared,
+        syllabus_states=syllabus_states,
+        syllabuses=syllabuses,
+        completion_by_syllabus=completion_by_syllabus,
+        cache_by_syllabus=cache_by_syllabus,
+        reflections_by_syllabus=reflections_by_syllabus,
+        books_by_syllabus=books_by_syllabus,
         today=today,
         clock=clock,
         reflections_root=REFLECTIONS_DIR,
-        module_titles=module_titles,
+        module_titles_by_syllabus=module_titles_by_syllabus,
     )
 
     out_html = inject_banner(html)

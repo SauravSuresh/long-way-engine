@@ -10,27 +10,30 @@ files.
 ## 1. What this engine does
 
 `long-way-engine` turns a multi-month learning plan into Todoist tasks
-and a dashboard. Every day it:
+and a dashboard. It runs N syllabuses in parallel from one repo, one
+daily cron, one GitHub Pages site. Every day it:
 
-- Loads the active curriculum from `curriculum/` (path configurable
-  via `config.yaml`'s `curriculum_dir` key).
-- Reads `state.yaml` for the user's current phase, month, and module.
-- Walks every template in `curriculum/rituals/*.yaml` and
-  `curriculum/modules.yaml`, decides which fire today based on cadence
-  rules, resolves placeholder variables, and creates Todoist tasks
-  (deduped via a local cache).
-- Renders a static HTML dashboard from state + completion data.
+- Loads all enabled syllabuses from `config.yaml`'s `syllabuses:` map;
+  each syllabus is a self-contained bundle at `curricula/<key>/`.
+- Reads `state/<key>.yaml` for each syllabus's current phase, month,
+  and module, and `state/shared.yaml` for user-life-wide state.
+- Walks every template in `curricula/<key>/rituals/*.yaml` and
+  `curricula/<key>/modules.yaml`, decides which fire today based on
+  cadence rules, resolves placeholder variables, and creates Todoist
+  tasks (deduped via a local cache).
+- Renders a static HTML dashboard from state + completion data, with
+  one card per enabled syllabus.
 
 Three pieces are pluggable; two are not.
 
 **Pluggable (forker edits):**
 
-- `curriculum/syllabus.yaml` — phases, months, books, modules
-- `curriculum/rituals/*.yaml` — daily/weekly/monthly/quarterly/annual
+- `curricula/<name>/syllabus.yaml` — phases, months, books, modules
+- `curricula/<name>/rituals/*.yaml` — daily/weekly/monthly/quarterly/annual
   ritual + practice templates
-- `curriculum/modules.yaml` — module onboarding tasks + lineage detours
-- `curriculum/reflection_templates/*.md` — reflection stub templates
-- `curriculum/manifest.yaml` — declares which ritual_times and
+- `curricula/<name>/modules.yaml` — module onboarding tasks + lineage detours
+- `curricula/<name>/reflection_templates/*.md` — reflection stub templates
+- `curricula/<name>/manifest.yaml` — declares which ritual_times and
   placeholders the bundle needs
 
 **Not pluggable (engine code defines):**
@@ -47,7 +50,7 @@ Three pieces are pluggable; two are not.
 ## 2. File layout you will produce
 
 ```
-curriculum/
+curricula/<name>/
 ├── syllabus.yaml
 ├── manifest.yaml
 ├── modules.yaml
@@ -68,6 +71,13 @@ curriculum/
 Required files: `syllabus.yaml`, `manifest.yaml`, `modules.yaml`, at
 least one ritual yaml. Reflection templates are optional but
 recommended.
+
+You also produce a starter `state/<name>.yaml` seeded with the
+syllabus's `start_date`, `current_module: 1`, `month: 1`, `phase: 1`,
+and an empty `books_state` / `learning_tracks`. Per-syllabus state
+(module, book, pause, streak) lives at `state/<name>.yaml`;
+user-life-wide state (timezone, Anki count, manual counters, notes)
+lives at `state/shared.yaml` and is not syllabus-specific.
 
 ---
 
@@ -220,8 +230,17 @@ every violation into a single error message.
 
 ## 5. Interview protocol
 
-When a user says "help me build a curriculum", run these seven steps.
+When a user says "help me build a curriculum", run these steps.
 Ask one question at a time. Confirm before moving on.
+
+**Step 0 — Single syllabus or multiple?** Ask: "Are you designing one
+learning path, or do you want to run multiple paths in parallel (each
+with its own Todoist project and dashboard card)?" Default to single.
+For a single syllabus, choose a short kebab-case key (e.g. `my-path`)
+and produce one bundle at `curricula/<chosen-key>/`. If the user wants
+multiple syllabuses, run Steps 1–7 once per syllabus and produce one
+bundle per key. Each bundle is independent; nothing is shared except
+the top-level `config.yaml` wiring.
 
 **Step 1 — Goal & duration.** Ask: "What are you trying to be able
 to do, and over what time horizon?" Probe for concrete outcomes
@@ -376,7 +395,7 @@ the module spine, sometimes for many months. Declared in
 whole plan rather than splitting half of it into `state.yaml`.
 
 ```yaml
-# curriculum/syllabus.yaml
+# curricula/<name>/syllabus.yaml
 tracks:
   - title: "boot.dev backend path"
     category: Courses
@@ -423,23 +442,14 @@ end-to-end", "read real code", "pair with a senior". Use
 on Saturday.
 
 **Step 7 — Write files, run validator, dry-run.** Produce all YAML
-files. Run:
+files (including `state/<name>.yaml`). Register the new syllabus in
+`config.yaml` under `syllabuses:` and `priority_order`. Then run:
 
 ```bash
-python -c "
-from pathlib import Path
-from src.curriculum_validator import validate
-from src.config import load_config
-from src.state import load_state
-cfg = load_config(Path('config.yaml'), Path('.env'))
-st = load_state(Path('state.yaml'))
-validate(Path('curriculum'), ritual_times=cfg.ritual_times,
-         state_current_module=st.current_module, state_month=st.month)
-print('OK')
-"
+python -m scripts.show_timetable
 ```
 
-Fix every error until validator prints `OK`. Then:
+to confirm no slot collisions. Then:
 
 ```bash
 python -m src.main --dry-run --today $(date +%Y-%m-%d)

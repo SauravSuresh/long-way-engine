@@ -31,7 +31,7 @@ import yaml
 
 from src.config import Config
 from src.ids import external_id
-from src.state import State, save_state
+from src.state import SharedState, SyllabusState, save_shared_state, save_syllabus_state
 from src.state_mutations import ACTION_HANDLERS, MutationResult
 from src.syllabus import Syllabus, current_book
 
@@ -83,7 +83,7 @@ def save_state_log(path: Path, entries: list[dict[str, Any]]) -> None:
 # --- show_if predicates -----------------------------------------------------
 
 
-def evaluate_show_if(name: str | None, state: State, syllabus: Syllabus) -> bool:
+def evaluate_show_if(name: str | None, state: SyllabusState, syllabus: Syllabus) -> bool:
     if not name:
         return True
     if name == "not_on_last_module":
@@ -105,7 +105,8 @@ def evaluate_show_if(name: str | None, state: State, syllabus: Syllabus) -> bool
 
 def _dispatch(
     action_spec: dict[str, Any],
-    state: State,
+    state: SyllabusState,
+    shared: SharedState,
     syllabus: Syllabus,
     log_entries: list[dict[str, Any]],
     todoist_task_id: str,
@@ -142,7 +143,7 @@ def _dispatch(
             return None
         kwargs["counter"] = str(action_spec.get("counter", "anki_card_count"))
         kwargs["delta"] = comment_value
-        return handler(state, **kwargs)
+        return handler(shared, **kwargs)
     if atype in ("mark_track_started", "mark_track_finished"):
         kwargs["category"] = str(action_spec.get("category", ""))
         kwargs["item"] = str(action_spec.get("item", ""))
@@ -171,26 +172,28 @@ def _parse_counter_comment(comment: str | None) -> int | None:
 def run_state_review_phase(
     *,
     config: Config,
-    state: State,
+    state: SyllabusState,
+    shared: SharedState,
     syllabus: Syllabus,
     today: date,
     cache: dict[str, dict[str, Any]],
     state_path: Path,
+    shared_path: Path,
     state_log_path: Path,
     review_factory=None,
     completion_factory=None,
     dry_run: bool = False,
     todoist_token: str | None = None,
     project_id: str | None = None,
-) -> tuple[State, StateReviewSummary]:
-    """Execute the state-mutation phase. Returns (new_state, summary).
+) -> tuple[SyllabusState, SharedState, StateReviewSummary]:
+    """Execute the state-mutation phase. Returns (new_state, new_shared, summary).
 
     On dry-run: no Todoist reads, no disk writes, no mutations applied.
-    `state` is returned unchanged and the summary reports zero activity.
+    `state` and `shared` are returned unchanged and the summary reports zero activity.
     """
     summary = StateReviewSummary()
     if dry_run:
-        return state, summary
+        return state, shared, summary
 
     log_entries = load_state_log(state_log_path)
     applied_task_ids: set[str] = {
@@ -199,6 +202,7 @@ def run_state_review_phase(
         if e.get("todoist_task_id")
     }
     new_state = state
+    new_shared = shared
     pending_entries: list[dict[str, Any]] = []
 
     # 1. Auto-unpause if timer elapsed
@@ -211,7 +215,7 @@ def run_state_review_phase(
         if auto_id not in applied_task_ids:
             handler = ACTION_HANDLERS["unset_pause"]
             result = handler(new_state, todoist_task_id=auto_id, today=today)
-            new_state = result.new_state
+            new_state = result.new_state  # type: ignore[assignment]
             pending_entries.append(result.log_entry)
             applied_task_ids.add(auto_id)
             summary.auto_unpaused = True
@@ -244,7 +248,7 @@ def run_state_review_phase(
                 logger.error("track lifecycle dispatch failed for %s: %s", transition.todoist_task_id, e)
                 summary.mutations_skipped += 1
                 continue
-            new_state = result.new_state
+            new_state = result.new_state  # type: ignore[assignment]
             pending_entries.append(result.log_entry)
             applied_task_ids.add(transition.todoist_task_id)
             summary.mutations_applied += 1
@@ -294,6 +298,7 @@ def run_state_review_phase(
                     result = _dispatch(
                         action_spec,
                         new_state,
+                        new_shared,
                         syllabus,
                         log_entries + pending_entries,
                         sub.id,
@@ -307,7 +312,10 @@ def run_state_review_phase(
                 if result is None:
                     summary.mutations_skipped += 1
                     continue
-                new_state = result.new_state
+                if isinstance(result.new_state, SharedState):
+                    new_shared = result.new_state
+                else:
+                    new_state = result.new_state  # type: ignore[assignment]
                 pending_entries.append(result.log_entry)
                 applied_task_ids.add(sub.id)
                 summary.mutations_applied += 1
@@ -358,6 +366,7 @@ def run_state_review_phase(
             result = _dispatch(
                 action_spec,
                 new_state,
+                new_shared,
                 syllabus,
                 log_entries + pending_entries,
                 task_id,
@@ -370,7 +379,10 @@ def run_state_review_phase(
         if result is None:
             summary.mutations_skipped += 1
             continue
-        new_state = result.new_state
+        if isinstance(result.new_state, SharedState):
+            new_shared = result.new_state
+        else:
+            new_state = result.new_state  # type: ignore[assignment]
         pending_entries.append(result.log_entry)
         applied_task_ids.add(task_id)
         summary.mutations_applied += 1
@@ -378,13 +390,15 @@ def run_state_review_phase(
         entry["persistent_consumed"] = True
         summary.persistent_recreated.append(ext_id_str)
 
-    # 4. Atomic write: state.yaml first, then state_log append.
-    if pending_entries or new_state is not state:
-        save_state(state_path, new_state)
-        if pending_entries:
-            save_state_log(state_log_path, log_entries + pending_entries)
+    # 4. Atomic write: only write each file when its slice actually changed.
+    if new_state is not state:
+        save_syllabus_state(state_path, new_state)
+    if new_shared is not shared:
+        save_shared_state(shared_path, new_shared)
+    if pending_entries:
+        save_state_log(state_log_path, log_entries + pending_entries)
 
-    return new_state, summary
+    return new_state, new_shared, summary
 
 
 def _find_newest_state_review_parent(cache: dict[str, dict[str, Any]]) -> dict[str, Any] | None:

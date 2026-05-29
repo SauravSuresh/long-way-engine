@@ -41,6 +41,98 @@ class PauseInterval:
 
 
 @dataclass
+class SharedState:
+    timezone: ZoneInfo
+    manual_counters: dict[str, Any] = field(default_factory=dict)
+    notes: str = ""
+
+
+def _coerce_date(v: Any) -> date:
+    if isinstance(v, date):
+        return v
+    return date.fromisoformat(str(v))
+
+
+def _coerce_optional_date(v: Any) -> date | None:
+    if v is None or v == "":
+        return None
+    return _coerce_date(v)
+
+
+def load_shared_state(path: Path) -> SharedState:
+    with path.open("r", encoding="utf-8") as f:
+        raw = yaml.safe_load(f) or {}
+    tz_str = str(raw.get("timezone", "UTC"))
+    try:
+        tz = ZoneInfo(tz_str)
+    except Exception as e:
+        raise ValueError(f"shared.yaml: invalid timezone {tz_str!r}: {e}") from e
+    return SharedState(
+        timezone=tz,
+        manual_counters=dict(raw.get("manual_counters") or {}),
+        notes=str(raw.get("notes", "") or ""),
+    )
+
+
+@dataclass
+class SyllabusState:
+    start_date: date
+    phase: int
+    month: int
+    current_module: int
+    current_book: str
+    completed_modules: list[int] = field(default_factory=list)
+    active_branches: list[str] = field(default_factory=list)
+    paused: bool = False
+    paused_since: date | None = None
+    paused_until: date | None = None
+    pause_history: list[PauseInterval] = field(default_factory=list)
+    books_state: dict[str, str] = field(default_factory=dict)
+    learning_tracks: dict[str, dict[str, str]] = field(default_factory=dict)
+    manual_counters: dict[str, Any] = field(default_factory=dict)
+
+
+def load_syllabus_state(path: Path) -> SyllabusState:
+    with path.open("r", encoding="utf-8") as f:
+        raw = yaml.safe_load(f) or {}
+    # Required keys — raise KeyError on absence.
+    start_date_raw = raw["start_date"]
+    current_module = raw["current_module"]
+    current_book = raw["current_book"]
+    pause_history_raw = raw.get("pause_history") or []
+    pause_history: list[PauseInterval] = []
+    for i, pi in enumerate(pause_history_raw):
+        try:
+            pause_history.append(
+                PauseInterval(
+                    start=_coerce_date(pi["start"]),
+                    end=_coerce_date(pi["end"]),
+                    reason=str(pi.get("reason", "")),
+                )
+            )
+        except (KeyError, ValueError, TypeError) as e:
+            raise ValueError(
+                f"syllabus state {path}: pause_history[{i}] is malformed: {e}"
+            ) from e
+    return SyllabusState(
+        start_date=_coerce_date(start_date_raw),
+        phase=int(raw.get("phase", 1)),
+        month=int(raw.get("month", 1)),
+        current_module=int(current_module),
+        current_book=str(current_book),
+        completed_modules=list(raw.get("completed_modules") or []),
+        active_branches=list(raw.get("active_branches") or []),
+        paused=bool(raw.get("paused", False)),
+        paused_since=_coerce_optional_date(raw.get("paused_since")),
+        paused_until=_coerce_optional_date(raw.get("paused_until")),
+        pause_history=pause_history,
+        books_state=dict(raw.get("books_state") or {}),
+        learning_tracks=dict(raw.get("learning_tracks") or {}),
+        manual_counters=dict(raw.get("manual_counters") or {}),
+    )
+
+
+@dataclass
 class State:
     start_date: date
     timezone: ZoneInfo
@@ -202,7 +294,7 @@ def load_state(path: Path) -> State:
 DAYS_PER_MONTH = 30
 
 
-def derive_month(state: State, today: date) -> int:
+def derive_month(state: "State | SyllabusState", today: date) -> int:
     """Engine-managed month: elapsed days from start_date, minus closed pause
     intervals, integer-divided by 30, plus 1. Indefinite (open) pauses do not
     yet contribute pause days; they only do once unset_pause closes the
@@ -233,8 +325,12 @@ def derive_phase(month: int, syllabus: "Syllabus") -> int:
     return 1
 
 
-def update_derived_fields(state: State, syllabus: "Syllabus", today: date) -> State:
-    """Replace state.month + state.phase with their derivations."""
+def update_derived_fields(state: "State | SyllabusState", syllabus: "Syllabus", today: date) -> "State | SyllabusState":
+    """Replace state.month + state.phase with their derivations.
+
+    Accepts both State and SyllabusState — both have `start_date`,
+    `pause_history`, `month`, and `phase` fields.
+    """
     month = derive_month(state, today)
     phase = derive_phase(month, syllabus)
     return replace(state, month=month, phase=phase)
@@ -242,6 +338,16 @@ def update_derived_fields(state: State, syllabus: "Syllabus", today: date) -> St
 
 def _date_to_yaml(d: date | None) -> Any:
     return d if d is not None else None
+
+
+def _atomic_write_yaml(path: Path, data: dict[str, Any]) -> None:
+    """Write `data` as YAML to `path` atomically (write to .tmp then replace)."""
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(
+        yaml.safe_dump(data, sort_keys=False, default_flow_style=False),
+        encoding="utf-8",
+    )
+    tmp.replace(path)
 
 
 def save_state(path: Path, state: State) -> None:
@@ -269,9 +375,43 @@ def save_state(path: Path, state: State) -> None:
         "manual_counters": dict(state.manual_counters),
         "notes": state.notes,
     }
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(
-        yaml.safe_dump(payload, sort_keys=False, default_flow_style=False),
-        encoding="utf-8",
-    )
-    tmp.replace(path)
+    _atomic_write_yaml(path, payload)
+
+
+def save_syllabus_state(path: Path, state: SyllabusState) -> None:
+    """Persist per-syllabus state atomically."""
+    data: dict[str, Any] = {
+        "start_date": state.start_date.isoformat(),
+        "phase": state.phase,
+        "month": state.month,
+        "current_module": state.current_module,
+        "current_book": state.current_book,
+        "completed_modules": list(state.completed_modules),
+        "active_branches": list(state.active_branches),
+        "paused": state.paused,
+        "paused_since": state.paused_since.isoformat() if state.paused_since else None,
+        "paused_until": state.paused_until.isoformat() if state.paused_until else None,
+        "pause_history": [
+            {
+                "start": pi.start.isoformat(),
+                "end": pi.end.isoformat(),
+                "reason": pi.reason,
+            }
+            for pi in state.pause_history
+        ],
+        "books_state": dict(state.books_state),
+        "learning_tracks": {k: dict(v) for k, v in state.learning_tracks.items()},
+        "manual_counters": dict(state.manual_counters),
+    }
+    _atomic_write_yaml(path, data)
+
+
+def save_shared_state(path: Path, shared: SharedState) -> None:
+    """Persist shared (user-life-wide) state atomically."""
+    data: dict[str, Any] = {
+        "timezone": str(shared.timezone),
+        "manual_counters": dict(shared.manual_counters),
+    }
+    if shared.notes:
+        data["notes"] = shared.notes
+    _atomic_write_yaml(path, data)

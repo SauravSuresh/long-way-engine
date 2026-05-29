@@ -586,3 +586,53 @@ def test_completion_module_docstring_asserts_isolation():
 
 def test_completion_ttl_is_six_hours():
     assert COMPLETION_CACHE_TTL_SECONDS == 6 * 60 * 60
+
+
+# --- Task 8: syllabus label tagging -----------------------------------------
+
+
+def test_create_task_adds_syllabus_label():
+    """When template.syllabus_key is set, the task body includes a syllabus:<key> label."""
+    session = MagicMock()
+    session.post.return_value = make_response(200, {"id": "999"})
+    client = make_client(session)
+
+    tpl = ResolvedTemplate(
+        id="t-1",
+        title="Read CSAPP",
+        description="",
+        labels=["daily-ritual"],
+        due="today",
+        cadence="daily",
+        syllabus_key="job-readiness",
+    )
+    result = client.create_task_idempotent(tpl, date(2026, 5, 28), "a1234567890abcde", cache={})
+
+    assert result.todoist_task_id == "999"
+    _, kwargs = session.post.call_args
+    labels = kwargs["json"].get("labels", [])
+    assert "syllabus:job-readiness" in labels
+    assert "daily-ritual" in labels
+
+
+def test_create_task_no_syllabus_label_when_key_empty():
+    """No syllabus:<key> label when template.syllabus_key is empty (transitional state)."""
+    session = MagicMock()
+    session.post.return_value = make_response(200, {"id": "888"})
+    client = make_client(session)
+
+    tpl = ResolvedTemplate(
+        id="t-1",
+        title="x",
+        description="",
+        labels=["daily-ritual"],
+        due="today",
+        cadence="daily",
+        # syllabus_key omitted — defaults to ""
+    )
+    client.create_task_idempotent(tpl, date(2026, 5, 28), "a1234567890abcde", cache={})
+
+    _, kwargs = session.post.call_args
+    labels = kwargs["json"].get("labels", [])
+    assert not any(l.startswith("syllabus:") for l in labels)
+    assert "daily-ritual" in labels

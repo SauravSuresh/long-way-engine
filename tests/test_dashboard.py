@@ -16,7 +16,7 @@ from zoneinfo import ZoneInfo
 import pytest
 
 from src.clock import FrozenClock
-from src.config import Config, DashboardConfig, TodoistConfig
+from src.config import Config, DashboardConfig, MultiSyllabusConfig, SyllabusEntry, TodoistConfig
 from src.dashboard import (
     CSS,
     ReflectionMeta,
@@ -24,13 +24,15 @@ from src.dashboard import (
     _last_7_color,
     _paused_summary,
     _practice_counts,
+    build_data_multi_syllabus,
     render,
+    render_multi_syllabus,
     scan_reflections,
     write_css_if_absent,
 )
 from src.ids import external_id
-from src.state import PauseInterval, State
-from src.syllabus import Book
+from src.state import PauseInterval, SharedState, SyllabusState
+from src.syllabus import Book, load_syllabus
 
 IST = ZoneInfo("Asia/Kolkata")
 FIXTURES = Path(__file__).parent / "fixtures" / "dashboard"
@@ -50,10 +52,9 @@ def make_config() -> Config:
     )
 
 
-def make_state(**overrides) -> State:
+def make_state(**overrides) -> SyllabusState:
     base = dict(
         start_date=date(2026, 1, 1),
-        timezone=IST,
         phase=1,
         month=4,
         current_module=2,
@@ -63,10 +64,9 @@ def make_state(**overrides) -> State:
         pause_history=[],
         books_state={},
         learning_tracks={},
-        manual_counters={"traces_completed": 0, "prs_opened": 0},
     )
     base.update(overrides)
-    return State(**base)
+    return SyllabusState(**base)
 
 
 def add_daily_pair(cache: dict, d: date, completion: set[str]) -> None:
@@ -422,3 +422,199 @@ def test_practice_counts_uses_cache_status_when_completion_set_empty():
     counts = _practice_counts(state, cache, completion_set={"102"})
     assert counts["Code reading sessions"] == 2  # status=completed + completion_set hit
     assert "Code reading missed" not in counts
+
+
+# --- multi-syllabus smoke test ------------------------------------------------
+
+
+def test_render_multi_syllabus_one_syllabus_smoke(tmp_path: Path):
+    """Smoke: single-syllabus multi-dashboard renders correct structure."""
+    CURRICULA_DIR = Path(__file__).resolve().parent.parent / "curricula"
+    long_way_path = CURRICULA_DIR / "long-way"
+
+    try:
+        syllabus_obj = load_syllabus(long_way_path)
+        books = syllabus_obj.books
+    except OSError:
+        syllabus_obj = None
+        books = [
+            Book(
+                phase=1,
+                title="Computer Systems: A Programmer's Perspective",
+                author="Bryant & O'Hallaron",
+                start_month=1,
+                end_month=6,
+            )
+        ]
+
+    today = date(2026, 5, 4)
+    tz = ZoneInfo("Asia/Kolkata")
+
+    shared = SharedState(
+        timezone=tz,
+        manual_counters={"anki_card_count": 150, "prs_opened": 3},
+    )
+    syllabus_state = SyllabusState(
+        start_date=date(2026, 1, 1),
+        phase=1,
+        month=4,
+        current_module=2,
+        current_book="Computer Systems: A Programmer's Perspective",
+    )
+
+    cfg = MultiSyllabusConfig(
+        default_ritual_times={"morning_reading": "06:00", "anki": "08:30"},
+        priority_order=["long-way"],
+        syllabuses={
+            "long-way": SyllabusEntry(
+                key="long-way",
+                path=long_way_path,
+                todoist_project_id="proj123",
+                state_file=tmp_path / "state.yaml",
+                enabled=True,
+                ritual_times={"morning_reading": "06:00", "anki": "08:30"},
+            )
+        },
+        sunday_off=True,
+        pair_day="thursday",
+        dashboard=DashboardConfig(
+            github_username="SauravSuresh", repo_name="long-way-engine"
+        ),
+        todoist_token="",
+    )
+
+    html, data = render_multi_syllabus(
+        cfg=cfg,
+        shared=shared,
+        syllabus_states={"long-way": syllabus_state},
+        syllabuses={"long-way": syllabus_obj} if syllabus_obj else {},
+        completion_by_syllabus={"long-way": set()},
+        cache_by_syllabus={"long-way": {}},
+        reflections_by_syllabus={"long-way": []},
+        books_by_syllabus={"long-way": books},
+        today=today,
+        clock=FrozenClock(today, tz),
+        reflections_root=tmp_path / "reflections",
+    )
+
+    # HTML structure checks
+    assert '<header class="shared-band">' in html
+    assert '<section class="syllabus-card" data-syllabus="long-way">' in html
+    assert "Asia/Kolkata" in html
+    assert "Computer Systems" in html
+
+    # Data shape checks
+    assert set(data.keys()) == {"shared", "syllabuses", "priority_order"}
+    assert data["priority_order"] == ["long-way"]
+    assert "long-way" in data["syllabuses"]
+    assert data["shared"]["timezone"] == "Asia/Kolkata"
+    assert data["shared"]["anki_card_count"] == 150
+
+
+def _make_multi_syllabus_render(tmp_path: Path):
+    """Helper: build a minimal multi-syllabus render with non-zero shared counters."""
+    CURRICULA_DIR = Path(__file__).resolve().parent.parent / "curricula"
+    long_way_path = CURRICULA_DIR / "long-way"
+
+    try:
+        syllabus_obj = load_syllabus(long_way_path)
+        books = syllabus_obj.books
+    except OSError:
+        syllabus_obj = None
+        books = [
+            Book(
+                phase=1,
+                title="Computer Systems: A Programmer's Perspective",
+                author="Bryant & O'Hallaron",
+                start_month=1,
+                end_month=6,
+            )
+        ]
+
+    today = date(2026, 5, 4)
+    tz = ZoneInfo("Asia/Kolkata")
+
+    shared = SharedState(
+        timezone=tz,
+        manual_counters={
+            "traces_completed": 7,
+            "prs_opened": 5,
+            "pair_sessions": 3,
+            "anki_card_count": 200,
+        },
+    )
+    syllabus_state = SyllabusState(
+        start_date=date(2026, 1, 1),
+        phase=1,
+        month=4,
+        current_module=2,
+        current_book="Computer Systems: A Programmer's Perspective",
+    )
+
+    cfg = MultiSyllabusConfig(
+        default_ritual_times={"morning_reading": "06:00", "anki": "08:30"},
+        priority_order=["long-way"],
+        syllabuses={
+            "long-way": SyllabusEntry(
+                key="long-way",
+                path=long_way_path,
+                todoist_project_id="proj123",
+                state_file=tmp_path / "state.yaml",
+                enabled=True,
+                ritual_times={"morning_reading": "06:00", "anki": "08:30"},
+            )
+        },
+        sunday_off=True,
+        pair_day="thursday",
+        dashboard=DashboardConfig(
+            github_username="SauravSuresh", repo_name="long-way-engine"
+        ),
+        todoist_token="",
+    )
+
+    html, data = render_multi_syllabus(
+        cfg=cfg,
+        shared=shared,
+        syllabus_states={"long-way": syllabus_state},
+        syllabuses={"long-way": syllabus_obj} if syllabus_obj else {},
+        completion_by_syllabus={"long-way": set()},
+        cache_by_syllabus={"long-way": {}},
+        reflections_by_syllabus={"long-way": []},
+        books_by_syllabus={"long-way": books},
+        today=today,
+        clock=FrozenClock(today, tz),
+        reflections_root=tmp_path / "reflections",
+    )
+    return html, data
+
+
+def test_render_multi_syllabus_shared_band_includes_practice_counters(tmp_path: Path):
+    """Shared band must contain the practice tracker with counters from shared.manual_counters."""
+    html, _ = _make_multi_syllabus_render(tmp_path)
+
+    # Practice tracker is in the shared band
+    shared_band_start = html.find('<header class="shared-band">')
+    shared_band_end = html.find('</header>', shared_band_start)
+    assert shared_band_start != -1, "shared-band header not found"
+    shared_band_html = html[shared_band_start:shared_band_end]
+
+    assert 'practices' in shared_band_html, "practice tracker section not in shared band"
+    # Non-zero counter values from shared.manual_counters should appear
+    assert '>7<' in shared_band_html, "traces_completed=7 not rendered"
+    assert '>5<' in shared_band_html, "prs_opened=5 not rendered"
+    assert '>3<' in shared_band_html, "pair_sessions=3 not rendered"
+    assert '>200<' in shared_band_html, "anki_card_count=200 not rendered"
+
+
+def test_render_multi_syllabus_per_card_omits_practice_tracker(tmp_path: Path):
+    """Per-syllabus card body must NOT contain the practice tracker."""
+    html, _ = _make_multi_syllabus_render(tmp_path)
+
+    card_start = html.find('<section class="syllabus-card"')
+    assert card_start != -1, "syllabus-card section not found"
+    card_end = html.find('</section>', card_start)
+    card_html = html[card_start:card_end]
+
+    assert 'practices' not in card_html, (
+        "practice tracker markup found inside syllabus-card — it should only appear in the shared band"
+    )

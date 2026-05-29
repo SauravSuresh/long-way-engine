@@ -1,0 +1,11 @@
+current_module: 1
+phase: 1
+current_book: 'Computer Systems: A Programmer''s Perspective'
+start_date: 2026-05-05
+active_branches: []
+paused: false
+month: 1
+completed_modules: []
+learning_tracks:
+  Courses:
+    boot.dev backend path: current

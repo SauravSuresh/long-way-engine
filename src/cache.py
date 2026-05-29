@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import logging
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -41,6 +42,72 @@ def save_cache(path: Path, cache: dict[str, dict[str, Any]]) -> None:
         json.dump(cache, f, indent=2, sort_keys=True)
         f.write("\n")
     tmp.replace(path)
+
+
+@dataclass
+class NamespacedCache:
+    data: dict[str, dict[str, dict[str, Any]]] = field(default_factory=dict)
+
+    def get(self, syllabus: str, external_id: str) -> dict[str, Any] | None:
+        return self.data.get(syllabus, {}).get(external_id)
+
+    def set(self, syllabus: str, external_id: str, record: dict[str, Any]) -> None:
+        self.data.setdefault(syllabus, {})[external_id] = record
+
+    def for_syllabus(self, syllabus: str) -> dict[str, dict[str, Any]]:
+        """Read-only view of records for one syllabus. Returns {} if unknown.
+
+        To insert, use `.set()` instead — mutating the returned dict has no effect
+        on cache state when the syllabus is absent (a fresh empty dict is returned).
+        """
+        return self.data.get(syllabus, {})
+
+
+def _looks_like_flat_cache(d: dict[str, Any]) -> bool:
+    """True if `d` looks like a legacy flat cache (top-level values are records).
+
+    A record contains a `todoist_id` key; a namespace bucket is itself a dict
+    of records, so it will NOT contain `todoist_id` at the top level.
+    """
+    if not d:
+        return False
+    return any(isinstance(v, dict) and "todoist_id" in v for v in d.values())
+
+
+def load_namespaced_cache(path: Path) -> NamespacedCache:
+    if not path.exists():
+        return NamespacedCache()
+    with path.open("r", encoding="utf-8") as f:
+        try:
+            data = json.load(f)
+        except json.JSONDecodeError:
+            return NamespacedCache()
+    if not isinstance(data, dict):
+        return NamespacedCache()
+    if _looks_like_flat_cache(data):
+        raise ValueError(
+            "legacy flat cache detected; run scripts/migrate_to_multi_syllabus.py first"
+        )
+    return NamespacedCache(
+        data={
+            sk: {ek: dict(rec) for ek, rec in entries.items()}
+            for sk, entries in data.items()
+        }
+    )
+
+
+def save_namespaced_cache(path: Path, nc: NamespacedCache) -> None:
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with tmp.open("w", encoding="utf-8") as f:
+        json.dump(nc.data, f, indent=2, sort_keys=True)
+        f.write("\n")
+    tmp.replace(path)
+
+
+def lift_flat_cache_under_syllabus(
+    flat: dict[str, dict[str, Any]], syllabus_key: str
+) -> dict[str, dict[str, dict[str, Any]]]:
+    return {syllabus_key: dict(flat)}
 
 
 def prune(

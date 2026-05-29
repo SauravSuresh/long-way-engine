@@ -112,6 +112,13 @@ def load_syllabus(curriculum_dir: Path) -> "Syllabus":
     )
 
 
+def load_syllabus_for_entry(entry: "SyllabusEntry") -> "Syllabus":
+    """Convenience wrapper: load a Syllabus from a SyllabusEntry's path."""
+    from src.config import SyllabusEntry  # local to avoid circular import at module top
+    assert isinstance(entry, SyllabusEntry)
+    return load_syllabus(entry.path)
+
+
 def current_book(month: int, syllabus: "Syllabus") -> str:
     """Primary book for `month` with carry-forward.
 

@@ -1,0 +1,12 @@
+timezone: Asia/Kolkata
+manual_counters:
+  anki_card_count: 0
+  prs_opened: 0
+  traces_completed: 0
+  lineage_detours_done: []
+notes: 'Most recent edit on top.
+
+  2026-05-05: starting day 1. May 4 setup tasks wiped via --cleanup-project; cache
+  reset.
+
+  '

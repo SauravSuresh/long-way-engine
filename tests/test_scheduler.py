@@ -615,3 +615,15 @@ def test_is_jan_1():
     assert _is_jan_1(date(2027, 1, 1)) is True
     assert _is_jan_1(date(2026, 1, 2)) is False
     assert _is_jan_1(date(2026, 12, 31)) is False
+
+
+# ---------------------------------------------------------------------------
+# syllabus_key on ResolvedTemplate (Task 7)
+# ---------------------------------------------------------------------------
+
+
+def test_resolved_template_carries_syllabus_key():
+    import dataclasses
+    from src.templates import ResolvedTemplate
+    fields = {f.name for f in dataclasses.fields(ResolvedTemplate)}
+    assert "syllabus_key" in fields

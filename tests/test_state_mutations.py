@@ -11,7 +11,7 @@ from datetime import date
 import pytest
 from zoneinfo import ZoneInfo
 
-from src.state import PauseInterval, State
+from src.state import PauseInterval, SharedState, SyllabusState
 from src.state_mutations import (
     ACTION_HANDLERS,
     advance_module,
@@ -28,7 +28,6 @@ from src.syllabus import Module, Phase, Syllabus
 def _state(**overrides):
     base = dict(
         start_date=date(2026, 5, 1),
-        timezone=ZoneInfo("UTC"),
         phase=1,
         month=1,
         current_module=1,
@@ -36,7 +35,16 @@ def _state(**overrides):
         completed_modules=[],
     )
     base.update(overrides)
-    return State(**base)
+    return SyllabusState(**base)
+
+
+def _shared(**overrides):
+    base = dict(
+        timezone=ZoneInfo("UTC"),
+        manual_counters={},
+    )
+    base.update(overrides)
+    return SharedState(**base)
 
 
 def _syllabus(num_modules=3):
@@ -117,14 +125,14 @@ def test_unset_pause_noop_when_not_paused():
 
 
 def test_increment_counter_with_existing_value():
-    s = _state(manual_counters={"anki_card_count": 12})
-    result = increment_counter(s, counter="anki_card_count", delta=5, todoist_task_id="t1", today=TODAY)
+    sh = _shared(manual_counters={"anki_card_count": 12})
+    result = increment_counter(sh, counter="anki_card_count", delta=5, todoist_task_id="t1", today=TODAY)
     assert result.new_state.manual_counters["anki_card_count"] == 17
 
 
 def test_increment_counter_initializes_zero():
-    s = _state(manual_counters={})
-    result = increment_counter(s, counter="prs_opened", delta=3, todoist_task_id="t1", today=TODAY)
+    sh = _shared(manual_counters={})
+    result = increment_counter(sh, counter="prs_opened", delta=3, todoist_task_id="t1", today=TODAY)
     assert result.new_state.manual_counters["prs_opened"] == 3
 
 
@@ -194,6 +202,37 @@ def test_revert_last_empty_log_noop():
     s = _state()
     result = revert_last(s, [], todoist_task_id="r1", today=TODAY)
     assert result.log_entry.get("noop") is True
+
+
+def test_revert_last_on_increment_counter_is_explicit_noop(tmp_path):
+    """Counter increments live on SharedState; revert_last can't undo them
+    via the per-syllabus path. It should noop loudly, not silently."""
+    from datetime import date
+    from src.state import SyllabusState
+    from src.state_mutations import revert_last
+
+    sy = SyllabusState(
+        start_date=date(2026, 5, 1), phase=1, month=1,
+        current_module=2, current_book="x",
+    )
+    log_entries = [
+        {
+            "action": "increment_counter",
+            "todoist_task_id": "t-1",
+            "counter": "anki_card_count",
+            "delta": 10,
+            "today": "2026-05-27",
+        },
+    ]
+    result = revert_last(
+        sy, log_entries,
+        todoist_task_id="rev-1",
+        today=date(2026, 5, 28),
+    )
+    assert result is not None
+    assert result.new_state is sy  # no per-syllabus mutation
+    assert result.log_entry.get("noop") is True
+    assert "shared" in result.user_message.lower() or "counter" in result.user_message.lower()
 
 
 def test_action_handlers_table_complete():

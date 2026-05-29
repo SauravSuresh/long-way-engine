@@ -324,6 +324,27 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--line);
          color: var(--muted); font-size: .8rem; text-align: center;
          font-family: var(--mono); }
 
+.shared-band {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+.shared-band .tz { font-weight: 600; color: #333; }
+.shared-band .counter { color: #444; }
+
+.syllabus-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background: #fff;
+}
+.syllabus-card[data-syllabus] { position: relative; }
+
 @media print {
   body { background: white; padding: 0; }
   .dashboard { max-width: none; }

@@ -15,7 +15,7 @@ import pytest
 import yaml
 from zoneinfo import ZoneInfo
 
-from src.state import State, load_state, save_state
+from src.state import SharedState, SyllabusState, save_syllabus_state
 from src.state_review import (
     evaluate_show_if,
     load_state_log,
@@ -61,14 +61,22 @@ class FakeCompletionClient:
 def _state(**overrides):
     base = dict(
         start_date=date(2026, 5, 1),
-        timezone=ZoneInfo("UTC"),
         phase=1,
         month=1,
         current_module=1,
         current_book="Book A",
     )
     base.update(overrides)
-    return State(**base)
+    return SyllabusState(**base)
+
+
+def _shared(**overrides):
+    base = dict(
+        timezone=ZoneInfo("UTC"),
+        manual_counters={},
+    )
+    base.update(overrides)
+    return SharedState(**base)
 
 
 def _syllabus(tracks=None):
@@ -112,17 +120,20 @@ def test_advance_module_via_sub_task_dispatches(tmp_path: Path):
     }
     state = _state()
     state_path = tmp_path / "state.yaml"
-    save_state(state_path, state)
+    shared_path = tmp_path / "shared.yaml"
+    save_syllabus_state(state_path, state)
     log_path = tmp_path / "state_log.yaml"
 
     subtasks = [FakeSubtask(id="sub-advance", content="advance", is_completed=True)]
-    new_state, summary = run_state_review_phase(
+    new_state, new_shared, summary = run_state_review_phase(
         config=_config(),
         state=state,
+        shared=_shared(),
         syllabus=_syllabus(),
         today=date(2026, 6, 8),
         cache=cache,
         state_path=state_path,
+        shared_path=shared_path,
         state_log_path=log_path,
         review_factory=lambda **kw: FakeReviewClient(subtasks=subtasks),
         completion_factory=lambda **kw: FakeCompletionClient(),
@@ -152,18 +163,21 @@ def test_idempotency_same_task_applied_once(tmp_path: Path):
     }
     state = _state()
     state_path = tmp_path / "state.yaml"
-    save_state(state_path, state)
+    shared_path = tmp_path / "shared.yaml"
+    save_syllabus_state(state_path, state)
     log_path = tmp_path / "state_log.yaml"
 
     subtasks = [FakeSubtask(id="sub-advance", content="advance", is_completed=True)]
     # First run: applies.
-    state_v1, summary1 = run_state_review_phase(
+    state_v1, shared_v1, summary1 = run_state_review_phase(
         config=_config(),
         state=state,
+        shared=_shared(),
         syllabus=_syllabus(),
         today=date(2026, 6, 8),
         cache=cache,
         state_path=state_path,
+        shared_path=shared_path,
         state_log_path=log_path,
         review_factory=lambda **kw: FakeReviewClient(subtasks=subtasks),
         completion_factory=lambda **kw: FakeCompletionClient(),
@@ -175,13 +189,15 @@ def test_idempotency_same_task_applied_once(tmp_path: Path):
 
     # Second run: same sub-task still completed in Todoist, but already
     # in the log → MUST NOT re-apply.
-    state_v2, summary2 = run_state_review_phase(
+    state_v2, shared_v2, summary2 = run_state_review_phase(
         config=_config(),
         state=state_v1,
+        shared=shared_v1,
         syllabus=_syllabus(),
         today=date(2026, 6, 9),
         cache=cache,
         state_path=state_path,
+        shared_path=shared_path,
         state_log_path=log_path,
         review_factory=lambda **kw: FakeReviewClient(subtasks=subtasks),
         completion_factory=lambda **kw: FakeCompletionClient(),
@@ -199,16 +215,19 @@ def test_auto_unpause_when_paused_until_elapses(tmp_path: Path):
         paused_until=date(2026, 6, 8),
     )
     state_path = tmp_path / "state.yaml"
-    save_state(state_path, state)
+    shared_path = tmp_path / "shared.yaml"
+    save_syllabus_state(state_path, state)
     log_path = tmp_path / "state_log.yaml"
 
-    new_state, summary = run_state_review_phase(
+    new_state, new_shared, summary = run_state_review_phase(
         config=_config(),
         state=state,
+        shared=_shared(),
         syllabus=_syllabus(),
         today=date(2026, 6, 8),
         cache={},
         state_path=state_path,
+        shared_path=shared_path,
         state_log_path=log_path,
         review_factory=lambda **kw: FakeReviewClient(),
         completion_factory=lambda **kw: FakeCompletionClient(),
@@ -228,13 +247,14 @@ def test_auto_unpause_idempotent(tmp_path: Path):
         paused_until=date(2026, 6, 8),
     )
     state_path = tmp_path / "state.yaml"
-    save_state(state_path, state)
+    shared_path = tmp_path / "shared.yaml"
+    save_syllabus_state(state_path, state)
     log_path = tmp_path / "state_log.yaml"
 
-    new_state, summary1 = run_state_review_phase(
-        config=_config(), state=state, syllabus=_syllabus(),
+    new_state, new_shared, summary1 = run_state_review_phase(
+        config=_config(), state=state, shared=_shared(), syllabus=_syllabus(),
         today=date(2026, 6, 8), cache={},
-        state_path=state_path, state_log_path=log_path,
+        state_path=state_path, shared_path=shared_path, state_log_path=log_path,
         review_factory=lambda **kw: FakeReviewClient(),
         completion_factory=lambda **kw: FakeCompletionClient(),
         todoist_token="tok", project_id="p1",
@@ -243,10 +263,10 @@ def test_auto_unpause_idempotent(tmp_path: Path):
     log_v1 = load_state_log(log_path)
 
     # Second cron with unpaused state — should be inert on the auto-unpause path.
-    _, summary2 = run_state_review_phase(
-        config=_config(), state=new_state, syllabus=_syllabus(),
+    _, _, summary2 = run_state_review_phase(
+        config=_config(), state=new_state, shared=new_shared, syllabus=_syllabus(),
         today=date(2026, 6, 9), cache={},
-        state_path=state_path, state_log_path=log_path,
+        state_path=state_path, shared_path=shared_path, state_log_path=log_path,
         review_factory=lambda **kw: FakeReviewClient(),
         completion_factory=lambda **kw: FakeCompletionClient(),
         todoist_token="tok", project_id="p1",
@@ -267,22 +287,28 @@ def test_increment_counter_parses_comment(tmp_path: Path):
             "state_review_action": {"type": "increment_counter", "counter": "anki_card_count"},
         },
     }
-    state = _state(manual_counters={"anki_card_count": 100})
+    state = _state()
+    shared = _shared(manual_counters={"anki_card_count": 100})
     state_path = tmp_path / "state.yaml"
-    save_state(state_path, state)
+    shared_path = tmp_path / "shared.yaml"
+    save_syllabus_state(state_path, state)
     log_path = tmp_path / "state_log.yaml"
 
     subtasks = [FakeSubtask(id="sub-anki", content="anki", is_completed=True)]
-    new_state, summary = run_state_review_phase(
-        config=_config(), state=state, syllabus=_syllabus(),
+    new_state, new_shared, summary = run_state_review_phase(
+        config=_config(), state=state, shared=shared, syllabus=_syllabus(),
         today=date(2026, 6, 8), cache=cache,
-        state_path=state_path, state_log_path=log_path,
+        state_path=state_path, shared_path=shared_path, state_log_path=log_path,
         review_factory=lambda **kw: FakeReviewClient(subtasks=subtasks, comment="25"),
         completion_factory=lambda **kw: FakeCompletionClient(),
         todoist_token="tok", project_id="p1",
     )
     assert summary.mutations_applied == 1
-    assert new_state.manual_counters["anki_card_count"] == 125
+    assert new_shared.manual_counters["anki_card_count"] == 125
+
+    from src.state import load_shared_state
+    reloaded = load_shared_state(shared_path)
+    assert reloaded.manual_counters.get("anki_card_count") == 125
 
 
 def test_increment_counter_skips_unparseable_comment(tmp_path: Path):
@@ -297,22 +323,24 @@ def test_increment_counter_skips_unparseable_comment(tmp_path: Path):
             "state_review_action": {"type": "increment_counter", "counter": "anki_card_count"},
         },
     }
-    state = _state(manual_counters={"anki_card_count": 100})
+    state = _state()
+    shared = _shared(manual_counters={"anki_card_count": 100})
     state_path = tmp_path / "state.yaml"
-    save_state(state_path, state)
+    shared_path = tmp_path / "shared.yaml"
+    save_syllabus_state(state_path, state)
     log_path = tmp_path / "state_log.yaml"
 
     subtasks = [FakeSubtask(id="sub-anki", content="anki", is_completed=True)]
-    new_state, summary = run_state_review_phase(
-        config=_config(), state=state, syllabus=_syllabus(),
+    new_state, new_shared, summary = run_state_review_phase(
+        config=_config(), state=state, shared=shared, syllabus=_syllabus(),
         today=date(2026, 6, 8), cache=cache,
-        state_path=state_path, state_log_path=log_path,
+        state_path=state_path, shared_path=shared_path, state_log_path=log_path,
         review_factory=lambda **kw: FakeReviewClient(subtasks=subtasks, comment="around 25"),
         completion_factory=lambda **kw: FakeCompletionClient(),
         todoist_token="tok", project_id="p1",
     )
     assert summary.mutations_applied == 0
-    assert new_state.manual_counters["anki_card_count"] == 100
+    assert new_shared.manual_counters["anki_card_count"] == 100
 
 
 def test_persistent_emergency_pause_consumed(tmp_path: Path):
@@ -327,13 +355,14 @@ def test_persistent_emergency_pause_consumed(tmp_path: Path):
     }
     state = _state(paused=False)
     state_path = tmp_path / "state.yaml"
-    save_state(state_path, state)
+    shared_path = tmp_path / "shared.yaml"
+    save_syllabus_state(state_path, state)
     log_path = tmp_path / "state_log.yaml"
 
-    new_state, summary = run_state_review_phase(
-        config=_config(), state=state, syllabus=_syllabus(),
+    new_state, new_shared, summary = run_state_review_phase(
+        config=_config(), state=state, shared=_shared(), syllabus=_syllabus(),
         today=date(2026, 6, 8), cache=cache,
-        state_path=state_path, state_log_path=log_path,
+        state_path=state_path, shared_path=shared_path, state_log_path=log_path,
         review_factory=lambda **kw: FakeReviewClient(),
         completion_factory=lambda **kw: FakeCompletionClient(completed={"pause-task"}),
         todoist_token="tok", project_id="p1",
@@ -356,21 +385,24 @@ def test_evaluate_show_if_predicates():
 
 def test_dry_run_makes_no_writes(tmp_path: Path):
     state = _state()
+    shared = _shared()
     state_path = tmp_path / "state.yaml"
-    save_state(state_path, state)
+    shared_path = tmp_path / "shared.yaml"
+    save_syllabus_state(state_path, state)
     original = state_path.read_text()
     log_path = tmp_path / "state_log.yaml"
 
-    new_state, summary = run_state_review_phase(
-        config=_config(), state=state, syllabus=_syllabus(),
+    new_state, new_shared, summary = run_state_review_phase(
+        config=_config(), state=state, shared=shared, syllabus=_syllabus(),
         today=date(2026, 6, 8), cache={},
-        state_path=state_path, state_log_path=log_path,
+        state_path=state_path, shared_path=shared_path, state_log_path=log_path,
         dry_run=True,
         review_factory=lambda **kw: FakeReviewClient(),
         completion_factory=lambda **kw: FakeCompletionClient(),
         todoist_token="tok", project_id="p1",
     )
     assert new_state is state
+    assert new_shared is shared
     assert summary.mutations_applied == 0
     assert state_path.read_text() == original
     assert not log_path.exists()
@@ -398,17 +430,18 @@ def test_track_auto_lifecycle_fires_at_month_boundary(tmp_path: Path):
         learning_tracks={"Courses": {"X": "not_started"}},
     )
     state_path = tmp_path / "state.yaml"
-    save_state(state_path, state)
+    shared_path = tmp_path / "shared.yaml"
+    save_syllabus_state(state_path, state)
     log_path = tmp_path / "state_log.yaml"
 
     syl = _syllabus(tracks=[
         TrackDeclaration(title="X", category="Courses", phase=1, months=(1, 3))
     ])
 
-    new_state, summary = run_state_review_phase(
-        config=_config(), state=state, syllabus=syl,
+    new_state, new_shared, summary = run_state_review_phase(
+        config=_config(), state=state, shared=_shared(), syllabus=syl,
         today=date(2026, 5, 8),  # derived month 1, inside [1,3]
-        cache={}, state_path=state_path, state_log_path=log_path,
+        cache={}, state_path=state_path, shared_path=shared_path, state_log_path=log_path,
         review_factory=lambda **kw: FakeReviewClient(),
         completion_factory=lambda **kw: FakeCompletionClient(),
         todoist_token="tok", project_id="p1",
@@ -422,26 +455,27 @@ def test_track_auto_lifecycle_idempotent(tmp_path: Path):
     from src.syllabus import TrackDeclaration
     state = _state(learning_tracks={})
     state_path = tmp_path / "state.yaml"
-    save_state(state_path, state)
+    shared_path = tmp_path / "shared.yaml"
+    save_syllabus_state(state_path, state)
     log_path = tmp_path / "state_log.yaml"
     syl = _syllabus(tracks=[
         TrackDeclaration(title="X", category="Courses", phase=1, months=(1, 3))
     ])
 
-    state_v1, _ = run_state_review_phase(
-        config=_config(), state=state, syllabus=syl,
+    state_v1, shared_v1, _ = run_state_review_phase(
+        config=_config(), state=state, shared=_shared(), syllabus=syl,
         today=date(2026, 5, 8), cache={},
-        state_path=state_path, state_log_path=log_path,
+        state_path=state_path, shared_path=shared_path, state_log_path=log_path,
         review_factory=lambda **kw: FakeReviewClient(),
         completion_factory=lambda **kw: FakeCompletionClient(),
         todoist_token="tok", project_id="p1",
     )
     log_v1 = load_state_log(log_path)
 
-    _, summary2 = run_state_review_phase(
-        config=_config(), state=state_v1, syllabus=syl,
+    _, _, summary2 = run_state_review_phase(
+        config=_config(), state=state_v1, shared=shared_v1, syllabus=syl,
         today=date(2026, 5, 9), cache={},
-        state_path=state_path, state_log_path=log_path,
+        state_path=state_path, shared_path=shared_path, state_log_path=log_path,
         review_factory=lambda **kw: FakeReviewClient(),
         completion_factory=lambda **kw: FakeCompletionClient(),
         todoist_token="tok", project_id="p1",
@@ -460,16 +494,17 @@ def test_track_lifecycle_skipped_while_paused(tmp_path: Path):
         paused_until=date(2026, 12, 1),  # far future; no auto-unpause
     )
     state_path = tmp_path / "state.yaml"
-    save_state(state_path, state)
+    shared_path = tmp_path / "shared.yaml"
+    save_syllabus_state(state_path, state)
     log_path = tmp_path / "state_log.yaml"
     syl = _syllabus(tracks=[
         TrackDeclaration(title="X", category="Courses", phase=1, months=(1, 3))
     ])
 
-    new_state, _ = run_state_review_phase(
-        config=_config(), state=state, syllabus=syl,
+    new_state, new_shared, _ = run_state_review_phase(
+        config=_config(), state=state, shared=_shared(), syllabus=syl,
         today=date(2026, 5, 8), cache={},
-        state_path=state_path, state_log_path=log_path,
+        state_path=state_path, shared_path=shared_path, state_log_path=log_path,
         review_factory=lambda **kw: FakeReviewClient(),
         completion_factory=lambda **kw: FakeCompletionClient(),
         todoist_token="tok", project_id="p1",

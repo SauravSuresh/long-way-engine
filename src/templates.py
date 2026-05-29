@@ -69,6 +69,7 @@ class ResolvedTemplate:
     state_review: bool = False
     sub_tasks: list[SubtaskSpec] = field(default_factory=list)
     gated_by: list[dict[str, Any]] = field(default_factory=list)
+    syllabus_key: str = ""
 
 
 class MissingVariable(KeyError):

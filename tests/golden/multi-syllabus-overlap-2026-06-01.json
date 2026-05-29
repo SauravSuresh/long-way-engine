@@ -1,0 +1,29 @@
+{
+  "date": "2026-06-01",
+  "templates": [
+    {
+      "cadence": "daily",
+      "description": "30 min alpha reading.\nToday: Foundations Book.\n",
+      "due": "today at 06:00",
+      "fires": true,
+      "id": "alpha-morning-reading",
+      "labels": [
+        "daily-ritual"
+      ],
+      "syllabus_key": "alpha-way",
+      "title": "Alpha morning reading: Foundations Book"
+    },
+    {
+      "cadence": "daily",
+      "description": "30 min beta reading.\nToday: Beta Book.\n",
+      "due": "today at 06:00",
+      "fires": true,
+      "id": "beta-morning-reading",
+      "labels": [
+        "daily-ritual"
+      ],
+      "syllabus_key": "beta-way",
+      "title": "Beta morning reading: Beta Book"
+    }
+  ]
+}
