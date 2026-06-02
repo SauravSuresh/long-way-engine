@@ -16,8 +16,8 @@
   "syllabuses": {
     "long-way": {
       "adherence": {
-        "done": 23,
-        "expected": 24,
+        "done": 24,
+        "expected": 25,
         "percent": 96,
         "since": "2026-05-05"
       },
@@ -110,13 +110,9 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 29,
+      "day_of_journey": 30,
       "day_total": 1189,
       "last_7_days": [
-        {
-          "date": "2026-05-26",
-          "state": "green"
-        },
         {
           "date": "2026-05-27",
           "state": "green"
@@ -140,6 +136,10 @@
         {
           "date": "2026-06-01",
           "state": "green"
+        },
+        {
+          "date": "2026-06-02",
+          "state": "green"
         }
       ],
       "month": 1,
@@ -161,28 +161,28 @@
         }
       ],
       "streaks": {
-        "Daily": 2,
+        "Daily": 3,
         "Monthly post": 1,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
           "best": 21,
-          "count": 2,
+          "count": 3,
           "hint": "morning reading + Anki by 23:59 to keep it"
         },
         "Monthly post": {
           "best": 1,
           "count": 1,
-          "hint": "next post in 29 days"
+          "hint": "next post in 28 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 3 days"
+          "hint": "next Friday in 2 days"
         }
       },
-      "today": "2026-06-02"
+      "today": "2026-06-03"
     }
   }
 }

@@ -51,6 +51,8 @@
     "05f58fa7f5d17f5c": {
       "created_at": "2026-06-01T23:12:41.295779+00:00",
       "due_date": "2026-06-02",
+      "missed_at": "2026-06-03",
+      "status": "missed",
       "template_id": "daily-morning-reading",
       "todoist_task_id": "6gmf9Gqp3mpWXVrR"
     },
@@ -159,6 +161,12 @@
       "status": "completed",
       "template_id": "daily-anki",
       "todoist_task_id": "6ghG4wvghmcR7c9R"
+    },
+    "23e492ad01e03eaa": {
+      "created_at": "2026-06-02T23:12:41.519548+00:00",
+      "due_date": "2026-06-03",
+      "template_id": "daily-anki",
+      "todoist_task_id": "6gmrh6hpX3fPm24R"
     },
     "2586ef2b4b0dfbc2": {
       "created_at": "2026-05-18T22:32:39.110646+00:00",
@@ -435,8 +443,10 @@
       "todoist_task_id": "6ghG4wxMvfp79xWR"
     },
     "7d901a4f8926c5e1": {
+      "completed_at": "2026-06-03",
       "created_at": "2026-06-01T23:12:41.980178+00:00",
       "due_date": "2026-06-02",
+      "status": "completed",
       "template_id": "daily-anki",
       "todoist_task_id": "6gmf9GxP5XmqPHGR"
     },
@@ -622,6 +632,12 @@
       "template_id": "daily-evening-hands-on",
       "todoist_task_id": "6gjvW833QjHC59cR"
     },
+    "ae956f6b71a3cff1": {
+      "created_at": "2026-06-02T23:12:41.970924+00:00",
+      "due_date": "2026-06-03",
+      "template_id": "daily-evening-hands-on",
+      "todoist_task_id": "6gmrh6p8rmFGJgw2"
+    },
     "af8e5d22e65065e6": {
       "completed_at": "2026-05-17",
       "created_at": "2026-05-15T22:30:18.193766+00:00",
@@ -656,8 +672,10 @@
       "todoist_task_id": "6gXW6PpV9gQxVpFR"
     },
     "bbfb1b51b6015c55": {
+      "completed_at": "2026-06-03",
       "created_at": "2026-06-01T23:12:42.590496+00:00",
       "due_date": "2026-06-02",
+      "status": "completed",
       "template_id": "daily-evening-hands-on",
       "todoist_task_id": "6gmf9H277Ph28VF2"
     },
@@ -838,6 +856,12 @@
       "status": "completed",
       "template_id": "daily-anki",
       "todoist_task_id": "6gXGfXqQHGRQW96R"
+    },
+    "f474bc5cc37db6a2": {
+      "created_at": "2026-06-02T23:12:40.924369+00:00",
+      "due_date": "2026-06-03",
+      "template_id": "daily-morning-reading",
+      "todoist_task_id": "6gmrh6m9CXg6G47R"
     },
     "f4e7368109dcc160": {
       "completed_at": "2026-05-17",
