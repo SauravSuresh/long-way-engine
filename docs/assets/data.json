@@ -16,8 +16,8 @@
   "syllabuses": {
     "long-way": {
       "adherence": {
-        "done": 25,
-        "expected": 26,
+        "done": 26,
+        "expected": 27,
         "percent": 96,
         "since": "2026-05-05"
       },
@@ -110,13 +110,9 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 31,
+      "day_of_journey": 32,
       "day_total": 1189,
       "last_7_days": [
-        {
-          "date": "2026-05-28",
-          "state": "green"
-        },
         {
           "date": "2026-05-29",
           "state": "red"
@@ -140,6 +136,10 @@
         {
           "date": "2026-06-03",
           "state": "green"
+        },
+        {
+          "date": "2026-06-04",
+          "state": "green"
         }
       ],
       "month": 2,
@@ -153,6 +153,13 @@
       },
       "reflections": [
         {
+          "cadence": "weekly",
+          "file": "2026-W23",
+          "relative_path": "weekly/2026-W23.md",
+          "status": "stub",
+          "word_count": 38
+        },
+        {
           "cadence": "monthly",
           "file": "2026-05",
           "relative_path": "monthly/2026-05.md",
@@ -161,28 +168,28 @@
         }
       ],
       "streaks": {
-        "Daily": 4,
+        "Daily": 5,
         "Monthly post": 1,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
           "best": 21,
-          "count": 4,
+          "count": 5,
           "hint": "morning reading + Anki by 23:59 to keep it"
         },
         "Monthly post": {
           "best": 1,
           "count": 1,
-          "hint": "next post in 27 days"
+          "hint": "next post in 26 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 1 day"
+          "hint": "Friday review + filled reflection due today"
         }
       },
-      "today": "2026-06-04"
+      "today": "2026-06-05"
     }
   }
 }
