@@ -233,7 +233,56 @@ every violation into a single error message.
 When a user says "help me build a curriculum", run these steps.
 Ask one question at a time. Confirm before moving on.
 
-**Step 0 — Single syllabus or multiple?** Ask: "Are you designing one
+**Step 0 — Assess existing curricula and priorities.** Before starting
+the design process, check if any curricula already exist:
+
+1. List all enabled curricula from `config.yaml`'s `syllabuses:` map.
+2. If curricula exist, present them to the user with their current
+   time commitments (count daily/weekly rituals to estimate days per
+   week and hours per day).
+3. Ask: "I found [N] existing curricula: [list names]. You're about to
+   add a new one. What's the priority order? Which curriculum should
+   get full attention, and how should we adjust the others?"
+
+**Step 0.5 — Time allocation and reprioritization.** If existing
+curricula are present and the user wants to add a new one:
+
+1. Ask: "How many days per week and hours per day do you want to
+   dedicate to the NEW curriculum?"
+2. For each EXISTING curriculum that will be deprioritized:
+   - Ask: "How many days per week should [curriculum-name] continue?
+     (Currently: [X] days/week)"
+   - Calculate the reduction ratio: `new_days / old_days`
+   - Apply intelligent time reduction:
+     * **Keep required rituals**: Daily SRS and morning study are
+       non-negotiable. Never remove them.
+     * **Reduce weekly rituals**: If going from 6 days to 3 days,
+       keep state-review (Sunday) and one deep block, drop other
+       weekly practices.
+     * **Reduce monthly/quarterly rituals**: Keep retrospectives and
+       write-ups, drop optional practices.
+     * **Adjust `skip_if` rules**: Add more skip days to spread
+       rituals across fewer days. For example, if reducing from 6
+       days to 3 days, add `skip_if: [monday, wednesday, friday]` to
+       some daily rituals to create an every-other-day pattern.
+     * **Extend timeline**: Document that the curriculum's total
+       duration will increase proportionally. If it was 12 months at
+       6 days/week, it becomes ~24 months at 3 days/week.
+3. Update `config.yaml`'s `priority_order` to reflect the new ranking.
+4. For deprioritized curricula, add a comment in their ritual files
+   documenting the reduction and the reason.
+
+Example scenario:
+- **Existing**: "long-way" curriculum, 6 days/week, 2-3 hours/day
+- **New**: "job-readiness" curriculum, 6 months, needs full priority
+- **User choice**: Reduce "long-way" to 2-3 days/week
+- **Action**: Keep long-way's SRS + morning study daily, keep Sunday
+  state-review, keep one Saturday deep block, drop Tuesday/Thursday
+  practices. Add skip rules to evening hands-on ritual to fire only
+  Mon/Wed/Fri. Document that long-way's 12-month timeline extends to
+  ~24-36 months. Set priority_order: [job-readiness, long-way].
+
+**Step 0.75 — Single syllabus or multiple?** Ask: "Are you designing one
 learning path, or do you want to run multiple paths in parallel (each
 with its own Todoist project and dashboard card)?" Default to single.
 For a single syllabus, choose a short kebab-case key (e.g. `my-path`)
