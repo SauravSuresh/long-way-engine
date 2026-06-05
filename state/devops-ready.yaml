@@ -2,7 +2,7 @@ start_date: '2026-06-05'
 phase: 1
 month: 1
 current_module: 1
-current_book: 'Ultimate AWS Certified Solutions Architect Associate (Udemy)'
+current_book: Ultimate AWS Certified Solutions Architect Associate (Udemy)
 completed_modules: []
 active_branches: []
 paused: false
@@ -24,5 +24,3 @@ learning_tracks:
 manual_counters:
   anki_card_count: 0
   leetcode_count: 0
-
-# Made with Bob
