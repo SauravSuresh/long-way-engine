@@ -1044,6 +1044,7 @@ def run_for_syllabus(
         for entry_v in syllabus_cache.values()
         if entry_v.get("todoist_task_id")
         and not str(entry_v["todoist_task_id"]).startswith("DRY-RUN")
+        and entry_v.get("status") == "completed"
     }
     dashboard_data: dict[str, Any] = {
         "completion_set": completion_set,
