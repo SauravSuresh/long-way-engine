@@ -443,16 +443,73 @@ on Saturday.
 
 **Step 7 — Write files, run validator, dry-run.** Produce all YAML
 files (including `state/<name>.yaml`). Register the new syllabus in
-`config.yaml` under `syllabuses:` and `priority_order`. Then run:
+`config.yaml` under `syllabuses:` and `priority_order`.
+
+**Step 7.5 — Setup environment and check for collisions.** If the
+virtual environment doesn't exist, create it and install dependencies:
 
 ```bash
-python -m scripts.show_timetable
+python3 -m venv .venv
+.venv/bin/pip install -e ".[dev]"
 ```
 
-to confirm no slot collisions. Then:
+If `.env` doesn't exist, create a dummy one for validation:
 
 ```bash
-python -m src.main --dry-run --today $(date +%Y-%m-%d)
+echo "TODOIST_TOKEN=dummy_token_for_validation" > .env
+```
+
+Then validate the curriculum:
+
+```bash
+.venv/bin/python -m src.curriculum_validator curricula/<name>
+```
+
+Next, check for time slot collisions. If this is a **new curriculum
+being added to an existing setup**, run:
+
+```bash
+.venv/bin/python -m scripts.show_timetable
+```
+
+If collisions are detected:
+
+1. Ask the user: "I detected [N] time slot collisions between your
+   curricula. Would you like to: (a) Run them sequentially (disable
+   one while the other is active), or (b) Run them in parallel with
+   adjusted ritual times?"
+
+2. If **(a) sequential**: Set `enabled: false` for the new curriculum
+   in `config.yaml` and remove it from `priority_order`. Document in
+   a comment how to enable it later.
+
+3. If **(b) parallel**: Ask the user which curriculum should shift
+   its ritual times. Then add a `ritual_times:` override block under
+   that syllabus in `config.yaml` with adjusted times that avoid all
+   collisions. Iterate with `show_timetable` until zero collisions.
+
+Example parallel override:
+
+```yaml
+syllabuses:
+  existing-curriculum:
+    path: curricula/existing
+    enabled: true
+  new-curriculum:
+    path: curricula/new
+    enabled: true
+    ritual_times:
+      morning_reading: "07:00"    # shifted 1 hour
+      srs_review: "12:00"         # lunch time
+      evening_hands_on: "21:00"   # after existing
+      # ... adjust all conflicting slots
+```
+
+Once collisions are resolved (or curriculum is disabled), run a
+dry-run to confirm task generation:
+
+```bash
+.venv/bin/python -m src.main --dry-run --today $(date +%Y-%m-%d)
 ```
 
 Confirm a sensible task set fires for today. Done.
