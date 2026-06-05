@@ -1,35 +1,84 @@
-- id: daily-morning-reading
+# REDUCED SCHEDULE: 3 days/week (Mon/Wed/Sat) to prioritize devops-ready
+# Timeline extended from 39 months to ~78 months
+#
+# Kept: Morning reading + Anki (Mon/Wed/Sat only via weekly cadence conversion)
+# Removed: Evening hands-on (devops-ready covers this)
+
+- id: weekly-monday-morning-reading
   title: "Morning reading: {current_book}"
   description: |
     30 min. Paper book, paper notebook, no laptop.
     Same chair, same time. This is sacred.
     Today's book: {current_book}.
+    
+    REDUCED SCHEDULE: Monday only (part of 3-day/week plan).
   due: "today at {ritual_times.morning_reading}"
-  labels: [daily-ritual]
-  cadence: daily
-  skip_if: sunday
+  labels: [weekly-ritual, reduced-schedule]
+  cadence: weekly
+  day_of_week: monday
 
-- id: daily-anki
+- id: weekly-monday-anki
   title: "Anki review"
   description: |
     10–15 min. Whenever — commute, lunch, before bed.
     Add 3–5 new cards per day from what you read and built. No more.
+    
+    REDUCED SCHEDULE: Monday only (part of 3-day/week plan).
   due: "today at {ritual_times.anki}"
-  labels: [daily-ritual]
-  cadence: daily
-  skip_if: sunday
+  labels: [weekly-ritual, reduced-schedule]
+  cadence: weekly
+  day_of_week: monday
 
-- id: daily-evening-hands-on
-  title: "Evening hands-on (60–90 min)"
+- id: weekly-wednesday-morning-reading
+  title: "Morning reading: {current_book}"
   description: |
-    boot.dev, the side build, or the main project. In nvim.
-    Without AI writing code for you (using AI to *explain* concepts is fine).
+    30 min. Paper book, paper notebook, no laptop.
+    Same chair, same time. This is sacred.
+    Today's book: {current_book}.
+    
+    REDUCED SCHEDULE: Wednesday only (part of 3-day/week plan).
+  due: "today at {ritual_times.morning_reading}"
+  labels: [weekly-ritual, reduced-schedule]
+  cadence: weekly
+  day_of_week: wednesday
 
-    Skipped on Sunday (rest day) and on pair days (the weekly
-    pair-with-engineer session replaces solo evening work that day).
-  due: "today at {ritual_times.evening_hands_on}"
-  labels: [daily-ritual]
-  cadence: daily
-  skip_if:
-    - sunday
-    - pair_day
+- id: weekly-wednesday-anki
+  title: "Anki review"
+  description: |
+    10–15 min. Whenever — commute, lunch, before bed.
+    Add 3–5 new cards per day from what you read and built. No more.
+    
+    REDUCED SCHEDULE: Wednesday only (part of 3-day/week plan).
+  due: "today at {ritual_times.anki}"
+  labels: [weekly-ritual, reduced-schedule]
+  cadence: weekly
+  day_of_week: wednesday
+
+- id: weekly-saturday-morning-reading
+  title: "Morning reading: {current_book}"
+  description: |
+    30 min. Paper book, paper notebook, no laptop.
+    Same chair, same time. This is sacred.
+    Today's book: {current_book}.
+    
+    REDUCED SCHEDULE: Saturday only (part of 3-day/week plan).
+  due: "today at {ritual_times.morning_reading}"
+  labels: [weekly-ritual, reduced-schedule]
+  cadence: weekly
+  day_of_week: saturday
+
+- id: weekly-saturday-anki
+  title: "Anki review"
+  description: |
+    10–15 min. Whenever — commute, lunch, before bed.
+    Add 3–5 new cards per day from what you read and built. No more.
+    
+    REDUCED SCHEDULE: Saturday only (part of 3-day/week plan).
+  due: "today at {ritual_times.anki}"
+  labels: [weekly-ritual, reduced-schedule]
+  cadence: weekly
+  day_of_week: saturday
+
+# REMOVED: daily-evening-hands-on
+# Reason: devops-ready curriculum covers evening hands-on work
+# boot.dev progress continues as part of devops-ready's learning track

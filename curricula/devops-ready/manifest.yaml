@@ -1,0 +1,51 @@
+# Manifest for DevOps Job Ready curriculum
+# Declares required ritual_times and placeholders used
+
+ritual_times_required:
+  - devops_srs                    # Daily Anki review
+  - morning_udemy                 # Daily Udemy course study
+  - evening_hands_on              # Daily project work + LeetCode
+  - weekly_state_review           # Sunday state review
+  - bootdev_monday                # Monday boot.dev session
+  - bootdev_tuesday               # Tuesday boot.dev session
+  - bootdev_thursday              # Thursday boot.dev session
+  - bootdev_friday                # Friday boot.dev session
+  - leetcode_session              # Tuesday LeetCode deep dive
+  - saturday_deep_block           # Saturday project work
+  - friday_reflection             # Friday weekly reflection
+  - monthly_project_publish       # 1st of month: GitHub project push
+  - monthly_cert_check            # 15th: Certification prep check
+  - monthly_mock_interview        # Last Saturday: Mock interview
+  - monthly_retrospective         # Last Saturday: Monthly review
+
+placeholders_used:
+  - current_book                  # Current Udemy course
+  - current_module                # Current module number
+  - next_module                   # Next module number
+  - next_book                     # Next course (for transitions)
+  - current_phase_name            # Current phase name
+  - iso_year                      # ISO year for reflections
+  - iso_week                      # ISO week number
+  - year                          # Calendar year
+  - month                         # Calendar month
+  - ritual_times.devops_srs
+  - ritual_times.morning_udemy
+  - ritual_times.evening_hands_on
+  - ritual_times.weekly_state_review
+  - ritual_times.bootdev_monday
+  - ritual_times.bootdev_tuesday
+  - ritual_times.bootdev_thursday
+  - ritual_times.bootdev_friday
+  - ritual_times.leetcode_session
+  - ritual_times.saturday_deep_block
+  - ritual_times.friday_reflection
+  - ritual_times.monthly_project_publish
+  - ritual_times.monthly_cert_check
+  - ritual_times.monthly_mock_interview
+  - ritual_times.monthly_retrospective
+
+config_flags:
+  pair_day: thursday              # Default pair day (user can override)
+  sunday_off: true                # Sunday is rest day (except state review)
+
+# Made with Bob

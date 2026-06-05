@@ -1,0 +1,105 @@
+# Monthly rituals for DevOps Job Ready curriculum
+
+- id: monthly-github-project-publish
+  title: "Publish GitHub project for {current_phase_name}"
+  description: |
+    1st of the month: Push your completed project to GitHub with a
+    comprehensive README and documentation.
+    
+    Project should include:
+    - Clear problem statement & solution overview
+    - Architecture diagram
+    - Setup/deployment instructions
+    - Technology stack explanation
+    - Screenshots/demo video
+    - Lessons learned section
+    - Link to live deployment (if applicable)
+    
+    Share on LinkedIn with:
+    - What you built
+    - Technologies used
+    - Key challenges overcome
+    - What you learned
+    
+    Tag: #DevOps #AWS #Kubernetes #CloudEngineering
+  due: "today at {ritual_times.monthly_project_publish}"
+  labels: [monthly-ritual, portfolio]
+  cadence: monthly
+  day_of_month: 1
+
+- id: monthly-certification-prep
+  title: "Certification exam prep check-in"
+  description: |
+    Mid-month check: Are you on track for the certification exam?
+    
+    For AWS SAA (Months 1-3):
+    - Completed practice exams score: aim for 80%+
+    - Weak areas identified and reviewed
+    - Hands-on labs completed
+    
+    For CKA/CKAD (Months 4-5):
+    - kubectl commands memorized
+    - Practice exam scenarios completed
+    - Time management practiced (2 hours for exam)
+    
+    If behind schedule, adjust daily study time or extend timeline.
+  due: "today at {ritual_times.monthly_cert_check}"
+  labels: [monthly-ritual, certification]
+  cadence: monthly
+  day_of_month: 15
+  gated_by:
+    - { type: module_lte, value: 5 }
+
+- id: monthly-mock-interview
+  title: "Mock technical interview (60 min)"
+  description: |
+    Practice interview with a peer or use Pramp/interviewing.io.
+    
+    Interview format:
+    - 5 min: Introductions & behavioral question
+    - 25 min: LeetCode medium problem (live coding)
+    - 20 min: System design question (whiteboard)
+    - 10 min: Questions for interviewer & feedback
+    
+    Record the session and review:
+    - Communication clarity
+    - Problem-solving approach
+    - Code quality
+    - Time management
+    
+    Create Anki cards for any gaps identified.
+  due: "today at {ritual_times.monthly_mock_interview}"
+  labels: [monthly-ritual, interview-prep]
+  cadence: monthly
+  day_of_month: last-saturday
+  gated_by:
+    - { type: module_gte, value: 5 }
+
+- id: monthly-retrospective
+  title: "Monthly retrospective — {year}-{month:02d}"
+  description: |
+    Last Saturday: Reflect on the month's progress.
+    
+    Review:
+    1. Module completion: Did you hit the milestone?
+    2. Certification progress: On track for exam?
+    3. LeetCode stats: Problems solved, patterns mastered
+    4. GitHub projects: Quality and completeness
+    5. Interview readiness: Confidence level 1-10
+    
+    Adjust next month's plan based on:
+    - What worked well (do more of this)
+    - What didn't work (change approach)
+    - Unexpected challenges (plan mitigation)
+    - Energy/motivation levels (adjust intensity)
+    
+    Update your learning journal with insights.
+  due: "today at {ritual_times.monthly_retrospective}"
+  labels: [monthly-ritual, reflection]
+  cadence: monthly
+  day_of_month: last-saturday
+  reflection:
+    create_stub: true
+    stub_path: "reflections/devops-ready/monthly/{year}-{month:02d}.md"
+
+# Made with Bob

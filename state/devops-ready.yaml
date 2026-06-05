@@ -1,0 +1,28 @@
+start_date: '2026-06-05'
+phase: 1
+month: 1
+current_module: 1
+current_book: 'Ultimate AWS Certified Solutions Architect Associate (Udemy)'
+completed_modules: []
+active_branches: []
+paused: false
+paused_since: null
+paused_until: null
+pause_history: []
+books_state: {}
+learning_tracks:
+  Certifications:
+    AWS Solutions Architect Associate: not_started
+    CKA or CKAD: not_started
+  Courses:
+    boot.dev backend path: current
+  Interview Prep:
+    LeetCode Interview Prep: current
+    System Design Practice: not_started
+  Projects:
+    GitHub Portfolio Projects: current
+manual_counters:
+  anki_card_count: 0
+  leetcode_count: 0
+
+# Made with Bob

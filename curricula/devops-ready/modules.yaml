@@ -1,0 +1,229 @@
+# Module onboarding tasks for DevOps Job Ready curriculum
+# Each module must have at least one onboarding task
+
+# Module 1: AWS Core Services
+- id: module-1-onboarding
+  title: "Module 1: AWS Core Services — Setup & Goals"
+  description: |
+    Welcome to Module 1! This month you'll master AWS fundamentals.
+    
+    Goals:
+    - Complete Udemy AWS SAA course sections 1-5
+    - Deploy a 3-tier web app manually (EC2, RDS, S3)
+    - Create 50+ Anki cards on AWS services
+    - Start LeetCode (Arrays & Hashing pattern)
+    
+    Setup tasks:
+    - [ ] Create AWS free tier account
+    - [ ] Install AWS CLI and configure credentials
+    - [ ] Set up Terraform on your machine
+    - [ ] Create GitHub repo: aws-3tier-webapp
+    - [ ] Start LeetCode tracking spreadsheet
+    
+    Resources:
+    - Udemy: Ultimate AWS Certified Solutions Architect Associate
+    - AWS Free Tier: https://aws.amazon.com/free/
+    - Terraform docs: https://terraform.io/docs
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [module-onboarding]
+  cadence: once-per-module
+  module_number: 1
+
+# Module 2: AWS Advanced & IaC
+- id: module-2-onboarding
+  title: "Module 2: AWS Advanced & IaC — Automation Focus"
+  description: |
+    Module 2: Automate everything with Infrastructure as Code.
+    
+    Goals:
+    - Complete Udemy AWS SAA course sections 6-10
+    - Rebuild 3-tier app with Terraform (full automation)
+    - Add Lambda functions and CloudWatch monitoring
+    - Continue LeetCode (Two Pointers & Sliding Window)
+    
+    Setup tasks:
+    - [ ] Create GitHub repo: aws-terraform-infrastructure
+    - [ ] Set up Terraform Cloud account (free tier)
+    - [ ] Install and configure AWS SAM CLI
+    - [ ] Review Terraform best practices
+    
+    Project deliverable:
+    - Fully automated infrastructure deployment
+    - One-command setup: terraform apply
+    - Proper state management (S3 backend)
+    - Modular, reusable Terraform code
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [module-onboarding]
+  cadence: once-per-module
+  module_number: 2
+
+# Module 3: AWS Certification Sprint
+- id: module-3-onboarding
+  title: "Module 3: AWS Certification Sprint — Exam Prep"
+  description: |
+    Module 3: Final push to pass AWS Solutions Architect Associate.
+    
+    Goals:
+    - Complete all Udemy practice exams (score 80%+)
+    - Take Tutorials Dojo practice tests (6 full exams)
+    - Review weak areas identified in practice tests
+    - Schedule and pass AWS SAA exam
+    - Continue LeetCode (Stack & Queue pattern)
+    
+    Exam prep checklist:
+    - [ ] Complete all Udemy course sections
+    - [ ] Take 6 full practice exams (Tutorials Dojo)
+    - [ ] Review all incorrect answers
+    - [ ] Create Anki cards for weak areas
+    - [ ] Schedule exam date (aim for end of month)
+    - [ ] Take exam and pass!
+    
+    After passing:
+    - Update LinkedIn with certification
+    - Add badge to GitHub profile
+    - Write blog post about exam experience
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [module-onboarding, certification]
+  cadence: once-per-module
+  module_number: 3
+
+# Module 4: Docker & Container Fundamentals
+- id: module-4-onboarding
+  title: "Module 4: Docker & Containers — Containerize Everything"
+  description: |
+    Module 4: Master Docker and container orchestration basics.
+    
+    Goals:
+    - Complete Udemy Docker & Kubernetes course (Docker sections)
+    - Containerize a multi-service application
+    - Set up Docker Compose for local development
+    - Push images to Docker Hub and ECR
+    - Continue LeetCode (Binary Search & Trees)
+    
+    Setup tasks:
+    - [ ] Install Docker Desktop
+    - [ ] Create Docker Hub account
+    - [ ] Set up AWS ECR repository
+    - [ ] Create GitHub repo: microservices-docker-app
+    
+    Project deliverable:
+    - Multi-service app (frontend, backend, database)
+    - Dockerfile for each service (multi-stage builds)
+    - docker-compose.yml for local dev
+    - CI/CD pipeline to build and push images
+    - Comprehensive README with architecture
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [module-onboarding]
+  cadence: once-per-module
+  module_number: 4
+
+# Module 5: Kubernetes Deep Dive & Certification
+- id: module-5-onboarding
+  title: "Module 5: Kubernetes & CKA/CKAD — Production K8s"
+  description: |
+    Module 5: Deploy and manage production Kubernetes clusters.
+    
+    Goals:
+    - Complete Udemy CKA/CKAD course
+    - Deploy multi-service app to Kubernetes
+    - Pass CKA or CKAD certification exam
+    - Set up monitoring with Prometheus & Grafana
+    - Continue LeetCode (Graphs - DFS/BFS)
+    
+    Setup tasks:
+    - [ ] Install kubectl, minikube, and k9s
+    - [ ] Set up EKS cluster (or use minikube locally)
+    - [ ] Create GitHub repo: k8s-production-deployment
+    - [ ] Schedule CKA/CKAD exam (end of month)
+    
+    Exam prep:
+    - Practice kubectl commands (speed matters!)
+    - Complete all killer.sh practice scenarios
+    - Time yourself on practice exams (2 hours)
+    - Memorize common troubleshooting steps
+    
+    Project deliverable:
+    - Production-grade K8s deployment
+    - Helm charts for all services
+    - Ingress controller with TLS
+    - Horizontal Pod Autoscaling configured
+    - Monitoring and logging setup
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [module-onboarding, certification]
+  cadence: once-per-module
+  module_number: 5
+
+# Module 6: CI/CD & GitOps Pipelines
+- id: module-6-onboarding
+  title: "Module 6: CI/CD & GitOps — Automate Deployments"
+  description: |
+    Module 6: Build end-to-end CI/CD pipelines with GitOps.
+    
+    Goals:
+    - Complete Udemy DevOps course (CI/CD sections)
+    - Build full CI/CD pipeline (GitHub Actions)
+    - Implement GitOps with ArgoCD or Flux
+    - Add automated testing and security scanning
+    - Continue LeetCode (Dynamic Programming)
+    - Start system design practice
+    
+    Setup tasks:
+    - [ ] Install ArgoCD on K8s cluster
+    - [ ] Set up GitHub Actions workflows
+    - [ ] Configure SonarQube for code quality
+    - [ ] Set up Trivy for container scanning
+    - [ ] Create GitHub repo: gitops-cicd-pipeline
+    
+    Project deliverable:
+    - Full CI/CD pipeline from commit to production
+    - Automated testing (unit, integration, e2e)
+    - Security scanning (SAST, container scanning)
+    - GitOps deployment with ArgoCD
+    - Rollback capabilities
+    - Comprehensive pipeline documentation
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [module-onboarding]
+  cadence: once-per-module
+  module_number: 6
+
+# Module 7: System Design & Interview Mastery
+- id: module-7-onboarding
+  title: "Module 7: Interview Mastery — Final Sprint"
+  description: |
+    Module 7: Polish your interview skills and land the job.
+    
+    Goals:
+    - Complete system design course
+    - Do 10+ mock interviews (technical + behavioral)
+    - Solve 100+ LeetCode problems total
+    - Polish GitHub portfolio (READMEs, demos)
+    - Update resume and LinkedIn
+    - Apply to 20+ jobs
+    
+    Interview prep checklist:
+    - [ ] Practice 10 common system design questions
+    - [ ] Prepare STAR stories for behavioral questions
+    - [ ] Review all projects and be ready to discuss
+    - [ ] Practice explaining technical decisions
+    - [ ] Mock interview with peers (2x per week)
+    - [ ] Record yourself and review communication
+    
+    System design topics to master:
+    - Load balancing & caching strategies
+    - Database sharding & replication
+    - Message queues & event-driven architecture
+    - Microservices patterns
+    - Scalability & reliability patterns
+    
+    Final deliverable:
+    - Polished GitHub profile with 5+ projects
+    - Updated resume highlighting DevOps skills
+    - LinkedIn profile with certifications
+    - Job applications submitted
+    - Interview pipeline active
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [module-onboarding, interview-prep]
+  cadence: once-per-module
+  module_number: 7
+
+# Made with Bob
