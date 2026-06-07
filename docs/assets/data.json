@@ -69,13 +69,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 3,
+      "day_of_journey": 4,
       "day_total": 215,
       "last_7_days": [
-        {
-          "date": "2026-05-31",
-          "state": "gray"
-        },
         {
           "date": "2026-06-01",
           "state": "gray"
@@ -99,6 +95,10 @@
         {
           "date": "2026-06-06",
           "state": "red"
+        },
+        {
+          "date": "2026-06-07",
+          "state": "gray"
         }
       ],
       "month": 1,
@@ -120,20 +120,20 @@
         "Daily": {
           "best": 0,
           "count": 0,
-          "hint": "Sunday \u2014 rest day"
+          "hint": "complete morning reading + Anki today to start"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 24 days"
+          "hint": "next post in 23 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 5 days"
+          "hint": "next Friday in 4 days"
         }
       },
-      "today": "2026-06-07"
+      "today": "2026-06-08"
     },
     "long-way": {
       "adherence": {
@@ -231,13 +231,9 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 34,
+      "day_of_journey": 35,
       "day_total": 1189,
       "last_7_days": [
-        {
-          "date": "2026-05-31",
-          "state": "gray"
-        },
         {
           "date": "2026-06-01",
           "state": "yellow"
@@ -261,6 +257,10 @@
         {
           "date": "2026-06-06",
           "state": "red"
+        },
+        {
+          "date": "2026-06-07",
+          "state": "gray"
         }
       ],
       "month": 2,
@@ -297,20 +297,20 @@
         "Daily": {
           "best": 6,
           "count": 0,
-          "hint": "Sunday \u2014 rest day"
+          "hint": "complete morning reading + Anki today to start"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 24 days"
+          "hint": "next post in 23 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 5 days"
+          "hint": "next Friday in 4 days"
         }
       },
-      "today": "2026-06-07"
+      "today": "2026-06-08"
     }
   }
 }
