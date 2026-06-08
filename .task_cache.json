@@ -11,6 +11,8 @@
     "104dc4373df3ad9f": {
       "created_at": "2026-06-07T22:34:08.707318+00:00",
       "due_date": "2026-06-08",
+      "missed_at": "2026-06-09",
+      "status": "missed",
       "template_id": "daily-evening-hands-on",
       "todoist_task_id": "6gq3xjXJRrxCV93X"
     },
@@ -27,6 +29,12 @@
       "template_id": "persistent-emergency-pause",
       "todoist_task_id": "6gpX2qg8r9jRmVv5"
     },
+    "2b11299fdeaf46c5": {
+      "created_at": "2026-06-08T22:53:50.246840+00:00",
+      "due_date": "2026-06-09",
+      "template_id": "weekly-bootdev-tuesday",
+      "todoist_task_id": "6gqFWqQr5M5XQppX"
+    },
     "3142213d713b3304": {
       "created_at": "2026-06-05T22:38:23.104754+00:00",
       "due_date": "2026-06-06",
@@ -34,6 +42,12 @@
       "status": "missed",
       "template_id": "weekly-project-work",
       "todoist_task_id": "6gpX2qWGh2HQfhqX"
+    },
+    "34b624d545cb317c": {
+      "created_at": "2026-06-08T22:53:51.051349+00:00",
+      "due_date": "2026-06-09",
+      "template_id": "weekly-leetcode-deep-dive",
+      "todoist_task_id": "6gqFWqXX9gPjhqmX"
     },
     "65a1d955c672bf33": {
       "created_at": "2026-06-06T22:34:00.754971+00:00",
@@ -70,6 +84,12 @@
       "template_id": "weekly-state-review:sub:3",
       "todoist_task_id": "6gppQwC3M72wJQh5"
     },
+    "a42753a67bb6f1e7": {
+      "created_at": "2026-06-08T22:53:47.341972+00:00",
+      "due_date": "2026-06-09",
+      "template_id": "daily-devops-srs",
+      "todoist_task_id": "6gqFWq9fQ2qPrmjX"
+    },
     "aa16be35c6491440": {
       "created_at": "2026-06-05T22:38:22.178681+00:00",
       "due_date": "2026-06-06",
@@ -81,6 +101,8 @@
     "b5d81dcbc48a3670": {
       "created_at": "2026-06-07T22:34:09.106999+00:00",
       "due_date": "2026-06-08",
+      "missed_at": "2026-06-09",
+      "status": "missed",
       "template_id": "weekly-bootdev-monday",
       "todoist_task_id": "6gq3xjgcPVv3QFRX"
     },
@@ -122,6 +144,12 @@
       "template_id": "weekly-state-review:sub:5",
       "todoist_task_id": "6gppQwHH65p399vX"
     },
+    "c055fd6de374d377": {
+      "created_at": "2026-06-08T22:53:48.486881+00:00",
+      "due_date": "2026-06-09",
+      "template_id": "daily-morning-udemy",
+      "todoist_task_id": "6gqFWqChW24rWjh5"
+    },
     "c0cd0c01a1a76542": {
       "created_at": "2026-06-06T22:34:03.923478+00:00",
       "due_date": "2026-06-07",
@@ -135,6 +163,12 @@
       "status": "missed",
       "template_id": "weekly-state-review:auto-finish:6",
       "todoist_task_id": "6gppQwJj747JQqWX"
+    },
+    "d0ec1dbc5f0abf6e": {
+      "created_at": "2026-06-08T22:53:49.365177+00:00",
+      "due_date": "2026-06-09",
+      "template_id": "daily-evening-hands-on",
+      "todoist_task_id": "6gqFWqM2M5Jm9C35"
     },
     "d1fc61c740c77a48": {
       "completed_at": "2026-06-07",
@@ -160,6 +194,8 @@
     "e2cd6fd64b5cd721": {
       "created_at": "2026-06-07T22:34:08.145459+00:00",
       "due_date": "2026-06-08",
+      "missed_at": "2026-06-09",
+      "status": "missed",
       "template_id": "daily-morning-udemy",
       "todoist_task_id": "6gq3xjXqmjFpCc65"
     },
@@ -178,8 +214,10 @@
       "todoist_task_id": "6gppQwMcpJMXvfm5"
     },
     "e8274fcdee19d448": {
+      "completed_at": "2026-06-09",
       "created_at": "2026-06-07T22:34:07.492780+00:00",
       "due_date": "2026-06-08",
+      "status": "completed",
       "template_id": "daily-devops-srs",
       "todoist_task_id": "6gq3xjWXjv8V64JX"
     },
@@ -266,6 +304,8 @@
     "0ce48cce9b269476": {
       "created_at": "2026-06-07T22:34:12.872755+00:00",
       "due_date": "2026-06-08",
+      "missed_at": "2026-06-09",
+      "status": "missed",
       "template_id": "weekly-monday-anki",
       "todoist_task_id": "6gq3xm27XFPfQQCR"
     },
@@ -548,6 +588,8 @@
     "54664f0d41a8ae00": {
       "created_at": "2026-06-07T22:34:12.432987+00:00",
       "due_date": "2026-06-08",
+      "missed_at": "2026-06-09",
+      "status": "missed",
       "template_id": "weekly-monday-morning-reading",
       "todoist_task_id": "6gq3xjxvmWxvPXW2"
     },
