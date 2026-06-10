@@ -18,7 +18,7 @@
     "devops-ready": {
       "adherence": {
         "done": 0,
-        "expected": 4,
+        "expected": 5,
         "percent": 0,
         "since": "2026-06-05"
       },
@@ -69,13 +69,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 6,
+      "day_of_journey": 7,
       "day_total": 215,
       "last_7_days": [
-        {
-          "date": "2026-06-03",
-          "state": "gray"
-        },
         {
           "date": "2026-06-04",
           "state": "gray"
@@ -98,6 +94,10 @@
         },
         {
           "date": "2026-06-09",
+          "state": "red"
+        },
+        {
+          "date": "2026-06-10",
           "state": "red"
         }
       ],
@@ -125,21 +125,21 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 21 days"
+          "hint": "next post in 20 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 2 days"
+          "hint": "next Friday in 1 day"
         }
       },
-      "today": "2026-06-10"
+      "today": "2026-06-11"
     },
     "long-way": {
       "adherence": {
         "done": 11,
-        "expected": 31,
-        "percent": 35,
+        "expected": 32,
+        "percent": 34,
         "since": "2026-05-05"
       },
       "books": [
@@ -231,13 +231,9 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 37,
+      "day_of_journey": 38,
       "day_total": 1189,
       "last_7_days": [
-        {
-          "date": "2026-06-03",
-          "state": "yellow"
-        },
         {
           "date": "2026-06-04",
           "state": "yellow"
@@ -260,6 +256,10 @@
         },
         {
           "date": "2026-06-09",
+          "state": "red"
+        },
+        {
+          "date": "2026-06-10",
           "state": "red"
         }
       ],
@@ -302,15 +302,15 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 21 days"
+          "hint": "next post in 20 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 2 days"
+          "hint": "next Friday in 1 day"
         }
       },
-      "today": "2026-06-10"
+      "today": "2026-06-11"
     }
   }
 }
