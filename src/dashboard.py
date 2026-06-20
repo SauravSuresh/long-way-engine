@@ -545,6 +545,134 @@ def _practice_counts(
     }
 
 
+def _today_done(
+    state: SyllabusState,
+    today: date,
+    cache: dict[str, Any],
+    completion_set: set[str],
+) -> tuple[int, int, str]:
+    """How many of today's required dailies are done.
+
+    Returns (done, total, kind) where kind is one of "pre" (before the
+    journey starts), "paused", "rest" (Sunday), or "normal". Mirrors the
+    state machine in _today_panel so the TRMNL band agrees with the
+    detailed Today card.
+    """
+    total = len(DAILY_TEMPLATES_REQUIRED)
+    if today < state.start_date:
+        return 0, total, "pre"
+    if state.paused or _is_in_pause_window(today, state):
+        return 0, total, "paused"
+    if today.weekday() == 6:
+        return 0, total, "rest"
+    done = 0
+    for tpl in DAILY_TEMPLATES_REQUIRED:
+        ext = external_id(tpl, today)
+        entry = cache.get(ext)
+        if entry and str(entry.get("todoist_task_id")) in completion_set:
+            done += 1
+    return done, total, "normal"
+
+
+# Adherence → on-track verdict for the TRMNL band. Coarser than the 5-band
+# hero colouring on purpose: the e-ink screenshot only needs "am I keeping
+# up, slipping, or behind" at a glance.
+def _trmnl_verdict(percent: int | None) -> tuple[str, str]:
+    """Returns (label, css_suffix) for the band's verdict pill."""
+    if percent is None:
+        return "NEW", "new"
+    if percent >= 80:
+        return "ON TRACK", "ok"
+    if percent >= 50:
+        return "SLIPPING", "warn"
+    return "BEHIND", "bad"
+
+
+def _trmnl_tile(summary: dict[str, Any]) -> str:
+    """One per-track column in the TRMNL band. Pure black/white, big numbers."""
+    adh = summary["adherence"]
+    percent = adh["percent"]
+    pct_text = f"{percent}%" if percent is not None else "—"
+    verdict_label, verdict_cls = _trmnl_verdict(percent)
+    adh_sub = (
+        f'{adh["done"]} / {adh["expected"]} days'
+        if adh["expected"] else "no expected days yet"
+    )
+
+    done, total, kind = summary["today"]
+    if kind == "rest":
+        today_html = '<span class="t-strong">REST</span>'
+    elif kind == "paused":
+        today_html = '<span class="t-strong">PAUSED</span>'
+    elif kind == "pre":
+        today_html = '<span class="t-strong">NOT STARTED</span>'
+    elif done == total:
+        today_html = f'<span class="t-strong">DONE {done}/{total}</span>'
+    else:
+        pending = summary["pending_rituals"]
+        pending_txt = f' &middot; {_h(pending)}' if pending else ""
+        today_html = (
+            f'<span class="t-strong t-todo">{done}/{total}</span>{pending_txt}'
+        )
+
+    dot_state = {"green": "full", "yellow": "half", "red": "miss", "gray": "rest"}
+    dots = "".join(
+        f'<span class="t-dot d-{dot_state.get(d["state"], "miss")}"></span>'
+        for d in summary["last_7_days"]
+    )
+
+    streak = summary["streak"]
+    best_txt = f' &middot; best {streak["best"]}' if streak["best"] else ""
+
+    return (
+        f'<div class="trmnl-tile">'
+        f'<div class="t-name">{_h(summary["name"])}</div>'
+        f'<div class="t-day">Day {summary["day_n"]:03d} / {summary["day_total"]}'
+        f' &middot; M{summary["month"]}</div>'
+        f'<div class="t-adh">'
+        f'<span class="t-pct">{_h(pct_text)}</span>'
+        f'<span class="t-verdict v-{verdict_cls}">{verdict_label}</span>'
+        f'</div>'
+        f'<div class="t-adh-sub">{_h(adh_sub)} adherence</div>'
+        f'<div class="t-row"><span class="t-key">TODAY</span> {today_html}</div>'
+        f'<div class="t-row"><span class="t-key">STREAK</span> '
+        f'<span class="t-strong">{streak["count"]}</span>{best_txt}</div>'
+        f'<div class="t-row"><span class="t-key">7d</span>'
+        f'<span class="t-dots">{dots}</span></div>'
+        f'</div>'
+    )
+
+
+def _trmnl_band(
+    summaries: list[dict[str, Any]],
+    today: date,
+    shared: SharedState,
+) -> str:
+    """At-a-glance band sized for the TRMNL OG (800×480) screenshot.
+
+    First thing on the page, so the device's headless screenshot captures
+    exactly one frame: a title strip plus one column per track, each
+    leading with the adherence headline and an on-track verdict. Detailed
+    per-track cards live below for browser viewing.
+    """
+    anki = shared.manual_counters.get("anki_card_count", 0)
+    head = (
+        f'<div class="trmnl-head">'
+        f'<span class="t-brand">THE LONG WAY</span>'
+        f'<span class="t-headmeta">{_h(today.isoformat())} '
+        f'&middot; {_h(str(shared.timezone))} '
+        f'&middot; Anki {anki:,}</span>'
+        f'</div>'
+    )
+    tiles = "".join(_trmnl_tile(s) for s in summaries)
+    return (
+        f'<header class="trmnl-band">'
+        f'{head}'
+        f'<div class="trmnl-tiles">{tiles}</div>'
+        f'</header>'
+    )
+
+
 def _practice_tracker(values: dict[str, int]) -> str:
     cards = "".join(
         f'<div class="practice-card">'
@@ -874,28 +1002,15 @@ def render_multi_syllabus(
     """Render the multi-syllabus dashboard.
 
     Emits:
-      - <header class="shared-band">…shared counters + timezone…</header>
+      - <header class="trmnl-band">…per-track adherence at-a-glance, sized
+        800×480 for the TRMNL OG screenshot…</header>
       - one <section class="syllabus-card" data-syllabus="<key>">…</section>
-        per priority_order entry.
+        per priority_order entry (the detailed browser view).
 
     Returns the full HTML doc and a combined data dict.
     """
-    shared_practice_values = {
-        "Traces completed": int(shared.manual_counters.get("traces_completed", 0) or 0),
-        "PRs opened": int(shared.manual_counters.get("prs_opened", 0) or 0),
-        "Pair sessions": int(shared.manual_counters.get("pair_sessions", 0) or 0),
-        "Anki": int(shared.manual_counters.get("anki_card_count", 0) or 0),
-    }
-    shared_band = (
-        '<header class="shared-band">'
-        f'<span class="tz">{_h(str(shared.timezone))}</span>'
-        f'<span class="counter">Anki: {shared.manual_counters.get("anki_card_count", 0):,}</span>'
-        f'<span class="counter">PRs opened: {shared.manual_counters.get("prs_opened", 0)}</span>'
-        f'{_practice_tracker(shared_practice_values)}'
-        '</header>'
-    )
-
     sections: list[str] = []
+    band_summaries: list[dict[str, Any]] = []
     combined_data: dict[str, Any] = {
         "shared": _shared_data(shared),
         "syllabuses": {},
@@ -916,11 +1031,14 @@ def render_multi_syllabus(
             todoist_token="",
             curriculum_dir=syllabus_entry.path,
         )
+        state = syllabus_states[key]
+        completion_set = completion_by_syllabus.get(key, set())
+        cache = cache_by_syllabus.get(key, {})
         inner_html, per_data = _render_inner(
-            state=syllabus_states[key],
+            state=state,
             config=per_syllabus_config,
-            completion_set=completion_by_syllabus.get(key, set()),
-            cache=cache_by_syllabus.get(key, {}),
+            completion_set=completion_set,
+            cache=cache,
             reflections=reflections_by_syllabus.get(key, []),
             books=books_by_syllabus.get(key, []),
             today=today,
@@ -937,6 +1055,31 @@ def render_multi_syllabus(
         )
         combined_data["syllabuses"][key] = per_data
 
+        syllabus_obj = syllabuses.get(key)
+        name = (
+            str(syllabus_obj.meta.get("name", key))
+            if syllabus_obj is not None else key
+        )
+        rt = per_syllabus_config.ritual_times or {}
+        pending_bits = []
+        if "morning_reading" in rt:
+            pending_bits.append(f"reading {rt['morning_reading']}")
+        if "anki" in rt:
+            pending_bits.append(f"Anki {rt['anki']}")
+        band_summaries.append({
+            "name": name,
+            "adherence": per_data["adherence"],
+            "day_n": per_data["day_of_journey"],
+            "day_total": per_data["day_total"],
+            "month": per_data["month"],
+            "today": _today_done(state, today, cache, completion_set),
+            "pending_rituals": " · ".join(pending_bits),
+            "streak": per_data["streaks_view"]["Daily"],
+            "last_7_days": per_data["last_7_days"],
+        })
+
+    trmnl_band = _trmnl_band(band_summaries, today, shared)
+
     html_doc = (
         '<!doctype html>\n'
         '<html lang="en"><head>'
@@ -945,7 +1088,7 @@ def render_multi_syllabus(
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
         '<link rel="stylesheet" href="assets/style.css">'
         f'</head><body><main class="dashboard">'
-        f'{shared_band}'
+        f'{trmnl_band}'
         f'{"".join(sections)}'
         f'</main></body></html>\n'
     )
@@ -1294,6 +1437,92 @@ section h3 { font-size: .95rem; margin: .75rem 0 .25rem; }
 footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--line);
          color: var(--muted); font-size: .8rem; text-align: center;
          font-family: var(--mono); }
+
+/* TRMNL band — at-a-glance strip sized for the 800x480 e-ink screenshot.
+   Pure black/white, heavy contrast: grayscale dithers everything else to
+   mush, so adherence reads through fills and inversion, not hue. */
+.trmnl-band {
+  width: 800px;
+  max-width: 100%;
+  height: 480px;
+  margin: 0 auto 1.5rem;
+  background: #fff; color: #000;
+  border: 3px solid #000;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.trmnl-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: .55rem 1rem;
+  border-bottom: 3px solid #000;
+  font-family: var(--mono);
+}
+.trmnl-head .t-brand {
+  font-size: 1.05rem; font-weight: 800; letter-spacing: .06em;
+}
+.trmnl-head .t-headmeta { font-size: .8rem; font-weight: 600; }
+.trmnl-tiles { display: flex; flex: 1; min-height: 0; }
+.trmnl-tile {
+  flex: 1 1 0; min-width: 0;
+  padding: .85rem 1.1rem;
+  display: flex; flex-direction: column; gap: .4rem;
+  border-right: 3px solid #000;
+}
+.trmnl-tile:last-child { border-right: none; }
+.trmnl-tile .t-name {
+  font-size: 1.25rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .02em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.trmnl-tile .t-day { font-family: var(--mono); font-size: .85rem; }
+.trmnl-tile .t-adh {
+  display: flex; align-items: center; gap: .6rem; margin: .15rem 0;
+}
+.trmnl-tile .t-pct {
+  font-family: var(--mono); font-weight: 800;
+  font-size: 4.2rem; line-height: .85;
+  font-variant-numeric: tabular-nums; letter-spacing: -.04em;
+}
+.trmnl-tile .t-verdict {
+  font-size: 1rem; font-weight: 800; letter-spacing: .03em;
+  padding: .15rem .5rem; border: 2px solid #000;
+  font-family: var(--mono);
+}
+.trmnl-tile .t-verdict.v-bad { background: #000; color: #fff; }
+.trmnl-tile .t-verdict.v-new { border-style: dashed; }
+.trmnl-tile .t-adh-sub { font-family: var(--mono); font-size: .8rem; }
+.trmnl-tile .t-row {
+  display: flex; align-items: center; gap: .5rem;
+  font-family: var(--mono); font-size: .9rem;
+}
+.trmnl-tile .t-key {
+  font-size: .65rem; font-weight: 700; letter-spacing: .12em;
+  border: 1px solid #000; padding: .05rem .3rem;
+}
+.trmnl-tile .t-strong { font-weight: 800; }
+.trmnl-tile .t-todo { background: #000; color: #fff; padding: 0 .3rem; }
+.trmnl-tile .t-dots { display: flex; gap: 3px; }
+.trmnl-tile .t-dot {
+  width: 1.35rem; height: 1.35rem;
+  border: 2px solid #000; flex-shrink: 0;
+}
+.trmnl-tile .t-dot.d-full { background: #000; }
+.trmnl-tile .t-dot.d-half {
+  background: linear-gradient(135deg, #000 50%, #fff 50%);
+}
+.trmnl-tile .t-dot.d-miss { background: #fff; }
+.trmnl-tile .t-dot.d-rest {
+  background: #fff; border-style: dashed;
+}
+
+.syllabus-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background: #fff;
+}
+.syllabus-card[data-syllabus] { position: relative; }
 
 @media print {
   body { background: white; padding: 0; }

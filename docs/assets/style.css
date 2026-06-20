@@ -324,17 +324,82 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--line);
          color: var(--muted); font-size: .8rem; text-align: center;
          font-family: var(--mono); }
 
-.shared-band {
-  display: flex;
-  gap: 1.5rem;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #e0e0e0;
-  font-size: 0.9rem;
-  color: #555;
-  margin-bottom: 1rem;
+/* TRMNL band — at-a-glance strip sized for the 800x480 e-ink screenshot.
+   Pure black/white, heavy contrast: grayscale dithers everything else to
+   mush, so adherence reads through fills and inversion, not hue. */
+.trmnl-band {
+  width: 800px;
+  max-width: 100%;
+  height: 480px;
+  margin: 0 auto 1.5rem;
+  background: #fff; color: #000;
+  border: 3px solid #000;
+  display: flex; flex-direction: column;
+  overflow: hidden;
 }
-.shared-band .tz { font-weight: 600; color: #333; }
-.shared-band .counter { color: #444; }
+.trmnl-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: .55rem 1rem;
+  border-bottom: 3px solid #000;
+  font-family: var(--mono);
+}
+.trmnl-head .t-brand {
+  font-size: 1.05rem; font-weight: 800; letter-spacing: .06em;
+}
+.trmnl-head .t-headmeta { font-size: .8rem; font-weight: 600; }
+.trmnl-tiles { display: flex; flex: 1; min-height: 0; }
+.trmnl-tile {
+  flex: 1 1 0; min-width: 0;
+  padding: .85rem 1.1rem;
+  display: flex; flex-direction: column; gap: .4rem;
+  border-right: 3px solid #000;
+}
+.trmnl-tile:last-child { border-right: none; }
+.trmnl-tile .t-name {
+  font-size: 1.25rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .02em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.trmnl-tile .t-day { font-family: var(--mono); font-size: .85rem; }
+.trmnl-tile .t-adh {
+  display: flex; align-items: center; gap: .6rem; margin: .15rem 0;
+}
+.trmnl-tile .t-pct {
+  font-family: var(--mono); font-weight: 800;
+  font-size: 4.2rem; line-height: .85;
+  font-variant-numeric: tabular-nums; letter-spacing: -.04em;
+}
+.trmnl-tile .t-verdict {
+  font-size: 1rem; font-weight: 800; letter-spacing: .03em;
+  padding: .15rem .5rem; border: 2px solid #000;
+  font-family: var(--mono);
+}
+.trmnl-tile .t-verdict.v-bad { background: #000; color: #fff; }
+.trmnl-tile .t-verdict.v-new { border-style: dashed; }
+.trmnl-tile .t-adh-sub { font-family: var(--mono); font-size: .8rem; }
+.trmnl-tile .t-row {
+  display: flex; align-items: center; gap: .5rem;
+  font-family: var(--mono); font-size: .9rem;
+}
+.trmnl-tile .t-key {
+  font-size: .65rem; font-weight: 700; letter-spacing: .12em;
+  border: 1px solid #000; padding: .05rem .3rem;
+}
+.trmnl-tile .t-strong { font-weight: 800; }
+.trmnl-tile .t-todo { background: #000; color: #fff; padding: 0 .3rem; }
+.trmnl-tile .t-dots { display: flex; gap: 3px; }
+.trmnl-tile .t-dot {
+  width: 1.35rem; height: 1.35rem;
+  border: 2px solid #000; flex-shrink: 0;
+}
+.trmnl-tile .t-dot.d-full { background: #000; }
+.trmnl-tile .t-dot.d-half {
+  background: linear-gradient(135deg, #000 50%, #fff 50%);
+}
+.trmnl-tile .t-dot.d-miss { background: #fff; }
+.trmnl-tile .t-dot.d-rest {
+  background: #fff; border-style: dashed;
+}
 
 .syllabus-card {
   border: 1px solid #e0e0e0;

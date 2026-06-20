@@ -498,7 +498,7 @@ def test_render_multi_syllabus_one_syllabus_smoke(tmp_path: Path):
     )
 
     # HTML structure checks
-    assert '<header class="shared-band">' in html
+    assert '<header class="trmnl-band">' in html
     assert '<section class="syllabus-card" data-syllabus="long-way">' in html
     assert "Asia/Kolkata" in html
     assert "Computer Systems" in html
@@ -588,22 +588,28 @@ def _make_multi_syllabus_render(tmp_path: Path):
     return html, data
 
 
-def test_render_multi_syllabus_shared_band_includes_practice_counters(tmp_path: Path):
-    """Shared band must contain the practice tracker with counters from shared.manual_counters."""
+def test_render_multi_syllabus_trmnl_band_is_first_and_has_anki(tmp_path: Path):
+    """TRMNL band is the first element on the page and carries the shared Anki total."""
     html, _ = _make_multi_syllabus_render(tmp_path)
 
-    # Practice tracker is in the shared band
-    shared_band_start = html.find('<header class="shared-band">')
-    shared_band_end = html.find('</header>', shared_band_start)
-    assert shared_band_start != -1, "shared-band header not found"
-    shared_band_html = html[shared_band_start:shared_band_end]
+    band_start = html.find('<header class="trmnl-band">')
+    assert band_start != -1, "trmnl-band header not found"
+    # The band precedes the first per-syllabus card.
+    assert band_start < html.find('<section class="syllabus-card"')
 
-    assert 'practices' in shared_band_html, "practice tracker section not in shared band"
-    # Non-zero counter values from shared.manual_counters should appear
-    assert '>7<' in shared_band_html, "traces_completed=7 not rendered"
-    assert '>5<' in shared_band_html, "prs_opened=5 not rendered"
-    assert '>3<' in shared_band_html, "pair_sessions=3 not rendered"
-    assert '>200<' in shared_band_html, "anki_card_count=200 not rendered"
+    band_end = html.find('</header>', band_start)
+    band_html = html[band_start:band_end]
+    assert "Anki 200" in band_html, "shared anki_card_count=200 not in band head"
+
+
+def test_render_multi_syllabus_band_omits_shared_practice_tracker(tmp_path: Path):
+    """The old shared 'Active practices' tracker must no longer be rendered."""
+    html, _ = _make_multi_syllabus_render(tmp_path)
+
+    assert 'Active practices' not in html, (
+        "shared practice tracker should be gone — it was the wrong common view"
+    )
+    assert '<header class="shared-band">' not in html
 
 
 def test_render_multi_syllabus_per_card_omits_practice_tracker(tmp_path: Path):
@@ -616,5 +622,5 @@ def test_render_multi_syllabus_per_card_omits_practice_tracker(tmp_path: Path):
     card_html = html[card_start:card_end]
 
     assert 'practices' not in card_html, (
-        "practice tracker markup found inside syllabus-card — it should only appear in the shared band"
+        "practice tracker markup found inside syllabus-card — per-card bodies omit it"
     )
