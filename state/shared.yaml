@@ -6,6 +6,11 @@ manual_counters:
   lineage_detours_done: []
 notes: 'Most recent edit on top.
 
+  2026-06-21: full tracking reset for both tracks (owner request). start_date->2026-06-21,
+  month/phase/module->1 for long-way and devops-ready. Adherence/streaks/last-7 start
+  fresh from today. Cache left intact (cron idempotency ledger); old entries pre-date
+  start_date so the streak walkers ignore them.
+
   2026-05-05: starting day 1. May 4 setup tasks wiped via --cleanup-project; cache
   reset.
 

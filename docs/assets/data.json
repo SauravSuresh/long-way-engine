@@ -18,9 +18,9 @@
     "devops-ready": {
       "adherence": {
         "done": 0,
-        "expected": 14,
-        "percent": 0,
-        "since": "2026-06-05"
+        "expected": 0,
+        "percent": null,
+        "since": "2026-06-21"
       },
       "books": [
         {
@@ -69,7 +69,7 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 17,
+      "day_of_journey": 1,
       "day_total": 215,
       "last_7_days": [
         {
@@ -78,27 +78,27 @@
         },
         {
           "date": "2026-06-15",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-06-16",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-06-17",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-06-18",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-06-19",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-06-20",
-          "state": "red"
+          "state": "gray"
         }
       ],
       "month": 1,
@@ -137,10 +137,10 @@
     },
     "long-way": {
       "adherence": {
-        "done": 11,
-        "expected": 41,
-        "percent": 27,
-        "since": "2026-05-05"
+        "done": 0,
+        "expected": 0,
+        "percent": null,
+        "since": "2026-06-21"
       },
       "books": [
         {
@@ -231,7 +231,7 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 48,
+      "day_of_journey": 1,
       "day_total": 1189,
       "last_7_days": [
         {
@@ -240,30 +240,30 @@
         },
         {
           "date": "2026-06-15",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-06-16",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-06-17",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-06-18",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-06-19",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-06-20",
-          "state": "red"
+          "state": "gray"
         }
       ],
-      "month": 2,
+      "month": 1,
       "paused": null,
       "phase": 1,
       "practices": {
@@ -295,7 +295,7 @@
       },
       "streaks_view": {
         "Daily": {
-          "best": 6,
+          "best": 0,
           "count": 0,
           "hint": "Sunday \u2014 rest day"
         },
