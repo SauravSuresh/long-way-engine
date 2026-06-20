@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import html as _html
 from calendar import monthrange
+from fractions import Fraction
 from dataclasses import asdict, dataclass, field
 from datetime import date, timedelta
 from pathlib import Path
@@ -588,6 +589,35 @@ def _trmnl_verdict(percent: int | None) -> tuple[str, str]:
     return "BEHIND", "bad"
 
 
+# The adherence target the catch-up note counts toward. Cumulative adherence
+# is done/expected since start, so it never forgets a past miss — climbing
+# back to 90% takes a long run of perfect days. The note shows that honest
+# number so it reads as a concrete goal, not a vague "do better".
+ADHERENCE_TARGET = 0.90
+
+
+def _catchup_days(
+    done: int, expected: int, target: float = ADHERENCE_TARGET
+) -> int | None:
+    """On-track days needed from now to reach `target` cumulative adherence.
+
+    Each future on-track day adds 1 to both done and expected, so the
+    smallest integer N with (done + N)/(expected + N) >= p/q is
+    N >= (p*expected - q*done) / (q - p). Done in exact integers — float
+    ceil rounds e.g. 126 up to 127 on the 0.9 case. Returns None when
+    there's no expected history yet, 0 when already at or above target.
+    """
+    if expected <= 0:
+        return None
+    frac = Fraction(target).limit_denominator(1000)
+    p, q = frac.numerator, frac.denominator
+    if Fraction(done, expected) >= frac:
+        return 0
+    numer = p * expected - q * done
+    denom = q - p  # target < 1, so denom > 0
+    return max(0, -(-numer // denom))  # ceil division
+
+
 def _trmnl_tile(summary: dict[str, Any]) -> str:
     """One per-track column in the TRMNL band. Pure black/white, big numbers."""
     adh = summary["adherence"]
@@ -595,9 +625,25 @@ def _trmnl_tile(summary: dict[str, Any]) -> str:
     pct_text = f"{percent}%" if percent is not None else "—"
     verdict_label, verdict_cls = _trmnl_verdict(percent)
     adh_sub = (
-        f'{adh["done"]} / {adh["expected"]} days'
+        f'{adh["done"]} of {adh["expected"]} expected days'
         if adh["expected"] else "no expected days yet"
     )
+
+    target_pct = round(ADHERENCE_TARGET * 100)
+    catchup = summary["catchup"]
+    if catchup is None:
+        catchup_html = ""
+    elif catchup == 0:
+        catchup_html = (
+            f'<div class="t-catchup"><span class="t-key">GOAL</span> '
+            f'at {target_pct}%+ &mdash; hold it</div>'
+        )
+    else:
+        catchup_html = (
+            f'<div class="t-catchup"><span class="t-key">GOAL</span> '
+            f'<span class="t-strong">{catchup}</span> on-track days '
+            f'&rarr; {target_pct}%, then keep it</div>'
+        )
 
     done, total, kind = summary["today"]
     if kind == "rest":
@@ -629,11 +675,13 @@ def _trmnl_tile(summary: dict[str, Any]) -> str:
         f'<div class="t-name">{_h(summary["name"])}</div>'
         f'<div class="t-day">Day {summary["day_n"]:03d} / {summary["day_total"]}'
         f' &middot; M{summary["month"]}</div>'
+        f'<div class="t-pct-label">Adherence</div>'
         f'<div class="t-adh">'
         f'<span class="t-pct">{_h(pct_text)}</span>'
         f'<span class="t-verdict v-{verdict_cls}">{verdict_label}</span>'
         f'</div>'
-        f'<div class="t-adh-sub">{_h(adh_sub)} adherence</div>'
+        f'<div class="t-adh-sub">{_h(adh_sub)}</div>'
+        f'{catchup_html}'
         f'<div class="t-row"><span class="t-key">TODAY</span> {today_html}</div>'
         f'<div class="t-row"><span class="t-key">STREAK</span> '
         f'<span class="t-strong">{streak["count"]}</span>{best_txt}</div>'
@@ -1066,9 +1114,11 @@ def render_multi_syllabus(
             pending_bits.append(f"reading {rt['morning_reading']}")
         if "anki" in rt:
             pending_bits.append(f"Anki {rt['anki']}")
+        adh = per_data["adherence"]
         band_summaries.append({
             "name": name,
-            "adherence": per_data["adherence"],
+            "adherence": adh,
+            "catchup": _catchup_days(adh["done"], adh["expected"]),
             "day_n": per_data["day_of_journey"],
             "day_total": per_data["day_total"],
             "month": per_data["month"],
@@ -1475,8 +1525,13 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--line);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .trmnl-tile .t-day { font-family: var(--mono); font-size: .85rem; }
+.trmnl-tile .t-pct-label {
+  font-family: var(--mono); font-size: .6rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  margin-top: .15rem;
+}
 .trmnl-tile .t-adh {
-  display: flex; align-items: center; gap: .6rem; margin: .15rem 0;
+  display: flex; align-items: center; gap: .6rem; margin: 0 0 .1rem;
 }
 .trmnl-tile .t-pct {
   font-family: var(--mono); font-weight: 800;
@@ -1491,6 +1546,11 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--line);
 .trmnl-tile .t-verdict.v-bad { background: #000; color: #fff; }
 .trmnl-tile .t-verdict.v-new { border-style: dashed; }
 .trmnl-tile .t-adh-sub { font-family: var(--mono); font-size: .8rem; }
+.trmnl-tile .t-catchup {
+  font-family: var(--mono); font-size: .82rem; font-weight: 700;
+  display: flex; align-items: center; gap: .4rem;
+  border-top: 2px solid #000; padding-top: .35rem; margin-top: .15rem;
+}
 .trmnl-tile .t-row {
   display: flex; align-items: center; gap: .5rem;
   font-family: var(--mono); font-size: .9rem;

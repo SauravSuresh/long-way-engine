@@ -20,6 +20,7 @@ from src.config import Config, DashboardConfig, MultiSyllabusConfig, SyllabusEnt
 from src.dashboard import (
     CSS,
     ReflectionMeta,
+    _catchup_days,
     _github_blob_url,
     _last_7_color,
     _paused_summary,
@@ -422,6 +423,24 @@ def test_practice_counts_uses_cache_status_when_completion_set_empty():
     counts = _practice_counts(state, cache, completion_set={"102"})
     assert counts["Code reading sessions"] == 2  # status=completed + completion_set hit
     assert "Code reading missed" not in counts
+
+
+def test_catchup_days_to_90_percent():
+    """Days needed to climb cumulative adherence to 90% — exact integer math."""
+    # No expected history → undefined.
+    assert _catchup_days(0, 0) is None
+    # Already at/above target → 0.
+    assert _catchup_days(90, 100) == 0
+    assert _catchup_days(95, 100) == 0
+    # Known cases: N = 9*expected - 10*done for the 0.9 target.
+    assert _catchup_days(0, 14) == 126
+    assert _catchup_days(11, 41) == 259
+    # The answer is the *minimal* N: at N adherence clears 90%, at N-1 it
+    # doesn't, and float ceil's off-by-one (127/260) must not reappear.
+    for done, expected in [(0, 14), (11, 41), (3, 20), (50, 200)]:
+        n = _catchup_days(done, expected)
+        assert (done + n) / (expected + n) >= 0.90
+        assert n == 0 or (done + n - 1) / (expected + n - 1) < 0.90
 
 
 # --- multi-syllabus smoke test ------------------------------------------------
