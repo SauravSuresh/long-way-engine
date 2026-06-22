@@ -65,8 +65,10 @@
       "todoist_task_id": "6gvM3H7rgVh9Hv95"
     },
     "125274ccfbe2ac7d": {
+      "completed_at": "2026-06-23",
       "created_at": "2026-06-21T22:39:23.125668+00:00",
       "due_date": "2026-06-22",
+      "status": "completed",
       "template_id": "daily-devops-srs",
       "todoist_task_id": "6gwGvwg6qwG577x5"
     },
@@ -85,6 +87,12 @@
       "status": "missed",
       "template_id": "daily-evening-hands-on",
       "todoist_task_id": "6gvccFwpv8MwwHJX"
+    },
+    "1595d3c99ac677e1": {
+      "created_at": "2026-06-22T22:58:31.812694+00:00",
+      "due_date": "2026-06-23",
+      "template_id": "weekly-leetcode-deep-dive",
+      "todoist_task_id": "6gwWRwV8v2Rxph4X"
     },
     "162ad9c4b6165972": {
       "created_at": "2026-06-18T23:14:05.557002+00:00",
@@ -117,8 +125,10 @@
       "todoist_task_id": "6grPwch3Wggxg2wX"
     },
     "1b4d7e95c662c44e": {
+      "completed_at": "2026-06-23",
       "created_at": "2026-06-21T22:39:24.663917+00:00",
       "due_date": "2026-06-22",
+      "status": "completed",
       "template_id": "weekly-bootdev-monday",
       "todoist_task_id": "6gwGvwj9m5hqfgpX"
     },
@@ -174,6 +184,12 @@
       "status": "missed",
       "template_id": "weekly-bootdev-tuesday",
       "todoist_task_id": "6gqFWqQr5M5XQppX"
+    },
+    "2d149a9316da9b6a": {
+      "created_at": "2026-06-22T22:58:30.493704+00:00",
+      "due_date": "2026-06-23",
+      "template_id": "daily-evening-hands-on",
+      "todoist_task_id": "6gwWRwP6mF4RWjx5"
     },
     "3142213d713b3304": {
       "created_at": "2026-06-05T22:38:23.104754+00:00",
@@ -259,6 +275,12 @@
       "template_id": "weekly-state-review:auto-finish:6",
       "todoist_task_id": "6gw5MxW2CCVFhCq5"
     },
+    "460809bdf1cd06c0": {
+      "created_at": "2026-06-22T22:58:29.988302+00:00",
+      "due_date": "2026-06-23",
+      "template_id": "daily-morning-udemy",
+      "todoist_task_id": "6gwWRwPpJmV3MvJX"
+    },
     "55b66c639c0595bc": {
       "created_at": "2026-06-20T22:38:23.731942+00:00",
       "due_date": "2026-06-21",
@@ -297,8 +319,10 @@
       "todoist_task_id": "6gvM3HJ6jJpgMrw5"
     },
     "60e4eeeadb3527c0": {
+      "completed_at": "2026-06-23",
       "created_at": "2026-06-21T22:39:23.744610+00:00",
       "due_date": "2026-06-22",
+      "status": "completed",
       "template_id": "daily-morning-udemy",
       "todoist_task_id": "6gwGvwcqRrfGXJm5"
     },
@@ -779,6 +803,12 @@
       "template_id": "weekly-state-review:sub:3",
       "todoist_task_id": "6gw5MxRgrMQrGcWX"
     },
+    "eae3abe7a2b9dd5b": {
+      "created_at": "2026-06-22T22:58:29.243945+00:00",
+      "due_date": "2026-06-23",
+      "template_id": "daily-devops-srs",
+      "todoist_task_id": "6gwWRwHW9VGGJfGX"
+    },
     "f49b11c31eee817d": {
       "completed_at": "2026-06-16",
       "created_at": "2026-06-14T22:37:46.352991+00:00",
@@ -787,9 +817,17 @@
       "template_id": "monthly-certification-prep",
       "todoist_task_id": "6grgQ347Hr9FPhF5"
     },
+    "f6de2c8b9b1a7701": {
+      "created_at": "2026-06-22T22:58:31.336392+00:00",
+      "due_date": "2026-06-23",
+      "template_id": "weekly-bootdev-tuesday",
+      "todoist_task_id": "6gwWRwV6rHW2h4h5"
+    },
     "fc1a9ba04d0ab372": {
       "created_at": "2026-06-21T22:39:24.169287+00:00",
       "due_date": "2026-06-22",
+      "missed_at": "2026-06-23",
+      "status": "missed",
       "template_id": "daily-evening-hands-on",
       "todoist_task_id": "6gwGvwmGQrWXp84X"
     },
@@ -1096,6 +1134,8 @@
     "41fea82d541ace8d": {
       "created_at": "2026-06-21T22:39:30.078264+00:00",
       "due_date": "2026-06-22",
+      "missed_at": "2026-06-23",
+      "status": "missed",
       "template_id": "weekly-monday-anki",
       "todoist_task_id": "6gwGvxFm8PPqHFJR"
     },
@@ -2092,6 +2132,8 @@
     "fea692aa016d8575": {
       "created_at": "2026-06-21T22:39:29.617268+00:00",
       "due_date": "2026-06-22",
+      "missed_at": "2026-06-23",
+      "status": "missed",
       "template_id": "weekly-monday-morning-reading",
       "todoist_task_id": "6gwGvx86j6phVHCR"
     },
