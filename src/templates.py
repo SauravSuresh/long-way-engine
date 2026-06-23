@@ -52,6 +52,7 @@ class Template:
     day_of_month: int | str | None = None
     module_number: int | None = None
     state_review: bool = False
+    counts_toward_streak: bool = False
     sub_tasks: list[SubtaskSpec] = field(default_factory=list)
     gated_by: list[dict[str, Any]] = field(default_factory=list)
     raw: dict[str, Any] = field(default_factory=dict)
@@ -153,6 +154,7 @@ def _load_one_file(path: Path) -> list[Template]:
                 day_of_month=day_of_month,
                 module_number=module_number,
                 state_review=bool(entry.get("state_review", False)),
+                counts_toward_streak=bool(entry.get("counts_toward_streak", False)),
                 sub_tasks=sub_tasks,
                 gated_by=gated_by,
                 raw=entry,

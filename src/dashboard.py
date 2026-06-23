@@ -26,7 +26,7 @@ from fractions import Fraction
 from dataclasses import asdict, dataclass, field
 from datetime import date, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 from src.clock import Clock
 from src.config import Config, MultiSyllabusConfig, TodoistConfig
@@ -34,7 +34,8 @@ from src.ids import external_id
 from src.reflections import split_frontmatter
 from src.state import SharedState, State, SyllabusState
 from src.streaks import (
-    DAILY_TEMPLATES_REQUIRED,
+    LEGACY_DAILY_SPECS,
+    StreakTemplateSpec,
     _is_in_pause_window,
     adherence_since_start,
     best_daily_streak,
@@ -44,10 +45,50 @@ from src.streaks import (
     daily_streak,
     monthly_hint,
     monthly_post_streak,
+    required_ids_on,
     weekly_hint,
     weekly_review_streak,
 )
 from src.syllabus import Book, Syllabus
+
+# Map curriculum day_of_week strings to date.weekday() ints, for building
+# per-curriculum streak specs from weekly ritual templates.
+_WEEKDAY_NUM = {
+    "monday": 0,
+    "tuesday": 1,
+    "wednesday": 2,
+    "thursday": 3,
+    "friday": 4,
+    "saturday": 5,
+    "sunday": 6,
+}
+
+
+def build_streak_specs(templates: Any) -> tuple[StreakTemplateSpec, ...]:
+    """Derive daily-streak specs from a curriculum's ritual templates.
+
+    Selects templates flagged ``counts_toward_streak`` and captures enough
+    schedule (cadence, weekday, Sunday-skip) for the streak walkers to know
+    which rituals are expected on any given date. This keeps the required
+    set tied to the live curriculum instead of a hardcoded id list that can
+    silently drift out of sync.
+    """
+    specs: list[StreakTemplateSpec] = []
+    for t in templates:
+        if not getattr(t, "counts_toward_streak", False):
+            continue
+        dow = None
+        if t.cadence == "weekly" and t.day_of_week:
+            dow = _WEEKDAY_NUM.get(str(t.day_of_week).lower())
+        specs.append(
+            StreakTemplateSpec(
+                template_id=t.id,
+                cadence=t.cadence,
+                day_of_week=dow,
+                skips_sunday="sunday" in (getattr(t, "skip_if", []) or []),
+            )
+        )
+    return tuple(specs)
 
 # Defaults — kept for any legacy caller that doesn't pass a Syllabus.
 # render() recomputes from the live syllabus and overrides locally before
@@ -275,6 +316,7 @@ def _today_panel(
     today: date,
     cache: dict[str, Any],
     completion_set: set[str],
+    specs: Sequence[StreakTemplateSpec],
 ) -> str:
     """Single 'what to do now' panel above streaks.
 
@@ -306,21 +348,25 @@ def _today_panel(
         )
         return f'<section class="today">{eyebrow}{body}</section>'
 
-    if today.weekday() == 6:
+    required_ids = required_ids_on(today, specs)
+    if not required_ids:
+        msg = (
+            "Rest day &mdash; Sundays are off."
+            if today.weekday() == 6
+            else "Rest day &mdash; no rituals scheduled."
+        )
         body = (
-            f'<div class="today-status today-status-rest">'
-            f'Rest day &mdash; Sundays are off.'
-            f'</div>'
+            f'<div class="today-status today-status-rest">{msg}</div>'
         )
         return f'<section class="today">{eyebrow}{body}</section>'
 
     done = 0
-    for tpl in DAILY_TEMPLATES_REQUIRED:
+    for tpl in required_ids:
         ext = external_id(tpl, today)
         entry = cache.get(ext)
         if entry and str(entry.get("todoist_task_id")) in completion_set:
             done += 1
-    total = len(DAILY_TEMPLATES_REQUIRED)
+    total = len(required_ids)
 
     if done == total:
         body = (
@@ -444,6 +490,7 @@ def _last_7_color(
     state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
+    specs: Sequence[StreakTemplateSpec],
 ) -> str:
     # Days before the journey's start_date aren't 'missed' — they're
     # outside the journey. Treat them as a gray skip-day, the same way
@@ -452,17 +499,20 @@ def _last_7_color(
     # dailies missed) which reads as failure before day 1.
     if d < state.start_date:
         return "gray"
-    if d.weekday() == 6 or _is_in_pause_window(d, state):
+    if _is_in_pause_window(d, state):
+        return "gray"
+    required_ids = required_ids_on(d, specs)
+    if not required_ids:  # rest day (Sunday or off-cadence weekday)
         return "gray"
     done = 0
-    for tpl in DAILY_TEMPLATES_REQUIRED:
+    for tpl in required_ids:
         ext = external_id(tpl, d)
         entry = cache.get(ext)
         if entry and str(entry.get("todoist_task_id")) in completion_set:
             done += 1
-    if done == 2:
+    if done == len(required_ids):
         return "green"
-    if done == 1:
+    if done > 0:
         return "yellow"
     return "red"
 
@@ -480,13 +530,14 @@ def _last_7_days(
     state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
+    specs: Sequence[StreakTemplateSpec],
 ) -> tuple[str, list[dict[str, str]]]:
     cells: list[str] = []
     data: list[dict[str, str]] = []
     counts = {"green": 0, "yellow": 0, "red": 0, "gray": 0}
     for offset in range(7, 0, -1):
         d = today - timedelta(days=offset)
-        color = _last_7_color(d, state, cache, completion_set)
+        color = _last_7_color(d, state, cache, completion_set, specs)
         counts[color] += 1
         weekday = d.strftime("%a")
         cells.append(
@@ -551,28 +602,29 @@ def _today_done(
     today: date,
     cache: dict[str, Any],
     completion_set: set[str],
+    specs: Sequence[StreakTemplateSpec],
 ) -> tuple[int, int, str]:
     """How many of today's required dailies are done.
 
     Returns (done, total, kind) where kind is one of "pre" (before the
-    journey starts), "paused", "rest" (Sunday), or "normal". Mirrors the
-    state machine in _today_panel so the TRMNL band agrees with the
-    detailed Today card.
+    journey starts), "paused", "rest" (Sunday or off-cadence weekday), or
+    "normal". Mirrors the state machine in _today_panel so the TRMNL band
+    agrees with the detailed Today card.
     """
-    total = len(DAILY_TEMPLATES_REQUIRED)
     if today < state.start_date:
-        return 0, total, "pre"
+        return 0, 0, "pre"
     if state.paused or _is_in_pause_window(today, state):
-        return 0, total, "paused"
-    if today.weekday() == 6:
-        return 0, total, "rest"
+        return 0, 0, "paused"
+    required_ids = required_ids_on(today, specs)
+    if not required_ids:
+        return 0, 0, "rest"
     done = 0
-    for tpl in DAILY_TEMPLATES_REQUIRED:
+    for tpl in required_ids:
         ext = external_id(tpl, today)
         entry = cache.get(ext)
         if entry and str(entry.get("todoist_task_id")) in completion_set:
             done += 1
-    return done, total, "normal"
+    return done, len(required_ids), "normal"
 
 
 # Adherence → on-track verdict for the TRMNL band. Coarser than the 5-band
@@ -896,13 +948,15 @@ def _render_inner(
     syllabus: Syllabus | None,
     *,
     show_practice_tracker: bool = True,
+    streak_specs: Sequence[StreakTemplateSpec] | None = None,
 ) -> tuple[str, dict[str, Any]]:
     """Render the dashboard body (no doctype wrapper). Returns (body_html, data)."""
+    specs = LEGACY_DAILY_SPECS if streak_specs is None else streak_specs
     total_months = _total_months_from_syllabus(syllabus)
     total_modules = _total_modules_from_syllabus(syllabus)
     phase_tick_labels = _phase_tick_labels(syllabus)
 
-    daily_count = daily_streak(today, state, cache, completion_set)
+    daily_count = daily_streak(today, state, cache, completion_set, specs)
     weekly_count = weekly_review_streak(
         today, state, cache, completion_set, reflections_root
     )
@@ -910,8 +964,8 @@ def _render_inner(
     streaks_view: dict[str, dict[str, Any]] = {
         "Daily": {
             "count": daily_count,
-            "best": best_daily_streak(today, state, cache, completion_set),
-            "hint": daily_hint(today, state, daily_count),
+            "best": best_daily_streak(today, state, cache, completion_set, specs),
+            "hint": daily_hint(today, state, daily_count, specs),
         },
         "Weekly review": {
             "count": weekly_count,
@@ -929,14 +983,14 @@ def _render_inner(
         },
     }
 
-    last7_html, last7_data = _last_7_days(today, state, cache, completion_set)
+    last7_html, last7_data = _last_7_days(today, state, cache, completion_set, specs)
     practices = _practice_counts(state, cache, completion_set)
     day_n, day_total = _journey_day(today, state, total_months=total_months)
-    adherence = adherence_since_start(today, state, cache, completion_set)
+    adherence = adherence_since_start(today, state, cache, completion_set, specs)
 
     body_parts = [
         _header(state, config, today, adherence, total_months=total_months),
-        _today_panel(state, config, today, cache, completion_set),
+        _today_panel(state, config, today, cache, completion_set, specs),
         _streaks_section(streaks_view),
         _phase_tree(state, phase_ranges=phase_tick_labels),
         _module_trunk(state, module_titles, total_modules=total_modules),
@@ -993,6 +1047,7 @@ def render(
     reflections_root: Path,
     module_titles: dict[int, str] | None = None,
     syllabus: Syllabus | None = None,
+    streak_specs: Sequence[StreakTemplateSpec] | None = None,
 ) -> tuple[str, dict[str, Any]]:
     """Render dashboard. Returns (html_string, data_json_dict)."""
     if module_titles is None:
@@ -1010,6 +1065,7 @@ def render(
         reflections_root=reflections_root,
         module_titles=module_titles,
         syllabus=syllabus,
+        streak_specs=streak_specs,
     )
     html_doc = (
         '<!doctype html>\n'
@@ -1046,6 +1102,7 @@ def render_multi_syllabus(
     clock: Clock,
     reflections_root: Path,
     module_titles_by_syllabus: dict[str, dict[int, str]] | None = None,
+    streak_specs_by_syllabus: dict[str, Sequence[StreakTemplateSpec]] | None = None,
 ) -> tuple[str, dict[str, Any]]:
     """Render the multi-syllabus dashboard.
 
@@ -1082,6 +1139,7 @@ def render_multi_syllabus(
         state = syllabus_states[key]
         completion_set = completion_by_syllabus.get(key, set())
         cache = cache_by_syllabus.get(key, {})
+        specs = (streak_specs_by_syllabus or {}).get(key)
         inner_html, per_data = _render_inner(
             state=state,
             config=per_syllabus_config,
@@ -1095,6 +1153,7 @@ def render_multi_syllabus(
             module_titles=(module_titles_by_syllabus or {}).get(key, {}),
             syllabus=syllabuses.get(key),
             show_practice_tracker=False,
+            streak_specs=specs,
         )
         sections.append(
             f'<section class="syllabus-card" data-syllabus="{_h(key)}">'
@@ -1122,7 +1181,10 @@ def render_multi_syllabus(
             "day_n": per_data["day_of_journey"],
             "day_total": per_data["day_total"],
             "month": per_data["month"],
-            "today": _today_done(state, today, cache, completion_set),
+            "today": _today_done(
+                state, today, cache, completion_set,
+                specs if specs is not None else LEGACY_DAILY_SPECS,
+            ),
             "pending_rituals": " · ".join(pending_bits),
             "streak": per_data["streaks_view"]["Daily"],
             "last_7_days": per_data["last_7_days"],

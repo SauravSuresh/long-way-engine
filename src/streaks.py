@@ -21,9 +21,10 @@ weekly_review_streak (which is filesystem-only, no network).
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from datetime import date, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 from src.ids import external_id
 from src.reflections import split_frontmatter
@@ -35,6 +36,52 @@ MONTHLY_POST_TEMPLATE = "monthly-blog-post"
 
 FRIDAY = 4
 SUNDAY = 6
+
+
+@dataclass(frozen=True)
+class StreakTemplateSpec:
+    """A daily-streak-relevant template plus enough of its schedule to know,
+    for any given date, whether it is *expected* that day.
+
+    The dashboard derives these from each curriculum's ritual templates that
+    carry ``counts_toward_streak: true``. Keeping the required set data-driven
+    (rather than a single hardcoded id pair) is what stops the streak walkers
+    from silently grading against templates the curriculum no longer defines.
+    """
+
+    template_id: str
+    cadence: str  # "daily" | "weekly"
+    day_of_week: int | None = None  # 0=Mon .. 6=Sun, for weekly cadence
+    skips_sunday: bool = True  # for daily cadence
+
+
+# Legacy default used when a caller supplies no specs: the two original
+# daily rituals, both skipping Sunday. Preserves the historical behaviour of
+# the pure walkers (and their tests) when no curriculum context is threaded in.
+LEGACY_DAILY_SPECS: tuple[StreakTemplateSpec, ...] = tuple(
+    StreakTemplateSpec(tpl, "daily", None, True) for tpl in DAILY_TEMPLATES_REQUIRED
+)
+
+
+def required_ids_on(
+    d: date, specs: Sequence[StreakTemplateSpec]
+) -> tuple[str, ...]:
+    """Template ids that must be completed on date ``d`` for the day to count.
+
+    Empty result means ``d`` schedules no required ritual — a rest day (e.g.
+    Sunday for daily specs, or Tue/Thu/Fri for a Mon/Wed/Sat weekly cadence).
+    The walkers treat an empty day as a skip: it neither extends nor breaks.
+    """
+    out: list[str] = []
+    for s in specs:
+        if s.cadence == "weekly":
+            if s.day_of_week is not None and d.weekday() == s.day_of_week:
+                out.append(s.template_id)
+        else:  # daily
+            if s.skips_sunday and d.weekday() == SUNDAY:
+                continue
+            out.append(s.template_id)
+    return tuple(out)
 
 
 def _is_in_pause_window(d: date, state: SyllabusState) -> bool:
@@ -75,10 +122,13 @@ def _task_id_for(
     return str(tid) if tid else None
 
 
-def _all_required_done(
-    d: date, cache: dict[str, Any], completion_set: set[str]
+def _ids_all_done(
+    required_ids: Sequence[str],
+    d: date,
+    cache: dict[str, Any],
+    completion_set: set[str],
 ) -> bool:
-    for tpl in DAILY_TEMPLATES_REQUIRED:
+    for tpl in required_ids:
         tid = _task_id_for(tpl, d, cache)
         if tid is None or tid not in completion_set:
             return False
@@ -90,15 +140,25 @@ def daily_streak(
     state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
+    specs: Sequence[StreakTemplateSpec] | None = None,
 ) -> int:
-    """Count consecutive prior days where both required dailies completed."""
+    """Count consecutive prior days where every required ritual completed.
+
+    Days that schedule no required ritual (Sundays, off-cadence weekdays,
+    pause windows) are skipped: they neither extend nor break the streak.
+    """
+    specs = LEGACY_DAILY_SPECS if specs is None else specs
     streak = 0
     d = today - timedelta(days=1)
     while d >= state.start_date:
-        if _is_skipped_on(d, state):
+        if _is_in_pause_window(d, state):
             d -= timedelta(days=1)
             continue
-        if _all_required_done(d, cache, completion_set):
+        required_ids = required_ids_on(d, specs)
+        if not required_ids:  # rest day — skip without breaking
+            d -= timedelta(days=1)
+            continue
+        if _ids_all_done(required_ids, d, cache, completion_set):
             streak += 1
             d -= timedelta(days=1)
         else:
@@ -193,15 +253,21 @@ def best_daily_streak(
     state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
+    specs: Sequence[StreakTemplateSpec] | None = None,
 ) -> int:
+    specs = LEGACY_DAILY_SPECS if specs is None else specs
     best = 0
     cur = 0
     d = state.start_date
     while d < today:
-        if _is_skipped_on(d, state):
+        if _is_in_pause_window(d, state):
             d += timedelta(days=1)
             continue
-        if _all_required_done(d, cache, completion_set):
+        required_ids = required_ids_on(d, specs)
+        if not required_ids:  # rest day — neither extends nor breaks
+            d += timedelta(days=1)
+            continue
+        if _ids_all_done(required_ids, d, cache, completion_set):
             cur += 1
             if cur > best:
                 best = cur
@@ -300,34 +366,49 @@ def adherence_since_start(
     state: SyllabusState,
     cache: dict[str, Any],
     completion_set: set[str],
+    specs: Sequence[StreakTemplateSpec] | None = None,
 ) -> tuple[int, int]:
     """Returns (done, expected) counted from state.start_date through yesterday.
 
-    Expected = non-Sunday, non-paused days since start. Today itself is
-    excluded because the cron renders at 05:30 and today's tasks aren't
-    done yet.
+    Expected = days since start that schedule at least one required ritual
+    (so Sundays, off-cadence weekdays, and paused days don't count against
+    you). Today itself is excluded because the cron renders before today's
+    tasks are done.
     """
+    specs = LEGACY_DAILY_SPECS if specs is None else specs
     done = 0
     expected = 0
     d = state.start_date
     while d < today:
-        if _is_skipped_on(d, state):
+        if _is_in_pause_window(d, state):
+            d += timedelta(days=1)
+            continue
+        required_ids = required_ids_on(d, specs)
+        if not required_ids:  # rest day — not an expected day
             d += timedelta(days=1)
             continue
         expected += 1
-        if _all_required_done(d, cache, completion_set):
+        if _ids_all_done(required_ids, d, cache, completion_set):
             done += 1
         d += timedelta(days=1)
     return done, expected
 
 
-def daily_hint(today: date, state: SyllabusState, current: int) -> str:
+def daily_hint(
+    today: date,
+    state: SyllabusState,
+    current: int,
+    specs: Sequence[StreakTemplateSpec] | None = None,
+) -> str:
+    specs = LEGACY_DAILY_SPECS if specs is None else specs
     if today < state.start_date:
         return f"starts {state.start_date.isoformat()}"
     if _is_currently_paused(state, today):
         return "paused"
     if today.weekday() == SUNDAY:
         return "Sunday — rest day"
+    if not required_ids_on(today, specs):
+        return "rest day — no rituals scheduled"
     if current == 0:
         return "complete morning reading + Anki today to start"
     return "morning reading + Anki by 23:59 to keep it"

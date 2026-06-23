@@ -45,6 +45,7 @@ from src.config import (
 )
 from src.dashboard import (
     ReflectionMeta,
+    build_streak_specs,
     render as render_dashboard,
     render_multi_syllabus,
     scan_reflections,
@@ -1051,6 +1052,7 @@ def run_for_syllabus(
         "module_titles": _module_titles_from_templates(templates),
         "books": syllabus.books,
         "reflections_root": reflections_root,
+        "streak_specs": build_streak_specs(templates),
     }
 
     return summary, state, shared, dashboard_data
@@ -1405,6 +1407,7 @@ def main(argv: list[str] | None = None) -> int:
     per_syllabus_module_titles: dict[str, dict[int, str]] = {}
     per_syllabus_books: dict[str, list] = {}
     per_syllabus_reflections_root: dict[str, Path] = {}
+    per_syllabus_streak_specs: dict[str, Any] = {}
 
     aggregate = AggregateSummary()
     new_shared = shared
@@ -1437,6 +1440,7 @@ def main(argv: list[str] | None = None) -> int:
         per_syllabus_module_titles[key] = dash_data["module_titles"]
         per_syllabus_books[key] = dash_data["books"]
         per_syllabus_reflections_root[key] = dash_data["reflections_root"]
+        per_syllabus_streak_specs[key] = dash_data["streak_specs"]
 
     # After all syllabuses: persist cache + shared state, render dashboard.
     if not args.dry_run:
@@ -1470,6 +1474,7 @@ def main(argv: list[str] | None = None) -> int:
                     clock=clock,
                     reflections_root=REFLECTIONS_DIR,
                     module_titles_by_syllabus=per_syllabus_module_titles,
+                    streak_specs_by_syllabus=per_syllabus_streak_specs,
                 )
                 DOCS_HTML_PATH.parent.mkdir(parents=True, exist_ok=True)
                 DOCS_DATA_PATH.parent.mkdir(parents=True, exist_ok=True)

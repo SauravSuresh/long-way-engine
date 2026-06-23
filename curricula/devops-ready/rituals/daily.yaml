@@ -17,6 +17,7 @@
   labels: [daily-ritual, srs]
   cadence: daily
   skip_if: sunday
+  counts_toward_streak: true
 
 - id: daily-morning-udemy
   title: "Morning Udemy: {current_book}"
@@ -31,6 +32,7 @@
   labels: [daily-ritual, learning]
   cadence: daily
   skip_if: sunday
+  counts_toward_streak: true
 
 - id: daily-evening-hands-on
   title: "Evening hands-on: Projects + LeetCode"

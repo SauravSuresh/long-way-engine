@@ -33,6 +33,7 @@ from src.dashboard import (
 )
 from src.ids import external_id
 from src.state import PauseInterval, SharedState, SyllabusState
+from src.streaks import LEGACY_DAILY_SPECS
 from src.syllabus import Book, load_syllabus
 
 IST = ZoneInfo("Asia/Kolkata")
@@ -109,26 +110,26 @@ def test_github_blob_url():
 
 
 def test_last_7_color_gray_on_sunday():
-    assert _last_7_color(date(2026, 5, 3), make_state(), {}, set()) == "gray"
+    assert _last_7_color(date(2026, 5, 3), make_state(), {}, set(), LEGACY_DAILY_SPECS) == "gray"
 
 
 def test_last_7_color_gray_in_pause_history():
     state = make_state(
         pause_history=[PauseInterval(date(2026, 4, 15), date(2026, 4, 30), "x")]
     )
-    assert _last_7_color(date(2026, 4, 20), state, {}, set()) == "gray"
+    assert _last_7_color(date(2026, 4, 20), state, {}, set(), LEGACY_DAILY_SPECS) == "gray"
 
 
 def test_last_7_color_gray_when_currently_paused():
     state = make_state(paused=True, paused_since=date(2026, 5, 1))
-    assert _last_7_color(date(2026, 5, 4), state, {}, set()) == "gray"
+    assert _last_7_color(date(2026, 5, 4), state, {}, set(), LEGACY_DAILY_SPECS) == "gray"
 
 
 def test_last_7_color_green_both_done():
     cache: dict = {}
     done: set[str] = set()
     add_daily_pair(cache, date(2026, 5, 4), done)  # Monday
-    assert _last_7_color(date(2026, 5, 4), make_state(), cache, done) == "green"
+    assert _last_7_color(date(2026, 5, 4), make_state(), cache, done, LEGACY_DAILY_SPECS) == "green"
 
 
 def test_last_7_color_yellow_one_done():
@@ -142,11 +143,11 @@ def test_last_7_color_yellow_one_done():
         "due_date": "2026-05-04",
     }
     done.add("anki-tid")
-    assert _last_7_color(date(2026, 5, 4), make_state(), cache, done) == "yellow"
+    assert _last_7_color(date(2026, 5, 4), make_state(), cache, done, LEGACY_DAILY_SPECS) == "yellow"
 
 
 def test_last_7_color_red_neither():
-    assert _last_7_color(date(2026, 5, 4), make_state(), {}, set()) == "red"
+    assert _last_7_color(date(2026, 5, 4), make_state(), {}, set(), LEGACY_DAILY_SPECS) == "red"
 
 
 def test_last_7_color_gray_before_start_date():
@@ -154,10 +155,10 @@ def test_last_7_color_gray_before_start_date():
     state = make_state(start_date=date(2026, 5, 5))
     # 2026-05-02 is a Saturday (would normally be red without completions),
     # but it's before start_date — should render gray.
-    assert _last_7_color(date(2026, 5, 2), state, {}, set()) == "gray"
-    assert _last_7_color(date(2026, 5, 4), state, {}, set()) == "gray"  # day before start
+    assert _last_7_color(date(2026, 5, 2), state, {}, set(), LEGACY_DAILY_SPECS) == "gray"
+    assert _last_7_color(date(2026, 5, 4), state, {}, set(), LEGACY_DAILY_SPECS) == "gray"  # day before start
     # Start date itself and after are normal.
-    assert _last_7_color(date(2026, 5, 5), state, {}, set()) == "red"
+    assert _last_7_color(date(2026, 5, 5), state, {}, set(), LEGACY_DAILY_SPECS) == "red"
 
 
 def test_scan_reflections_reads_frontmatter(tmp_path: Path):

@@ -4,10 +4,13 @@ from pathlib import Path
 from src.ids import external_id
 from src.state import PauseInterval, SyllabusState
 from src.streaks import (
+    StreakTemplateSpec,
     _is_skipped_on,
     _most_recent_friday_le,
+    adherence_since_start,
     daily_streak,
     monthly_post_streak,
+    required_ids_on,
     weekly_review_streak,
 )
 
@@ -366,3 +369,86 @@ def test_daily_streak_works_with_syllabus_state():
         a, m = add_daily_pair(cache, d)
         done.update([a, m])
     assert daily_streak(date(2026, 5, 21), sy, cache, done) == 3
+
+
+# --- per-curriculum required-template specs ----------------------------------
+#
+# Regression coverage for the dashboard showing 0 streak / 0% adherence
+# forever because the hardcoded required template ids (daily-anki,
+# daily-morning-reading) matched no template in the live curricula.
+
+# devops-ready: two true-daily rituals, both required, both skip Sunday.
+DEVOPS_SPECS = (
+    StreakTemplateSpec("daily-devops-srs", "daily", None, True),
+    StreakTemplateSpec("daily-morning-udemy", "daily", None, True),
+)
+# long-way: anki + morning-reading on Mon/Wed/Sat only (reduced schedule).
+LONGWAY_SPECS = tuple(
+    StreakTemplateSpec(f"weekly-{name}-{k}", "weekly", wd, False)
+    for name, wd in (("monday", 0), ("wednesday", 2), ("saturday", 5))
+    for k in ("anki", "morning-reading")
+)
+
+
+def add_done(cache: dict, done: set, template_id: str, d: date) -> None:
+    ext, entry = cache_entry(template_id, d, f"{template_id}-{d.isoformat()}")
+    cache[ext] = entry
+    done.add(entry["todoist_task_id"])
+
+
+def test_required_ids_on_daily_skips_sunday():
+    sat = date(2026, 6, 20)  # Saturday
+    sun = date(2026, 6, 21)  # Sunday
+    assert set(required_ids_on(sat, DEVOPS_SPECS)) == {
+        "daily-devops-srs",
+        "daily-morning-udemy",
+    }
+    assert required_ids_on(sun, DEVOPS_SPECS) == ()
+
+
+def test_required_ids_on_weekly_only_on_its_weekday():
+    mon = date(2026, 6, 22)  # Monday
+    tue = date(2026, 6, 23)  # Tuesday
+    assert set(required_ids_on(mon, LONGWAY_SPECS)) == {
+        "weekly-monday-anki",
+        "weekly-monday-morning-reading",
+    }
+    # Tue/Thu/Fri schedule nothing → rest day, no required ids.
+    assert required_ids_on(tue, LONGWAY_SPECS) == ()
+
+
+def test_daily_streak_with_devops_specs_counts_completed():
+    """Both daily rituals completed on a Monday counts; Sunday is rest."""
+    state = make_state(start=date(2026, 6, 21))  # Sunday start
+    cache: dict = {}
+    done: set = set()
+    add_done(cache, done, "daily-devops-srs", date(2026, 6, 22))  # Mon
+    add_done(cache, done, "daily-morning-udemy", date(2026, 6, 22))
+    # today = Tue 2026-06-23 → walks back Mon (done), Sun (rest, skip), stop at start.
+    assert daily_streak(date(2026, 6, 23), state, cache, done, DEVOPS_SPECS) == 1
+
+
+def test_daily_streak_longway_rest_days_do_not_break():
+    """Mon + Wed done; the Tue between them is a rest day, so streak spans both."""
+    state = make_state(start=date(2026, 6, 21))
+    cache: dict = {}
+    done: set = set()
+    for d in (date(2026, 6, 22), date(2026, 6, 24)):  # Mon, Wed
+        name = "monday" if d.weekday() == 0 else "wednesday"
+        add_done(cache, done, f"weekly-{name}-anki", d)
+        add_done(cache, done, f"weekly-{name}-morning-reading", d)
+    # today = Thu 2026-06-25 → Wed done, Tue rest, Mon done = 2 (Sun start is rest).
+    assert daily_streak(date(2026, 6, 25), state, cache, done, LONGWAY_SPECS) == 2
+
+
+def test_adherence_with_specs_excludes_rest_days():
+    """Only days that schedule required templates are counted as expected."""
+    state = make_state(start=date(2026, 6, 21))  # Sun
+    cache: dict = {}
+    done: set = set()
+    add_done(cache, done, "daily-devops-srs", date(2026, 6, 22))  # Mon, both done
+    add_done(cache, done, "daily-morning-udemy", date(2026, 6, 22))
+    # 06-23 Tue: nothing completed. today = Wed 06-24.
+    # Expected days: Mon(06-22), Tue(06-23). Sunday excluded. done=1.
+    d, e = adherence_since_start(date(2026, 6, 24), state, cache, done, DEVOPS_SPECS)
+    assert (d, e) == (1, 2)

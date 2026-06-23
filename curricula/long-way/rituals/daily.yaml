@@ -16,6 +16,7 @@
   labels: [weekly-ritual, reduced-schedule]
   cadence: weekly
   day_of_week: monday
+  counts_toward_streak: true
 
 - id: weekly-monday-anki
   title: "Anki review"
@@ -28,6 +29,7 @@
   labels: [weekly-ritual, reduced-schedule]
   cadence: weekly
   day_of_week: monday
+  counts_toward_streak: true
 
 - id: weekly-wednesday-morning-reading
   title: "Morning reading: {current_book}"
@@ -41,6 +43,7 @@
   labels: [weekly-ritual, reduced-schedule]
   cadence: weekly
   day_of_week: wednesday
+  counts_toward_streak: true
 
 - id: weekly-wednesday-anki
   title: "Anki review"
@@ -53,6 +56,7 @@
   labels: [weekly-ritual, reduced-schedule]
   cadence: weekly
   day_of_week: wednesday
+  counts_toward_streak: true
 
 - id: weekly-saturday-morning-reading
   title: "Morning reading: {current_book}"
@@ -66,6 +70,7 @@
   labels: [weekly-ritual, reduced-schedule]
   cadence: weekly
   day_of_week: saturday
+  counts_toward_streak: true
 
 - id: weekly-saturday-anki
   title: "Anki review"
@@ -78,6 +83,7 @@
   labels: [weekly-ritual, reduced-schedule]
   cadence: weekly
   day_of_week: saturday
+  counts_toward_streak: true
 
 # REMOVED: daily-evening-hands-on
 # Reason: devops-ready curriculum covers evening hands-on work
