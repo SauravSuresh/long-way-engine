@@ -18,8 +18,8 @@
     "devops-ready": {
       "adherence": {
         "done": 2,
-        "expected": 3,
-        "percent": 67,
+        "expected": 4,
+        "percent": 50,
         "since": "2026-06-21"
       },
       "books": [
@@ -69,13 +69,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 5,
+      "day_of_journey": 6,
       "day_total": 215,
       "last_7_days": [
-        {
-          "date": "2026-06-18",
-          "state": "gray"
-        },
         {
           "date": "2026-06-19",
           "state": "gray"
@@ -99,6 +95,10 @@
         {
           "date": "2026-06-24",
           "state": "green"
+        },
+        {
+          "date": "2026-06-25",
+          "state": "yellow"
         }
       ],
       "month": 1,
@@ -112,28 +112,28 @@
       },
       "reflections": [],
       "streaks": {
-        "Daily": 1,
+        "Daily": 0,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
           "best": 1,
-          "count": 1,
-          "hint": "morning reading + Anki by 23:59 to keep it"
+          "count": 0,
+          "hint": "complete morning reading + Anki today to start"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 6 days"
+          "hint": "next post in 5 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 1 day"
+          "hint": "Friday review + filled reflection due today"
         }
       },
-      "today": "2026-06-25"
+      "today": "2026-06-26"
     },
     "long-way": {
       "adherence": {
@@ -231,13 +231,9 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 5,
+      "day_of_journey": 6,
       "day_total": 1189,
       "last_7_days": [
-        {
-          "date": "2026-06-18",
-          "state": "gray"
-        },
         {
           "date": "2026-06-19",
           "state": "gray"
@@ -261,6 +257,10 @@
         {
           "date": "2026-06-24",
           "state": "red"
+        },
+        {
+          "date": "2026-06-25",
+          "state": "gray"
         }
       ],
       "month": 1,
@@ -302,15 +302,15 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 6 days"
+          "hint": "next post in 5 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 1 day"
+          "hint": "Friday review + filled reflection due today"
         }
       },
-      "today": "2026-06-25"
+      "today": "2026-06-26"
     }
   }
 }
