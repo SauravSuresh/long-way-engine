@@ -18,8 +18,8 @@
     "devops-ready": {
       "adherence": {
         "done": 2,
-        "expected": 4,
-        "percent": 50,
+        "expected": 5,
+        "percent": 40,
         "since": "2026-06-21"
       },
       "books": [
@@ -69,13 +69,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 6,
+      "day_of_journey": 7,
       "day_total": 215,
       "last_7_days": [
-        {
-          "date": "2026-06-19",
-          "state": "gray"
-        },
         {
           "date": "2026-06-20",
           "state": "gray"
@@ -98,6 +94,10 @@
         },
         {
           "date": "2026-06-25",
+          "state": "yellow"
+        },
+        {
+          "date": "2026-06-26",
           "state": "yellow"
         }
       ],
@@ -125,15 +125,15 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 5 days"
+          "hint": "next post in 4 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "Friday review + filled reflection due today"
+          "hint": "next Friday in 6 days"
         }
       },
-      "today": "2026-06-26"
+      "today": "2026-06-27"
     },
     "long-way": {
       "adherence": {
@@ -231,13 +231,9 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 6,
+      "day_of_journey": 7,
       "day_total": 1189,
       "last_7_days": [
-        {
-          "date": "2026-06-19",
-          "state": "gray"
-        },
         {
           "date": "2026-06-20",
           "state": "gray"
@@ -260,6 +256,10 @@
         },
         {
           "date": "2026-06-25",
+          "state": "gray"
+        },
+        {
+          "date": "2026-06-26",
           "state": "gray"
         }
       ],
@@ -286,6 +286,13 @@
           "relative_path": "monthly/2026-05.md",
           "status": "stub",
           "word_count": 54
+        },
+        {
+          "cadence": "monthly",
+          "file": "2026-06",
+          "relative_path": "monthly/2026-06.md",
+          "status": "stub",
+          "word_count": 54
         }
       ],
       "streaks": {
@@ -297,20 +304,20 @@
         "Daily": {
           "best": 0,
           "count": 0,
-          "hint": "rest day \u2014 no rituals scheduled"
+          "hint": "complete morning reading + Anki today to start"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 5 days"
+          "hint": "next post in 4 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "Friday review + filled reflection due today"
+          "hint": "next Friday in 6 days"
         }
       },
-      "today": "2026-06-26"
+      "today": "2026-06-27"
     }
   }
 }
