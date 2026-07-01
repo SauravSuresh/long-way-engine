@@ -17,10 +17,10 @@
   "syllabuses": {
     "devops-ready": {
       "adherence": {
-        "done": 3,
-        "expected": 8,
-        "percent": 38,
-        "since": "2026-06-21"
+        "done": 0,
+        "expected": 1,
+        "percent": 0,
+        "since": "2026-07-01"
       },
       "books": [
         {
@@ -69,24 +69,20 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 11,
-      "day_total": 215,
+      "day_of_journey": 2,
+      "day_total": 216,
       "last_7_days": [
         {
-          "date": "2026-06-24",
-          "state": "green"
-        },
-        {
           "date": "2026-06-25",
-          "state": "yellow"
+          "state": "gray"
         },
         {
           "date": "2026-06-26",
-          "state": "yellow"
+          "state": "gray"
         },
         {
           "date": "2026-06-27",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-06-28",
@@ -94,11 +90,15 @@
         },
         {
           "date": "2026-06-29",
-          "state": "yellow"
+          "state": "gray"
         },
         {
           "date": "2026-06-30",
-          "state": "green"
+          "state": "gray"
+        },
+        {
+          "date": "2026-07-01",
+          "state": "yellow"
         }
       ],
       "month": 1,
@@ -112,35 +112,35 @@
       },
       "reflections": [],
       "streaks": {
-        "Daily": 1,
+        "Daily": 0,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
-          "best": 1,
-          "count": 1,
-          "hint": "morning reading + Anki by 23:59 to keep it"
+          "best": 0,
+          "count": 0,
+          "hint": "complete morning reading + Anki today to start"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "monthly post due today"
+          "hint": "next post in 30 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 2 days"
+          "hint": "next Friday in 1 day"
         }
       },
-      "today": "2026-07-01"
+      "today": "2026-07-02"
     },
     "long-way": {
       "adherence": {
         "done": 0,
-        "expected": 4,
-        "percent": 0,
-        "since": "2026-06-21"
+        "expected": 0,
+        "percent": null,
+        "since": "2026-07-01"
       },
       "books": [
         {
@@ -231,13 +231,9 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 11,
+      "day_of_journey": 2,
       "day_total": 1189,
       "last_7_days": [
-        {
-          "date": "2026-06-24",
-          "state": "red"
-        },
         {
           "date": "2026-06-25",
           "state": "gray"
@@ -248,7 +244,7 @@
         },
         {
           "date": "2026-06-27",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-06-28",
@@ -256,10 +252,14 @@
         },
         {
           "date": "2026-06-29",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-06-30",
+          "state": "gray"
+        },
+        {
+          "date": "2026-07-01",
           "state": "gray"
         }
       ],
@@ -311,20 +311,20 @@
         "Daily": {
           "best": 0,
           "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "hint": "rest day \u2014 no rituals scheduled"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "monthly post due today"
+          "hint": "next post in 30 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 2 days"
+          "hint": "next Friday in 1 day"
         }
       },
-      "today": "2026-07-01"
+      "today": "2026-07-02"
     }
   }
 }
