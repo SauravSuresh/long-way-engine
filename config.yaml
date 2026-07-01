@@ -26,11 +26,12 @@ syllabuses:
       morning_udemy: 08:00             # No collision
       evening_hands_on: '21:30'        # Shifted from 19:00, then 20:00 to avoid all long-way collisions
       weekly_state_review: '11:00'     # Shifted from 10:00 to avoid long-way
-      bootdev_monday: '19:00'          # Monday boot.dev session
-      bootdev_tuesday: '19:00'         # Tuesday boot.dev session (before LeetCode)
-      bootdev_thursday: '19:00'        # Thursday boot.dev session
-      bootdev_friday: '19:00'          # Friday boot.dev session (before reflection)
-      leetcode_session: '20:30'        # Tuesday LeetCode deep dive (after boot.dev)
+      bootdev_monday: '19:00'          # boot.dev session (every weekday)
+      bootdev_tuesday: '19:00'         # boot.dev session
+      bootdev_wednesday: '19:00'       # boot.dev session
+      bootdev_thursday: '19:00'        # boot.dev session
+      bootdev_friday: '19:00'          # boot.dev session (before reflection)
+      leetcode_session: '20:30'        # LeetCode alternate days (Mon/Wed/Fri, after boot.dev)
       saturday_deep_block: '14:00'     # Shifted from 09:00 to avoid long-way
       friday_review: '22:00'           # Reusing friday_reflection slot (same ritual)
       friday_reflection: '22:00'       # Shifted from 21:00 to run after evening_hands_on
@@ -45,21 +46,10 @@ syllabuses:
     todoist_project_id: 6gWxC2wh5WRvjfw2
     state_file: state/long-way.yaml
     enabled: true
-    # NOTE: The engine doesn't support arbitrary weekday skipping (only sunday, pair_day, last-saturday-of-month)
-    # To reduce long-way time commitment while devops-ready runs, you have these options:
-    #
-    # Option 1: Disable long-way completely until devops-ready is done (7 months)
-    #   Set: enabled: false
-    #
-    # Option 2: Keep long-way at 6 days/week and manage time manually
-    #   Current: enabled: true (6 days/week: Mon-Sat)
-    #   You'll need to manually skip tasks on days you want to focus on devops-ready
-    #
-    # Option 3: Use boot.dev from long-way as part of devops-ready
-    #   The boot.dev backend path in long-way complements devops-ready's focus
-    #   Keep long-way enabled but treat it as supplementary learning
-    #
-    # Current configuration: Option 2 (enabled at 6 days/week)
+    # SATURDAY-ONLY: long-way is relegated to Saturdays while devops-ready is
+    # the focus track. One long CS:APP reading session + Anki on Saturday
+    # (see curricula/long-way/rituals/daily.yaml). Sunday state review still
+    # fires. Timeline extends proportionally.
 sunday_off: true
 pair_day: thursday
 dashboard:

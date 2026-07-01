@@ -6,11 +6,12 @@ ritual_times_required:
   - morning_udemy                 # Daily Udemy course study
   - evening_hands_on              # Daily project work + LeetCode
   - weekly_state_review           # Sunday state review
-  - bootdev_monday                # Monday boot.dev session
-  - bootdev_tuesday               # Tuesday boot.dev session
-  - bootdev_thursday              # Thursday boot.dev session
-  - bootdev_friday                # Friday boot.dev session
-  - leetcode_session              # Tuesday LeetCode deep dive
+  - bootdev_monday                # boot.dev session (every weekday)
+  - bootdev_tuesday               # boot.dev session
+  - bootdev_wednesday             # boot.dev session
+  - bootdev_thursday              # boot.dev session
+  - bootdev_friday                # boot.dev session
+  - leetcode_session              # LeetCode alternate days (Mon/Wed/Fri)
   - saturday_deep_block           # Saturday project work
   - friday_reflection             # Friday weekly reflection
   - monthly_project_publish       # 1st of month: GitHub project push
@@ -34,6 +35,7 @@ placeholders_used:
   - ritual_times.weekly_state_review
   - ritual_times.bootdev_monday
   - ritual_times.bootdev_tuesday
+  - ritual_times.bootdev_wednesday
   - ritual_times.bootdev_thursday
   - ritual_times.bootdev_friday
   - ritual_times.leetcode_session

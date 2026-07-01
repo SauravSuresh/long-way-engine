@@ -6,6 +6,14 @@ manual_counters:
   lineage_detours_done: []
 notes: 'Most recent edit on top.
 
+  2026-07-01: focus switch to devops-ready. boot.dev now every weekday; LeetCode
+  alternate days (Mon/Wed/Fri); morning study Mon-Fri; Saturday = long-way CS:APP
+  long reading (AM) + devops project block (PM). long-way relegated to Saturdays
+  only. start_date->2026-07-01 for both (fresh slate; new template ids have no
+  cache history, so old dates would false-read as missed). Streaks: devops grades
+  morning-study + Anki; long-way grades Saturday reading + Anki. Common-tasks spec
+  drafted (specs/common-tasks.md) but deferred.
+
   2026-06-21: full tracking reset for both tracks (owner request). start_date->2026-06-21,
   month/phase/module->1 for long-way and devops-ready. Adherence/streaks/last-7 start
   fresh from today. Cache left intact (cron idempotency ledger); old entries pre-date

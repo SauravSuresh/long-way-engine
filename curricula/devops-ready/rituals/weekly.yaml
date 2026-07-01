@@ -1,12 +1,17 @@
 # Weekly rituals for DevOps Job Ready curriculum
+#
+# Evening "doing" schedule:
+#   boot.dev backend path  -> every weekday (Mon-Fri)
+#   LeetCode practice      -> alternate days (Mon/Wed/Fri)
+#   Saturday project block -> Saturday afternoon (devops PM)
 
 - id: weekly-bootdev-monday
   title: "boot.dev backend path session"
   description: |
     Continue your boot.dev backend path. Work through the current course
     module, complete exercises, and build the projects. This is your
-    structured learning time for backend fundamentals.
-    
+    structured evening "doing" time for backend fundamentals.
+
     Track progress in the course platform. When you complete a major
     milestone (finish a course, complete a project), mark it in your
     weekly state review.
@@ -22,8 +27,8 @@
   description: |
     Continue your boot.dev backend path. Work through the current course
     module, complete exercises, and build the projects. This is your
-    structured learning time for backend fundamentals.
-    
+    structured evening "doing" time for backend fundamentals.
+
     Track progress in the course platform. When you complete a major
     milestone (finish a course, complete a project), mark it in your
     weekly state review.
@@ -34,13 +39,30 @@
   gated_by:
     - { type: track, category: Courses, item: "boot.dev backend path", states: [current] }
 
+- id: weekly-bootdev-wednesday
+  title: "boot.dev backend path session"
+  description: |
+    Continue your boot.dev backend path. Work through the current course
+    module, complete exercises, and build the projects. This is your
+    structured evening "doing" time for backend fundamentals.
+
+    Track progress in the course platform. When you complete a major
+    milestone (finish a course, complete a project), mark it in your
+    weekly state review.
+  due: "today at {ritual_times.bootdev_wednesday}"
+  labels: [weekly-ritual, bootdev]
+  cadence: weekly
+  day_of_week: wednesday
+  gated_by:
+    - { type: track, category: Courses, item: "boot.dev backend path", states: [current] }
+
 - id: weekly-bootdev-thursday
   title: "boot.dev backend path session"
   description: |
     Continue your boot.dev backend path. Work through the current course
     module, complete exercises, and build the projects. This is your
-    structured learning time for backend fundamentals.
-    
+    structured evening "doing" time for backend fundamentals.
+
     Track progress in the course platform. When you complete a major
     milestone (finish a course, complete a project), mark it in your
     weekly state review.
@@ -56,8 +78,8 @@
   description: |
     Continue your boot.dev backend path. Work through the current course
     module, complete exercises, and build the projects. This is your
-    structured learning time for backend fundamentals.
-    
+    structured evening "doing" time for backend fundamentals.
+
     Track progress in the course platform. When you complete a major
     milestone (finish a course, complete a project), mark it in your
     weekly state review.
@@ -68,13 +90,58 @@
   gated_by:
     - { type: track, category: Courses, item: "boot.dev backend path", states: [current] }
 
+# --- LeetCode: alternate days (Mon/Wed/Fri) ---
+
+- id: weekly-leetcode-monday
+  title: "LeetCode pattern session (60 min)"
+  description: |
+    Focus on one pattern. Do 3-4 problems of the same pattern, then write
+    it up in your notes: when to use it, template code, common variations,
+    time/space complexity.
+
+    Pattern rotation (roughly): Arrays & Hashing, Two Pointers & Sliding
+    Window, Stack & Queue, Binary Search & Trees, Graphs (DFS/BFS),
+    Dynamic Programming, Backtracking & Greedy, Heap & Priority Queue.
+  due: "today at {ritual_times.leetcode_session}"
+  labels: [weekly-ritual, interview-prep]
+  cadence: weekly
+  day_of_week: monday
+  gated_by:
+    - { type: track, category: "Interview Prep", item: "LeetCode Interview Prep", states: [current] }
+
+- id: weekly-leetcode-wednesday
+  title: "LeetCode pattern session (60 min)"
+  description: |
+    Focus on one pattern. Do 3-4 problems of the same pattern, then write
+    it up in your notes: when to use it, template code, common variations,
+    time/space complexity.
+  due: "today at {ritual_times.leetcode_session}"
+  labels: [weekly-ritual, interview-prep]
+  cadence: weekly
+  day_of_week: wednesday
+  gated_by:
+    - { type: track, category: "Interview Prep", item: "LeetCode Interview Prep", states: [current] }
+
+- id: weekly-leetcode-friday
+  title: "LeetCode pattern session (60 min)"
+  description: |
+    Focus on one pattern. Do 3-4 problems of the same pattern, then write
+    it up in your notes: when to use it, template code, common variations,
+    time/space complexity.
+  due: "today at {ritual_times.leetcode_session}"
+  labels: [weekly-ritual, interview-prep]
+  cadence: weekly
+  day_of_week: friday
+  gated_by:
+    - { type: track, category: "Interview Prep", item: "LeetCode Interview Prep", states: [current] }
+
 - id: weekly-state-review
   title: "Weekly state review — {iso_year}-W{iso_week:02d}"
   description: |
     Check the sub-tasks that apply to your week. Next cron run picks
     them up and mutates state.yaml: module advance, certification milestones,
     track updates, counter increments.
-    
+
     Review your progress:
     - Did you complete the module milestone?
     - Did you pass a certification exam?
@@ -89,59 +156,33 @@
     - title: "I'm ready to advance to Module {next_module}"
       action: { type: advance_module }
       show_if: not_on_last_module
-    
+
     - title: "I finished {current_book}"
       action: { type: mark_book_finished, book: "{current_book}" }
-    
+
     - title: "I started a new course this week"
       action: { type: mark_book_started, book: "{next_book}" }
       show_if: book_transition_this_month
-    
+
     - title: "Anki cards added this week (put count in comment)"
       action: { type: increment_counter, counter: anki_card_count }
-    
+
     - title: "LeetCode problems solved this week (put count in comment)"
       action: { type: increment_counter, counter: leetcode_count }
-    
+
     - title: "Revert last week's state change (only if a mistake)"
       action: { type: revert_last }
-
-- id: weekly-leetcode-deep-dive
-  title: "LeetCode pattern session (60 min)"
-  description: |
-    Focus on one pattern this week. Do 3-4 problems of the same pattern.
-    
-    Pattern rotation:
-    - Week 1: Arrays & Hashing
-    - Week 2: Two Pointers & Sliding Window
-    - Week 3: Stack & Queue
-    - Week 4: Binary Search & Trees
-    - Week 5: Graphs (DFS/BFS)
-    - Week 6: Dynamic Programming
-    - Week 7: Backtracking & Greedy
-    - Week 8: Heap & Priority Queue
-    
-    After solving, write up the pattern in your notes with:
-    - When to use it
-    - Template code
-    - Common variations
-    - Time/space complexity
-  due: "today at {ritual_times.leetcode_session}"
-  labels: [weekly-ritual, interview-prep]
-  cadence: weekly
-  day_of_week: tuesday
-  gated_by:
-    - { type: track, category: "Interview Prep", item: "LeetCode Interview Prep", states: [current] }
 
 - id: weekly-project-work
   title: "Saturday deep block: Project work (3-4 hr)"
   description: |
     Dedicated time for building your GitHub portfolio project for the
-    current module. This is where you create production-quality work
-    that demonstrates your skills to employers.
-    
+    current module. This is the devops "doing" for Saturday (long-way
+    reading has the morning). Production-quality work that demonstrates
+    your skills to employers.
+
     Current module: Module {current_module}
-    
+
     Project checklist:
     - [ ] Architecture diagram (draw.io or Lucidchart)
     - [ ] Infrastructure as Code (Terraform/CloudFormation)
@@ -150,7 +191,7 @@
     - [ ] Error handling & logging
     - [ ] Tests (unit + integration)
     - [ ] Monitoring/observability hooks
-    
+
     Push to GitHub with proper commit messages and PR descriptions.
   due: "today at {ritual_times.saturday_deep_block}"
   labels: [weekly-ritual, project]
@@ -164,12 +205,12 @@
     1. The 3 most important things you learned this week
     2. One thing you struggled with and how you overcame it
     3. One thing you want to dive deeper into next week
-    
+
     Then compare to your notes. The gap is what needs more Anki cards.
-    
+
     Also review:
     - LeetCode problems solved (aim for 10-15/week)
-    - Udemy course progress (aim for 1-2 sections/week)
+    - Course progress (aim for 1-2 sections/week)
     - Project milestones hit
   due: "today at {ritual_times.friday_reflection}"
   labels: [weekly-ritual, reflection]

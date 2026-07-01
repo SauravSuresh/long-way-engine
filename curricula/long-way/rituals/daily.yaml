@@ -1,71 +1,19 @@
-# REDUCED SCHEDULE: 3 days/week (Mon/Wed/Sat) to prioritize devops-ready
-# Timeline extended from 39 months to ~78 months
+# SATURDAY-ONLY SCHEDULE: long-way relegated to Saturdays while devops-ready
+# is the focus track. CS:APP is dry but the owner wants to keep it alive, so
+# it runs as one long Saturday reading session (+ Anki) rather than stopping.
 #
-# Kept: Morning reading + Anki (Mon/Wed/Sat only via weekly cadence conversion)
-# Removed: Evening hands-on (devops-ready covers this)
-
-- id: weekly-monday-morning-reading
-  title: "Morning reading: {current_book}"
-  description: |
-    30 min. Paper book, paper notebook, no laptop.
-    Same chair, same time. This is sacred.
-    Today's book: {current_book}.
-    
-    REDUCED SCHEDULE: Monday only (part of 3-day/week plan).
-  due: "today at {ritual_times.morning_reading}"
-  labels: [weekly-ritual, reduced-schedule]
-  cadence: weekly
-  day_of_week: monday
-  counts_toward_streak: true
-
-- id: weekly-monday-anki
-  title: "Anki review"
-  description: |
-    10–15 min. Whenever — commute, lunch, before bed.
-    Add 3–5 new cards per day from what you read and built. No more.
-    
-    REDUCED SCHEDULE: Monday only (part of 3-day/week plan).
-  due: "today at {ritual_times.anki}"
-  labels: [weekly-ritual, reduced-schedule]
-  cadence: weekly
-  day_of_week: monday
-  counts_toward_streak: true
-
-- id: weekly-wednesday-morning-reading
-  title: "Morning reading: {current_book}"
-  description: |
-    30 min. Paper book, paper notebook, no laptop.
-    Same chair, same time. This is sacred.
-    Today's book: {current_book}.
-    
-    REDUCED SCHEDULE: Wednesday only (part of 3-day/week plan).
-  due: "today at {ritual_times.morning_reading}"
-  labels: [weekly-ritual, reduced-schedule]
-  cadence: weekly
-  day_of_week: wednesday
-  counts_toward_streak: true
-
-- id: weekly-wednesday-anki
-  title: "Anki review"
-  description: |
-    10–15 min. Whenever — commute, lunch, before bed.
-    Add 3–5 new cards per day from what you read and built. No more.
-    
-    REDUCED SCHEDULE: Wednesday only (part of 3-day/week plan).
-  due: "today at {ritual_times.anki}"
-  labels: [weekly-ritual, reduced-schedule]
-  cadence: weekly
-  day_of_week: wednesday
-  counts_toward_streak: true
+# Timeline extends proportionally (1 day/week instead of 3).
+# Kept: Saturday morning reading (long session) + Saturday Anki.
+# Removed: Monday and Wednesday sessions, evening hands-on.
 
 - id: weekly-saturday-morning-reading
-  title: "Morning reading: {current_book}"
+  title: "Morning reading (long session): {current_book}"
   description: |
-    30 min. Paper book, paper notebook, no laptop.
-    Same chair, same time. This is sacred.
-    Today's book: {current_book}.
-    
-    REDUCED SCHEDULE: Saturday only (part of 3-day/week plan).
+    60–90 min. Paper book, paper notebook, no laptop.
+    Same chair, same time. This is the one long-way session of the week —
+    make it count. Today's book: {current_book}.
+
+    SATURDAY-ONLY SCHEDULE: the sole long-way study day.
   due: "today at {ritual_times.morning_reading}"
   labels: [weekly-ritual, reduced-schedule]
   cadence: weekly
@@ -76,15 +24,14 @@
   title: "Anki review"
   description: |
     10–15 min. Whenever — commute, lunch, before bed.
-    Add 3–5 new cards per day from what you read and built. No more.
-    
-    REDUCED SCHEDULE: Saturday only (part of 3-day/week plan).
+    Add 3–5 new cards from what you read. No more.
+
+    SATURDAY-ONLY SCHEDULE: the sole long-way study day.
   due: "today at {ritual_times.anki}"
   labels: [weekly-ritual, reduced-schedule]
   cadence: weekly
   day_of_week: saturday
   counts_toward_streak: true
 
-# REMOVED: daily-evening-hands-on
-# Reason: devops-ready curriculum covers evening hands-on work
-# boot.dev progress continues as part of devops-ready's learning track
+# REMOVED: Monday + Wednesday morning-reading/anki (was a 3-day/week plan).
+# Reason: long-way relegated to Saturdays only; devops-ready is the focus.

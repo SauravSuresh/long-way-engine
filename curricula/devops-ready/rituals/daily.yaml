@@ -1,5 +1,13 @@
 # Daily rituals for DevOps Job Ready curriculum
 # Required: SRS review and morning study must be present in every curriculum
+#
+# FOCUS SCHEDULE (2026-07): devops-ready is the primary track.
+#   Mornings Mon-Fri  -> long study session ({current_book})
+#   Anki daily Mon-Sat
+#   Evenings           -> boot.dev every weekday + LeetCode alternate days
+#                         (see rituals/weekly.yaml)
+# Saturday mornings belong to the long-way curriculum (CS:APP), so the
+# morning study fires Mon-Fri only, expressed as weekday templates.
 
 - id: daily-devops-srs
   title: "Anki review (AWS/K8s/Interview prep)"
@@ -7,7 +15,7 @@
     10–15 min. Review AWS services, K8s concepts, LeetCode patterns, and
     system design principles. Add 3–5 new cards daily from what you learned
     in Udemy courses and hands-on work.
-    
+
     Card categories:
     - AWS services & use cases
     - Kubernetes objects & commands
@@ -19,41 +27,70 @@
   skip_if: sunday
   counts_toward_streak: true
 
-- id: daily-morning-udemy
-  title: "Morning Udemy: {current_book}"
+# --- Morning study: one long session, Mon-Fri (Saturday AM = long-way) ---
+
+- id: weekday-morning-study-monday
+  title: "Morning study (long session): {current_book}"
   description: |
-    30–45 min. Watch course videos, take notes in Obsidian/Notion.
-    Focus on understanding concepts, not just watching.
-    
-    Current course: {current_book}
-    
-    After each section, create Anki cards for key concepts.
+    60–90 min deep session. Watch/read, take notes in Obsidian/Notion,
+    then make Anki cards for the key concepts. Focus on understanding,
+    not just watching. Current course: {current_book}.
   due: "today at {ritual_times.morning_udemy}"
   labels: [daily-ritual, learning]
-  cadence: daily
-  skip_if: sunday
+  cadence: weekly
+  day_of_week: monday
   counts_toward_streak: true
 
-- id: daily-evening-hands-on
-  title: "Evening hands-on: Projects + LeetCode"
+- id: weekday-morning-study-tuesday
+  title: "Morning study (long session): {current_book}"
   description: |
-    60–90 min split:
-    - 30–45 min: Work on current module's GitHub project
-    - 30–45 min: LeetCode (1-2 problems, focus on patterns)
-    
-    Projects should be production-quality with:
-    - Clean README with architecture diagrams
-    - CI/CD pipeline
-    - Infrastructure as Code
-    - Proper error handling & logging
-    
-    LeetCode: Focus on patterns (sliding window, two pointers, DFS/BFS, etc.)
-    rather than random problems. Track progress in spreadsheet.
-  due: "today at {ritual_times.evening_hands_on}"
-  labels: [daily-ritual, hands-on]
-  cadence: daily
-  skip_if:
-    - sunday
-    - pair_day
+    60–90 min deep session. Watch/read, take notes in Obsidian/Notion,
+    then make Anki cards for the key concepts. Focus on understanding,
+    not just watching. Current course: {current_book}.
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [daily-ritual, learning]
+  cadence: weekly
+  day_of_week: tuesday
+  counts_toward_streak: true
+
+- id: weekday-morning-study-wednesday
+  title: "Morning study (long session): {current_book}"
+  description: |
+    60–90 min deep session. Watch/read, take notes in Obsidian/Notion,
+    then make Anki cards for the key concepts. Focus on understanding,
+    not just watching. Current course: {current_book}.
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [daily-ritual, learning]
+  cadence: weekly
+  day_of_week: wednesday
+  counts_toward_streak: true
+
+- id: weekday-morning-study-thursday
+  title: "Morning study (long session): {current_book}"
+  description: |
+    60–90 min deep session. Watch/read, take notes in Obsidian/Notion,
+    then make Anki cards for the key concepts. Focus on understanding,
+    not just watching. Current course: {current_book}.
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [daily-ritual, learning]
+  cadence: weekly
+  day_of_week: thursday
+  counts_toward_streak: true
+
+- id: weekday-morning-study-friday
+  title: "Morning study (long session): {current_book}"
+  description: |
+    60–90 min deep session. Watch/read, take notes in Obsidian/Notion,
+    then make Anki cards for the key concepts. Focus on understanding,
+    not just watching. Current course: {current_book}.
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [daily-ritual, learning]
+  cadence: weekly
+  day_of_week: friday
+  counts_toward_streak: true
+
+# REMOVED: daily-evening-hands-on (generic projects+LeetCode every day).
+# Decomposed into the focus schedule: boot.dev every weekday + LeetCode on
+# alternate days + Saturday project deep block (all in rituals/weekly.yaml).
 
 # Made with Bob
