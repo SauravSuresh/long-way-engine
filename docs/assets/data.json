@@ -17,9 +17,9 @@
   "syllabuses": {
     "devops-ready": {
       "adherence": {
-        "done": 2,
-        "expected": 3,
-        "percent": 67,
+        "done": 3,
+        "expected": 4,
+        "percent": 75,
         "since": "2026-07-01"
       },
       "books": [
@@ -69,13 +69,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 4,
+      "day_of_journey": 5,
       "day_total": 216,
       "last_7_days": [
-        {
-          "date": "2026-06-27",
-          "state": "gray"
-        },
         {
           "date": "2026-06-28",
           "state": "gray"
@@ -99,6 +95,10 @@
         {
           "date": "2026-07-03",
           "state": "green"
+        },
+        {
+          "date": "2026-07-04",
+          "state": "green"
         }
       ],
       "month": 1,
@@ -112,34 +112,34 @@
       },
       "reflections": [],
       "streaks": {
-        "Daily": 2,
+        "Daily": 3,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
-          "best": 2,
-          "count": 2,
-          "hint": "morning reading + Anki by 23:59 to keep it"
+          "best": 3,
+          "count": 3,
+          "hint": "Sunday \u2014 rest day"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 28 days"
+          "hint": "next post in 27 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 6 days"
+          "hint": "next Friday in 5 days"
         }
       },
-      "today": "2026-07-04"
+      "today": "2026-07-05"
     },
     "long-way": {
       "adherence": {
         "done": 0,
-        "expected": 0,
-        "percent": null,
+        "expected": 1,
+        "percent": 0,
         "since": "2026-07-01"
       },
       "books": [
@@ -231,13 +231,9 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 4,
+      "day_of_journey": 5,
       "day_total": 1189,
       "last_7_days": [
-        {
-          "date": "2026-06-27",
-          "state": "gray"
-        },
         {
           "date": "2026-06-28",
           "state": "gray"
@@ -261,6 +257,10 @@
         {
           "date": "2026-07-03",
           "state": "gray"
+        },
+        {
+          "date": "2026-07-04",
+          "state": "red"
         }
       ],
       "month": 1,
@@ -311,20 +311,20 @@
         "Daily": {
           "best": 0,
           "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "hint": "Sunday \u2014 rest day"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 28 days"
+          "hint": "next post in 27 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 6 days"
+          "hint": "next Friday in 5 days"
         }
       },
-      "today": "2026-07-04"
+      "today": "2026-07-05"
     }
   }
 }
