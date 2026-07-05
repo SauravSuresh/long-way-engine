@@ -64,18 +64,42 @@
           "phase": 3,
           "start_month": 7,
           "title": "Grokking the System Design Interview"
+        },
+        {
+          "author": "JJ Geewax",
+          "end_month": 8,
+          "phase": 4,
+          "start_month": 8,
+          "title": "API Design Patterns"
+        },
+        {
+          "author": "Martin Kleppmann",
+          "end_month": 9,
+          "phase": 4,
+          "start_month": 9,
+          "title": "Designing Data-Intensive Applications"
+        },
+        {
+          "author": "Ahmed Siddiqui",
+          "end_month": 10,
+          "phase": 4,
+          "start_month": 10,
+          "title": "The Anatomy of the Swipe"
+        },
+        {
+          "author": "Michael Nygard",
+          "end_month": 11,
+          "phase": 4,
+          "start_month": 11,
+          "title": "Release It! (2nd Edition)"
         }
       ],
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 5,
-      "day_total": 216,
+      "day_of_journey": 6,
+      "day_total": 336,
       "last_7_days": [
-        {
-          "date": "2026-06-28",
-          "state": "gray"
-        },
         {
           "date": "2026-06-29",
           "state": "gray"
@@ -99,6 +123,10 @@
         {
           "date": "2026-07-04",
           "state": "green"
+        },
+        {
+          "date": "2026-07-05",
+          "state": "gray"
         }
       ],
       "month": 1,
@@ -120,20 +148,20 @@
         "Daily": {
           "best": 3,
           "count": 3,
-          "hint": "Sunday \u2014 rest day"
+          "hint": "morning reading + Anki by 23:59 to keep it"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 27 days"
+          "hint": "next post in 26 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 5 days"
+          "hint": "next Friday in 4 days"
         }
       },
-      "today": "2026-07-05"
+      "today": "2026-07-06"
     },
     "long-way": {
       "adherence": {
@@ -231,13 +259,9 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 5,
+      "day_of_journey": 6,
       "day_total": 1189,
       "last_7_days": [
-        {
-          "date": "2026-06-28",
-          "state": "gray"
-        },
         {
           "date": "2026-06-29",
           "state": "gray"
@@ -261,6 +285,10 @@
         {
           "date": "2026-07-04",
           "state": "red"
+        },
+        {
+          "date": "2026-07-05",
+          "state": "gray"
         }
       ],
       "month": 1,
@@ -311,20 +339,20 @@
         "Daily": {
           "best": 0,
           "count": 0,
-          "hint": "Sunday \u2014 rest day"
+          "hint": "rest day \u2014 no rituals scheduled"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 27 days"
+          "hint": "next post in 26 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 5 days"
+          "hint": "next Friday in 4 days"
         }
       },
-      "today": "2026-07-05"
+      "today": "2026-07-06"
     }
   }
 }
