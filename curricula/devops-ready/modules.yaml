@@ -226,4 +226,189 @@
   cadence: once-per-module
   module_number: 7
 
+# ============================================================
+# Phase 4 — Capstone: Production Booking Platform
+# Camera & lights equipment rental for the Indian market.
+# Real bookings, real payments, solo-built and solo-operated.
+# ============================================================
+
+# Module 8: Stack ADR & Proof-of-Concepts
+- id: module-8-onboarding
+  title: "Module 8: Stack ADR — Investigate, Benchmark, Decide"
+  description: |
+    Module 8: Choose the capstone stack with evidence, not vibes.
+
+    Working preference: Go — fast, reliable, boring, solo-friendly.
+    The ADR's job is to CONFIRM or OVERTURN that with evidence, not to
+    rubber-stamp it.
+
+    Deliverable: a written Architecture Decision Record (ADR) committed
+    to the capstone repo, comparing Go against at least 2 challengers
+    (e.g. Kotlin/Java + Spring, Node + TypeScript; note briefly why
+    heavier JVM stacks like Scala + ZIO/Akka are in or out for a
+    solo-run system) against THIS system's actual constraints:
+    - Concurrency model needed for booking contention & payment webhooks
+    - Solo-maintainability (you operate this alone at 2am)
+    - Hiring/community size and ecosystem maturity in India
+    - Payments SDK + observability (OpenTelemetry) support on AWS
+
+    Rules:
+    - [ ] Not a desk-only decision: build the PoC in Go AND one
+          challenger (a booking-hold endpoint with a concurrent-write test)
+    - [ ] Benchmark both PoCs under simple load (hey/k6)
+    - [ ] Write the ADR: context, options, trade-offs, decision, consequences
+    - [ ] If Go wins, the ADR records exactly why — that document is
+          your answer every future time you doubt the stack.
+
+    Setup:
+    - [ ] Create capstone GitHub repo with /docs/adr/ directory
+    - [ ] Read ADR format (Michael Nygard's template)
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [module-onboarding, capstone]
+  cadence: once-per-module
+  module_number: 8
+
+# Module 9: API Design as a Discipline
+- id: module-9-onboarding
+  title: "Module 9: API Design — Spec Before Code"
+  description: |
+    Module 9: Design the booking, inventory, and payments API surfaces
+    spec-first. No implementation code until the spec is published.
+
+    Primary book: API Design Patterns (JJ Geewax).
+
+    Deliverable: a published OpenAPI 3.x spec covering:
+    - Booking lifecycle (search availability, hold, confirm, cancel)
+    - Inventory (equipment catalog, kits, availability calendar)
+    - Payments (create order, capture, refund, webhook receipts)
+
+    Must address:
+    - [ ] Idempotency keys on every payment/booking mutation
+    - [ ] Versioning strategy (URL vs header — pick and justify)
+    - [ ] Pagination convention (cursor-based, documented)
+    - [ ] Error contract: one error envelope, documented codes
+    - [ ] Contract tests scaffolded (Schemathesis/Dredd or Pact)
+    - [ ] Spec reviewed against API Design Patterns checklists
+
+    Setup:
+    - [ ] Spectral linting for the OpenAPI spec in CI
+    - [ ] Publish rendered docs (Redoc/Stoplight) from the repo
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [module-onboarding, capstone]
+  cadence: once-per-module
+  module_number: 9
+
+# Module 10: Data Modeling & Booking Concurrency
+- id: module-10-onboarding
+  title: "Module 10: Data Modeling — No Double Bookings, Ever"
+  description: |
+    Module 10: Get the data model and concurrency correctness right.
+    Two people must never book the same lighting kit for overlapping dates.
+
+    Primary book: Designing Data-Intensive Applications (Kleppmann) —
+    chapters on transactions, isolation levels, and consistency.
+
+    Deliverables:
+    - [ ] Schema for equipment, kits, bookings, holds, payments ledger
+    - [ ] Double-booking prevention implemented and TESTED under
+          concurrent load (exclusion constraint / SELECT FOR UPDATE /
+          serializable — pick per the ADR stack, justify in a doc)
+    - [ ] Booking holds with expiry (hold -> confirm-or-release)
+    - [ ] Optimistic vs pessimistic locking: written comparison with
+          a benchmark on your actual booking table
+    - [ ] Idempotent payment writes (unique idempotency key column,
+          proven by a replay test)
+    - [ ] A concurrency test suite that hammers overlapping bookings
+          and asserts zero double-books
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [module-onboarding, capstone]
+  cadence: once-per-module
+  module_number: 10
+
+# Module 11: Payments Integration for India
+- id: module-11-onboarding
+  title: "Module 11: Payments — Razorpay, Webhooks, Reconciliation"
+  description: |
+    Module 11: Integrate real payments for the Indian market.
+
+    Primary book: The Anatomy of the Swipe (Siddiqui) — how money
+    actually moves; map each concept to the Razorpay flow.
+
+    Deliverables:
+    - [ ] Razorpay (or Cashfree/PayU — justify choice) integration:
+          order creation, capture, UPI + cards + netbanking
+    - [ ] Webhook handling: signature verification, idempotent
+          processing, retry tolerance (webhooks WILL arrive twice)
+    - [ ] Refund flows: full + partial, tied to booking cancellation
+          policy
+    - [ ] Daily reconciliation job: gateway settlement report vs your
+          payments ledger, alert on mismatch
+    - [ ] Write-up: PCI-DSS scope — what the gateway shields you from,
+          what still remains your responsibility, and why
+    - [ ] Test mode end-to-end: book -> pay -> webhook -> confirm ->
+          cancel -> refund, all idempotent under replay
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [module-onboarding, capstone]
+  cadence: once-per-module
+  module_number: 11
+
+# Module 12: Production Infra & Delivery on AWS
+- id: module-12-onboarding
+  title: "Module 12: Infra — Pan-India Production on AWS"
+  description: |
+    Module 12: Apply the AWS SAA + Terraform + CI/CD material to a real
+    pan-India production deployment.
+
+    Deliverables:
+    - [ ] Terraform for everything — no console-created resources
+    - [ ] Multi-AZ: app tier autoscaling group / ECS-EKS across AZs,
+          RDS/Aurora Multi-AZ (ap-south-1, justify region choice)
+    - [ ] ElastiCache for availability-search hot paths
+    - [ ] CloudFront for static assets + API edge caching where safe —
+          measure latency from a north-India and a south-India vantage
+    - [ ] SQS for async work (emails, reconciliation, webhook fan-out)
+          with DLQs
+    - [ ] CI/CD pipeline: test -> build -> deploy with blue-green or
+          canary (pick one, document why)
+    - [ ] A one-command environment: terraform apply brings up staging
+    - [ ] Cost review: monthly estimate documented; kill anything a
+          solo operator can't justify
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [module-onboarding, capstone]
+  cadence: once-per-module
+  module_number: 12
+
+# Module 13: Observability, Reliability & Security Baseline
+- id: module-13-onboarding
+  title: "Module 13: Ops — Observe, Break, Harden, Run"
+  description: |
+    Module 13: Make the platform operable and defensible, then prove it.
+
+    Primary book: Release It! (Nygard) — stability patterns, capacity,
+    and the ops chapters map directly onto these deliverables.
+
+    Reliability:
+    - [ ] Define SLIs/SLOs (e.g. booking-confirm p99 latency,
+          payment-webhook processing success rate)
+    - [ ] Structured JSON logging with request IDs end-to-end
+    - [ ] Distributed tracing via OpenTelemetry -> X-Ray or Grafana
+    - [ ] Load test with k6: a realistic "festival booking day" traffic
+          pattern; find and fix the first bottleneck
+    - [ ] Runbook + incident exercise: kill the DB failover, follow
+          your own runbook, write the postmortem
+    - [ ] Chaos basics: kill an AZ's instances mid-load-test
+
+    Security baseline:
+    - [ ] OAuth2/JWT authN, role-based authZ (renter vs owner vs admin)
+    - [ ] Rate limiting at the edge (API Gateway/WAF) and per-user
+    - [ ] Secrets in AWS Secrets Manager — zero secrets in env files
+    - [ ] Dependency + container vuln scanning in CI (Trivy et al.)
+
+    Exit criteria: the platform survives the load test within SLO,
+    and you can explain every alert that fired.
+  due: "today at {ritual_times.morning_udemy}"
+  labels: [module-onboarding, capstone]
+  cadence: once-per-module
+  module_number: 13
+
 # Made with Bob

@@ -1,6 +1,6 @@
 meta:
   name: DevOps Job Ready
-  total_months: 7
+  total_months: 11
   start_month_index: 1
 
 phases:
@@ -15,6 +15,10 @@ phases:
   - number: 3
     name: DevOps Mastery & System Design
     months: [6, 7]
+
+  - number: 4
+    name: "Capstone: Production Booking Platform"
+    months: [8, 11]
 
 books:
   - title: "Ultimate AWS Certified Solutions Architect Associate (Udemy)"
@@ -53,6 +57,30 @@ books:
     months: [7, 7]
     role: primary
 
+  - title: "API Design Patterns"
+    author: "JJ Geewax"
+    phase: 4
+    months: [8, 8]
+    role: primary
+
+  - title: "Designing Data-Intensive Applications"
+    author: "Martin Kleppmann"
+    phase: 4
+    months: [9, 9]
+    role: primary
+
+  - title: "The Anatomy of the Swipe"
+    author: "Ahmed Siddiqui"
+    phase: 4
+    months: [10, 10]
+    role: primary
+
+  - title: "Release It! (2nd Edition)"
+    author: "Michael Nygard"
+    phase: 4
+    months: [11, 11]
+    role: primary
+
 primary_book_by_month:
   1: "Ultimate AWS Certified Solutions Architect Associate (Udemy)"
   2: "Ultimate AWS Certified Solutions Architect Associate (Udemy)"
@@ -61,6 +89,10 @@ primary_book_by_month:
   5: "Certified Kubernetes Administrator (CKA) (Udemy)"
   6: "DevOps Beginners to Advanced (Udemy)"
   7: "Grokking the System Design Interview"
+  8: "API Design Patterns"
+  9: "Designing Data-Intensive Applications"
+  10: "The Anatomy of the Swipe"
+  11: "Release It! (2nd Edition)"
 
 modules:
   - number: 1
@@ -98,6 +130,36 @@ modules:
     phase: 3
     estimated_hours: 70
 
+  - number: 8
+    name: "Stack ADR & Proof-of-Concepts"
+    phase: 4
+    estimated_hours: 40
+
+  - number: 9
+    name: "API Design as a Discipline"
+    phase: 4
+    estimated_hours: 50
+
+  - number: 10
+    name: "Data Modeling & Booking Concurrency"
+    phase: 4
+    estimated_hours: 55
+
+  - number: 11
+    name: "Payments Integration for India"
+    phase: 4
+    estimated_hours: 50
+
+  - number: 12
+    name: "Production Infra & Delivery on AWS"
+    phase: 4
+    estimated_hours: 65
+
+  - number: 13
+    name: "Observability, Reliability & Security Baseline"
+    phase: 4
+    estimated_hours: 60
+
 tracks:
   - title: "AWS Solutions Architect Associate"
     category: Certifications
@@ -128,5 +190,10 @@ tracks:
     category: Projects
     phase: 1
     # No months - runs throughout, manually controlled
+
+  - title: "Capstone: Booking Platform"
+    category: Projects
+    phase: 4
+    months: [8, 11]   # auto-current at month 8, auto-done after month 11
 
 # Made with Bob
