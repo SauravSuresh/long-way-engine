@@ -11,6 +11,8 @@
     "01320fb3ef7762bd": {
       "created_at": "2026-07-19T22:12:54.089497+00:00",
       "due_date": "2026-07-20",
+      "missed_at": "2026-07-21",
+      "status": "missed",
       "template_id": "weekday-morning-study-monday",
       "todoist_task_id": "6h6rc7fMf9jv249X"
     },
@@ -297,6 +299,12 @@
       "status": "missed",
       "template_id": "weekly-leetcode-wednesday",
       "todoist_task_id": "6h5h9QjW2MJVHGVX"
+    },
+    "1af7527ca107fe83": {
+      "created_at": "2026-07-20T22:27:20.709640+00:00",
+      "due_date": "2026-07-21",
+      "template_id": "weekday-morning-study-tuesday",
+      "todoist_task_id": "6h768JMCWqM3CW65"
     },
     "1aff75c00aea63a1": {
       "created_at": "2026-07-14T22:27:01.956246+00:00",
@@ -1127,6 +1135,12 @@
       "template_id": "weekly-state-review:auto-finish:7",
       "todoist_task_id": "6h6f637cVRw75XR5"
     },
+    "96a5a1bf4e09f972": {
+      "created_at": "2026-07-20T22:27:20.004800+00:00",
+      "due_date": "2026-07-21",
+      "template_id": "daily-devops-srs",
+      "todoist_task_id": "6h768JPVM8FhjPG5"
+    },
     "96ec0fe9467d3530": {
       "created_at": "2026-06-06T22:34:02.811484+00:00",
       "due_date": "2026-06-07",
@@ -1529,8 +1543,10 @@
       "todoist_task_id": "6h68955xh9fmwF8X"
     },
     "c41d4cca459cd8e9": {
+      "completed_at": "2026-07-21",
       "created_at": "2026-07-19T22:12:53.277313+00:00",
       "due_date": "2026-07-20",
+      "status": "completed",
       "template_id": "daily-devops-srs",
       "todoist_task_id": "6h6rc7W3r84qJp75"
     },
@@ -1658,6 +1674,8 @@
     "d73bcdf70ba3e21f": {
       "created_at": "2026-07-19T22:12:55.212226+00:00",
       "due_date": "2026-07-20",
+      "missed_at": "2026-07-21",
+      "status": "missed",
       "template_id": "weekly-leetcode-monday",
       "todoist_task_id": "6h6rc7jhHCC3cQ8X"
     },
@@ -1693,8 +1711,10 @@
       "todoist_task_id": "6gw5MxFQw2XxrcV5"
     },
     "df26fcad9811285e": {
+      "completed_at": "2026-07-21",
       "created_at": "2026-07-19T22:12:54.628994+00:00",
       "due_date": "2026-07-20",
+      "status": "completed",
       "template_id": "weekly-bootdev-monday",
       "todoist_task_id": "6h6rc7cMvvC5mWFX"
     },
@@ -1740,6 +1760,12 @@
       "status": "missed",
       "template_id": "weekly-state-review:auto-finish:8",
       "todoist_task_id": "6h6f639X96w2CPH5"
+    },
+    "e513460ae6eb72ca": {
+      "created_at": "2026-07-20T22:27:21.214975+00:00",
+      "due_date": "2026-07-21",
+      "template_id": "weekly-bootdev-tuesday",
+      "todoist_task_id": "6h768JRR8Qq7p7q5"
     },
     "e6f09ea52f46a942": {
       "created_at": "2026-06-06T22:34:04.261987+00:00",
@@ -2362,14 +2388,6 @@
       "template_id": "weekly-monday-morning-reading",
       "todoist_task_id": "6gxxHRrhvX4Q5jQR"
     },
-    "3e3eb5fe96d5fc75": {
-      "created_at": "2026-05-20T22:53:57.329247+00:00",
-      "due_date": "2026-05-21",
-      "missed_at": "2026-05-22",
-      "status": "missed",
-      "template_id": "weekly-pair-with-engineer",
-      "todoist_task_id": "6ggq8RgXQFJW2X82"
-    },
     "41fea82d541ace8d": {
       "created_at": "2026-06-21T22:39:30.078264+00:00",
       "due_date": "2026-06-22",
@@ -2631,14 +2649,6 @@
       "template_id": "weekly-state-review:auto-finish:5",
       "todoist_task_id": "6grPwf4hX5RWGFwR"
     },
-    "7406e5f9492991f3": {
-      "created_at": "2026-05-20T22:53:56.636559+00:00",
-      "due_date": "2026-05-21",
-      "missed_at": "2026-05-22",
-      "status": "missed",
-      "template_id": "daily-anki",
-      "todoist_task_id": "6ggq8Rch64m8P9JR"
-    },
     "7b2619c44351aeb5": {
       "created_at": "2026-06-28T22:32:52.117711+00:00",
       "due_date": "2026-06-29",
@@ -2775,14 +2785,6 @@
       "status": "completed",
       "template_id": "daily-morning-reading",
       "todoist_task_id": "6gpHX66VRJp3gfCR"
-    },
-    "8845f218d27b6bb8": {
-      "created_at": "2026-05-20T22:53:55.524532+00:00",
-      "due_date": "2026-05-21",
-      "missed_at": "2026-05-22",
-      "status": "missed",
-      "template_id": "daily-morning-reading",
-      "todoist_task_id": "6ggq8RWxqM3x8j32"
     },
     "8a65adc54a7a391f": {
       "created_at": "2026-06-12T22:52:29.096377+00:00",
