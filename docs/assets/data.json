@@ -18,8 +18,8 @@
     "devops-ready": {
       "adherence": {
         "done": 5,
-        "expected": 17,
-        "percent": 29,
+        "expected": 18,
+        "percent": 28,
         "since": "2026-07-01"
       },
       "books": [
@@ -97,13 +97,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 21,
+      "day_of_journey": 22,
       "day_total": 336,
       "last_7_days": [
-        {
-          "date": "2026-07-14",
-          "state": "yellow"
-        },
         {
           "date": "2026-07-15",
           "state": "red"
@@ -126,6 +122,10 @@
         },
         {
           "date": "2026-07-20",
+          "state": "yellow"
+        },
+        {
+          "date": "2026-07-21",
           "state": "yellow"
         }
       ],
@@ -153,15 +153,15 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 11 days"
+          "hint": "next post in 10 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 3 days"
+          "hint": "next Friday in 2 days"
         }
       },
-      "today": "2026-07-21"
+      "today": "2026-07-22"
     },
     "long-way": {
       "adherence": {
@@ -259,13 +259,9 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 21,
+      "day_of_journey": 22,
       "day_total": 1189,
       "last_7_days": [
-        {
-          "date": "2026-07-14",
-          "state": "gray"
-        },
         {
           "date": "2026-07-15",
           "state": "gray"
@@ -288,6 +284,10 @@
         },
         {
           "date": "2026-07-20",
+          "state": "gray"
+        },
+        {
+          "date": "2026-07-21",
           "state": "gray"
         }
       ],
@@ -344,15 +344,15 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 11 days"
+          "hint": "next post in 10 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 3 days"
+          "hint": "next Friday in 2 days"
         }
       },
-      "today": "2026-07-21"
+      "today": "2026-07-22"
     }
   }
 }
