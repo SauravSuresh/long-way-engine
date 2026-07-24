@@ -300,6 +300,12 @@
       "template_id": "weekly-leetcode-wednesday",
       "todoist_task_id": "6h5h9QjW2MJVHGVX"
     },
+    "19d0610b580f4d66": {
+      "created_at": "2026-07-24T22:32:21.374204+00:00",
+      "due_date": "2026-07-25",
+      "template_id": "daily-devops-srs",
+      "todoist_task_id": "6h848Pc8rxqR5FgX"
+    },
     "1af7527ca107fe83": {
       "created_at": "2026-07-20T22:27:20.709640+00:00",
       "due_date": "2026-07-21",
@@ -500,6 +506,8 @@
     "2edc8a52c5dfe89b": {
       "created_at": "2026-07-23T22:28:29.725020+00:00",
       "due_date": "2026-07-24",
+      "missed_at": "2026-07-25",
+      "status": "missed",
       "template_id": "weekly-leetcode-friday",
       "todoist_task_id": "6h7pg278Vpm7v5m5"
     },
@@ -557,6 +565,8 @@
     "36112a6f34ba5dc0": {
       "created_at": "2026-07-23T22:28:30.536005+00:00",
       "due_date": "2026-07-24",
+      "missed_at": "2026-07-25",
+      "status": "missed",
       "template_id": "weekly-friday-reflection",
       "todoist_task_id": "6h7pg2C9F5hjqFh5"
     },
@@ -595,6 +605,8 @@
     "38fe9265e4abae9d": {
       "created_at": "2026-07-23T22:28:27.510130+00:00",
       "due_date": "2026-07-24",
+      "missed_at": "2026-07-25",
+      "status": "missed",
       "template_id": "daily-devops-srs",
       "todoist_task_id": "6h7pfxxg8JC9vVmX"
     },
@@ -1007,6 +1019,12 @@
       "template_id": "weekly-state-review:sub:4",
       "todoist_task_id": "6grPwcWQQVXXMwr5"
     },
+    "7d14ac9df7e4b6b6": {
+      "created_at": "2026-07-24T22:32:23.191043+00:00",
+      "due_date": "2026-07-25",
+      "template_id": "weekly-project-work",
+      "todoist_task_id": "6h848Pq34VXrW355"
+    },
     "7d7ec68b8dc9cda8": {
       "created_at": "2026-07-12T22:11:37.900000+00:00",
       "due_date": "2026-07-13",
@@ -1325,6 +1343,8 @@
     "a713dfff85514f60": {
       "created_at": "2026-07-23T22:28:28.380531+00:00",
       "due_date": "2026-07-24",
+      "missed_at": "2026-07-25",
+      "status": "missed",
       "template_id": "weekday-morning-study-friday",
       "todoist_task_id": "6h7pg24X75Pxp7X5"
     },
@@ -1797,6 +1817,8 @@
     "d849ded11d4da20c": {
       "created_at": "2026-07-23T22:28:29.187913+00:00",
       "due_date": "2026-07-24",
+      "missed_at": "2026-07-25",
+      "status": "missed",
       "template_id": "weekly-bootdev-friday",
       "todoist_task_id": "6h7pg28RCwPJXHMX"
     },
@@ -1960,6 +1982,12 @@
       "template_id": "weekly-state-review:sub:5",
       "todoist_task_id": "6gxhqrp5hmP3PjH5"
     },
+    "ef4c091e7f52cce6": {
+      "created_at": "2026-07-24T22:32:22.388729+00:00",
+      "due_date": "2026-07-25",
+      "template_id": "monthly-retrospective",
+      "todoist_task_id": "6h848PhP9222PFgX"
+    },
     "f0c4d4f3e6f23219": {
       "created_at": "2026-07-04T22:24:34.508671+00:00",
       "due_date": "2026-07-05",
@@ -2113,14 +2141,6 @@
     }
   },
   "long-way": {
-    "0265ba67dc64228a": {
-      "created_at": "2026-05-24T22:30:27.078351+00:00",
-      "due_date": "2026-05-25",
-      "missed_at": "2026-05-26",
-      "status": "missed",
-      "template_id": "daily-evening-hands-on",
-      "todoist_task_id": "6ghm3pxJC9XVMJM2"
-    },
     "0527d46a237469ca": {
       "created_at": "2026-06-05T22:38:25.247443+00:00",
       "due_date": "2026-06-06",
@@ -2653,6 +2673,12 @@
       "template_id": "weekly-state-review:auto-finish:5",
       "todoist_task_id": "6h6f63XGqwPjWwP2"
     },
+    "73587620ad48b9c3": {
+      "created_at": "2026-07-24T22:32:27.684098+00:00",
+      "due_date": "2026-07-25",
+      "template_id": "weekly-saturday-morning-reading",
+      "todoist_task_id": "6h848Q7hjjmWqrFR"
+    },
     "73e1f4b36e1938b1": {
       "created_at": "2026-06-13T22:34:22.057716+00:00",
       "due_date": "2026-06-14",
@@ -2666,6 +2692,12 @@
       "status": "missed",
       "template_id": "weekly-state-review:auto-finish:5",
       "todoist_task_id": "6grPwf4hX5RWGFwR"
+    },
+    "76c2e1f9ca49d151": {
+      "created_at": "2026-07-24T22:32:28.554578+00:00",
+      "due_date": "2026-07-25",
+      "template_id": "weekly-saturday-anki",
+      "todoist_task_id": "6h848QFVxw6g4WG2"
     },
     "7b2619c44351aeb5": {
       "created_at": "2026-06-28T22:32:52.117711+00:00",
@@ -2820,14 +2852,6 @@
       "template_id": "monthly-retrieval",
       "todoist_task_id": "6gjvW83rGMjwpXHR"
     },
-    "8d7a7895d17dda0f": {
-      "created_at": "2026-05-24T22:30:26.444780+00:00",
-      "due_date": "2026-05-25",
-      "missed_at": "2026-05-26",
-      "status": "missed",
-      "template_id": "daily-anki",
-      "todoist_task_id": "6ghm3prcw4W5jmPR"
-    },
     "8f41423ca4ab2aaf": {
       "created_at": "2026-07-04T22:24:37.271646+00:00",
       "due_date": "2026-07-05",
@@ -2848,14 +2872,6 @@
       "status": "missed",
       "template_id": "daily-morning-reading",
       "todoist_task_id": "6gjQffmJ86qwF4CR"
-    },
-    "91a114765970e756": {
-      "created_at": "2026-05-24T22:30:25.875023+00:00",
-      "due_date": "2026-05-25",
-      "missed_at": "2026-05-26",
-      "status": "missed",
-      "template_id": "daily-morning-reading",
-      "todoist_task_id": "6ghm3pjG3Jw3mPP2"
     },
     "93264d66ddf5ac2c": {
       "created_at": "2026-05-26T22:49:58.616546+00:00",
@@ -3154,6 +3170,12 @@
       "template_id": "daily-morning-reading",
       "todoist_task_id": "6gjC6gc3r75Mvmw2"
     },
+    "e89051f7940464f9": {
+      "created_at": "2026-07-24T22:32:29.214424+00:00",
+      "due_date": "2026-07-25",
+      "template_id": "monthly-retrieval",
+      "todoist_task_id": "6h848QHP2RVq3wrR"
+    },
     "ea88305d8d4e1876": {
       "created_at": "2026-06-20T22:38:28.021898+00:00",
       "due_date": "2026-06-21",
@@ -3226,6 +3248,12 @@
       "status": "completed",
       "template_id": "daily-evening-hands-on",
       "todoist_task_id": "6gpHX68r8JgxcVp2"
+    },
+    "f6b0e9d40aa65945": {
+      "created_at": "2026-07-24T22:32:29.722418+00:00",
+      "due_date": "2026-07-25",
+      "template_id": "monthly-review",
+      "todoist_task_id": "6h848QHjhvPvp6V2"
     },
     "f956e942aaba64b4": {
       "created_at": "2026-06-30T22:46:00.983218+00:00",
