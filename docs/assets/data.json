@@ -18,8 +18,8 @@
     "devops-ready": {
       "adherence": {
         "done": 5,
-        "expected": 21,
-        "percent": 24,
+        "expected": 22,
+        "percent": 23,
         "since": "2026-07-01"
       },
       "books": [
@@ -97,13 +97,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 25,
+      "day_of_journey": 26,
       "day_total": 336,
       "last_7_days": [
-        {
-          "date": "2026-07-18",
-          "state": "red"
-        },
         {
           "date": "2026-07-19",
           "state": "gray"
@@ -127,6 +123,10 @@
         {
           "date": "2026-07-24",
           "state": "red"
+        },
+        {
+          "date": "2026-07-25",
+          "state": "red"
         }
       ],
       "month": 1,
@@ -148,25 +148,25 @@
         "Daily": {
           "best": 3,
           "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "hint": "Sunday \u2014 rest day"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 7 days"
+          "hint": "next post in 6 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 6 days"
+          "hint": "next Friday in 5 days"
         }
       },
-      "today": "2026-07-25"
+      "today": "2026-07-26"
     },
     "long-way": {
       "adherence": {
         "done": 0,
-        "expected": 3,
+        "expected": 4,
         "percent": 0,
         "since": "2026-07-01"
       },
@@ -259,13 +259,9 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 25,
+      "day_of_journey": 26,
       "day_total": 1189,
       "last_7_days": [
-        {
-          "date": "2026-07-18",
-          "state": "red"
-        },
         {
           "date": "2026-07-19",
           "state": "gray"
@@ -289,6 +285,10 @@
         {
           "date": "2026-07-24",
           "state": "gray"
+        },
+        {
+          "date": "2026-07-25",
+          "state": "red"
         }
       ],
       "month": 1,
@@ -346,20 +346,20 @@
         "Daily": {
           "best": 0,
           "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "hint": "Sunday \u2014 rest day"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 7 days"
+          "hint": "next post in 6 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 6 days"
+          "hint": "next Friday in 5 days"
         }
       },
-      "today": "2026-07-25"
+      "today": "2026-07-26"
     }
   }
 }
