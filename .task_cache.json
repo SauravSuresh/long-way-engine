@@ -537,6 +537,8 @@
     "3223dc03e9710beb": {
       "created_at": "2026-07-26T22:25:51.183930+00:00",
       "due_date": "2026-07-27",
+      "missed_at": "2026-07-28",
+      "status": "missed",
       "template_id": "weekday-morning-study-monday",
       "todoist_task_id": "6h8V6xhfCCQ47J95"
     },
@@ -691,6 +693,8 @@
     "40d3f8a0c61b89cf": {
       "created_at": "2026-07-26T22:25:52.066576+00:00",
       "due_date": "2026-07-27",
+      "missed_at": "2026-07-28",
+      "status": "missed",
       "template_id": "weekly-leetcode-monday",
       "todoist_task_id": "6h8V6xm8VxMGVH25"
     },
@@ -1015,6 +1019,12 @@
       "template_id": "weekly-state-review:auto-finish:7",
       "todoist_task_id": "6gxhqrqMGHMCPpMX"
     },
+    "736ad38e0dbdc7da": {
+      "created_at": "2026-07-27T22:31:21.743252+00:00",
+      "due_date": "2026-07-28",
+      "template_id": "weekday-morning-study-tuesday",
+      "todoist_task_id": "6h8jfgqPPj6C8hRX"
+    },
     "73e1f4b36e1938b1": {
       "created_at": "2026-06-13T22:34:18.178815+00:00",
       "due_date": "2026-06-14",
@@ -1060,6 +1070,12 @@
       "status": "missed",
       "template_id": "weekly-bootdev-thursday",
       "todoist_task_id": "6h7X8Qf9x7fw63JX"
+    },
+    "7930c181a965f779": {
+      "created_at": "2026-07-27T22:31:22.296831+00:00",
+      "due_date": "2026-07-28",
+      "template_id": "weekly-bootdev-tuesday",
+      "todoist_task_id": "6h8jfgwrCxPMMFHX"
     },
     "7bfdb7039924ea7a": {
       "created_at": "2026-06-06T22:34:02.192006+00:00",
@@ -1538,6 +1554,8 @@
     "b63d2409bf6d2713": {
       "created_at": "2026-07-26T22:25:51.662129+00:00",
       "due_date": "2026-07-27",
+      "missed_at": "2026-07-28",
+      "status": "missed",
       "template_id": "weekly-bootdev-monday",
       "todoist_task_id": "6h8V6xj5vQqfqqQ5"
     },
@@ -1685,6 +1703,8 @@
     "bcae830a2adafabc": {
       "created_at": "2026-07-26T22:25:50.585763+00:00",
       "due_date": "2026-07-27",
+      "missed_at": "2026-07-28",
+      "status": "missed",
       "template_id": "daily-devops-srs",
       "todoist_task_id": "6h8V6xXx93McMh2X"
     },
@@ -2182,6 +2202,12 @@
       "template_id": "daily-devops-srs",
       "todoist_task_id": "6gwmw4G5P3phWVWX"
     },
+    "f5ac7254adeefbcc": {
+      "created_at": "2026-07-27T22:31:20.729674+00:00",
+      "due_date": "2026-07-28",
+      "template_id": "daily-devops-srs",
+      "todoist_task_id": "6h8jfgr67WWR8W7X"
+    },
     "f6de2c8b9b1a7701": {
       "completed_at": "2026-06-24",
       "created_at": "2026-06-22T22:58:31.336392+00:00",
@@ -2428,14 +2454,6 @@
       "status": "missed",
       "template_id": "weekly-state-review:sub:1",
       "todoist_task_id": "6gm82WcwjgqrpMWR"
-    },
-    "2081cb8f6868de03": {
-      "completed_at": "2026-05-30",
-      "created_at": "2026-05-27T22:56:58.304108+00:00",
-      "due_date": "2026-05-28",
-      "status": "completed",
-      "template_id": "daily-anki",
-      "todoist_task_id": "6gjQffrRWHP46gWR"
     },
     "23e492ad01e03eaa": {
       "completed_at": "2026-06-04",
@@ -3048,14 +3066,6 @@
       "template_id": "weekly-state-review:sub:3",
       "todoist_task_id": "6h3JF26v49pW2Xw2"
     },
-    "9023d32983d9dc47": {
-      "created_at": "2026-05-27T22:56:57.523425+00:00",
-      "due_date": "2026-05-28",
-      "missed_at": "2026-05-30",
-      "status": "missed",
-      "template_id": "daily-morning-reading",
-      "todoist_task_id": "6gjQffmJ86qwF4CR"
-    },
     "96ec0fe9467d3530": {
       "created_at": "2026-06-06T22:34:08.189412+00:00",
       "due_date": "2026-06-07",
@@ -3288,14 +3298,6 @@
       "status": "missed",
       "template_id": "weekly-state-review",
       "todoist_task_id": "6grPwcqxWjJ7x2w2"
-    },
-    "d05fc7c201a42031": {
-      "completed_at": "2026-05-30",
-      "created_at": "2026-05-27T22:56:58.727276+00:00",
-      "due_date": "2026-05-28",
-      "status": "completed",
-      "template_id": "weekly-pair-with-engineer",
-      "todoist_task_id": "6gjQffr4pJfpMwh2"
     },
     "d45c92c00dd98a31": {
       "created_at": "2026-05-30T22:29:47.609282+00:00",
