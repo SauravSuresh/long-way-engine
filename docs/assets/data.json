@@ -18,8 +18,8 @@
     "devops-ready": {
       "adherence": {
         "done": 6,
-        "expected": 25,
-        "percent": 24,
+        "expected": 26,
+        "percent": 23,
         "since": "2026-07-01"
       },
       "books": [
@@ -97,13 +97,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 30,
+      "day_of_journey": 31,
       "day_total": 336,
       "last_7_days": [
-        {
-          "date": "2026-07-23",
-          "state": "red"
-        },
         {
           "date": "2026-07-24",
           "state": "red"
@@ -127,9 +123,13 @@
         {
           "date": "2026-07-29",
           "state": "green"
+        },
+        {
+          "date": "2026-07-30",
+          "state": "yellow"
         }
       ],
-      "month": 1,
+      "month": 2,
       "paused": null,
       "phase": 1,
       "practices": {
@@ -140,28 +140,28 @@
       },
       "reflections": [],
       "streaks": {
-        "Daily": 1,
+        "Daily": 0,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
           "best": 3,
-          "count": 1,
-          "hint": "morning reading + Anki by 23:59 to keep it"
+          "count": 0,
+          "hint": "complete morning reading + Anki today to start"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 2 days"
+          "hint": "next post in 1 day"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 1 day"
+          "hint": "Friday review + filled reflection due today"
         }
       },
-      "today": "2026-07-30"
+      "today": "2026-07-31"
     },
     "long-way": {
       "adherence": {
@@ -259,13 +259,9 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 30,
+      "day_of_journey": 31,
       "day_total": 1189,
       "last_7_days": [
-        {
-          "date": "2026-07-23",
-          "state": "gray"
-        },
         {
           "date": "2026-07-24",
           "state": "gray"
@@ -289,9 +285,13 @@
         {
           "date": "2026-07-29",
           "state": "gray"
+        },
+        {
+          "date": "2026-07-30",
+          "state": "gray"
         }
       ],
-      "month": 1,
+      "month": 2,
       "paused": null,
       "phase": 1,
       "practices": {
@@ -351,15 +351,15 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 2 days"
+          "hint": "next post in 1 day"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 1 day"
+          "hint": "Friday review + filled reflection due today"
         }
       },
-      "today": "2026-07-30"
+      "today": "2026-07-31"
     }
   }
 }
