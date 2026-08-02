@@ -6,6 +6,21 @@ manual_counters:
   lineage_detours_done: []
 notes: 'Most recent edit on top.
 
+  2026-08-02 (later): post-grilling restructure + full reset. marketplace-builder
+  is now two tracks: Mon/Wed = 16-rung ladder (pick 1 of 3 challenges per rung,
+  real consumer required, polyglot allowed); Saturday = the real rental platform
+  from week 1 (first-12-sessions checklist; exam gates 1-4 live there). New
+  advisory /ladder-review skill (verdict committed to repo). Crunch rule: Anki +
+  one build session + Sunday review is a valid week. Full reset: start_date ->
+  2026-08-02 for marketplace-builder and devops-ready; month/module -> 1.
+
+  2026-08-02: marketplace-builder replaces devops-ready as the focus track
+  (build-first syllabus; booking platform is the spine; SAA cert = parallel
+  theory track months 1-3, CKA parked post-launch). devops-ready disabled in
+  config (superseded — cert goals live on inside marketplace-builder; files
+  kept as reference). long-way paused (paused_since 2026-08-02, parked until
+  platform launch).
+
   2026-07-01: focus switch to devops-ready. boot.dev now every weekday; LeetCode
   alternate days (Mon/Wed/Fri); morning study Mon-Fri; Saturday = long-way CS:APP
   long reading (AM) + devops project block (PM). long-way relegated to Saturdays

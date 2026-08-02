@@ -1,0 +1,306 @@
+# The 16 rungs of the Marketplace Builder ladder.
+# One module = one rung = one concept. Each rung offers THREE candidate
+# challenges — pick ONE in the first Monday session and note the pick
+# (and why) at the top of the ADR. The other two are dead; no guilt.
+#
+# Rules for every rung:
+#   - ADR first (context -> options -> decision -> consequences).
+#   - Name the real consumer before building: deployed, published, or
+#     used by you/your startup. You must OPERATE what you build.
+#   - Go is the default; any option may be taken in another language
+#     if the ADR argues it teaches more.
+#   - Finish = built + tested + shipped to its consumer + /ladder-review
+#     run (advisory; verdict committed to the challenge dir).
+#   - Advance via the Sunday state review. Honesty is yours.
+# All challenges live in one repo: ladder/rung-NN-name/.
+
+- id: rung-1
+  title: "Rung 1: CLI craft & tests (~2 wk) — pick one of 3"
+  description: |
+    Concept: small sharp tools; parsing; table-driven tests; clean errors.
+    Pick ONE:
+      A. Expression calculator CLI — precedence, parentheses, good errors.
+      B. Markdown -> HTML converter — subset of MD, golden-file tests.
+      C. Flashcard drill CLI over your exported Anki decks — spaced
+         ordering, stats. (Consumer: your own daily review.)
+    Must (all options): table-driven tests, garbage input handled,
+    README, a consumer named in the ADR.
+    ADR question: how do you parse — and where's the seam between the
+    CLI and the reusable core?
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-1]
+  cadence: once-per-module
+  module_number: 1
+
+- id: rung-2
+  title: "Rung 2: Crash-safe persistence (~2 wk) — pick one of 3"
+  description: |
+    Concept: file formats, atomic writes, recovery. Data survives kill -9.
+    Pick ONE:
+      A. Append-only key-value store CLI — rebuild on start, compaction.
+      B. Expense/cash ledger CLI — append-only entries, monthly rollup.
+         (Consumer: your actual spending.)
+      C. Local bookmarks manager — tags, search, atomic saves.
+    Must: kill-mid-write recovery test (temp file + rename or log
+    replay), corrupt-file handling without data loss, benchmark reads.
+    ADR question: log vs snapshot vs rewrite-whole-file — and when do
+    you fsync?
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-1]
+  cadence: once-per-module
+  module_number: 2
+
+- id: rung-3
+  title: "Rung 3: Network clients that don't lie (~2 wk) — pick one of 3"
+  description: |
+    Concept: timeouts, retries with backoff, testing without the network.
+    Pick ONE:
+      A. Currency/weather CLI over a public API.
+      B. Render-status poller for your startup's previz jobs — notifies
+         when a render finishes. (Consumer: your own team.)
+      C. GitHub watcher — notify on PR reviews/CI results you care about.
+    Must: context timeouts, retry+backoff on 5xx, offline is a message
+    not a stack trace, HTTP mocked in tests (httptest or equivalent).
+    ADR question: how do you make network code testable?
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-1]
+  cadence: once-per-module
+  module_number: 3
+
+- id: rung-4
+  title: "Rung 4: Concurrency basics (~2 wk) — pick one of 3"
+  description: |
+    Concept: worker pools, bounded parallelism, cancellation, races.
+    Pick ONE:
+      A. Parallel file hasher/dedupe over your startup's render output.
+      B. Concurrent thumbnailer for an image directory.
+      C. Concurrent link checker for rung 2's bookmarks (or any site).
+    Must: bounded workers, first error cancels the rest, progress
+    output, `go test -race` clean (or the language's equivalent).
+    ADR question: channels vs errgroup vs semaphore — pattern and why.
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-1]
+  cadence: once-per-module
+  module_number: 4
+
+- id: rung-5
+  title: "Rung 5: A library with real users (~2-3 wk) — pick one of 3"
+  description: |
+    Concept: API design for strangers — the ADR discipline aimed at code.
+    Pick ONE (published for real: pkg.go.dev / crates.io / npm):
+      A. Rate limiter (token bucket, per-key, fake-clock tests).
+      B. Retry/backoff library (jitter, budgets, context-aware).
+      C. TTL + LRU cache (thread-safe, benchmarked).
+    Must: docs a stranger can use, semver tag, examples, zero-value
+    sanity, no test uses time.Sleep. Consumer: published + used by at
+    least one later rung of your own ladder.
+    ADR question: what does a good library API owe its users?
+    Polyglot invitation: doing this in a second language doubles the
+    API-design lesson — argue it in the ADR if tempted.
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-1]
+  cadence: once-per-module
+  module_number: 5
+
+- id: rung-6
+  title: "Rung 6: HTTP service from scratch (~2 wk) — pick one of 3"
+  description: |
+    Concept: a real service skeleton — middleware, error envelope, layout.
+    Pick ONE (this service is your lab for rungs 7-13 — choose one you
+    will keep alive):
+      A. Notes/snippets API.
+      B. Pastebin with expiry.
+      C. Previz asset catalog API (gear, files, tags) for the startup.
+    Must: stdlib-first (no framework), middleware chain (logging,
+    request ID, panic recovery), ONE error envelope, httptest coverage,
+    store behind an interface.
+    ADR question: package layout you won't regret at rung 13.
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-2]
+  cadence: once-per-module
+  module_number: 6
+
+- id: rung-7
+  title: "Rung 7: Postgres for real (~2 wk) — pick one of 3"
+  description: |
+    Concept: migrations, integration tests, pools — SQL as a first-class
+    skill. (Saturday's platform needs this within weeks — that's why
+    it's here.)
+    Pick ONE:
+      A. Port rung 6's service to Postgres (pgx/sqlc, docker-compose).
+      B. Camera-gear inventory CRUD — platform-adjacent schema practice.
+      C. URL shortener with click stats — write-heavy flavor.
+    Must: versioned migrations, integration tests against real
+    Postgres, pool configured on purpose, store interface holds.
+    ADR question: ORM vs sqlc vs raw — justify for a solo maintainer.
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-2]
+  cadence: once-per-module
+  module_number: 7
+
+- id: rung-8
+  title: "Rung 8: Auth (~2 wk) — pick one of 3"
+  description: |
+    Concept: authN + authZ; attack-path testing, not happy-path testing.
+    Pick ONE:
+      A. Add users/roles to rung 7's service (owner vs admin).
+      B. Magic-link (passwordless) login service.
+      C. API-key issuing + scoping service for machine clients.
+    Must: real password hashing (bcrypt/argon2) where applicable,
+    sessions-vs-JWT decided in the ADR, middleware, tests for the
+    FORBIDDEN paths — prove the attacks fail.
+    ADR question: token lifetime + revocation story for THIS app.
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-2]
+  cadence: once-per-module
+  module_number: 8
+
+- id: rung-9
+  title: "Rung 9: Spec-first API design (~2 wk) — pick one of 3"
+  description: |
+    Concept: contract before code. (Rehearsal for the platform's public
+    API on Saturdays.)
+    Pick ONE:
+      A. Write the OpenAPI spec for rung 6-8's service, then refactor
+         the implementation to match it exactly.
+      B. Spec-first public URL shortener (spec -> lint -> implement).
+      C. Spec the previz asset API and implement a second client from
+         the spec alone (proves the contract carries the info).
+    Must: spectral-linted spec, contract tests in CI, cursor pagination,
+    documented error codes, idempotency on mutations.
+    Desk reference: API Design Patterns.
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-2]
+  cadence: once-per-module
+  module_number: 9
+
+- id: rung-10
+  title: "Rung 10: Webhooks & idempotency (~2 wk) — pick one of 3"
+  description: |
+    Concept: at-least-once delivery is the world's default — survive it.
+    (Direct rehearsal for the platform's Razorpay Saturdays.)
+    Pick ONE:
+      A. Signed webhook receiver + replay hammer test (payment-sim).
+      B. GitHub webhook -> notify/deploy pipeline for your own repos.
+      C. A webhook SENDER with retries, backoff and signing — the other
+         side of the contract.
+    Must: signature verification, idempotent processing (replay 10x ->
+    one effect), store-then-process, out-of-order tolerated.
+    ADR question: idempotency key design — who supplies it, where does
+    it live, when does it expire?
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-2]
+  cadence: once-per-module
+  module_number: 10
+
+- id: rung-11
+  title: "Rung 11: Jobs, queues & retries (~2 wk) — pick one of 3"
+  description: |
+    Concept: background work that survives crashes. (The platform's
+    reconciliation job will be built on this.)
+    Pick ONE:
+      A. Job queue on Postgres (FOR UPDATE SKIP LOCKED) + workers.
+      B. Email/digest sender with scheduling and dedup.
+      C. Render-job queue for the previz pipeline. (Consumer: startup.)
+    Must: retries with backoff, max-attempts -> dead letter, worker
+    crash mid-job loses nothing (test it), no double-processing under
+    concurrent workers (test it).
+    ADR question: why SKIP LOCKED beats naive polling; when would you
+    graduate to a real broker?
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-2]
+  cadence: once-per-module
+  module_number: 11
+
+- id: rung-12
+  title: "Rung 12: Ship it & keep it up (~2-3 wk) — pick one of 3"
+  description: |
+    Concept: packaging, config, graceful shutdown, health — production
+    shape.
+    Pick ONE:
+      A. Dockerize the rung 6-11 stack: multi-stage build, compose,
+         healthz/readyz, SIGTERM drains in-flight requests (test it).
+      B. Deploy that stack to a cheap VPS with systemd + backups + a
+         domain — and keep it running for the rest of the ladder.
+      C. One-command dev environment for the startup's tooling.
+    Must: config from env (12-factor), image/binary small on purpose,
+    a documented "how I deploy" runbook.
+    ADR question: what's env, what's flag, what's file — and why.
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-3]
+  cadence: once-per-module
+  module_number: 12
+
+- id: rung-13
+  title: "Rung 13: Performance — measure, then fix (~2 wk) — pick one of 3"
+  description: |
+    Concept: profiling discipline. Hypothesis -> measurement -> one fix.
+    Pick ONE:
+      A. k6 load profile + pprof hunt on your deployed rung-12 service.
+      B. Make rung 2's KV store 10x faster — prove it with benchmarks.
+      C. Find and fix a real slowness in the startup's tooling.
+    Must: before/after numbers committed, flamegraph, the fix is ONE
+    deliberate change, write-up of the hunt (this rung's ADR is a
+    performance report).
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-3]
+  cadence: once-per-module
+  module_number: 13
+
+- id: rung-14
+  title: "Rung 14: Wire protocols (~2-3 wk) — pick one of 3"
+  description: |
+    Concept: below HTTP — parsers, connections, backpressure.
+    Pick ONE:
+      A. Mini-Redis speaking RESP — works with the real redis-cli.
+      B. TCP chat server — rooms, broadcast, slow-client policy.
+      C. HTTP/1.1 server from raw TCP — enough to serve rung 6's API.
+    Must: protocol parser with its own tests, concurrent clients,
+    race-clean, a stated policy for clients that can't keep up.
+    ADR question: event loop vs goroutine-per-conn vs shards — measure.
+    Polyglot invitation: strongest rung to try a systems language.
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-3]
+  cadence: once-per-module
+  module_number: 14
+
+- id: rung-15
+  title: "Rung 15: Distributed coordination (~3 wk) — pick one of 3"
+  description: |
+    Concept: more than one node, and the truth gets expensive.
+    Pick ONE:
+      A. Leader election + fencing tokens (Postgres advisory locks or
+         lease rows); kill the leader, another takes over, old leader
+         can't corrupt state (test it).
+      B. Replicated log, consensus-lite: 3 nodes, majority ack,
+         convergence proven by test; the ADR names every guarantee you
+         dropped vs real Raft.
+      C. Consistent-hashing client over 3 mini-redis nodes — adding a
+         node remaps ~1/N keys (prove it).
+    Pull reading: DDIA replication/consistency chapters when confused.
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-3]
+  cadence: once-per-module
+  module_number: 15
+
+- id: rung-16
+  title: "Rung 16: Reliability engineering (~3 wk) — pick one of 3"
+  description: |
+    Concept: correctness under failure — the platform's operations
+    rehearsal.
+    Pick ONE:
+      A. Transactional outbox: two services, a money-ish transfer,
+         crash between commit and publish loses nothing (test it).
+      B. Chaos week on your deployed stack: kill processes mid-work,
+         fill the disk, partition things — runbook before, postmortem
+         after, fixes shipped.
+      C. OpenTelemetry end-to-end: one trace follows a request across
+         service and queue boundaries; answer one real latency question
+         with a trace.
+    Pull reading: Release It! after whatever breaks worst.
+    Exit: after this rung the ladder ends — the platform (Saturdays)
+    absorbs all build time and its remaining milestones.
+  due: "today at {ritual_times.build_monday}"
+  labels: [rung, phase-3]
+  cadence: once-per-module
+  module_number: 16

@@ -1,0 +1,23 @@
+# Daily rituals for Marketplace Builder curriculum
+#
+# Build-only curriculum: cert/course theory (SAA, CKA, boot.dev,
+# LeetCode) lives on the devops-ready curriculum, which runs in
+# parallel. This file carries only what the platform build needs.
+
+- id: daily-anki
+  title: "Anki review — build deck (15 min)"
+  description: |
+    15 min, Mon-Sat. Cards come from one source: what I built or
+    broke — every failure mode, every gotcha from ladder rungs and
+    platform Saturdays becomes a card.
+
+    In practice this is ONE sitting with the devops-ready cert deck
+    (07:15-07:45 back-to-back) — two templates, one habit. (A shared
+    common-task is specced in specs/common-tasks.md but not built.)
+
+    Add 3-5 new cards per day. No more. Crunch week? This survives.
+  due: "today at {ritual_times.anki}"
+  labels: [daily-ritual, srs]
+  cadence: daily
+  skip_if: sunday
+  counts_toward_streak: true

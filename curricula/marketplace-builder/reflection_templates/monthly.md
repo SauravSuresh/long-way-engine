@@ -1,0 +1,75 @@
+# Ship Log — {month}/{year}
+
+## What Went Live This Month
+
+> Factual. Things users (or test users) can do now that they couldn't
+> last month. Endpoints, infra, jobs, dashboards.
+
+- 
+- 
+
+**Link to the deployed thing**: 
+
+---
+
+## Exam Gates
+
+| Gate | Status |
+|------|--------|
+| 1 — Concurrency hammer test (platform, Saturdays) | |
+| 2 — Blue-green deploy + rollback (platform, AWS stage) | |
+| 3 — Restore drill < 1 hr (platform, then monthly) | |
+| 4 — Game day + postmortem (platform, then monthly) | |
+| 5 — RFC approved by senior engineers (running count) | |
+
+## Ladder
+
+**Rungs completed this month**: 
+
+**Options picked & why (one line each)**: 
+
+**Consumers still alive (deployed/published things you operate)**: 
+
+---
+
+## Module Progress
+
+**Current module**: Module __ — _______________
+
+**Biggest deliverable shipped**: 
+
+**Blocked on**: 
+
+---
+
+## One Thing That Broke
+
+**What broke**: 
+
+**What it taught**: 
+
+**Reading it earned (if any)**: 
+
+---
+
+## Pull-Reading Ledger
+
+> Books only enter through problems. What got pulled this month?
+
+| Problem felt | Reading pulled | Verdict |
+|--------------|----------------|---------|
+| | | |
+
+---
+
+## Next Month
+
+**The one deliverable that matters**: 
+
+**Exam gate in sight**: 
+
+---
+
+**Month rating (1-10)**: __/10 · **Energy**: High / Medium / Low
+
+**Key insight**: 

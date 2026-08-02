@@ -9,10 +9,42 @@ ritual_times:
   weekly_state_review: '10:00'
 
 priority_order:
+- marketplace-builder
 - devops-ready
 - long-way
 
 syllabuses:
+  marketplace-builder:
+    path: curricula/marketplace-builder
+    todoist_project_id: 6hC4MRwQF7Rrpw3G
+    state_file: state/marketplace-builder.yaml
+    enabled: true
+    # Runs full-parallel with devops-ready. This curriculum is
+    # build-only; all cert/course theory (SAA, CKA, boot.dev, LeetCode)
+    # belongs to devops-ready. Times are packed around devops-ready's
+    # day: srs 07:30, morning study 08:00, bootdev 19:00, LeetCode
+    # 21:30, Saturday project block 14:00, state review 11:00.
+    ritual_times:
+      # Overrides of the 7 global (long-way) slot names — every
+      # (slot, time) pair must be unique across enabled syllabuses.
+      morning_reading: '06:30'        # unused here; dodges long-way/devops claims
+      anki: '07:15'                   # daily Anki (build deck), before devops srs 07:30
+      evening_hands_on: '19:30'       # unused here
+      friday_review: '20:45'          # unused here
+      saturday_deep_block: '09:30'    # Sat deep block (devops project block owns 14:00)
+      sunday_trace: '20:30'           # unused here
+      weekly_state_review: '11:30'    # Sunday state review (devops review is 11:00)
+      # marketplace-builder's own slots
+      build_monday: '20:00'           # build session, between bootdev (19:00) & LeetCode (21:30)
+      build_wednesday: '20:00'        # build session
+      friday_reflection: '18:30'      # Friday reflection, before bootdev
+      design_review: '17:00'          # weekly design review (flexible; Monday default)
+      ship_log: '09:30'               # 1st of month
+      restore_drill: '20:00'          # monthly, day 10, module 5 onward
+      game_day: '09:30'               # monthly, last Saturday — takes over the deep block
+
+  # Full parallel with marketplace-builder. Owns all cert/course
+  # theory: SAA + CKA, boot.dev, LeetCode, its own Anki deck.
   devops-ready:
     path: curricula/devops-ready
     todoist_project_id: 6gpVRwqVmjqRc7hX
@@ -31,10 +63,12 @@ syllabuses:
       bootdev_wednesday: '19:00'       # boot.dev session
       bootdev_thursday: '19:00'        # boot.dev session
       bootdev_friday: '19:00'          # boot.dev session (before reflection)
-      leetcode_session: '20:30'        # LeetCode alternate days (Mon/Wed/Fri, after boot.dev)
+      leetcode_session: '21:30'        # LeetCode Mon/Wed/Fri — shifted from 20:30 so the
+                                       # marketplace-builder build session fits at 20:00
       saturday_deep_block: '14:00'     # Shifted from 09:00 to avoid long-way
-      friday_review: '22:00'           # Reusing friday_reflection slot (same ritual)
-      friday_reflection: '22:00'       # Shifted from 21:00 to run after evening_hands_on
+      friday_review: '20:15'           # Reusing friday_reflection slot (same ritual)
+      friday_reflection: '20:15'       # Between bootdev (ends 20:00) and LeetCode (21:30);
+                                       # 22:00 would sit inside the shifted LeetCode slot
       sunday_trace: '20:00'            # Shifted from 19:00 to avoid long-way
       monthly_project_publish: 09:00   # No collision
       monthly_cert_check: '14:00'      # No collision

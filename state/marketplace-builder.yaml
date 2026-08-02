@@ -1,0 +1,20 @@
+start_date: '2026-08-02'
+phase: 1
+month: 1
+current_module: 1
+current_book: The Go Programming Language
+completed_modules: []
+active_branches: []
+paused: false
+paused_since: null
+paused_until: null
+pause_history: []
+books_state: {}
+learning_tracks:
+  Platform:
+    Rental platform build: current
+    Platform in production: not_started
+manual_counters:
+  anki_card_count: 0
+  rfcs_approved: 0
+  exam_gates_passed: 0

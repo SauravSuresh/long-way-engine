@@ -567,6 +567,19 @@ Confirm a sensible task set fires for today. Done.
 
 ## 6. Anti-patterns
 
+- **Absorbing another curriculum's concerns into a new bundle.**
+  When curricula run in parallel, each concern — a certification, a
+  course, an interview track, a book — lives in exactly ONE
+  curriculum. Never copy material from an existing curriculum into a
+  new one "so it doesn't get missed": that duplicates rituals, splits
+  the concern's state across two state files, and forces the owner to
+  reconcile them by hand. If a new curriculum depends on material
+  owned elsewhere (e.g. a build track that applies cert theory),
+  reference the owning curriculum in descriptions and let track
+  gates/priority_order coordinate — don't re-declare its tracks,
+  rituals, or books. (Learned 2026-08: marketplace-builder briefly
+  absorbed devops-ready's SAA/boot.dev/LeetCode material; the fix was
+  to strip it back out and run both curricula in parallel.)
 - **Skipping the daily SRS ritual.** This is the most common
   failure mode and the most expensive. Without spaced repetition,
   retention collapses inside a month and a 12-month plan delivers

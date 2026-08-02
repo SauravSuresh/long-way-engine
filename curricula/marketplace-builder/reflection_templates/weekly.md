@@ -1,0 +1,64 @@
+# Weekly Reflection — Week {week}, {year}
+
+## What I Learned This Week
+
+### Top 3 Things (from memory, notes closed)
+1. 
+2. 
+3. 
+
+### One Thing I Struggled With
+- **Challenge**: 
+- **How I Overcame It**: 
+
+### Dive-Deeper List (from build sessions)
+> "What did I just build that has a known failure mode?" — answers
+> collected Monday and Wednesday.
+- 
+
+### Earned Reading
+**What problem did I hit this week that has earned a reading? (This is the only way book reading gets scheduled.)**
+- Problem: 
+- Reading it earned (if any): 
+
+---
+
+## Ladder (Mon / Wed)
+
+- **Current rung & option picked**: 
+- **Finished a rung? /ladder-review verdict + top issue**: 
+- **Is the consumer real yet (deployed / published / in use)?**: 
+
+## Platform (Saturday)
+
+- **Which step landed (S1-S12 or roadmap stage)**: 
+- **Exam gate progress**: 
+- **Crunch week? (minimum viable week still counts)**: Yes / No
+
+### RFC / Design Review
+- **RFC/ADR written Saturday**: 
+- **Presented to senior engineers**: Yes / No
+- **Approved? (Exam gate 5, from month 2)**: Yes / No
+- **Objections worth chasing**: 
+
+---
+
+## Anki (build deck)
+
+- **New cards added**: 
+
+> Cert progress (SAA, boot.dev, LeetCode) belongs in the devops-ready
+> weekly reflection, not here.
+
+---
+
+## Adjustments for Next Week
+- 
+
+---
+
+## Energy & Motivation
+
+**Energy (1-10)**: __/10 · **Motivation (1-10)**: __/10
+
+**Notes**: 

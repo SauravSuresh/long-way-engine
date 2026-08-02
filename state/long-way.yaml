@@ -5,9 +5,10 @@ current_module: 1
 current_book: 'Computer Systems: A Programmer''s Perspective'
 completed_modules: []
 active_branches: []
-paused: false
-paused_since: null
+paused: true
+paused_since: '2026-08-02'
 paused_until: null
+notes: parked until platform launch
 pause_history: []
 books_state: {}
 learning_tracks:
