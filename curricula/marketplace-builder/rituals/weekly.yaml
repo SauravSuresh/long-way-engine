@@ -12,11 +12,11 @@
 #     move it in Todoist when their calendar demands)
 
 - id: build-session-monday
-  title: "Build session: Module {current_module} deliverables (60-90 min)"
+  title: "Challenge build session — Challenge {current_module} (60-90 min)"
   description: |
-    60-90 min on the current module's deliverables (see the module
-    onboarding task's checklist). This is the platform spine — the
-    problems you hit here are what pull reading and feed Anki.
+    60-90 min on the current challenge (see the challenge brief task).
+    ADR first if you haven't written it yet. The problems you hit
+    here are what pull reading and feed Anki.
 
     AI assist rule: Claude may list options or point at docs. Stuck >30 min → ask for a hint, never the solution. Claude does not write the code in this slot.
 
@@ -28,11 +28,11 @@
   counts_toward_streak: true
 
 - id: build-session-wednesday
-  title: "Build session: Module {current_module} deliverables (60-90 min)"
+  title: "Challenge build session — Challenge {current_module} (60-90 min)"
   description: |
-    60-90 min on the current module's deliverables (see the module
-    onboarding task's checklist). This is the platform spine — the
-    problems you hit here are what pull reading and feed Anki.
+    60-90 min on the current challenge (see the challenge brief task).
+    ADR first if you haven't written it yet. The problems you hit
+    here are what pull reading and feed Anki.
 
     AI assist rule: Claude may list options or point at docs. Stuck >30 min → ask for a hint, never the solution. Claude does not write the code in this slot.
 
@@ -75,9 +75,9 @@
     senior engineers, tracked from month 2 onward in the Sunday state
     review).
 
-    Remainder: build. The current module's biggest deliverable —
-    Saturday is where the walking-skeleton "S5/S11"-style milestones
-    land.
+    Remainder: build. The current challenge's biggest chunk —
+    Saturday is where challenges get finished and /challenge-review
+    gets run.
   due: "today at {ritual_times.saturday_deep_block}"
   labels: [weekly-ritual, build, deep-block]
   cadence: weekly
@@ -116,7 +116,7 @@
   day_of_week: sunday
   state_review: true
   sub_tasks:
-    - title: "I'm ready to advance to Module {next_module}"
+    - title: "Challenge done (+ /challenge-review run) — advance to Challenge {next_module}"
       action: { type: advance_module }
       show_if: not_on_last_module
 

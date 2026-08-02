@@ -23,14 +23,14 @@
 
 ---
 
-## Platform Progress
+## Ladder Progress
 
 ### Build Sessions (Mon / Wed / Sat)
 - **Sessions completed**: __/3
-- **Module deliverables moved**: 
-- **Deployed anything?**: 
+- **Current challenge & where it stands**: 
+- **Finished a challenge? /challenge-review verdict + top issue**: 
 
-### Current Exam Gate
+### Current Exam Gate (phase 4 only)
 - **Gate**: 
 - **Status**: 
 

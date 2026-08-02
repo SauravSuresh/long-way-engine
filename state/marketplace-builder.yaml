@@ -2,7 +2,7 @@ start_date: '2026-08-02'
 phase: 1
 month: 1
 current_module: 1
-current_book: API Design Patterns
+current_book: The Go Programming Language
 completed_modules: []
 active_branches: []
 paused: false

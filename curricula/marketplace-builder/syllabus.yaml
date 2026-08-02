@@ -1,83 +1,116 @@
 meta:
   name: Marketplace Builder
-  total_months: 6
+  total_months: 12
   start_month_index: 1
 
+# THE LADDER. marketplace-builder is a 36-challenge design ladder:
+# every challenge = one module = design it (ADR first), build it in Go,
+# finish with a /challenge-review (Claude skill in .claude/skills/),
+# advance via the Sunday state review. Difficulty rises from a CLI
+# calculator to distributed systems; the final phase's challenges ARE
+# the rental-platform components, so the summit of the ladder is the
+# launched platform. Cert/course theory (SAA, CKA, boot.dev, LeetCode)
+# stays on devops-ready — one concern, one curriculum.
 phases:
   - number: 1
-    name: "Foundation: Skeleton, Spec, Data"
-    months: [1, 3]
+    name: "Foundations (Go, files, tests)"
+    months: [1, 2]
 
   - number: 2
-    name: "Money & Production"
-    months: [4, 6]
+    name: "Services (HTTP, Postgres, auth, ops basics)"
+    months: [3, 5]
 
-# BOOKS: no scheduled reading in this curriculum. Reading is PULLED by
-# problems felt during the build — each module description carries a
-# pull-reading trigger table. All entries are reference-role; the
-# primary_book_by_month keys below are validator-satisfying anchors
-# only (state.month must stay <= max month key). Cert/course theory
-# (SAA, CKA, boot.dev, LeetCode) lives entirely on the devops-ready
-# curriculum, which runs in parallel — one concern, one curriculum.
+  - number: 3
+    name: "Concurrency & Distribution"
+    months: [6, 8]
+
+  - number: 4
+    name: "The Platform (rental marketplace, for real)"
+    months: [9, 12]
+
+# BOOKS: no scheduled reading. Reading is PULLED — each challenge's
+# review names what to read when a gap shows. primary_book_by_month
+# keys are validator anchors only.
 books:
-  - title: "Designing Data-Intensive Applications"
-    author: "Martin Kleppmann"
+  - title: "The Go Programming Language"
+    author: "Donovan & Kernighan"
     phase: 1
-    role: reference   # pulled when concurrency tests confuse me (module 3)
+    role: reference   # pulled when the language itself confuses me
+
+  - title: "100 Go Mistakes and How to Avoid Them"
+    author: "Teiva Harsanyi"
+    phase: 1
+    role: reference   # pulled when reviews keep flagging the same idiom mistakes
 
   - title: "API Design Patterns"
     author: "JJ Geewax"
-    phase: 1
-    role: reference   # desk reference during module 2
+    phase: 2
+    role: reference   # desk reference for the spec-first challenges
+
+  - title: "Designing Data-Intensive Applications"
+    author: "Martin Kleppmann"
+    phase: 3
+    role: reference   # pulled when replication/consistency/transactions confuse me
 
   - title: "The Anatomy of the Swipe"
     author: "Ahmed Siddiqui"
-    phase: 2
-    role: reference   # pulled when reconciliation confuses me (module 4)
+    phase: 4
+    role: reference   # pulled when payment reconciliation confuses me
 
   - title: "Release It! (2nd Edition)"
     author: "Michael Nygard"
-    phase: 2
-    role: reference   # pulled after my first real incident (module 6)
+    phase: 4
+    role: reference   # pulled after my first real incident
 
 primary_book_by_month:
-  1: "API Design Patterns"             # anchor, not scheduled reading
-  3: "Designing Data-Intensive Applications"
-  4: "The Anatomy of the Swipe"
-  6: "Release It! (2nd Edition)"
+  1: "The Go Programming Language"
+  4: "API Design Patterns"
+  6: "Designing Data-Intensive Applications"
+  10: "The Anatomy of the Swipe"
+  12: "Release It! (2nd Edition)"
 
+# 36 challenges. ~wk = calendar target at the standing weekly build
+# budget (Mon/Wed evenings + Saturday deep block ≈ 8 h/week).
 modules:
-  - number: 1
-    name: "Walking Skeleton & Stack ADR"
-    phase: 1
-    estimated_hours: 50
+  # --- Phase 1: Foundations — one week each -------------------------
+  - { number: 1,  name: "Calculator CLI",                    phase: 1, estimated_hours: 8 }
+  - { number: 2,  name: "Todo CLI with JSON persistence",    phase: 1, estimated_hours: 8 }
+  - { number: 3,  name: "grep clone",                        phase: 1, estimated_hours: 8 }
+  - { number: 4,  name: "API-client CLI (currency/weather)", phase: 1, estimated_hours: 8 }
+  - { number: 5,  name: "Append-only key-value store",       phase: 1, estimated_hours: 8 }
+  - { number: 6,  name: "Worker-pool file processor",        phase: 1, estimated_hours: 8 }
+  - { number: 7,  name: "Rate-limiter library",              phase: 1, estimated_hours: 8 }
+  - { number: 8,  name: "TTL + LRU cache",                   phase: 1, estimated_hours: 8 }
+  # --- Phase 2: Services — 1-1.5 weeks each -------------------------
+  - { number: 9,  name: "Notes API (stdlib HTTP + middleware)",     phase: 2, estimated_hours: 10 }
+  - { number: 10, name: "Notes API on Postgres",                    phase: 2, estimated_hours: 10 }
+  - { number: 11, name: "Auth: sessions, JWT, roles",               phase: 2, estimated_hours: 12 }
+  - { number: 12, name: "Spec-first URL shortener (OpenAPI)",       phase: 2, estimated_hours: 10 }
+  - { number: 13, name: "File upload service (streaming to S3)",    phase: 2, estimated_hours: 10 }
+  - { number: 14, name: "Webhook receiver (idempotent, verified)",  phase: 2, estimated_hours: 12 }
+  - { number: 15, name: "Job queue on Postgres",                    phase: 2, estimated_hours: 12 }
+  - { number: 16, name: "Search + cursor pagination",               phase: 2, estimated_hours: 10 }
+  - { number: 17, name: "Dockerize + graceful shutdown",            phase: 2, estimated_hours: 10 }
+  - { number: 18, name: "Load-test & profile (k6 + pprof)",         phase: 2, estimated_hours: 12 }
+  # --- Phase 3: Concurrency & Distribution — 1.5-2 weeks each -------
+  - { number: 19, name: "TCP chat server",                          phase: 3, estimated_hours: 14 }
+  - { number: 20, name: "Mini-Redis (RESP subset)",                 phase: 3, estimated_hours: 16 }
+  - { number: 21, name: "Pub/sub broker (at-least-once)",           phase: 3, estimated_hours: 16 }
+  - { number: 22, name: "Distributed lock & leader election",       phase: 3, estimated_hours: 14 }
+  - { number: 23, name: "Consistent-hashing cache client",          phase: 3, estimated_hours: 14 }
+  - { number: 24, name: "Replicated log (consensus-lite)",          phase: 3, estimated_hours: 18 }
+  - { number: 25, name: "Event-sourced ledger",                     phase: 3, estimated_hours: 16 }
+  - { number: 26, name: "Outbox pattern: money transfer, two services", phase: 3, estimated_hours: 16 }
+  - { number: 27, name: "OpenTelemetry across the stack",           phase: 3, estimated_hours: 14 }
+  - { number: 28, name: "Chaos week: break it, runbook it",         phase: 3, estimated_hours: 14 }
+  # --- Phase 4: The Platform — 2-3 weeks each -----------------------
+  - { number: 29, name: "Booking-hold service (no double-holds)",   phase: 4, estimated_hours: 20 }
+  - { number: 30, name: "Availability search + calendar model",     phase: 4, estimated_hours: 18 }
+  - { number: 31, name: "Spec-first booking API",                   phase: 4, estimated_hours: 18 }
+  - { number: 32, name: "Payments: Razorpay, refunds, reconciliation", phase: 4, estimated_hours: 22 }
+  - { number: 33, name: "Walking skeleton: assemble & deploy",      phase: 4, estimated_hours: 20 }
+  - { number: 34, name: "Production infra on AWS (SAA lab)",        phase: 4, estimated_hours: 24 }
+  - { number: 35, name: "Operate: SLOs, restore drill, game day",   phase: 4, estimated_hours: 22 }
+  - { number: 36, name: "Launch hardening & go-live",               phase: 4, estimated_hours: 18 }
 
-  - number: 2
-    name: "API Spec-First"
-    phase: 1
-    estimated_hours: 50
-
-  - number: 3
-    name: "Data Modeling & Booking Concurrency"
-    phase: 1
-    estimated_hours: 55
-
-  - number: 4
-    name: "Payments for India"
-    phase: 2
-    estimated_hours: 50
-
-  - number: 5
-    name: "Production Infra on AWS"
-    phase: 2
-    estimated_hours: 65
-
-  - number: 6
-    name: "Operate: Observability, Reliability, Security"
-    phase: 2
-    estimated_hours: 60
-
-# No tracks. SAA, CKA, boot.dev, and LeetCode are devops-ready's
-# concerns — that curriculum runs in parallel and owns all cert/course
-# theory. Module 5 here is still the lab where the SAA material gets
-# applied; the studying happens over there.
+# No tracks. SAA, CKA, boot.dev, LeetCode are devops-ready's concerns.

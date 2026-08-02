@@ -45,7 +45,7 @@
   cadence: monthly
   day_of_month: 10
   gated_by:
-    - { type: module_gte, value: 5 }
+    - { type: module_gte, value: 35 }
 
 - id: monthly-game-day
   title: "Game day — break production on purpose, write the postmortem"
@@ -64,4 +64,4 @@
   cadence: monthly
   day_of_month: last-saturday
   gated_by:
-    - { type: module_gte, value: 5 }
+    - { type: module_gte, value: 35 }

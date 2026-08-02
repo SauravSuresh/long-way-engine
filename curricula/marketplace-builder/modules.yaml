@@ -1,238 +1,582 @@
-# Module onboarding tasks for Marketplace Builder curriculum
-# Promoted from devops-ready modules 8-13. The booking platform is the
-# spine; reading is pulled by problems (see each module's pull-reading
-# trigger table). Exam gates 1-4 live in modules 3, 5, 6. Exam gate 5
-# (RFC approved by senior engineers) is a weekly state-review milestone
-# from month 2 onward — see rituals/weekly.yaml.
+# Challenge briefs for the Marketplace Builder ladder.
+# One module = one challenge. The loop, every time:
+#   1. Read the brief. Write the ADR FIRST (Nygard template: context ->
+#      options -> decision -> consequences). Bad ADRs are fine early.
+#   2. Build it in Go. Tests are part of "built".
+#   3. Run /challenge-review (Claude skill) — it reviews design, Go
+#      idioms, testing, and missed failure modes, and names what to
+#      read. Log the takeaways in Friday's reflection.
+#   4. Advance via the Sunday state review.
+# All challenges live in one repo: go-ladder/challenge-NN-name/.
 
-# Module 1: Walking Skeleton & Stack ADR
-- id: module-1-onboarding
-  title: "Module 1: Walking Skeleton & Stack ADR — Ship Something Real in Week 1"
+# ============ Phase 1: Foundations (1 week each) ============
+
+- id: challenge-1
+  title: "Challenge 1: Calculator CLI (~1 wk)"
   description: |
-    Module 1: Get a walking skeleton live and choose the stack with
-    evidence, not vibes.
-
-    Working preference: Go — fast, reliable, boring, solo-friendly.
-    The ADR's job is to CONFIRM or OVERTURN that with evidence, not to
-    rubber-stamp it.
-
-    ADR deliverable: a written Architecture Decision Record committed
-    to the platform repo, comparing Go against at least 2 challengers
-    (e.g. Kotlin/Java + Spring, Node + TypeScript) against THIS
-    system's actual constraints:
-    - Concurrency model needed for booking contention & payment webhooks
-    - Solo-maintainability (you operate this alone at 2am)
-    - Hiring/community size and ecosystem maturity in India
-    - Payments SDK + observability (OpenTelemetry) support on AWS
-
-    Rules:
-    - [ ] Not a desk-only decision: build the PoC in Go AND one
-          challenger (a booking-hold endpoint with a concurrent-write test)
-    - [ ] Benchmark both PoCs under simple load (hey/k6)
-    - [ ] Write the ADR: context, options, trade-offs, decision, consequences
-    - [ ] If Go wins, the ADR records exactly why — that document is
-          your answer every future time you doubt the stack.
-
-    First 12 sessions (work these in order in the Mon/Wed/Sat build slots):
-    S1 repo + hello-world API running locally · S2 Postgres via
-    docker-compose, `equipment` table, insert rows in psql · S3
-    `GET /equipment` reading from the DB · S4 `POST /equipment` + first
-    automated test · S5 (Sat) deploy skeleton to Railway/App Runner —
-    real URL · S6 equipment detail endpoint + seed script · S7
-    availability-calendar schema draft · S8 naive `GET /availability` ·
-    S9 `holds` table + create-hold endpoint · S10 hold expiry job ·
-    S11 (Sat) stack ADR written up and final · S12 confirm-booking
-    happy path, payments stubbed.
-
-    Pull-reading triggers (the only way books enter this module):
-    | Trigger felt                          | Read                       |
-    |---------------------------------------|----------------------------|
-    | none scheduled — cert/course theory   | (see devops-ready's own    |
-    | lives on the devops-ready track       | morning + evening rituals) |
-
-    Setup:
-    - [ ] Create platform GitHub repo with /docs/adr/ directory
-    - [ ] Read ADR format (Michael Nygard's template)
+    Build: a CLI that evaluates expressions: `calc "2 + 3 * (4 - 1)"`.
+    Must: +-*/, parentheses, precedence, clear errors for bad input,
+    table-driven tests covering edge cases (div by zero, garbage).
+    ADR question: how do you parse — regex hacks, shunting-yard, or a
+    tiny recursive-descent parser? Pick, justify, note trade-offs.
+    Done when: tests pass · ADR committed · /challenge-review run.
   due: "today at {ritual_times.build_monday}"
-  labels: [module-onboarding, platform]
+  labels: [challenge, phase-1]
   cadence: once-per-module
   module_number: 1
 
-# Module 2: API Spec-First
-- id: module-2-onboarding
-  title: "Module 2: API Spec-First — Spec Before Code"
+- id: challenge-2
+  title: "Challenge 2: Todo CLI with JSON persistence (~1 wk)"
   description: |
-    Module 2: Design the booking, inventory, and payments API surfaces
-    spec-first. No implementation code until the spec is published.
-
-    Deliverable: a published OpenAPI 3.x spec covering:
-    - Booking lifecycle (search availability, hold, confirm, cancel)
-    - Inventory (equipment catalog, kits, availability calendar)
-    - Payments (create order, capture, refund, webhook receipts)
-
-    Must address:
-    - [ ] Idempotency keys on every payment/booking mutation
-    - [ ] Versioning strategy (URL vs header — pick and justify)
-    - [ ] Pagination convention (cursor-based, documented)
-    - [ ] Error contract: one error envelope, documented codes
-    - [ ] Contract tests scaffolded (Schemathesis/Dredd or Pact)
-    - [ ] Spec reviewed against API Design Patterns checklists
-
-    Pull-reading triggers (the only way books enter this module):
-    | Trigger felt                              | Read                    |
-    |-------------------------------------------|-------------------------|
-    | designing any surface in this module      | API Design Patterns     |
-    | (use as a desk reference throughout)      | (JJ Geewax)             |
-
-    Setup:
-    - [ ] Spectral linting for the OpenAPI spec in CI
-    - [ ] Publish rendered docs (Redoc/Stoplight) from the repo
+    Build: `todo add/list/done/rm` persisting to a JSON file.
+    Must: survives restarts, handles a corrupt/missing file without
+    losing data (write temp + rename), IDs stay stable, tests use a
+    temp dir.
+    ADR question: file format & write strategy — what happens if the
+    process dies mid-write?
+    Done when: tests pass · ADR committed · /challenge-review run.
   due: "today at {ritual_times.build_monday}"
-  labels: [module-onboarding, platform]
+  labels: [challenge, phase-1]
   cadence: once-per-module
   module_number: 2
 
-# Module 3: Data Modeling & Booking Concurrency
-- id: module-3-onboarding
-  title: "Module 3: Data Modeling — No Double Bookings, Ever [EXAM GATE 1]"
+- id: challenge-3
+  title: "Challenge 3: grep clone (~1 wk)"
   description: |
-    Module 3: Get the data model and concurrency correctness right.
-    Two people must never book the same lighting kit for overlapping dates.
-
-    ★ EXAM GATE 1: a concurrency test suite that hammers overlapping
-    bookings and asserts zero double-books, passing under concurrent
-    load. This gate must pass before advancing to module 4.
-
-    Deliverables:
-    - [ ] Schema for equipment, kits, bookings, holds, payments ledger
-    - [ ] Double-booking prevention implemented and TESTED under
-          concurrent load (exclusion constraint / SELECT FOR UPDATE /
-          serializable — pick per the ADR stack, justify in a doc)
-    - [ ] Booking holds with expiry (hold -> confirm-or-release)
-    - [ ] Optimistic vs pessimistic locking: written comparison with
-          a benchmark on your actual booking table
-    - [ ] Idempotent payment writes (unique idempotency key column,
-          proven by a replay test)
-    - [ ] ★ Exam gate 1: the concurrency hammer test suite above
-
-    Pull-reading triggers (the only way books enter this module):
-    | Trigger felt                              | Read                    |
-    |-------------------------------------------|-------------------------|
-    | concurrency tests confuse me (isolation   | DDIA (Kleppmann) —      |
-    | levels, anomalies, why the test flakes)   | transactions chapters   |
+    Build: `gogrep [-i] [-n] [-r] PATTERN [PATH...]`, reads stdin when
+    no path given.
+    Must: io.Reader-based core (testable without files), works on big
+    files without loading them whole, exit codes match real grep.
+    ADR question: where's the seam between CLI and engine? Design the
+    core as a package a server could reuse.
+    Done when: tests pass · ADR committed · /challenge-review run.
   due: "today at {ritual_times.build_monday}"
-  labels: [module-onboarding, platform, exam-gate]
+  labels: [challenge, phase-1]
   cadence: once-per-module
   module_number: 3
 
-# Module 4: Payments for India
-- id: module-4-onboarding
-  title: "Module 4: Payments for India — Razorpay, Webhooks, Reconciliation"
+- id: challenge-4
+  title: "Challenge 4: API-client CLI (~1 wk)"
   description: |
-    Module 4: Integrate real payments for the Indian market.
-
-    Deliverables:
-    - [ ] Razorpay (or Cashfree/PayU — justify choice) integration:
-          order creation, capture, UPI + cards + netbanking
-    - [ ] Webhook handling: signature verification, idempotent
-          processing, retry tolerance (webhooks WILL arrive twice)
-    - [ ] Refund flows: full + partial, tied to booking cancellation
-          policy
-    - [ ] Daily reconciliation job: gateway settlement report vs your
-          payments ledger, alert on mismatch
-    - [ ] Write-up: PCI-DSS scope — what the gateway shields you from,
-          what still remains your responsibility, and why
-    - [ ] Test mode end-to-end: book -> pay -> webhook -> confirm ->
-          cancel -> refund, all idempotent under replay
-
-    Pull-reading triggers (the only way books enter this module):
-    | Trigger felt                              | Read                    |
-    |-------------------------------------------|-------------------------|
-    | reconciliation confuses me (settlement,   | The Anatomy of the      |
-    | how money actually moves, who holds it)   | Swipe (Siddiqui)        |
+    Build: a CLI that calls a public API (currency rates or weather)
+    and prints a formatted answer.
+    Must: timeouts, context cancellation, retry with backoff on 5xx,
+    graceful message when offline, HTTP layer mocked in tests
+    (httptest).
+    ADR question: how do you make code that talks to the network
+    testable?
+    Done when: tests pass · ADR committed · /challenge-review run.
   due: "today at {ritual_times.build_monday}"
-  labels: [module-onboarding, platform]
+  labels: [challenge, phase-1]
   cadence: once-per-module
   module_number: 4
 
-# Module 5: Production Infra on AWS
-- id: module-5-onboarding
-  title: "Module 5: Production Infra on AWS — Cash In the Cert [EXAM GATE 2]"
+- id: challenge-5
+  title: "Challenge 5: Append-only key-value store (~1 wk)"
   description: |
-    Module 5: This module applies the SAA material studied in months
-    1-3 on the devops-ready track (VPC, IAM, RDS, ELB/ASG,
-    S3/CloudFront, SQS). Cert is devops-ready's theory track; this is
-    the lab. A real pan-India production deployment of the booking
-    platform.
-
-    ★ EXAM GATE 2: blue-green deploy + rollback, demonstrated live.
-    This gate must pass before advancing to module 6.
-
-    Deliverables:
-    - [ ] Terraform for everything — no console-created resources
-    - [ ] Multi-AZ: app tier autoscaling group / ECS across AZs,
-          RDS/Aurora Multi-AZ (ap-south-1, justify region choice)
-    - [ ] VPC + IAM designed from the SAA material, not copy-paste
-    - [ ] ElastiCache for availability-search hot paths
-    - [ ] CloudFront for static assets + API edge caching where safe —
-          measure latency from a north-India and a south-India vantage
-    - [ ] SQS for async work (emails, reconciliation, webhook fan-out)
-          with DLQs
-    - [ ] CI/CD pipeline: test -> build -> deploy with blue-green
-          (★ Exam gate 2: blue-green deploy + rollback proven)
-    - [ ] A one-command environment: terraform apply brings up staging
-    - [ ] Cost review: monthly estimate documented; kill anything a
-          solo operator can't justify
-
-    Pull-reading triggers (the only way books enter this module):
-    | Trigger felt                              | Read                    |
-    |-------------------------------------------|-------------------------|
-    | none — the SAA course notes ARE the       | (your Tutorials Dojo +  |
-    | reference; revisit them as lab manual     | Maarek notes)           |
+    Build: `kv set/get/del` backed by an append-only log file,
+    rebuilt into a map on startup.
+    Must: recovery test (kill mid-write, reopen, data intact),
+    compaction when the log doubles, benchmark get/set.
+    ADR question: log format + when to fsync — durability vs speed.
+    Done when: tests pass · ADR committed · /challenge-review run.
   due: "today at {ritual_times.build_monday}"
-  labels: [module-onboarding, platform, exam-gate]
+  labels: [challenge, phase-1]
   cadence: once-per-module
   module_number: 5
 
-# Module 6: Operate: Observability, Reliability, Security
-- id: module-6-onboarding
-  title: "Module 6: Operate — Observe, Break, Harden, Run [EXAM GATES 3 & 4]"
+- id: challenge-6
+  title: "Challenge 6: Worker-pool file processor (~1 wk)"
   description: |
-    Module 6: Make the platform operable and defensible, then prove it.
-
-    ★ EXAM GATE 3: restore drill — restore the production database from
-    backup to a working platform in under 1 hour, timed.
-    ★ EXAM GATE 4: first game-day incident completed with a written
-    postmortem.
-
-    Reliability:
-    - [ ] Define SLIs/SLOs (e.g. booking-confirm p99 latency,
-          payment-webhook processing success rate)
-    - [ ] Structured JSON logging with request IDs end-to-end
-    - [ ] Distributed tracing via OpenTelemetry -> X-Ray or Grafana
-    - [ ] Load test with k6: a realistic "festival booking day" traffic
-          pattern; find and fix the first bottleneck
-    - [ ] ★ Exam gate 3: restore drill under 1 hour (then monthly —
-          see rituals/monthly.yaml)
-    - [ ] ★ Exam gate 4: runbook + game-day incident: kill the DB
-          failover, follow your own runbook, write the postmortem
-    - [ ] Chaos basics: kill an AZ's instances mid-load-test
-
-    Security baseline:
-    - [ ] OAuth2/JWT authN, role-based authZ (renter vs owner vs admin)
-    - [ ] Rate limiting at the edge (API Gateway/WAF) and per-user
-    - [ ] Secrets in AWS Secrets Manager — zero secrets in env files
-    - [ ] Dependency + container vuln scanning in CI (Trivy et al.)
-
-    Exit criteria: the platform survives the load test within SLO,
-    and you can explain every alert that fired.
-
-    Pull-reading triggers (the only way books enter this module):
-    | Trigger felt                              | Read                    |
-    |-------------------------------------------|-------------------------|
-    | after my first real incident (game day    | Release It! (Nygard) —  |
-    | or production)                            | stability patterns      |
+    Build: hash (or thumbnail) every file under a directory using N
+    workers.
+    Must: goroutines + channels or errgroup, bounded concurrency,
+    first error cancels the rest, progress output, race-free
+    (`go test -race`).
+    ADR question: channels vs errgroup vs semaphore — which pattern
+    and why?
+    Done when: race detector clean · ADR committed · /challenge-review run.
   due: "today at {ritual_times.build_monday}"
-  labels: [module-onboarding, platform, exam-gate]
+  labels: [challenge, phase-1]
   cadence: once-per-module
   module_number: 6
+
+- id: challenge-7
+  title: "Challenge 7: Rate-limiter library (~1 wk)"
+  description: |
+    Build: a token-bucket rate limiter as an importable package.
+    Must: per-key limits, thread-safe, tests use a fake clock (no
+    time.Sleep in tests), README documenting the API like a real lib.
+    ADR question: what does a good Go library API look like —
+    interfaces, options pattern, zero values?
+    Done when: tests pass · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-1]
+  cadence: once-per-module
+  module_number: 7
+
+- id: challenge-8
+  title: "Challenge 8: TTL + LRU cache (~1 wk)"
+  description: |
+    Build: an in-memory cache with max entries (LRU eviction) and
+    per-entry TTL.
+    Must: O(1) get/set, thread-safe, benchmarks proving no lock
+    collapse under parallel load, race-clean.
+    ADR question: locking strategy — one mutex, sharded, or
+    sync.Map? Measure, don't guess.
+    Done when: benchmarks committed · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-1]
+  cadence: once-per-module
+  module_number: 8
+
+# ============ Phase 2: Services (1-1.5 weeks each) ============
+
+- id: challenge-9
+  title: "Challenge 9: Notes API, stdlib only (~1 wk)"
+  description: |
+    Build: CRUD JSON API for notes with net/http, no framework.
+    Must: middleware chain (logging, request ID, panic recovery), one
+    error envelope everywhere, httptest coverage, in-memory store
+    behind an interface.
+    ADR question: project layout for a Go service — package
+    boundaries you won't regret.
+    Done when: tests pass · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-2]
+  cadence: once-per-module
+  module_number: 9
+
+- id: challenge-10
+  title: "Challenge 10: Notes API on Postgres (~1 wk)"
+  description: |
+    Build: swap challenge 9's store for Postgres (pgx or sqlc),
+    docker-compose for local dev, versioned migrations.
+    Must: the store interface holds (handlers untouched), integration
+    tests against real Postgres, connection pool configured on
+    purpose.
+    ADR question: SQL approach — ORM, sqlc, raw pgx? Justify for a
+    solo maintainer.
+    Done when: integration tests pass · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-2]
+  cadence: once-per-module
+  module_number: 10
+
+- id: challenge-11
+  title: "Challenge 11: Auth — sessions, JWT, roles (~1.5 wk)"
+  description: |
+    Build: signup/login on the notes API; owner-only access; an
+    admin role that sees everything.
+    Must: bcrypt/argon2 hashing, JWT or session cookie (pick via
+    ADR), authN + authZ middleware, tests for the forbidden paths —
+    the attacks, not just the happy path.
+    ADR question: sessions vs JWT for THIS app; where do tokens live;
+    what's the revocation story?
+    Done when: forbidden-path tests pass · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-2]
+  cadence: once-per-module
+  module_number: 11
+
+- id: challenge-12
+  title: "Challenge 12: Spec-first URL shortener (~1 wk)"
+  description: |
+    Build: write the OpenAPI 3 spec FIRST (endpoints, errors,
+    pagination), get it linted (spectral), then implement to the spec.
+    Must: contract tests (schemathesis or manual) proving the
+    implementation matches the spec, redirect handling, hit counter.
+    ADR question: what makes an API contract good — naming,
+    versioning, error codes. Use API Design Patterns as desk reference.
+    Done when: contract tests pass · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-2]
+  cadence: once-per-module
+  module_number: 12
+
+- id: challenge-13
+  title: "Challenge 13: File upload service (~1 wk)"
+  description: |
+    Build: multipart upload endpoint streaming to S3-compatible
+    storage (MinIO locally), download via presigned URL.
+    Must: no buffering whole files in memory, size/type limits,
+    content-addressed keys, cleanup of failed uploads.
+    ADR question: stream vs buffer, and who owns object lifecycle?
+    Done when: tests pass with MinIO · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-2]
+  cadence: once-per-module
+  module_number: 13
+
+- id: challenge-14
+  title: "Challenge 14: Webhook receiver (~1.5 wk)"
+  description: |
+    Build: an endpoint receiving signed webhooks (simulate a payment
+    provider): verify signature, process idempotently, tolerate
+    retries and out-of-order delivery.
+    Must: replay the same event 10x -> state changes once; reject bad
+    signatures; store-then-process (don't do work in the handler);
+    tests hammer the replay path.
+    ADR question: idempotency key design + at-least-once delivery —
+    this is dress rehearsal for real payments (challenge 32).
+    Done when: replay tests pass · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-2]
+  cadence: once-per-module
+  module_number: 14
+
+- id: challenge-15
+  title: "Challenge 15: Job queue on Postgres (~1.5 wk)"
+  description: |
+    Build: background jobs (e.g. send email, resize image) queued in
+    Postgres, N workers consuming with FOR UPDATE SKIP LOCKED.
+    Must: retries with backoff, max-attempts -> dead-letter table,
+    jobs survive worker crashes, concurrent-worker test proves no
+    double-processing.
+    ADR question: why SKIP LOCKED beats a naive polling loop; when
+    would you graduate to a real broker?
+    Done when: crash/concurrency tests pass · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-2]
+  cadence: once-per-module
+  module_number: 15
+
+- id: challenge-16
+  title: "Challenge 16: Search + cursor pagination (~1 wk)"
+  description: |
+    Build: full-text search over notes (Postgres tsvector) with
+    cursor-based pagination.
+    Must: stable cursors under concurrent inserts (test it!), why
+    OFFSET breaks documented in the ADR, ranked results, index +
+    EXPLAIN ANALYZE before/after committed.
+    ADR question: cursor encoding and index design.
+    Done when: pagination tests pass · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-2]
+  cadence: once-per-module
+  module_number: 16
+
+- id: challenge-17
+  title: "Challenge 17: Dockerize + graceful shutdown (~1 wk)"
+  description: |
+    Build: production-shaped packaging for the notes stack —
+    multi-stage Dockerfile, compose with healthchecks, config from
+    env, graceful shutdown draining in-flight requests.
+    Must: SIGTERM test (in-flight request completes, new ones
+    refused), image under 30MB, /healthz + /readyz distinct.
+    ADR question: 12-factor config — what's env, what's flag, what's
+    file?
+    Done when: shutdown test passes · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-2]
+  cadence: once-per-module
+  module_number: 17
+
+- id: challenge-18
+  title: "Challenge 18: Load-test & profile (~1.5 wk)"
+  description: |
+    Build: a k6 load profile for the notes API; find the bottleneck
+    with pprof; fix it; prove the fix with numbers.
+    Must: before/after graphs committed, flamegraph screenshot, the
+    fix is one deliberate change (not a shotgun), write-up of the
+    hunt.
+    ADR question: none — this one produces a performance report
+    instead. Same rigor: hypothesis -> measurement -> conclusion.
+    Done when: report committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-2]
+  cadence: once-per-module
+  module_number: 18
+
+# ======= Phase 3: Concurrency & Distribution (1.5-2 wk each) =======
+
+- id: challenge-19
+  title: "Challenge 19: TCP chat server (~1.5 wk)"
+  description: |
+    Build: raw TCP chat — rooms, nicknames, broadcast.
+    Must: one goroutine per conn done safely, slow-client
+    backpressure (drop or disconnect — decide in ADR), clean
+    disconnect handling, race-clean under a 100-client test.
+    ADR question: fan-out design and what happens when a client
+    can't keep up.
+    Done when: 100-client test passes · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-3]
+  cadence: once-per-module
+  module_number: 19
+
+- id: challenge-20
+  title: "Challenge 20: Mini-Redis (~2 wk)"
+  description: |
+    Build: a RESP-speaking server: GET/SET/DEL/EXPIRE/TTL, works
+    with the real redis-cli.
+    Must: protocol parser with its own tests, concurrent clients,
+    active+lazy expiry, benchmark vs real Redis (know why you lose).
+    ADR question: single event loop vs mutex-guarded map vs shards.
+    Done when: redis-cli works · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-3]
+  cadence: once-per-module
+  module_number: 20
+
+- id: challenge-21
+  title: "Challenge 21: Pub/sub broker (~2 wk)"
+  description: |
+    Build: a broker: topics, publish, subscribe, at-least-once
+    delivery with acks and redelivery on timeout.
+    Must: consumer crash test (message redelivered), persistent
+    queue (reuse challenge 5's log!), ordering guarantees stated
+    honestly in the README.
+    ADR question: what delivery guarantee can you actually promise,
+    and what does the consumer have to do because of it?
+    Done when: crash tests pass · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-3]
+  cadence: once-per-module
+  module_number: 21
+
+- id: challenge-22
+  title: "Challenge 22: Distributed lock & leader election (~1.5 wk)"
+  description: |
+    Build: N copies of a worker where exactly one is active, using
+    Postgres advisory locks (or lease rows with expiry).
+    Must: kill the leader -> another takes over within seconds;
+    fencing token so a paused old leader can't corrupt state; chaos
+    test in CI.
+    ADR question: leases, clocks, and why "exactly one" is harder
+    than it looks.
+    Done when: failover test passes · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-3]
+  cadence: once-per-module
+  module_number: 22
+
+- id: challenge-23
+  title: "Challenge 23: Consistent-hashing cache client (~1.5 wk)"
+  description: |
+    Build: a client library sharding keys across 3 mini-redis nodes
+    (challenge 20) with a consistent-hash ring + virtual nodes.
+    Must: adding/removing a node remaps only ~1/N keys (prove with a
+    test), dead-node handling, ring visualized in the README.
+    ADR question: rebalancing strategy and what consistency you give
+    up during it.
+    Done when: remap test passes · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-3]
+  cadence: once-per-module
+  module_number: 23
+
+- id: challenge-24
+  title: "Challenge 24: Replicated log (~2 wk)"
+  description: |
+    Build: consensus-lite — a 3-node replicated log: one leader
+    accepts writes, replicates to followers, acks at majority;
+    followers serve reads with staleness labeled.
+    Must: kill a follower (writes continue), kill the leader
+    (re-elect via challenge 22), all nodes converge — proven by test.
+    Not full Raft; the ADR states exactly which guarantees you
+    dropped and why.
+    ADR question: what does "committed" mean in your system?
+    Done when: convergence tests pass · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-3]
+  cadence: once-per-module
+  module_number: 24
+
+- id: challenge-25
+  title: "Challenge 25: Event-sourced ledger (~2 wk)"
+  description: |
+    Build: an account ledger where the events are the truth:
+    deposit/withdraw/transfer appended, balances are projections,
+    full replay rebuilds state.
+    Must: negative-balance rejected at the command layer, projection
+    rebuild test, snapshotting once replay gets slow, idempotent
+    command handling (client retries!).
+    ADR question: event schema evolution — what happens when an
+    event's shape must change?
+    Done when: replay test passes · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-3]
+  cadence: once-per-module
+  module_number: 25
+
+- id: challenge-26
+  title: "Challenge 26: Outbox pattern — money transfer (~2 wk)"
+  description: |
+    Build: two services (accounts, notifications) where a transfer
+    must update balances AND notify — atomically-ish, via a
+    transactional outbox + the pub/sub broker (challenge 21).
+    Must: crash between DB commit and publish loses nothing (test
+    it), consumer dedup, end-to-end test across both services.
+    ADR question: why two-phase commit is off the table and what the
+    outbox costs you instead.
+    Done when: crash tests pass · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-3]
+  cadence: once-per-module
+  module_number: 26
+
+- id: challenge-27
+  title: "Challenge 27: OpenTelemetry across the stack (~1.5 wk)"
+  description: |
+    Build: wire tracing + metrics through challenges 21/26's
+    services: one trace follows a transfer end-to-end across service
+    and queue boundaries.
+    Must: trace context propagates through the broker, RED metrics
+    dashboard (Grafana or console), one real question answered with
+    a trace ("where did the 400ms go?").
+    ADR question: what to instrument vs what's noise.
+    Done when: cross-service trace screenshot committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-3]
+  cadence: once-per-module
+  module_number: 27
+
+- id: challenge-28
+  title: "Challenge 28: Chaos week (~1.5 wk)"
+  description: |
+    Build: nothing new — break everything. Inject failures into the
+    challenge 26 stack: kill processes mid-transfer, partition the
+    broker, corrupt a projection, fill the disk.
+    Must: a runbook per failure written BEFORE injecting it, then
+    corrected after; one postmortem for the failure that surprised
+    you most; fixes shipped for anything that lost data.
+    Done when: runbooks + postmortem committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-3]
+  cadence: once-per-module
+  module_number: 28
+
+# ========= Phase 4: The Platform (2-3 weeks each) =========
+# From here every challenge is a rental-platform component.
+# The ladder's summit is the launched product.
+
+- id: challenge-29
+  title: "Challenge 29: Booking-hold service (~2.5 wk) [EXAM GATE 1]"
+  description: |
+    Build: the heart of the platform — equipment, availability
+    calendar, holds with expiry, confirm-or-release.
+    Must: two people can NEVER hold the same kit for overlapping
+    dates — exclusion constraint / SELECT FOR UPDATE / serializable,
+    chosen and justified in the ADR.
+    ★ EXAM GATE 1: a concurrency hammer test — hundreds of parallel
+    overlapping booking attempts, zero double-books, run in CI.
+    Pull reading: DDIA transactions chapters when the tests confuse you.
+    Done when: gate 1 passes in CI · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-4, exam-gate]
+  cadence: once-per-module
+  module_number: 29
+
+- id: challenge-30
+  title: "Challenge 30: Availability search (~2 wk)"
+  description: |
+    Build: "what's free in Kochi, May 3-7?" — calendar data model +
+    fast availability search + cache with correct invalidation on
+    every booking/hold/release.
+    Must: correctness test (cache never shows a booked kit free),
+    p95 latency measured under load (challenge 18 skills), cursor
+    pagination (challenge 16 skills).
+    ADR question: compute availability on read vs maintain on write.
+    Done when: invalidation tests pass · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-4]
+  cadence: once-per-module
+  module_number: 30
+
+- id: challenge-31
+  title: "Challenge 31: Spec-first booking API (~2 wk)"
+  description: |
+    Build: the platform's public API, spec first (challenge 12
+    discipline at full scale): search, hold, confirm, cancel,
+    equipment CRUD, auth (challenge 11), one error envelope.
+    Must: OpenAPI published + linted, contract tests in CI,
+    idempotency keys on every mutation, versioning strategy decided.
+    Desk reference: API Design Patterns.
+    Done when: contract tests pass · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-4]
+  cadence: once-per-module
+  module_number: 31
+
+- id: challenge-32
+  title: "Challenge 32: Payments for India (~3 wk)"
+  description: |
+    Build: Razorpay test-mode end to end: order -> pay (UPI/cards) ->
+    webhook -> confirm booking -> cancel -> refund (full + partial).
+    Must: webhook handling is challenge 14 for real (signatures,
+    idempotent, replay-proof); daily reconciliation job (challenge 15
+    queue) comparing gateway settlements vs your ledger (challenge 25
+    discipline); PCI scope write-up.
+    Pull reading: The Anatomy of the Swipe when reconciliation
+    confuses you.
+    Done when: full flow idempotent under replay · ADR committed ·
+    /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-4]
+  cadence: once-per-module
+  module_number: 32
+
+- id: challenge-33
+  title: "Challenge 33: Walking skeleton — assemble & deploy (~2 wk)"
+  description: |
+    Build: wire challenges 29-32 into ONE deployable app with a real
+    URL (Railway/App Runner first — AWS is next challenge).
+    Must: the FINAL stack ADR — Go vs a challenger, now argued with
+    a year of evidence from your own ladder; seed data; a friend
+    completes a test booking end-to-end on the live URL.
+    Done when: live URL works · stack ADR final · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-4]
+  cadence: once-per-module
+  module_number: 33
+
+- id: challenge-34
+  title: "Challenge 34: Production infra on AWS (~3 wk) [EXAM GATE 2]"
+  description: |
+    Build: the SAA lab — this challenge applies the cert material
+    studied on the devops-ready track (VPC, IAM, RDS, ELB/ASG,
+    S3/CloudFront, SQS). Terraform everything, multi-AZ in
+    ap-south-1, SQS + DLQs for async work, CloudFront for assets,
+    one-command staging.
+    ★ EXAM GATE 2: blue-green deploy + rollback, demonstrated live.
+    Must: cost review — kill anything a solo operator can't justify.
+    Done when: gate 2 demonstrated · ADR committed · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-4, exam-gate]
+  cadence: once-per-module
+  module_number: 34
+
+- id: challenge-35
+  title: "Challenge 35: Operate (~2.5 wk) [EXAM GATES 3 & 4]"
+  description: |
+    Build: SLIs/SLOs (booking-confirm p99, webhook success rate),
+    structured logs with request IDs, OTel tracing (challenge 27) to
+    X-Ray/Grafana, k6 "festival day" load test, alerts.
+    ★ EXAM GATE 3: restore the production DB from backup to a
+    working platform in under 1 hour, timed. Then monthly (see
+    rituals/monthly.yaml).
+    ★ EXAM GATE 4: first game day — kill the DB failover, follow
+    your runbook, write the postmortem. Then monthly.
+    Pull reading: Release It! after the incident.
+    Done when: gates 3 & 4 done · /challenge-review run.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-4, exam-gate]
+  cadence: once-per-module
+  module_number: 35
+
+- id: challenge-36
+  title: "Challenge 36: Launch hardening & go-live (~2 wk)"
+  description: |
+    Build: the last mile — rate limiting at the edge and per-user,
+    secrets to AWS Secrets Manager, dependency + container scanning
+    in CI, security pass on authZ (renter vs owner vs admin), legal
+    pages, backups verified again.
+    Must: a go/no-go checklist, then GO: first real listing, first
+    real booking.
+    Done when: the platform is live with real users · final
+    /challenge-review run · ship log tells the story.
+  due: "today at {ritual_times.build_monday}"
+  labels: [challenge, phase-4]
+  cadence: once-per-module
+  module_number: 36

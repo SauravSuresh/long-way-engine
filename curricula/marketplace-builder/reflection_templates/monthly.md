@@ -16,10 +16,10 @@
 
 | Gate | Status |
 |------|--------|
-| 1 — Concurrency hammer test (module 3) | |
-| 2 — Blue-green deploy + rollback (module 5) | |
-| 3 — Restore drill < 1 hr (module 6, then monthly) | |
-| 4 — Game day + postmortem (module 6, then monthly) | |
+| 1 — Concurrency hammer test (challenge 29) | |
+| 2 — Blue-green deploy + rollback (challenge 34) | |
+| 3 — Restore drill < 1 hr (challenge 35, then monthly) | |
+| 4 — Game day + postmortem (challenge 35, then monthly) | |
 | 5 — RFC approved by senior engineers (running count) | |
 
 ---
