@@ -68,8 +68,9 @@ syllabuses:
       leetcode_session: '21:30'        # LeetCode Mon/Wed/Fri — shifted from 20:30 so the
                                        # marketplace-builder build session fits at 20:00
       saturday_deep_block: '14:00'     # Shifted from 09:00 to avoid long-way
-      friday_review: '22:00'           # Reusing friday_reflection slot (same ritual)
-      friday_reflection: '22:00'       # Shifted from 21:00 to run after evening_hands_on
+      friday_review: '20:15'           # Reusing friday_reflection slot (same ritual)
+      friday_reflection: '20:15'       # Between bootdev (ends 20:00) and LeetCode (21:30);
+                                       # 22:00 would sit inside the shifted LeetCode slot
       sunday_trace: '20:00'            # Shifted from 19:00 to avoid long-way
       monthly_project_publish: 09:00   # No collision
       monthly_cert_check: '14:00'      # No collision
