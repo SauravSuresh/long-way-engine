@@ -1,15 +1,14 @@
 # Weekly rituals for Marketplace Builder curriculum
 #
-# Evening schedule:
-#   Mon + Wed  -> build sessions (60-90 min, current module's deliverables)
-#   Tue        -> boot.dev just-in-time session (while track current)
-#   Thu        -> SAA labs/practice exams (while SAA current);
-#                 reverts to a second boot.dev session once SAA is done
-#                 (mutually exclusive track gates)
-#   Fri        -> reflection (20 min)
-#   Sat        -> deep block 3-4 hrs (protected; first 30 min RFC/ADR)
-#   Sun        -> off + weekly state review
-#   + one flexible 45-min design review with senior engineers (Mon slot,
+# Runs in parallel with devops-ready, which owns all cert/course
+# theory (SAA mornings, boot.dev, LeetCode). Clock times here are
+# packed around devops-ready's evening block (bootdev 19:00, LeetCode
+# 21:30):
+#   Mon + Wed  -> build sessions 20:00-21:30 (between bootdev & LeetCode)
+#   Fri        -> reflection 18:30 (before bootdev)
+#   Sat        -> deep block 09:30-13:00 (devops project block owns 14:00)
+#   Sun        -> off + state review 11:30 (devops review is 11:00)
+#   + one flexible 45-min design review with senior engineers (Mon 17:00,
 #     move it in Todoist when their calendar demands)
 
 - id: build-session-monday
@@ -44,57 +43,6 @@
   day_of_week: wednesday
   counts_toward_streak: true
 
-- id: bootdev-tuesday
-  title: "boot.dev session (60 min) — just-in-time legs only"
-  description: |
-    60 min. Just-in-time legs only: SQL, HTTP servers/APIs, Docker —
-    whatever the platform build needs next. Skip the algorithms/DSA
-    legs entirely; they serve interviews, not the platform.
-
-    Exit criterion: pause this track once I ship production endpoints
-    unassisted. Mark it done in the Sunday state review.
-  due: "today at {ritual_times.bootdev_tuesday}"
-  labels: [weekly-ritual, bootdev]
-  cadence: weekly
-  day_of_week: tuesday
-  gated_by:
-    - { type: track, category: Courses, item: "boot.dev backend path", states: [current] }
-
-- id: saa-lab-thursday
-  title: "SAA hands-on labs / Tutorials Dojo practice exam (60 min)"
-  description: |
-    60 min. While the SAA track is live, Thursday evening is cert
-    practice: hands-on labs for the week's course sections, or a timed
-    Tutorials Dojo practice exam block. Score every practice exam;
-    ≥80% goes into the Sunday state review.
-
-    When the SAA track completes, this slot reverts to a second
-    boot.dev session (see bootdev-thursday — mutually exclusive gates).
-  due: "today at {ritual_times.saa_lab_thursday}"
-  labels: [weekly-ritual, certification, saa]
-  cadence: weekly
-  day_of_week: thursday
-  gated_by:
-    - { type: track, category: Certifications, item: "AWS Solutions Architect Associate", states: [current] }
-
-- id: bootdev-thursday
-  title: "boot.dev session (60 min) — just-in-time legs only"
-  description: |
-    60 min. Second weekly boot.dev session — this slot belonged to SAA
-    labs until the cert was passed; now it goes to the platform's
-    just-in-time legs: SQL, HTTP servers/APIs, Docker. Skip the
-    algorithms/DSA legs.
-
-    Exit criterion: pause this track once I ship production endpoints
-    unassisted. Mark it done in the Sunday state review.
-  due: "today at {ritual_times.bootdev_thursday}"
-  labels: [weekly-ritual, bootdev]
-  cadence: weekly
-  day_of_week: thursday
-  gated_by:
-    - { type: track, category: Certifications, item: "AWS Solutions Architect Associate", states: [done] }
-    - { type: track, category: Courses, item: "boot.dev backend path", states: [current] }
-
 - id: friday-reflection
   title: "Friday reflection (20 min)"
   description: |
@@ -118,7 +66,8 @@
 - id: saturday-deep-block
   title: "Saturday deep block (3-4 hr): RFC/ADR first, then build"
   description: |
-    Protected block — 3-4 hours, no meetings, no errands.
+    Protected block — 09:30-13:00, no meetings, no errands. (The
+    devops-ready project block owns Saturday afternoon.)
 
     First 30 min: RFC/ADR writing. One design decision from this
     week's build, written up properly. This is what feeds the weekly
@@ -154,12 +103,11 @@
   title: "Weekly state review — {iso_year}-W{iso_week:02d}"
   description: |
     Check the sub-tasks that apply. Next cron run picks them up and
-    mutates state.yaml: module advance, cert milestones, track
-    updates, counter increments.
+    mutates state.yaml: module advance, counter increments.
+    (Cert milestones live in devops-ready's own state review, 11:00.)
 
     Review the week:
     - Did the current module's exam gate move?
-    - SAA: course sections done, practice exam scores, exam booked?
     - Any RFC approved by the senior engineers (Exam gate 5, from
       month 2 onward)?
   due: "today at {ritual_times.weekly_state_review}"
@@ -174,15 +122,6 @@
 
     - title: "Exam gate 5: RFC approved by senior engineers this week (from month 2; put count in comment)"
       action: { type: increment_counter, counter: rfcs_approved }
-
-    - title: "SAA practice exam scored ≥80% this week (put count in comment)"
-      action: { type: increment_counter, counter: saa_practice_exams_80plus }
-
-    - title: "SAA exam date booked (put 1 in comment)"
-      action: { type: increment_counter, counter: saa_exam_booked }
-
-    - title: "SAA passed — mark the cert track done"
-      action: { type: mark_track_finished, category: Certifications, item: "AWS Solutions Architect Associate" }
 
     - title: "I finished {current_book}"
       action: { type: mark_book_finished, book: "{current_book}" }

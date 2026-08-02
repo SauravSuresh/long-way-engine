@@ -25,48 +25,8 @@
     create_stub: true
     stub_path: "reflections/marketplace-builder/monthly/{year}-{month:02d}.md"
 
-# Cert check-in on the 15th, gated to a cert track being current.
-# Gates are ANDed, so "any cert current" is expressed as one template
-# per cert track — at most one fires while exactly one cert is live.
-- id: monthly-cert-checkin-saa
-  title: "Cert check-in: AWS SAA on track?"
-  description: |
-    Mid-month check: am I on track for the SAA exam window (end of
-    month 3 / month 4)?
-
-    - Practice exam scores: aim for 80%+ (Tutorials Dojo)
-    - Weak areas identified and turned into Anki cards
-    - Hands-on labs completed for every course section so far
-    - Exam booked? If month 2's check-in and it isn't: book it now —
-      a date on the calendar is the forcing function
-
-    If behind schedule, adjust the Thursday lab slot's focus or extend
-    the exam window to month 4. Do not silently drop the cert — it's a
-    stated priority.
-  due: "today at {ritual_times.cert_checkin}"
-  labels: [monthly-ritual, certification, saa]
-  cadence: monthly
-  day_of_month: 15
-  gated_by:
-    - { type: track, category: Certifications, item: "AWS Solutions Architect Associate", states: [current] }
-
-- id: monthly-cert-checkin-cka
-  title: "Cert check-in: CKA sprint on track?"
-  description: |
-    Mid-month check for the post-launch CKA sprint (~month 7-8):
-
-    - Mumshad course progress
-    - killer.sh scenarios completed; kubectl speed (time yourself)
-    - Exam booked?
-
-    Reminder: CKA feeds the CV, not the platform — the platform stays
-    on managed PaaS/ECS. Timebox accordingly.
-  due: "today at {ritual_times.cert_checkin}"
-  labels: [monthly-ritual, certification, cka]
-  cadence: monthly
-  day_of_month: 15
-  gated_by:
-    - { type: track, category: Certifications, item: "CKA", states: [current] }
+# (Cert check-ins are devops-ready's concern — its 15th-of-month
+# certification-prep ritual covers SAA and CKA.)
 
 # From module 5 onward: the ops muscles get exercised monthly.
 - id: monthly-restore-drill

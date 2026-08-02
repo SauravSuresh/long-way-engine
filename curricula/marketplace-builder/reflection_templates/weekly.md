@@ -42,18 +42,12 @@
 
 ---
 
-## SAA Track (while current)
-
-- **Course sections completed**: 
-- **Practice exam score (if taken)**: __%
-- **Exam booked**: Yes / No / N/A
-
----
-
-## Anki
+## Anki (build deck)
 
 - **New cards added**: 
-- **Split (built/broke vs cert)**: 
+
+> Cert progress (SAA, boot.dev, LeetCode) belongs in the devops-ready
+> weekly reflection, not here.
 
 ---
 

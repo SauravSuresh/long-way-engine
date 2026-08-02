@@ -34,18 +34,6 @@
 
 ---
 
-## Cert Track
-
-### AWS SAA (months 1-3/4)
-- **Practice exam scores**: 
-- **Exam booked / date**: 
-- **Status**: Not Started / In Progress / Passed
-
-### CKA (post-launch sprint)
-- **Status**: Parked / In Progress / Passed
-
----
-
 ## One Thing That Broke
 
 **What broke**: 

@@ -10,6 +10,7 @@ ritual_times:
 
 priority_order:
 - marketplace-builder
+- devops-ready
 - long-way
 
 syllabuses:
@@ -20,39 +21,37 @@ syllabuses:
     todoist_project_id: REPLACE_ME_TODOIST_PROJECT_ID
     state_file: state/marketplace-builder.yaml
     enabled: true
+    # Runs full-parallel with devops-ready. This curriculum is
+    # build-only; all cert/course theory (SAA, CKA, boot.dev, LeetCode)
+    # belongs to devops-ready. Times are packed around devops-ready's
+    # day: srs 07:30, morning study 08:00, bootdev 19:00, LeetCode
+    # 21:30, Saturday project block 14:00, state review 11:00.
     ritual_times:
-      # Overrides of the 7 global (long-way) slots — every (slot, time)
-      # pair must be unique across enabled syllabuses, so all are shifted
-      # off long-way's claims even where marketplace-builder reuses none.
-      morning_reading: '08:00'
-      anki: '07:30'                   # daily Anki, Mon-Sat
-      evening_hands_on: '19:30'
-      friday_review: '20:30'
-      saturday_deep_block: '14:00'    # Sat deep block (RFC/ADR + build)
-      sunday_trace: '20:30'
-      weekly_state_review: '11:00'    # Sunday state review
+      # Overrides of the 7 global (long-way) slot names — every
+      # (slot, time) pair must be unique across enabled syllabuses.
+      morning_reading: '06:30'        # unused here; dodges long-way/devops claims
+      anki: '07:15'                   # daily Anki (build deck), before devops srs 07:30
+      evening_hands_on: '19:30'       # unused here
+      friday_review: '20:45'          # unused here
+      saturday_deep_block: '09:30'    # Sat deep block (devops project block owns 14:00)
+      sunday_trace: '20:30'           # unused here
+      weekly_state_review: '11:30'    # Sunday state review (devops review is 11:00)
       # marketplace-builder's own slots
-      saa_morning: '08:00'            # SAA course study, Mon-Sat while cert live
-      build_monday: '19:30'           # build session
-      build_wednesday: '19:30'        # build session
-      bootdev_tuesday: '19:30'        # boot.dev just-in-time
-      saa_lab_thursday: '19:30'       # SAA labs / practice exams (while cert live)
-      bootdev_thursday: '19:30'       # second boot.dev session (after SAA done)
-      friday_reflection: '20:30'      # Friday reflection
+      build_monday: '20:00'           # build session, between bootdev (19:00) & LeetCode (21:30)
+      build_wednesday: '20:00'        # build session
+      friday_reflection: '18:30'      # Friday reflection, before bootdev
       design_review: '17:00'          # weekly design review (flexible; Monday default)
       ship_log: '09:30'               # 1st of month
-      cert_checkin: '15:00'           # 15th of month, gated to cert tracks
       restore_drill: '20:00'          # monthly, day 10, module 5 onward
-      game_day: '14:00'               # monthly, last Saturday, module 5 onward
+      game_day: '09:30'               # monthly, last Saturday — takes over the deep block
 
-  # superseded — cert goals live on inside marketplace-builder; files
-  # kept as reference. Re-enable by flipping `enabled` and adding the
-  # key back to priority_order.
+  # Full parallel with marketplace-builder. Owns all cert/course
+  # theory: SAA + CKA, boot.dev, LeetCode, its own Anki deck.
   devops-ready:
     path: curricula/devops-ready
     todoist_project_id: 6gpVRwqVmjqRc7hX
     state_file: state/devops-ready.yaml
-    enabled: false
+    enabled: true
     # Adjusted ritual times to avoid collisions with long-way
     ritual_times:
       morning_reading: 08:00           # Reusing morning_udemy slot (same ritual)
@@ -66,7 +65,8 @@ syllabuses:
       bootdev_wednesday: '19:00'       # boot.dev session
       bootdev_thursday: '19:00'        # boot.dev session
       bootdev_friday: '19:00'          # boot.dev session (before reflection)
-      leetcode_session: '20:30'        # LeetCode alternate days (Mon/Wed/Fri, after boot.dev)
+      leetcode_session: '21:30'        # LeetCode Mon/Wed/Fri — shifted from 20:30 so the
+                                       # marketplace-builder build session fits at 20:00
       saturday_deep_block: '14:00'     # Shifted from 09:00 to avoid long-way
       friday_review: '22:00'           # Reusing friday_reflection slot (same ritual)
       friday_reflection: '22:00'       # Shifted from 21:00 to run after evening_hands_on

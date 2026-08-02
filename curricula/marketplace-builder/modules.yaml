@@ -47,13 +47,13 @@
     Pull-reading triggers (the only way books enter this module):
     | Trigger felt                          | Read                       |
     |---------------------------------------|----------------------------|
-    | none scheduled — SAA course owns the  | (SAA = Maarek Udemy +      |
-    | morning theory slot, months 1-3       | Tutorials Dojo notes)      |
+    | none scheduled — cert/course theory   | (see devops-ready's own    |
+    | lives on the devops-ready track       | morning + evening rituals) |
 
     Setup:
     - [ ] Create platform GitHub repo with /docs/adr/ directory
     - [ ] Read ADR format (Michael Nygard's template)
-  due: "today at {ritual_times.saa_morning}"
+  due: "today at {ritual_times.build_monday}"
   labels: [module-onboarding, platform]
   cadence: once-per-module
   module_number: 1
@@ -87,7 +87,7 @@
     Setup:
     - [ ] Spectral linting for the OpenAPI spec in CI
     - [ ] Publish rendered docs (Redoc/Stoplight) from the repo
-  due: "today at {ritual_times.saa_morning}"
+  due: "today at {ritual_times.build_monday}"
   labels: [module-onboarding, platform]
   cadence: once-per-module
   module_number: 2
@@ -120,7 +120,7 @@
     |-------------------------------------------|-------------------------|
     | concurrency tests confuse me (isolation   | DDIA (Kleppmann) —      |
     | levels, anomalies, why the test flakes)   | transactions chapters   |
-  due: "today at {ritual_times.saa_morning}"
+  due: "today at {ritual_times.build_monday}"
   labels: [module-onboarding, platform, exam-gate]
   cadence: once-per-module
   module_number: 3
@@ -150,7 +150,7 @@
     |-------------------------------------------|-------------------------|
     | reconciliation confuses me (settlement,   | The Anatomy of the      |
     | how money actually moves, who holds it)   | Swipe (Siddiqui)        |
-  due: "today at {ritual_times.saa_morning}"
+  due: "today at {ritual_times.build_monday}"
   labels: [module-onboarding, platform]
   cadence: once-per-module
   module_number: 4
@@ -160,9 +160,10 @@
   title: "Module 5: Production Infra on AWS — Cash In the Cert [EXAM GATE 2]"
   description: |
     Module 5: This module applies the SAA material studied in months
-    1-3 (VPC, IAM, RDS, ELB/ASG, S3/CloudFront, SQS). Cert is the
-    theory track; this is the lab. A real pan-India production
-    deployment of the booking platform.
+    1-3 on the devops-ready track (VPC, IAM, RDS, ELB/ASG,
+    S3/CloudFront, SQS). Cert is devops-ready's theory track; this is
+    the lab. A real pan-India production deployment of the booking
+    platform.
 
     ★ EXAM GATE 2: blue-green deploy + rollback, demonstrated live.
     This gate must pass before advancing to module 6.
@@ -188,7 +189,7 @@
     |-------------------------------------------|-------------------------|
     | none — the SAA course notes ARE the       | (your Tutorials Dojo +  |
     | reference; revisit them as lab manual     | Maarek notes)           |
-  due: "today at {ritual_times.saa_morning}"
+  due: "today at {ritual_times.build_monday}"
   labels: [module-onboarding, platform, exam-gate]
   cadence: once-per-module
   module_number: 5
@@ -231,7 +232,7 @@
     |-------------------------------------------|-------------------------|
     | after my first real incident (game day    | Release It! (Nygard) —  |
     | or production)                            | stability patterns      |
-  due: "today at {ritual_times.saa_morning}"
+  due: "today at {ritual_times.build_monday}"
   labels: [module-onboarding, platform, exam-gate]
   cadence: once-per-module
   module_number: 6

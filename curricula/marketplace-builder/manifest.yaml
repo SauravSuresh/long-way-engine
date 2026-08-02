@@ -1,22 +1,18 @@
 # Manifest for Marketplace Builder curriculum
 # Build-first syllabus: the rental-equipment booking platform is the
-# spine; reading is pulled by problems. Certs (SAA now, CKA post-launch)
-# are the one deliberate scheduled-theory exception.
+# spine; reading is pulled by problems. All cert/course theory (SAA,
+# CKA, boot.dev, LeetCode) belongs to the devops-ready curriculum,
+# which runs in parallel — one concern, one curriculum.
 
 ritual_times_required:
-  - anki                    # Daily Anki (Mon-Sat)
-  - saa_morning             # SAA course study (Mon-Sat, while SAA track current)
-  - build_monday            # Build session (Mon evening)
-  - build_wednesday         # Build session (Wed evening)
-  - bootdev_tuesday         # boot.dev just-in-time session (Tue evening)
-  - saa_lab_thursday        # SAA labs / practice exams (Thu, while SAA current)
-  - bootdev_thursday        # second boot.dev session (Thu, after SAA done)
-  - friday_reflection       # Friday reflection + earned-reading question
-  - saturday_deep_block     # Saturday deep block (RFC/ADR first 30 min + build)
+  - anki                    # Daily Anki, build deck (Mon-Sat)
+  - build_monday            # Build session (Mon 20:00, between devops bootdev & LeetCode)
+  - build_wednesday         # Build session (Wed 20:00)
+  - friday_reflection       # Friday reflection (18:30, before devops bootdev)
+  - saturday_deep_block     # Saturday deep block 09:30 (devops project block owns 14:00)
   - design_review           # Weekly design review with senior engineers
-  - weekly_state_review     # Sunday state review
+  - weekly_state_review     # Sunday state review (11:30; devops review is 11:00)
   - ship_log                # 1st of month: ship log publish
-  - cert_checkin            # 15th of month: cert check-in (gated to cert tracks)
   - restore_drill           # Monthly restore drill (module 5 onward)
   - game_day                # Monthly game day (module 5 onward, last Saturday)
 
@@ -30,18 +26,13 @@ placeholders_used:
   - year
   - month
   - ritual_times.anki
-  - ritual_times.saa_morning
   - ritual_times.build_monday
   - ritual_times.build_wednesday
-  - ritual_times.bootdev_tuesday
-  - ritual_times.saa_lab_thursday
-  - ritual_times.bootdev_thursday
   - ritual_times.friday_reflection
   - ritual_times.saturday_deep_block
   - ritual_times.design_review
   - ritual_times.weekly_state_review
   - ritual_times.ship_log
-  - ritual_times.cert_checkin
   - ritual_times.restore_drill
   - ritual_times.game_day
 
