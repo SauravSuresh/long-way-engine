@@ -1,0 +1,237 @@
+# Module onboarding tasks for Marketplace Builder curriculum
+# Promoted from devops-ready modules 8-13. The booking platform is the
+# spine; reading is pulled by problems (see each module's pull-reading
+# trigger table). Exam gates 1-4 live in modules 3, 5, 6. Exam gate 5
+# (RFC approved by senior engineers) is a weekly state-review milestone
+# from month 2 onward — see rituals/weekly.yaml.
+
+# Module 1: Walking Skeleton & Stack ADR
+- id: module-1-onboarding
+  title: "Module 1: Walking Skeleton & Stack ADR — Ship Something Real in Week 1"
+  description: |
+    Module 1: Get a walking skeleton live and choose the stack with
+    evidence, not vibes.
+
+    Working preference: Go — fast, reliable, boring, solo-friendly.
+    The ADR's job is to CONFIRM or OVERTURN that with evidence, not to
+    rubber-stamp it.
+
+    ADR deliverable: a written Architecture Decision Record committed
+    to the platform repo, comparing Go against at least 2 challengers
+    (e.g. Kotlin/Java + Spring, Node + TypeScript) against THIS
+    system's actual constraints:
+    - Concurrency model needed for booking contention & payment webhooks
+    - Solo-maintainability (you operate this alone at 2am)
+    - Hiring/community size and ecosystem maturity in India
+    - Payments SDK + observability (OpenTelemetry) support on AWS
+
+    Rules:
+    - [ ] Not a desk-only decision: build the PoC in Go AND one
+          challenger (a booking-hold endpoint with a concurrent-write test)
+    - [ ] Benchmark both PoCs under simple load (hey/k6)
+    - [ ] Write the ADR: context, options, trade-offs, decision, consequences
+    - [ ] If Go wins, the ADR records exactly why — that document is
+          your answer every future time you doubt the stack.
+
+    First 12 sessions (work these in order in the Mon/Wed/Sat build slots):
+    S1 repo + hello-world API running locally · S2 Postgres via
+    docker-compose, `equipment` table, insert rows in psql · S3
+    `GET /equipment` reading from the DB · S4 `POST /equipment` + first
+    automated test · S5 (Sat) deploy skeleton to Railway/App Runner —
+    real URL · S6 equipment detail endpoint + seed script · S7
+    availability-calendar schema draft · S8 naive `GET /availability` ·
+    S9 `holds` table + create-hold endpoint · S10 hold expiry job ·
+    S11 (Sat) stack ADR written up and final · S12 confirm-booking
+    happy path, payments stubbed.
+
+    Pull-reading triggers (the only way books enter this module):
+    | Trigger felt                          | Read                       |
+    |---------------------------------------|----------------------------|
+    | none scheduled — SAA course owns the  | (SAA = Maarek Udemy +      |
+    | morning theory slot, months 1-3       | Tutorials Dojo notes)      |
+
+    Setup:
+    - [ ] Create platform GitHub repo with /docs/adr/ directory
+    - [ ] Read ADR format (Michael Nygard's template)
+  due: "today at {ritual_times.saa_morning}"
+  labels: [module-onboarding, platform]
+  cadence: once-per-module
+  module_number: 1
+
+# Module 2: API Spec-First
+- id: module-2-onboarding
+  title: "Module 2: API Spec-First — Spec Before Code"
+  description: |
+    Module 2: Design the booking, inventory, and payments API surfaces
+    spec-first. No implementation code until the spec is published.
+
+    Deliverable: a published OpenAPI 3.x spec covering:
+    - Booking lifecycle (search availability, hold, confirm, cancel)
+    - Inventory (equipment catalog, kits, availability calendar)
+    - Payments (create order, capture, refund, webhook receipts)
+
+    Must address:
+    - [ ] Idempotency keys on every payment/booking mutation
+    - [ ] Versioning strategy (URL vs header — pick and justify)
+    - [ ] Pagination convention (cursor-based, documented)
+    - [ ] Error contract: one error envelope, documented codes
+    - [ ] Contract tests scaffolded (Schemathesis/Dredd or Pact)
+    - [ ] Spec reviewed against API Design Patterns checklists
+
+    Pull-reading triggers (the only way books enter this module):
+    | Trigger felt                              | Read                    |
+    |-------------------------------------------|-------------------------|
+    | designing any surface in this module      | API Design Patterns     |
+    | (use as a desk reference throughout)      | (JJ Geewax)             |
+
+    Setup:
+    - [ ] Spectral linting for the OpenAPI spec in CI
+    - [ ] Publish rendered docs (Redoc/Stoplight) from the repo
+  due: "today at {ritual_times.saa_morning}"
+  labels: [module-onboarding, platform]
+  cadence: once-per-module
+  module_number: 2
+
+# Module 3: Data Modeling & Booking Concurrency
+- id: module-3-onboarding
+  title: "Module 3: Data Modeling — No Double Bookings, Ever [EXAM GATE 1]"
+  description: |
+    Module 3: Get the data model and concurrency correctness right.
+    Two people must never book the same lighting kit for overlapping dates.
+
+    ★ EXAM GATE 1: a concurrency test suite that hammers overlapping
+    bookings and asserts zero double-books, passing under concurrent
+    load. This gate must pass before advancing to module 4.
+
+    Deliverables:
+    - [ ] Schema for equipment, kits, bookings, holds, payments ledger
+    - [ ] Double-booking prevention implemented and TESTED under
+          concurrent load (exclusion constraint / SELECT FOR UPDATE /
+          serializable — pick per the ADR stack, justify in a doc)
+    - [ ] Booking holds with expiry (hold -> confirm-or-release)
+    - [ ] Optimistic vs pessimistic locking: written comparison with
+          a benchmark on your actual booking table
+    - [ ] Idempotent payment writes (unique idempotency key column,
+          proven by a replay test)
+    - [ ] ★ Exam gate 1: the concurrency hammer test suite above
+
+    Pull-reading triggers (the only way books enter this module):
+    | Trigger felt                              | Read                    |
+    |-------------------------------------------|-------------------------|
+    | concurrency tests confuse me (isolation   | DDIA (Kleppmann) —      |
+    | levels, anomalies, why the test flakes)   | transactions chapters   |
+  due: "today at {ritual_times.saa_morning}"
+  labels: [module-onboarding, platform, exam-gate]
+  cadence: once-per-module
+  module_number: 3
+
+# Module 4: Payments for India
+- id: module-4-onboarding
+  title: "Module 4: Payments for India — Razorpay, Webhooks, Reconciliation"
+  description: |
+    Module 4: Integrate real payments for the Indian market.
+
+    Deliverables:
+    - [ ] Razorpay (or Cashfree/PayU — justify choice) integration:
+          order creation, capture, UPI + cards + netbanking
+    - [ ] Webhook handling: signature verification, idempotent
+          processing, retry tolerance (webhooks WILL arrive twice)
+    - [ ] Refund flows: full + partial, tied to booking cancellation
+          policy
+    - [ ] Daily reconciliation job: gateway settlement report vs your
+          payments ledger, alert on mismatch
+    - [ ] Write-up: PCI-DSS scope — what the gateway shields you from,
+          what still remains your responsibility, and why
+    - [ ] Test mode end-to-end: book -> pay -> webhook -> confirm ->
+          cancel -> refund, all idempotent under replay
+
+    Pull-reading triggers (the only way books enter this module):
+    | Trigger felt                              | Read                    |
+    |-------------------------------------------|-------------------------|
+    | reconciliation confuses me (settlement,   | The Anatomy of the      |
+    | how money actually moves, who holds it)   | Swipe (Siddiqui)        |
+  due: "today at {ritual_times.saa_morning}"
+  labels: [module-onboarding, platform]
+  cadence: once-per-module
+  module_number: 4
+
+# Module 5: Production Infra on AWS
+- id: module-5-onboarding
+  title: "Module 5: Production Infra on AWS — Cash In the Cert [EXAM GATE 2]"
+  description: |
+    Module 5: This module applies the SAA material studied in months
+    1-3 (VPC, IAM, RDS, ELB/ASG, S3/CloudFront, SQS). Cert is the
+    theory track; this is the lab. A real pan-India production
+    deployment of the booking platform.
+
+    ★ EXAM GATE 2: blue-green deploy + rollback, demonstrated live.
+    This gate must pass before advancing to module 6.
+
+    Deliverables:
+    - [ ] Terraform for everything — no console-created resources
+    - [ ] Multi-AZ: app tier autoscaling group / ECS across AZs,
+          RDS/Aurora Multi-AZ (ap-south-1, justify region choice)
+    - [ ] VPC + IAM designed from the SAA material, not copy-paste
+    - [ ] ElastiCache for availability-search hot paths
+    - [ ] CloudFront for static assets + API edge caching where safe —
+          measure latency from a north-India and a south-India vantage
+    - [ ] SQS for async work (emails, reconciliation, webhook fan-out)
+          with DLQs
+    - [ ] CI/CD pipeline: test -> build -> deploy with blue-green
+          (★ Exam gate 2: blue-green deploy + rollback proven)
+    - [ ] A one-command environment: terraform apply brings up staging
+    - [ ] Cost review: monthly estimate documented; kill anything a
+          solo operator can't justify
+
+    Pull-reading triggers (the only way books enter this module):
+    | Trigger felt                              | Read                    |
+    |-------------------------------------------|-------------------------|
+    | none — the SAA course notes ARE the       | (your Tutorials Dojo +  |
+    | reference; revisit them as lab manual     | Maarek notes)           |
+  due: "today at {ritual_times.saa_morning}"
+  labels: [module-onboarding, platform, exam-gate]
+  cadence: once-per-module
+  module_number: 5
+
+# Module 6: Operate: Observability, Reliability, Security
+- id: module-6-onboarding
+  title: "Module 6: Operate — Observe, Break, Harden, Run [EXAM GATES 3 & 4]"
+  description: |
+    Module 6: Make the platform operable and defensible, then prove it.
+
+    ★ EXAM GATE 3: restore drill — restore the production database from
+    backup to a working platform in under 1 hour, timed.
+    ★ EXAM GATE 4: first game-day incident completed with a written
+    postmortem.
+
+    Reliability:
+    - [ ] Define SLIs/SLOs (e.g. booking-confirm p99 latency,
+          payment-webhook processing success rate)
+    - [ ] Structured JSON logging with request IDs end-to-end
+    - [ ] Distributed tracing via OpenTelemetry -> X-Ray or Grafana
+    - [ ] Load test with k6: a realistic "festival booking day" traffic
+          pattern; find and fix the first bottleneck
+    - [ ] ★ Exam gate 3: restore drill under 1 hour (then monthly —
+          see rituals/monthly.yaml)
+    - [ ] ★ Exam gate 4: runbook + game-day incident: kill the DB
+          failover, follow your own runbook, write the postmortem
+    - [ ] Chaos basics: kill an AZ's instances mid-load-test
+
+    Security baseline:
+    - [ ] OAuth2/JWT authN, role-based authZ (renter vs owner vs admin)
+    - [ ] Rate limiting at the edge (API Gateway/WAF) and per-user
+    - [ ] Secrets in AWS Secrets Manager — zero secrets in env files
+    - [ ] Dependency + container vuln scanning in CI (Trivy et al.)
+
+    Exit criteria: the platform survives the load test within SLO,
+    and you can explain every alert that fired.
+
+    Pull-reading triggers (the only way books enter this module):
+    | Trigger felt                              | Read                    |
+    |-------------------------------------------|-------------------------|
+    | after my first real incident (game day    | Release It! (Nygard) —  |
+    | or production)                            | stability patterns      |
+  due: "today at {ritual_times.saa_morning}"
+  labels: [module-onboarding, platform, exam-gate]
+  cadence: once-per-module
+  module_number: 6

@@ -1,0 +1,111 @@
+meta:
+  name: Marketplace Builder
+  total_months: 6
+  start_month_index: 1
+
+phases:
+  - number: 1
+    name: "Foundation: Skeleton, Spec, Data (SAA theory track live)"
+    months: [1, 3]
+
+  - number: 2
+    name: "Money & Production"
+    months: [4, 6]
+
+# BOOKS: no scheduled reading in this curriculum. Reading is PULLED by
+# problems felt during the build — each module description carries a
+# pull-reading trigger table. The one deliberate exception is the SAA
+# course: a real parallel theory track that occupies the morning slot
+# months 1-3 (see rituals/daily.yaml). The months 4-6 entries below are
+# validator-satisfying anchors only (state.month must stay <= max month
+# key); no ritual references {current_book} after the SAA track ends.
+books:
+  - title: "Ultimate AWS Certified Solutions Architect Associate (Udemy)"
+    author: "Stephane Maarek"
+    phase: 1
+    months: [1, 3]
+    role: primary
+
+  - title: "Designing Data-Intensive Applications"
+    author: "Martin Kleppmann"
+    phase: 1
+    role: reference   # pulled when concurrency tests confuse me (module 3)
+
+  - title: "API Design Patterns"
+    author: "JJ Geewax"
+    phase: 1
+    role: reference   # desk reference during module 2
+
+  - title: "The Anatomy of the Swipe"
+    author: "Ahmed Siddiqui"
+    phase: 2
+    role: reference   # pulled when reconciliation confuses me (module 4)
+
+  - title: "Release It! (2nd Edition)"
+    author: "Michael Nygard"
+    phase: 2
+    role: reference   # pulled after my first real incident (module 6)
+
+primary_book_by_month:
+  1: "Ultimate AWS Certified Solutions Architect Associate (Udemy)"
+  2: "Ultimate AWS Certified Solutions Architect Associate (Udemy)"
+  3: "Ultimate AWS Certified Solutions Architect Associate (Udemy)"
+  4: "The Anatomy of the Swipe"        # anchor, not scheduled reading
+  6: "Release It! (2nd Edition)"       # anchor, not scheduled reading
+
+modules:
+  - number: 1
+    name: "Walking Skeleton & Stack ADR"
+    phase: 1
+    estimated_hours: 50
+
+  - number: 2
+    name: "API Spec-First"
+    phase: 1
+    estimated_hours: 50
+
+  - number: 3
+    name: "Data Modeling & Booking Concurrency"
+    phase: 1
+    estimated_hours: 55
+
+  - number: 4
+    name: "Payments for India"
+    phase: 2
+    estimated_hours: 50
+
+  - number: 5
+    name: "Production Infra on AWS"
+    phase: 2
+    estimated_hours: 65
+
+  - number: 6
+    name: "Operate: Observability, Reliability, Security"
+    phase: 2
+    estimated_hours: 60
+
+tracks:
+  # THE cert priority. Manual lifecycle: current from day one (see
+  # state/marketplace-builder.yaml), marked done via the "SAA passed"
+  # sub-task in the weekly state review. Target exam window: end of
+  # month 3 / month 4 — module 5 is timed to cash the material in.
+  - title: "AWS Solutions Architect Associate"
+    category: Certifications
+    phase: 1
+
+  # Post-launch sprint (~month 7-8): killer.sh + Mumshad course; feeds
+  # the CV, not the platform — platform stays on managed PaaS/ECS.
+  - title: "CKA"
+    category: Certifications
+    phase: 2
+
+  # Just-in-time legs only (SQL, HTTP servers/APIs, Docker). Exit
+  # criterion: pause once I ship production endpoints unassisted.
+  - title: "boot.dev backend path"
+    category: Courses
+    phase: 1
+
+  # Parked for future interviewing. Not started.
+  - title: "LeetCode Interview Prep"
+    category: "Interview Prep"
+    phase: 1

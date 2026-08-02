@@ -1,0 +1,107 @@
+# Monthly rituals for Marketplace Builder curriculum
+# No mock interviews — the platform is the portfolio.
+
+- id: monthly-ship-log
+  title: "Ship log — what went live in {year}-{month:02d}"
+  description: |
+    1st of the month: publish the ship log. Not a portfolio polish
+    exercise — a factual list of what went LIVE this month on the
+    booking platform: endpoints shipped, infra stood up, gates passed,
+    incidents survived.
+
+    Format:
+    - What users (or test users) can do now that they couldn't last month
+    - Exam gates passed this month
+    - One thing that broke and what it taught
+    - Link to the deployed thing
+
+    Publish wherever the senior engineers and future employers will
+    see it (blog / LinkedIn / repo CHANGELOG — pick one and stick to it).
+  due: "today at {ritual_times.ship_log}"
+  labels: [monthly-ritual, ship-log]
+  cadence: monthly
+  day_of_month: 1
+  reflection:
+    create_stub: true
+    stub_path: "reflections/marketplace-builder/monthly/{year}-{month:02d}.md"
+
+# Cert check-in on the 15th, gated to a cert track being current.
+# Gates are ANDed, so "any cert current" is expressed as one template
+# per cert track — at most one fires while exactly one cert is live.
+- id: monthly-cert-checkin-saa
+  title: "Cert check-in: AWS SAA on track?"
+  description: |
+    Mid-month check: am I on track for the SAA exam window (end of
+    month 3 / month 4)?
+
+    - Practice exam scores: aim for 80%+ (Tutorials Dojo)
+    - Weak areas identified and turned into Anki cards
+    - Hands-on labs completed for every course section so far
+    - Exam booked? If month 2's check-in and it isn't: book it now —
+      a date on the calendar is the forcing function
+
+    If behind schedule, adjust the Thursday lab slot's focus or extend
+    the exam window to month 4. Do not silently drop the cert — it's a
+    stated priority.
+  due: "today at {ritual_times.cert_checkin}"
+  labels: [monthly-ritual, certification, saa]
+  cadence: monthly
+  day_of_month: 15
+  gated_by:
+    - { type: track, category: Certifications, item: "AWS Solutions Architect Associate", states: [current] }
+
+- id: monthly-cert-checkin-cka
+  title: "Cert check-in: CKA sprint on track?"
+  description: |
+    Mid-month check for the post-launch CKA sprint (~month 7-8):
+
+    - Mumshad course progress
+    - killer.sh scenarios completed; kubectl speed (time yourself)
+    - Exam booked?
+
+    Reminder: CKA feeds the CV, not the platform — the platform stays
+    on managed PaaS/ECS. Timebox accordingly.
+  due: "today at {ritual_times.cert_checkin}"
+  labels: [monthly-ritual, certification, cka]
+  cadence: monthly
+  day_of_month: 15
+  gated_by:
+    - { type: track, category: Certifications, item: "CKA", states: [current] }
+
+# From module 5 onward: the ops muscles get exercised monthly.
+- id: monthly-restore-drill
+  title: "Restore drill — database restore under 1 hour, timed"
+  description: |
+    Monthly, from module 5 onward. Restore the production database
+    from backup to a working platform, timed. Under 1 hour or it
+    doesn't count (Exam gate 3 sets the bar; this keeps it passed).
+
+    - Start the clock at "database is gone"
+    - Follow the runbook only — if you improvise, the runbook is wrong;
+      fix it after
+    - Log the time in the drill log; investigate any regression
+  due: "today at {ritual_times.restore_drill}"
+  labels: [monthly-ritual, ops, drill]
+  cadence: monthly
+  day_of_month: 10
+  gated_by:
+    - { type: module_gte, value: 5 }
+
+- id: monthly-game-day
+  title: "Game day — break production on purpose, write the postmortem"
+  description: |
+    Monthly, last Saturday, from module 5 onward. Takes over that
+    Saturday's deep block.
+
+    Pick one failure mode (DB failover, AZ loss, webhook flood, cert
+    expiry...) and inject it. Follow the runbook, restore service,
+    then write the postmortem: timeline, detection gap, what the
+    alerts missed, one concrete fix shipped within the week.
+
+    The first completed game day + written postmortem is Exam gate 4.
+  due: "today at {ritual_times.game_day}"
+  labels: [monthly-ritual, ops, game-day]
+  cadence: monthly
+  day_of_month: last-saturday
+  gated_by:
+    - { type: module_gte, value: 5 }

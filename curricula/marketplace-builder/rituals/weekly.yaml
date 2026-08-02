@@ -1,0 +1,194 @@
+# Weekly rituals for Marketplace Builder curriculum
+#
+# Evening schedule:
+#   Mon + Wed  -> build sessions (60-90 min, current module's deliverables)
+#   Tue        -> boot.dev just-in-time session (while track current)
+#   Thu        -> SAA labs/practice exams (while SAA current);
+#                 reverts to a second boot.dev session once SAA is done
+#                 (mutually exclusive track gates)
+#   Fri        -> reflection (20 min)
+#   Sat        -> deep block 3-4 hrs (protected; first 30 min RFC/ADR)
+#   Sun        -> off + weekly state review
+#   + one flexible 45-min design review with senior engineers (Mon slot,
+#     move it in Todoist when their calendar demands)
+
+- id: build-session-monday
+  title: "Build session: Module {current_module} deliverables (60-90 min)"
+  description: |
+    60-90 min on the current module's deliverables (see the module
+    onboarding task's checklist). This is the platform spine — the
+    problems you hit here are what pull reading and feed Anki.
+
+    AI assist rule: Claude may list options or point at docs. Stuck >30 min → ask for a hint, never the solution. Claude does not write the code in this slot.
+
+    Close every session by asking Claude: 'What did I just build that has a known failure mode?' Add the answer to Friday's dive-deeper list.
+  due: "today at {ritual_times.build_monday}"
+  labels: [weekly-ritual, build]
+  cadence: weekly
+  day_of_week: monday
+  counts_toward_streak: true
+
+- id: build-session-wednesday
+  title: "Build session: Module {current_module} deliverables (60-90 min)"
+  description: |
+    60-90 min on the current module's deliverables (see the module
+    onboarding task's checklist). This is the platform spine — the
+    problems you hit here are what pull reading and feed Anki.
+
+    AI assist rule: Claude may list options or point at docs. Stuck >30 min → ask for a hint, never the solution. Claude does not write the code in this slot.
+
+    Close every session by asking Claude: 'What did I just build that has a known failure mode?' Add the answer to Friday's dive-deeper list.
+  due: "today at {ritual_times.build_wednesday}"
+  labels: [weekly-ritual, build]
+  cadence: weekly
+  day_of_week: wednesday
+  counts_toward_streak: true
+
+- id: bootdev-tuesday
+  title: "boot.dev session (60 min) — just-in-time legs only"
+  description: |
+    60 min. Just-in-time legs only: SQL, HTTP servers/APIs, Docker —
+    whatever the platform build needs next. Skip the algorithms/DSA
+    legs entirely; they serve interviews, not the platform.
+
+    Exit criterion: pause this track once I ship production endpoints
+    unassisted. Mark it done in the Sunday state review.
+  due: "today at {ritual_times.bootdev_tuesday}"
+  labels: [weekly-ritual, bootdev]
+  cadence: weekly
+  day_of_week: tuesday
+  gated_by:
+    - { type: track, category: Courses, item: "boot.dev backend path", states: [current] }
+
+- id: saa-lab-thursday
+  title: "SAA hands-on labs / Tutorials Dojo practice exam (60 min)"
+  description: |
+    60 min. While the SAA track is live, Thursday evening is cert
+    practice: hands-on labs for the week's course sections, or a timed
+    Tutorials Dojo practice exam block. Score every practice exam;
+    ≥80% goes into the Sunday state review.
+
+    When the SAA track completes, this slot reverts to a second
+    boot.dev session (see bootdev-thursday — mutually exclusive gates).
+  due: "today at {ritual_times.saa_lab_thursday}"
+  labels: [weekly-ritual, certification, saa]
+  cadence: weekly
+  day_of_week: thursday
+  gated_by:
+    - { type: track, category: Certifications, item: "AWS Solutions Architect Associate", states: [current] }
+
+- id: bootdev-thursday
+  title: "boot.dev session (60 min) — just-in-time legs only"
+  description: |
+    60 min. Second weekly boot.dev session — this slot belonged to SAA
+    labs until the cert was passed; now it goes to the platform's
+    just-in-time legs: SQL, HTTP servers/APIs, Docker. Skip the
+    algorithms/DSA legs.
+
+    Exit criterion: pause this track once I ship production endpoints
+    unassisted. Mark it done in the Sunday state review.
+  due: "today at {ritual_times.bootdev_thursday}"
+  labels: [weekly-ritual, bootdev]
+  cadence: weekly
+  day_of_week: thursday
+  gated_by:
+    - { type: track, category: Certifications, item: "AWS Solutions Architect Associate", states: [done] }
+    - { type: track, category: Courses, item: "boot.dev backend path", states: [current] }
+
+- id: friday-reflection
+  title: "Friday reflection (20 min)"
+  description: |
+    20 min. Without looking at notes, write down:
+    1. The 3 most important things I learned this week
+    2. One thing I struggled with and how I overcame it
+    3. The dive-deeper list from this week's build sessions ("what did
+       I just build that has a known failure mode?")
+    4. What problem did I hit this week that has earned a reading?
+       (This is the only way book reading gets scheduled.)
+
+    Then compare to notes. The gap is what needs more Anki cards.
+  due: "today at {ritual_times.friday_reflection}"
+  labels: [weekly-ritual, reflection]
+  cadence: weekly
+  day_of_week: friday
+  reflection:
+    create_stub: true
+    stub_path: "reflections/marketplace-builder/weekly/{iso_year}-W{iso_week:02d}.md"
+
+- id: saturday-deep-block
+  title: "Saturday deep block (3-4 hr): RFC/ADR first, then build"
+  description: |
+    Protected block — 3-4 hours, no meetings, no errands.
+
+    First 30 min: RFC/ADR writing. One design decision from this
+    week's build, written up properly. This is what feeds the weekly
+    design review and Exam gate 5 (an RFC approved by the startup's
+    senior engineers, tracked from month 2 onward in the Sunday state
+    review).
+
+    Remainder: build. The current module's biggest deliverable —
+    Saturday is where the walking-skeleton "S5/S11"-style milestones
+    land.
+  due: "today at {ritual_times.saturday_deep_block}"
+  labels: [weekly-ritual, build, deep-block]
+  cadence: weekly
+  day_of_week: saturday
+  counts_toward_streak: true
+
+- id: weekly-design-review
+  title: "Design review with senior engineers (45 min)"
+  description: |
+    45 min, flexible slot — scheduled Monday by default; move it in
+    Todoist to whenever the senior engineers can make it this week.
+
+    Present the week's RFC/ADR (written in the Saturday deep block).
+    Take notes on every objection — objections are pull-reading
+    triggers and Anki material. An approved RFC counts toward Exam
+    gate 5 (log it in the Sunday state review).
+  due: "today at {ritual_times.design_review}"
+  labels: [weekly-ritual, design-review]
+  cadence: weekly
+  day_of_week: monday
+
+- id: weekly-state-review
+  title: "Weekly state review — {iso_year}-W{iso_week:02d}"
+  description: |
+    Check the sub-tasks that apply. Next cron run picks them up and
+    mutates state.yaml: module advance, cert milestones, track
+    updates, counter increments.
+
+    Review the week:
+    - Did the current module's exam gate move?
+    - SAA: course sections done, practice exam scores, exam booked?
+    - Any RFC approved by the senior engineers (Exam gate 5, from
+      month 2 onward)?
+  due: "today at {ritual_times.weekly_state_review}"
+  labels: [weekly-ritual, state-review]
+  cadence: weekly
+  day_of_week: sunday
+  state_review: true
+  sub_tasks:
+    - title: "I'm ready to advance to Module {next_module}"
+      action: { type: advance_module }
+      show_if: not_on_last_module
+
+    - title: "Exam gate 5: RFC approved by senior engineers this week (from month 2; put count in comment)"
+      action: { type: increment_counter, counter: rfcs_approved }
+
+    - title: "SAA practice exam scored ≥80% this week (put count in comment)"
+      action: { type: increment_counter, counter: saa_practice_exams_80plus }
+
+    - title: "SAA exam date booked (put 1 in comment)"
+      action: { type: increment_counter, counter: saa_exam_booked }
+
+    - title: "SAA passed — mark the cert track done"
+      action: { type: mark_track_finished, category: Certifications, item: "AWS Solutions Architect Associate" }
+
+    - title: "I finished {current_book}"
+      action: { type: mark_book_finished, book: "{current_book}" }
+
+    - title: "Anki cards added this week (put count in comment)"
+      action: { type: increment_counter, counter: anki_card_count }
+
+    - title: "Revert last week's state change (only if a mistake)"
+      action: { type: revert_last }

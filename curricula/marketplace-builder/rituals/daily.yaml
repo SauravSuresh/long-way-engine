@@ -1,0 +1,46 @@
+# Daily rituals for Marketplace Builder curriculum
+#
+# ~15-16 hrs/week months 1-3 (SAA track live), ~11-12 hrs/week after.
+# Mornings: Anki + SAA course study (SAA slot auto-disappears when the
+# SAA track is marked done — track gate, no manual edit needed).
+# Evenings/weekends live in rituals/weekly.yaml.
+
+- id: daily-anki
+  title: "Anki review (15 min)"
+  description: |
+    15 min, Mon-Sat. Cards come from exactly two sources:
+    1. What I built or broke — every failure mode, every gotcha from
+       the build sessions becomes a card.
+    2. SAA/cert material — Anki is the cert weapon. The morning course
+       sessions feed cards in; this ritual is what makes the exam
+       window at end of month 3 realistic. Post-SAA, CKA material
+       takes the cert slot.
+
+    Add 3-5 new cards per day. No more.
+  due: "today at {ritual_times.anki}"
+  labels: [daily-ritual, srs]
+  cadence: daily
+  skip_if: sunday
+  counts_toward_streak: true
+
+- id: daily-saa-morning
+  title: "SAA course study (~40 min): Maarek Udemy + Tutorials Dojo notes"
+  description: |
+    ~40 min, Mon-Sat. The one deliberate scheduled-theory exception in
+    this curriculum: AWS SAA is a stated priority, timed so module 5
+    (Production Infra on AWS) cashes the material in as the lab.
+
+    Work through the Stephane Maarek Udemy course, keep Tutorials Dojo
+    notes alongside. Every section ends with Anki cards for tomorrow's
+    review.
+
+    This ritual is gated by the SAA track and auto-disappears when the
+    track is marked done (via the "SAA passed" sub-task in the Sunday
+    state review).
+  due: "today at {ritual_times.saa_morning}"
+  labels: [daily-ritual, certification, saa]
+  cadence: daily
+  skip_if: sunday
+  counts_toward_streak: true
+  gated_by:
+    - { type: track, category: Certifications, item: "AWS Solutions Architect Associate", states: [current] }
