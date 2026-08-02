@@ -16,9 +16,7 @@ priority_order:
 syllabuses:
   marketplace-builder:
     path: curricula/marketplace-builder
-    # PLACEHOLDER — replace with the real Todoist project ID before any
-    # live (non-dry-run) engine run. Ask the owner; do not guess.
-    todoist_project_id: REPLACE_ME_TODOIST_PROJECT_ID
+    todoist_project_id: 6hC4MRwQF7Rrpw3G
     state_file: state/marketplace-builder.yaml
     enabled: true
     # Runs full-parallel with devops-ready. This curriculum is
