@@ -11,8 +11,11 @@ notes: 'Most recent edit on top.
   real consumer required, polyglot allowed); Saturday = the real rental platform
   from week 1 (first-12-sessions checklist; exam gates 1-4 live there). New
   advisory /ladder-review skill (verdict committed to repo). Crunch rule: Anki +
-  one build session + Sunday review is a valid week. Full reset: start_date ->
-  2026-08-02 for marketplace-builder and devops-ready; month/module -> 1.
+  one build session + Sunday review is a valid week. FULL reset: start_date ->
+  2026-08-02 for ALL syllabuses (marketplace-builder, devops-ready, and paused
+  long-way); month/phase/module -> 1; counters 0. Caches left intact per the
+  established pattern — old entries pre-date start_date so streak/adherence
+  walkers ignore them and the dashboard reports day 1 for everything.
 
   2026-08-02: marketplace-builder replaces devops-ready as the focus track
   (build-first syllabus; booking platform is the spine; SAA cert = parallel
