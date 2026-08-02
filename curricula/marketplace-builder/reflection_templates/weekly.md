@@ -23,16 +23,17 @@
 
 ---
 
-## Ladder Progress
+## Ladder (Mon / Wed)
 
-### Build Sessions (Mon / Wed / Sat)
-- **Sessions completed**: __/3
-- **Current challenge & where it stands**: 
-- **Finished a challenge? /challenge-review verdict + top issue**: 
+- **Current rung & option picked**: 
+- **Finished a rung? /ladder-review verdict + top issue**: 
+- **Is the consumer real yet (deployed / published / in use)?**: 
 
-### Current Exam Gate (phase 4 only)
-- **Gate**: 
-- **Status**: 
+## Platform (Saturday)
+
+- **Which step landed (S1-S12 or roadmap stage)**: 
+- **Exam gate progress**: 
+- **Crunch week? (minimum viable week still counts)**: Yes / No
 
 ### RFC / Design Review
 - **RFC/ADR written Saturday**: 

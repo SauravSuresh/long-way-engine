@@ -3,114 +3,112 @@ meta:
   total_months: 12
   start_month_index: 1
 
-# THE LADDER. marketplace-builder is a 36-challenge design ladder:
-# every challenge = one module = design it (ADR first), build it in Go,
-# finish with a /challenge-review (Claude skill in .claude/skills/),
-# advance via the Sunday state review. Difficulty rises from a CLI
-# calculator to distributed systems; the final phase's challenges ARE
-# the rental-platform components, so the summit of the ladder is the
-# launched platform. Cert/course theory (SAA, CKA, boot.dev, LeetCode)
-# stays on devops-ready — one concern, one curriculum.
+# TWO TRACKS, ONE CURRICULUM (post-grilling shape, 2026-08-02):
+#
+#   Saturdays  -> the REAL rental platform, from week 1. The first-12-
+#                 sessions checklist lives in the Saturday deep block
+#                 ritual; exam gates 1-4 and the stack ADR happen there.
+#   Mon + Wed  -> the ladder: 16 concept rungs. Each rung = one concept;
+#                 the rung's brief offers 3 candidate challenges and the
+#                 owner picks ONE in the first session. Rungs advance via
+#                 the Sunday state review (module advance).
+#
+# Rules that survived the grilling:
+#   - Every challenge names a REAL CONSUMER before it starts (deployed,
+#     published, or used by owner/startup). Realness = you operate it.
+#   - Polyglot: Go is the default; a rung option may be taken in another
+#     language when the ADR argues it teaches more.
+#   - Rung order is biased to precede the platform's Saturday needs.
+#   - /ladder-review after each challenge: ADVISORY only, verdict
+#     committed to the challenge repo. The Sunday checkbox is the gate;
+#     honesty is the owner's job.
+#   - CRUNCH RULE: a bad week = Anki + one build session + Sunday
+#     review (~3.5 h). Everything else drops guilt-free.
+#   - Cert/course theory (SAA, CKA, boot.dev, LeetCode) stays on
+#     devops-ready — one concern, one curriculum.
 phases:
   - number: 1
-    name: "Foundations (Go, files, tests)"
-    months: [1, 2]
+    name: "Foundations (rungs 1-5)"
+    months: [1, 3]
 
   - number: 2
-    name: "Services (HTTP, Postgres, auth, ops basics)"
-    months: [3, 5]
+    name: "Services (rungs 6-11)"
+    months: [4, 7]
 
   - number: 3
-    name: "Concurrency & Distribution"
-    months: [6, 8]
+    name: "Systems (rungs 12-16)"
+    months: [8, 12]
 
-  - number: 4
-    name: "The Platform (rental marketplace, for real)"
-    months: [9, 12]
-
-# BOOKS: no scheduled reading. Reading is PULLED — each challenge's
-# review names what to read when a gap shows. primary_book_by_month
-# keys are validator anchors only.
+# BOOKS: no scheduled reading. Reading is PULLED — reviews and felt
+# problems name the chapter. primary_book_by_month keys are validator
+# anchors only.
 books:
   - title: "The Go Programming Language"
     author: "Donovan & Kernighan"
     phase: 1
-    role: reference   # pulled when the language itself confuses me
+    role: reference
 
   - title: "100 Go Mistakes and How to Avoid Them"
     author: "Teiva Harsanyi"
     phase: 1
-    role: reference   # pulled when reviews keep flagging the same idiom mistakes
+    role: reference
 
   - title: "API Design Patterns"
     author: "JJ Geewax"
     phase: 2
-    role: reference   # desk reference for the spec-first challenges
+    role: reference
 
   - title: "Designing Data-Intensive Applications"
     author: "Martin Kleppmann"
     phase: 3
-    role: reference   # pulled when replication/consistency/transactions confuse me
+    role: reference
 
   - title: "The Anatomy of the Swipe"
     author: "Ahmed Siddiqui"
-    phase: 4
-    role: reference   # pulled when payment reconciliation confuses me
+    phase: 2
+    role: reference
 
   - title: "Release It! (2nd Edition)"
     author: "Michael Nygard"
-    phase: 4
-    role: reference   # pulled after my first real incident
+    phase: 3
+    role: reference
 
 primary_book_by_month:
   1: "The Go Programming Language"
   4: "API Design Patterns"
-  6: "Designing Data-Intensive Applications"
-  10: "The Anatomy of the Swipe"
+  7: "The Anatomy of the Swipe"
+  9: "Designing Data-Intensive Applications"
   12: "Release It! (2nd Edition)"
 
-# 36 challenges. ~wk = calendar target at the standing weekly build
-# budget (Mon/Wed evenings + Saturday deep block ≈ 8 h/week).
+# 16 rungs. estimated_hours = ladder budget only (Mon+Wed ≈ 3 h/wk;
+# most rungs are ~2 weeks). Saturday hours belong to the platform.
 modules:
-  # --- Phase 1: Foundations — one week each -------------------------
-  - { number: 1,  name: "Calculator CLI",                    phase: 1, estimated_hours: 8 }
-  - { number: 2,  name: "Todo CLI with JSON persistence",    phase: 1, estimated_hours: 8 }
-  - { number: 3,  name: "grep clone",                        phase: 1, estimated_hours: 8 }
-  - { number: 4,  name: "API-client CLI (currency/weather)", phase: 1, estimated_hours: 8 }
-  - { number: 5,  name: "Append-only key-value store",       phase: 1, estimated_hours: 8 }
-  - { number: 6,  name: "Worker-pool file processor",        phase: 1, estimated_hours: 8 }
-  - { number: 7,  name: "Rate-limiter library",              phase: 1, estimated_hours: 8 }
-  - { number: 8,  name: "TTL + LRU cache",                   phase: 1, estimated_hours: 8 }
-  # --- Phase 2: Services — 1-1.5 weeks each -------------------------
-  - { number: 9,  name: "Notes API (stdlib HTTP + middleware)",     phase: 2, estimated_hours: 10 }
-  - { number: 10, name: "Notes API on Postgres",                    phase: 2, estimated_hours: 10 }
-  - { number: 11, name: "Auth: sessions, JWT, roles",               phase: 2, estimated_hours: 12 }
-  - { number: 12, name: "Spec-first URL shortener (OpenAPI)",       phase: 2, estimated_hours: 10 }
-  - { number: 13, name: "File upload service (streaming to S3)",    phase: 2, estimated_hours: 10 }
-  - { number: 14, name: "Webhook receiver (idempotent, verified)",  phase: 2, estimated_hours: 12 }
-  - { number: 15, name: "Job queue on Postgres",                    phase: 2, estimated_hours: 12 }
-  - { number: 16, name: "Search + cursor pagination",               phase: 2, estimated_hours: 10 }
-  - { number: 17, name: "Dockerize + graceful shutdown",            phase: 2, estimated_hours: 10 }
-  - { number: 18, name: "Load-test & profile (k6 + pprof)",         phase: 2, estimated_hours: 12 }
-  # --- Phase 3: Concurrency & Distribution — 1.5-2 weeks each -------
-  - { number: 19, name: "TCP chat server",                          phase: 3, estimated_hours: 14 }
-  - { number: 20, name: "Mini-Redis (RESP subset)",                 phase: 3, estimated_hours: 16 }
-  - { number: 21, name: "Pub/sub broker (at-least-once)",           phase: 3, estimated_hours: 16 }
-  - { number: 22, name: "Distributed lock & leader election",       phase: 3, estimated_hours: 14 }
-  - { number: 23, name: "Consistent-hashing cache client",          phase: 3, estimated_hours: 14 }
-  - { number: 24, name: "Replicated log (consensus-lite)",          phase: 3, estimated_hours: 18 }
-  - { number: 25, name: "Event-sourced ledger",                     phase: 3, estimated_hours: 16 }
-  - { number: 26, name: "Outbox pattern: money transfer, two services", phase: 3, estimated_hours: 16 }
-  - { number: 27, name: "OpenTelemetry across the stack",           phase: 3, estimated_hours: 14 }
-  - { number: 28, name: "Chaos week: break it, runbook it",         phase: 3, estimated_hours: 14 }
-  # --- Phase 4: The Platform — 2-3 weeks each -----------------------
-  - { number: 29, name: "Booking-hold service (no double-holds)",   phase: 4, estimated_hours: 20 }
-  - { number: 30, name: "Availability search + calendar model",     phase: 4, estimated_hours: 18 }
-  - { number: 31, name: "Spec-first booking API",                   phase: 4, estimated_hours: 18 }
-  - { number: 32, name: "Payments: Razorpay, refunds, reconciliation", phase: 4, estimated_hours: 22 }
-  - { number: 33, name: "Walking skeleton: assemble & deploy",      phase: 4, estimated_hours: 20 }
-  - { number: 34, name: "Production infra on AWS (SAA lab)",        phase: 4, estimated_hours: 24 }
-  - { number: 35, name: "Operate: SLOs, restore drill, game day",   phase: 4, estimated_hours: 22 }
-  - { number: 36, name: "Launch hardening & go-live",               phase: 4, estimated_hours: 18 }
+  - { number: 1,  name: "CLI craft & tests",             phase: 1, estimated_hours: 6 }
+  - { number: 2,  name: "Crash-safe persistence",        phase: 1, estimated_hours: 6 }
+  - { number: 3,  name: "Network clients that don't lie",phase: 1, estimated_hours: 6 }
+  - { number: 4,  name: "Concurrency basics",            phase: 1, estimated_hours: 6 }
+  - { number: 5,  name: "A library with real users",     phase: 1, estimated_hours: 8 }
+  - { number: 6,  name: "HTTP service from scratch",     phase: 2, estimated_hours: 8 }
+  - { number: 7,  name: "Postgres for real",             phase: 2, estimated_hours: 8 }
+  - { number: 8,  name: "Auth: sessions, tokens, roles", phase: 2, estimated_hours: 8 }
+  - { number: 9,  name: "Spec-first API design",         phase: 2, estimated_hours: 8 }
+  - { number: 10, name: "Webhooks & idempotency",        phase: 2, estimated_hours: 8 }
+  - { number: 11, name: "Jobs, queues & retries",        phase: 2, estimated_hours: 8 }
+  - { number: 12, name: "Ship it & keep it up",          phase: 3, estimated_hours: 10 }
+  - { number: 13, name: "Performance: measure, then fix",phase: 3, estimated_hours: 10 }
+  - { number: 14, name: "Wire protocols",                phase: 3, estimated_hours: 10 }
+  - { number: 15, name: "Distributed coordination",      phase: 3, estimated_hours: 12 }
+  - { number: 16, name: "Reliability engineering",       phase: 3, estimated_hours: 12 }
 
-# No tracks. SAA, CKA, boot.dev, LeetCode are devops-ready's concerns.
+tracks:
+  # The Saturday platform build — current from day one.
+  - title: "Rental platform build"
+    category: Platform
+    phase: 1
+
+  # Flipped to current (via Sunday state review) once the platform is
+  # deployed to production infra; gates the monthly restore drill and
+  # game day.
+  - title: "Platform in production"
+    category: Platform
+    phase: 3

@@ -8,11 +8,14 @@
   title: "Anki review — build deck (15 min)"
   description: |
     15 min, Mon-Sat. Cards come from one source: what I built or
-    broke — every failure mode, every gotcha from the build sessions
-    becomes a card. (Cert material has its own deck and slot on the
-    devops-ready track.)
+    broke — every failure mode, every gotcha from ladder rungs and
+    platform Saturdays becomes a card.
 
-    Add 3-5 new cards per day. No more.
+    In practice this is ONE sitting with the devops-ready cert deck
+    (07:15-07:45 back-to-back) — two templates, one habit. (A shared
+    common-task is specced in specs/common-tasks.md but not built.)
+
+    Add 3-5 new cards per day. No more. Crunch week? This survives.
   due: "today at {ritual_times.anki}"
   labels: [daily-ritual, srs]
   cadence: daily

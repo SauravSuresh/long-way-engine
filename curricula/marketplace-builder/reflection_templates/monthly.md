@@ -16,11 +16,19 @@
 
 | Gate | Status |
 |------|--------|
-| 1 — Concurrency hammer test (challenge 29) | |
-| 2 — Blue-green deploy + rollback (challenge 34) | |
-| 3 — Restore drill < 1 hr (challenge 35, then monthly) | |
-| 4 — Game day + postmortem (challenge 35, then monthly) | |
+| 1 — Concurrency hammer test (platform, Saturdays) | |
+| 2 — Blue-green deploy + rollback (platform, AWS stage) | |
+| 3 — Restore drill < 1 hr (platform, then monthly) | |
+| 4 — Game day + postmortem (platform, then monthly) | |
 | 5 — RFC approved by senior engineers (running count) | |
+
+## Ladder
+
+**Rungs completed this month**: 
+
+**Options picked & why (one line each)**: 
+
+**Consumers still alive (deployed/published things you operate)**: 
 
 ---
 

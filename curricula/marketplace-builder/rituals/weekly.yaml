@@ -1,44 +1,46 @@
 # Weekly rituals for Marketplace Builder curriculum
 #
-# Runs in parallel with devops-ready, which owns all cert/course
-# theory (SAA mornings, boot.dev, LeetCode). Clock times here are
-# packed around devops-ready's evening block (bootdev 19:00, LeetCode
-# 21:30):
-#   Mon + Wed  -> build sessions 20:00-21:30 (between bootdev & LeetCode)
-#   Fri        -> reflection 18:30 (before bootdev)
-#   Sat        -> deep block 09:30-13:00 (devops project block owns 14:00)
-#   Sun        -> off + state review 11:30 (devops review is 11:00)
-#   + one flexible 45-min design review with senior engineers (Mon 17:00,
-#     move it in Todoist when their calendar demands)
+# Two tracks: Mon/Wed evenings = the ladder (16 rungs, pick 1 of 3 per
+# rung); Saturday = the REAL rental platform from week 1.
+# Clock times are packed around devops-ready's day (bootdev 19:00,
+# LeetCode 21:30, Saturday project block 14:00, state review 11:00).
+#
+# CRUNCH RULE (applies to every week that goes sideways): the minimum
+# viable week is Anki + ONE build session + the Sunday state review
+# (~3.5 h). Everything else drops guilt-free. Streaks keep counting.
 
 - id: build-session-monday
-  title: "Challenge build session — Challenge {current_module} (60-90 min)"
+  title: "Ladder session — Rung {current_module} (60-90 min)"
   description: |
-    60-90 min on the current challenge (see the challenge brief task).
-    ADR first if you haven't written it yet. The problems you hit
-    here are what pull reading and feed Anki.
+    60-90 min on the current rung's chosen challenge (see the rung
+    brief task — if this is the rung's first session, spend the first
+    15 min picking one of its 3 options and noting why in the ADR).
+    ADR before code. The problems you hit here are what pull reading
+    and feed Anki.
 
     AI assist rule: Claude may list options or point at docs. Stuck >30 min → ask for a hint, never the solution. Claude does not write the code in this slot.
 
     Close every session by asking Claude: 'What did I just build that has a known failure mode?' Add the answer to Friday's dive-deeper list.
+
+    Crunch week? This session + Anki + Sunday review is the whole week.
   due: "today at {ritual_times.build_monday}"
-  labels: [weekly-ritual, build]
+  labels: [weekly-ritual, ladder]
   cadence: weekly
   day_of_week: monday
   counts_toward_streak: true
 
 - id: build-session-wednesday
-  title: "Challenge build session — Challenge {current_module} (60-90 min)"
+  title: "Ladder session — Rung {current_module} (60-90 min)"
   description: |
-    60-90 min on the current challenge (see the challenge brief task).
-    ADR first if you haven't written it yet. The problems you hit
-    here are what pull reading and feed Anki.
+    60-90 min on the current rung's chosen challenge (see the rung
+    brief task). ADR before code. The problems you hit here are what
+    pull reading and feed Anki.
 
     AI assist rule: Claude may list options or point at docs. Stuck >30 min → ask for a hint, never the solution. Claude does not write the code in this slot.
 
     Close every session by asking Claude: 'What did I just build that has a known failure mode?' Add the answer to Friday's dive-deeper list.
   due: "today at {ritual_times.build_wednesday}"
-  labels: [weekly-ritual, build]
+  labels: [weekly-ritual, ladder]
   cadence: weekly
   day_of_week: wednesday
   counts_toward_streak: true
@@ -64,22 +66,39 @@
     stub_path: "reflections/marketplace-builder/weekly/{iso_year}-W{iso_week:02d}.md"
 
 - id: saturday-deep-block
-  title: "Saturday deep block (3-4 hr): RFC/ADR first, then build"
+  title: "Saturday deep block (3-4 hr): THE PLATFORM — ADR first, then build"
   description: |
-    Protected block — 09:30-13:00, no meetings, no errands. (The
-    devops-ready project block owns Saturday afternoon.)
+    Protected block — 09:30-13:00, no meetings, no errands. This is
+    the real rental platform, live from week 1. (The devops-ready
+    project block owns Saturday afternoon.)
 
-    First 30 min: RFC/ADR writing. One design decision from this
-    week's build, written up properly. This is what feeds the weekly
-    design review and Exam gate 5 (an RFC approved by the startup's
-    senior engineers, tracked from month 2 onward in the Sunday state
-    review).
+    First 30 min: ADR/RFC writing — one platform decision, written up
+    properly. Feeds the design review and Exam gate 5.
 
-    Remainder: build. The current challenge's biggest chunk —
-    Saturday is where challenges get finished and /challenge-review
-    gets run.
+    Remainder: build the platform. The first 12 Saturdays follow this
+    checklist, one step per session (finish early, start the next):
+    S1 repo + hello-world API running locally · S2 Postgres via
+    docker-compose, `equipment` table, insert rows in psql · S3
+    `GET /equipment` reading from the DB · S4 `POST /equipment` +
+    first automated test · S5 deploy skeleton to Railway/App Runner —
+    real URL · S6 equipment detail endpoint + seed script · S7
+    availability-calendar schema draft · S8 naive `GET /availability` ·
+    S9 `holds` table + create-hold endpoint · S10 hold expiry job ·
+    S11 stack ADR written up and final · S12 confirm-booking happy
+    path, payments stubbed.
+
+    After S12, the platform roadmap (each stage leans on ladder rungs
+    done by then): no-double-booking under concurrent load (★ EXAM
+    GATE 1: hammer test in CI) -> spec-first public API -> Razorpay
+    test-mode end-to-end, idempotent under replay -> AWS production
+    infra via Terraform, applying the devops-ready SAA material
+    (★ EXAM GATE 2: blue-green deploy + rollback) -> operate: SLOs,
+    tracing, ★ EXAM GATE 3: DB restore under 1 hour, ★ EXAM GATE 4:
+    first game day + written postmortem -> launch hardening, go-live.
+    When infra goes live, tick "platform is in production" in the
+    Sunday review — that starts the monthly drills.
   due: "today at {ritual_times.saturday_deep_block}"
-  labels: [weekly-ritual, build, deep-block]
+  labels: [weekly-ritual, platform, deep-block]
   cadence: weekly
   day_of_week: saturday
   counts_toward_streak: true
@@ -90,10 +109,11 @@
     45 min, flexible slot — scheduled Monday by default; move it in
     Todoist to whenever the senior engineers can make it this week.
 
-    Present the week's RFC/ADR (written in the Saturday deep block).
-    Take notes on every objection — objections are pull-reading
+    Present the week's platform ADR/RFC (written in the Saturday deep
+    block). Take notes on every objection — objections are pull-reading
     triggers and Anki material. An approved RFC counts toward Exam
-    gate 5 (log it in the Sunday state review).
+    gate 5 (log it in the Sunday state review). Owner arranges the
+    humans; /ladder-review is the fallback reviewer, advisory only.
   due: "today at {ritual_times.design_review}"
   labels: [weekly-ritual, design-review]
   cadence: weekly
@@ -103,25 +123,36 @@
   title: "Weekly state review — {iso_year}-W{iso_week:02d}"
   description: |
     Check the sub-tasks that apply. Next cron run picks them up and
-    mutates state.yaml: module advance, counter increments.
-    (Cert milestones live in devops-ready's own state review, 11:00.)
+    mutates state.yaml. (Cert milestones live in devops-ready's own
+    state review, 11:00.)
 
     Review the week:
-    - Did the current module's exam gate move?
+    - Rung: challenge shipped to its consumer? /ladder-review run and
+      its verdict committed? Be honest — the checkbox is the gate,
+      the review is only advisory.
+    - Platform: which Saturday step landed? Any exam gate?
     - Any RFC approved by the senior engineers (Exam gate 5, from
       month 2 onward)?
+    - Crunch week? Minimum viable week (Anki + one session + this
+      review) still counts. No guilt.
   due: "today at {ritual_times.weekly_state_review}"
   labels: [weekly-ritual, state-review]
   cadence: weekly
   day_of_week: sunday
   state_review: true
   sub_tasks:
-    - title: "Challenge done (+ /challenge-review run) — advance to Challenge {next_module}"
+    - title: "Rung done honestly (shipped + /ladder-review run) — advance to Rung {next_module}"
       action: { type: advance_module }
       show_if: not_on_last_module
 
+    - title: "Exam gate passed this week (say which in comment; put 1)"
+      action: { type: increment_counter, counter: exam_gates_passed }
+
     - title: "Exam gate 5: RFC approved by senior engineers this week (from month 2; put count in comment)"
       action: { type: increment_counter, counter: rfcs_approved }
+
+    - title: "The platform is deployed to production — start monthly drills"
+      action: { type: mark_track_started, category: Platform, item: "Platform in production" }
 
     - title: "I finished {current_book}"
       action: { type: mark_book_finished, book: "{current_book}" }

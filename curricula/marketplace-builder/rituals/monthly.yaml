@@ -28,7 +28,8 @@
 # (Cert check-ins are devops-ready's concern — its 15th-of-month
 # certification-prep ritual covers SAA and CKA.)
 
-# From module 5 onward: the ops muscles get exercised monthly.
+# Once the platform is in production: the ops muscles get exercised
+# monthly. The track flips via the Sunday state review checkbox.
 - id: monthly-restore-drill
   title: "Restore drill — database restore under 1 hour, timed"
   description: |
@@ -45,7 +46,7 @@
   cadence: monthly
   day_of_month: 10
   gated_by:
-    - { type: module_gte, value: 35 }
+    - { type: track, category: Platform, item: "Platform in production", states: [current] }
 
 - id: monthly-game-day
   title: "Game day — break production on purpose, write the postmortem"
@@ -64,4 +65,4 @@
   cadence: monthly
   day_of_month: last-saturday
   gated_by:
-    - { type: module_gte, value: 35 }
+    - { type: track, category: Platform, item: "Platform in production", states: [current] }
