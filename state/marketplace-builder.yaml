@@ -1,0 +1,25 @@
+start_date: '2026-08-02'
+phase: 1
+month: 1
+current_module: 1
+current_book: Ultimate AWS Certified Solutions Architect Associate (Udemy)
+completed_modules: []
+active_branches: []
+paused: false
+paused_since: null
+paused_until: null
+pause_history: []
+books_state: {}
+learning_tracks:
+  Certifications:
+    AWS Solutions Architect Associate: current
+    CKA: not_started
+  Courses:
+    boot.dev backend path: current
+  Interview Prep:
+    LeetCode Interview Prep: not_started
+manual_counters:
+  anki_card_count: 0
+  rfcs_approved: 0
+  saa_practice_exams_80plus: 0
+  saa_exam_booked: 0

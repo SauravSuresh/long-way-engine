@@ -9,15 +9,50 @@ ritual_times:
   weekly_state_review: '10:00'
 
 priority_order:
-- devops-ready
+- marketplace-builder
 - long-way
 
 syllabuses:
+  marketplace-builder:
+    path: curricula/marketplace-builder
+    # PLACEHOLDER — replace with the real Todoist project ID before any
+    # live (non-dry-run) engine run. Ask the owner; do not guess.
+    todoist_project_id: REPLACE_ME_TODOIST_PROJECT_ID
+    state_file: state/marketplace-builder.yaml
+    enabled: true
+    ritual_times:
+      # Overrides of the 7 global (long-way) slots — every (slot, time)
+      # pair must be unique across enabled syllabuses, so all are shifted
+      # off long-way's claims even where marketplace-builder reuses none.
+      morning_reading: '08:00'
+      anki: '07:30'                   # daily Anki, Mon-Sat
+      evening_hands_on: '19:30'
+      friday_review: '20:30'
+      saturday_deep_block: '14:00'    # Sat deep block (RFC/ADR + build)
+      sunday_trace: '20:30'
+      weekly_state_review: '11:00'    # Sunday state review
+      # marketplace-builder's own slots
+      saa_morning: '08:00'            # SAA course study, Mon-Sat while cert live
+      build_monday: '19:30'           # build session
+      build_wednesday: '19:30'        # build session
+      bootdev_tuesday: '19:30'        # boot.dev just-in-time
+      saa_lab_thursday: '19:30'       # SAA labs / practice exams (while cert live)
+      bootdev_thursday: '19:30'       # second boot.dev session (after SAA done)
+      friday_reflection: '20:30'      # Friday reflection
+      design_review: '17:00'          # weekly design review (flexible; Monday default)
+      ship_log: '09:30'               # 1st of month
+      cert_checkin: '15:00'           # 15th of month, gated to cert tracks
+      restore_drill: '20:00'          # monthly, day 10, module 5 onward
+      game_day: '14:00'               # monthly, last Saturday, module 5 onward
+
+  # superseded — cert goals live on inside marketplace-builder; files
+  # kept as reference. Re-enable by flipping `enabled` and adding the
+  # key back to priority_order.
   devops-ready:
     path: curricula/devops-ready
     todoist_project_id: 6gpVRwqVmjqRc7hX
     state_file: state/devops-ready.yaml
-    enabled: true
+    enabled: false
     # Adjusted ritual times to avoid collisions with long-way
     ritual_times:
       morning_reading: 08:00           # Reusing morning_udemy slot (same ritual)

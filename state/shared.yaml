@@ -6,6 +6,13 @@ manual_counters:
   lineage_detours_done: []
 notes: 'Most recent edit on top.
 
+  2026-08-02: marketplace-builder replaces devops-ready as the focus track
+  (build-first syllabus; booking platform is the spine; SAA cert = parallel
+  theory track months 1-3, CKA parked post-launch). devops-ready disabled in
+  config (superseded — cert goals live on inside marketplace-builder; files
+  kept as reference). long-way paused (paused_since 2026-08-02, parked until
+  platform launch).
+
   2026-07-01: focus switch to devops-ready. boot.dev now every weekday; LeetCode
   alternate days (Mon/Wed/Fri); morning study Mon-Fri; Saturday = long-way CS:APP
   long reading (AM) + devops project block (PM). long-way relegated to Saturdays
