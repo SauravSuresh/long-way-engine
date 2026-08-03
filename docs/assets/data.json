@@ -1,5 +1,6 @@
 {
   "priority_order": [
+    "marketplace-builder",
     "devops-ready",
     "long-way"
   ],
@@ -17,10 +18,10 @@
   "syllabuses": {
     "devops-ready": {
       "adherence": {
-        "done": 6,
-        "expected": 28,
-        "percent": 21,
-        "since": "2026-07-01"
+        "done": 0,
+        "expected": 0,
+        "percent": null,
+        "since": "2026-08-04"
       },
       "books": [
         {
@@ -97,39 +98,39 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 34,
-      "day_total": 336,
+      "day_of_journey": 1,
+      "day_total": 335,
       "last_7_days": [
         {
-          "date": "2026-07-27",
-          "state": "red"
-        },
-        {
           "date": "2026-07-28",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-07-29",
-          "state": "green"
+          "state": "gray"
         },
         {
           "date": "2026-07-30",
-          "state": "yellow"
+          "state": "gray"
         },
         {
           "date": "2026-07-31",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-08-01",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-08-02",
           "state": "gray"
+        },
+        {
+          "date": "2026-08-03",
+          "state": "gray"
         }
       ],
-      "month": 2,
+      "month": 1,
       "paused": null,
       "phase": 1,
       "practices": {
@@ -146,29 +147,29 @@
       },
       "streaks_view": {
         "Daily": {
-          "best": 3,
+          "best": 0,
           "count": 0,
           "hint": "complete morning reading + Anki today to start"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 29 days"
+          "hint": "next post in 28 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 4 days"
+          "hint": "next Friday in 3 days"
         }
       },
-      "today": "2026-08-03"
+      "today": "2026-08-04"
     },
     "long-way": {
       "adherence": {
         "done": 0,
-        "expected": 5,
-        "percent": 0,
-        "since": "2026-07-01"
+        "expected": 0,
+        "percent": null,
+        "since": "2026-08-04"
       },
       "books": [
         {
@@ -259,13 +260,9 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 34,
+      "day_of_journey": 1,
       "day_total": 1189,
       "last_7_days": [
-        {
-          "date": "2026-07-27",
-          "state": "gray"
-        },
         {
           "date": "2026-07-28",
           "state": "gray"
@@ -284,15 +281,19 @@
         },
         {
           "date": "2026-08-01",
-          "state": "red"
+          "state": "gray"
         },
         {
           "date": "2026-08-02",
           "state": "gray"
+        },
+        {
+          "date": "2026-08-03",
+          "state": "gray"
         }
       ],
-      "month": 2,
-      "paused": null,
+      "month": 1,
+      "paused": "Paused since 2026-08-04 (0 days)",
       "phase": 1,
       "practices": {
         "Code reading sessions": 0,
@@ -346,20 +347,140 @@
         "Daily": {
           "best": 0,
           "count": 0,
-          "hint": "rest day \u2014 no rituals scheduled"
+          "hint": "paused"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 29 days"
+          "hint": "paused"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 4 days"
+          "hint": "paused"
         }
       },
-      "today": "2026-08-03"
+      "today": "2026-08-04"
+    },
+    "marketplace-builder": {
+      "adherence": {
+        "done": 0,
+        "expected": 0,
+        "percent": null,
+        "since": "2026-08-04"
+      },
+      "books": [
+        {
+          "author": "Donovan & Kernighan",
+          "end_month": null,
+          "phase": 1,
+          "start_month": null,
+          "title": "The Go Programming Language"
+        },
+        {
+          "author": "Teiva Harsanyi",
+          "end_month": null,
+          "phase": 1,
+          "start_month": null,
+          "title": "100 Go Mistakes and How to Avoid Them"
+        },
+        {
+          "author": "JJ Geewax",
+          "end_month": null,
+          "phase": 2,
+          "start_month": null,
+          "title": "API Design Patterns"
+        },
+        {
+          "author": "Martin Kleppmann",
+          "end_month": null,
+          "phase": 3,
+          "start_month": null,
+          "title": "Designing Data-Intensive Applications"
+        },
+        {
+          "author": "Ahmed Siddiqui",
+          "end_month": null,
+          "phase": 2,
+          "start_month": null,
+          "title": "The Anatomy of the Swipe"
+        },
+        {
+          "author": "Michael Nygard",
+          "end_month": null,
+          "phase": 3,
+          "start_month": null,
+          "title": "Release It! (2nd Edition)"
+        }
+      ],
+      "books_state": {},
+      "current_book": "The Go Programming Language",
+      "current_module": 1,
+      "day_of_journey": 1,
+      "day_total": 366,
+      "last_7_days": [
+        {
+          "date": "2026-07-28",
+          "state": "gray"
+        },
+        {
+          "date": "2026-07-29",
+          "state": "gray"
+        },
+        {
+          "date": "2026-07-30",
+          "state": "gray"
+        },
+        {
+          "date": "2026-07-31",
+          "state": "gray"
+        },
+        {
+          "date": "2026-08-01",
+          "state": "gray"
+        },
+        {
+          "date": "2026-08-02",
+          "state": "gray"
+        },
+        {
+          "date": "2026-08-03",
+          "state": "gray"
+        }
+      ],
+      "month": 1,
+      "paused": null,
+      "phase": 1,
+      "practices": {
+        "Code reading sessions": 0,
+        "PRs opened": 0,
+        "Pair sessions": 0,
+        "Traces completed": 0
+      },
+      "reflections": [],
+      "streaks": {
+        "Daily": 0,
+        "Monthly post": 0,
+        "Weekly review": 0
+      },
+      "streaks_view": {
+        "Daily": {
+          "best": 0,
+          "count": 0,
+          "hint": "complete morning reading + Anki today to start"
+        },
+        "Monthly post": {
+          "best": 0,
+          "count": 0,
+          "hint": "next post in 28 days"
+        },
+        "Weekly review": {
+          "best": 0,
+          "count": 0,
+          "hint": "next Friday in 3 days"
+        }
+      },
+      "today": "2026-08-04"
     }
   }
 }

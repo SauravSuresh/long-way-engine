@@ -8,7 +8,6 @@ active_branches: []
 paused: true
 paused_since: '2026-08-04'
 paused_until: null
-notes: parked until platform launch
 pause_history: []
 books_state: {}
 learning_tracks:
