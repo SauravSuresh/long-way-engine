@@ -2,27 +2,395 @@
   "date": "2026-05-24",
   "templates": [
     {
+      "cadence": "daily",
+      "fires": false,
+      "id": "daily-anki",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-ship-log",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-restore-drill",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-game-day",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "build-session-monday",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "build-session-wednesday",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "friday-reflection",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "saturday-deep-block",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-design-review",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "weekly",
+      "description": "Check the sub-tasks that apply. Next cron run picks them up and\nmutates state.yaml. (Cert milestones live in devops-ready's own\nstate review, 11:00.)\n\nReview the week:\n- Rung: challenge shipped to its consumer? /ladder-review run and\n  its verdict committed? Be honest \u2014 the checkbox is the gate,\n  the review is only advisory.\n- Platform: which Saturday step landed? Any exam gate?\n- Any RFC approved by the senior engineers (Exam gate 5, from\n  month 2 onward)?\n- Crunch week? Minimum viable week (Anki + one session + this\n  review) still counts. No guilt.\n",
+      "due": "today at 11:30",
+      "fires": true,
+      "id": "weekly-state-review",
+      "labels": [
+        "weekly-ritual",
+        "state-review"
+      ],
+      "syllabus_key": "marketplace-builder",
+      "title": "Weekly state review \u2014 2026-W21"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-1",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-2",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-3",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-4",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-5",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-6",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-7",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-8",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-9",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-10",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-11",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-12",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-13",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-14",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-15",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-16",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "daily",
+      "fires": false,
+      "id": "daily-devops-srs",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekday-morning-study-monday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekday-morning-study-tuesday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekday-morning-study-wednesday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekday-morning-study-thursday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekday-morning-study-friday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-github-project-publish",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-certification-prep",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-mock-interview",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-retrospective",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-bootdev-monday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-bootdev-tuesday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-bootdev-wednesday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-bootdev-thursday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-bootdev-friday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-leetcode-monday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-leetcode-wednesday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-leetcode-friday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "description": "Check the sub-tasks that apply to your week. Next cron run picks\nthem up and mutates state.yaml: module advance, certification milestones,\ntrack updates, counter increments.\n\nReview your progress:\n- Did you complete the module milestone?\n- Did you pass a certification exam?\n- How many LeetCode problems solved?\n- Did you push a project to GitHub?\n",
+      "due": "today at 11:00",
+      "fires": true,
+      "id": "weekly-state-review",
+      "labels": [
+        "weekly-ritual",
+        "state-review"
+      ],
+      "syllabus_key": "devops-ready",
+      "title": "Weekly state review \u2014 2026-W21"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-project-work",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-friday-reflection",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-1-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-2-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-3-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-4-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-5-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-6-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-7-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-8-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-9-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-10-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-11-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-12-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-13-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
       "cadence": "annual",
       "fires": false,
       "id": "annual-review",
       "syllabus_key": "long-way"
     },
     {
-      "cadence": "daily",
+      "cadence": "weekly",
       "fires": false,
-      "id": "daily-morning-reading",
+      "id": "weekly-saturday-morning-reading",
       "syllabus_key": "long-way"
     },
     {
-      "cadence": "daily",
+      "cadence": "weekly",
       "fires": false,
-      "id": "daily-anki",
-      "syllabus_key": "long-way"
-    },
-    {
-      "cadence": "daily",
-      "fires": false,
-      "id": "daily-evening-hands-on",
+      "id": "weekly-saturday-anki",
       "syllabus_key": "long-way"
     },
     {
@@ -44,36 +412,6 @@
       "syllabus_key": "long-way"
     },
     {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-trace-one-thing",
-      "syllabus_key": "long-way"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-read-real-code",
-      "syllabus_key": "long-way"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-pair-with-engineer",
-      "syllabus_key": "long-way"
-    },
-    {
-      "cadence": "monthly",
-      "fires": false,
-      "id": "monthly-oss-pr",
-      "syllabus_key": "long-way"
-    },
-    {
-      "cadence": "quarterly",
-      "fires": false,
-      "id": "quarterly-build-thing-under-thing",
-      "syllabus_key": "long-way"
-    },
-    {
       "cadence": "quarterly",
       "fires": false,
       "id": "quarterly-synthesis",
@@ -81,27 +419,8 @@
     },
     {
       "cadence": "weekly",
-      "description": "Check the sub-tasks that apply to your week. Next cron run picks\nthem up and mutates state.yaml: module advance, book transitions,\npause, counter increments, revert. Skip the boxes that don't apply.\n",
-      "due": "today at 10:00",
-      "fires": true,
+      "fires": false,
       "id": "weekly-state-review",
-      "labels": [
-        "weekly-ritual",
-        "state-review"
-      ],
-      "syllabus_key": "long-way",
-      "title": "Weekly state review \u2014 2026-W21"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-friday-review",
-      "syllabus_key": "long-way"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-saturday-deep-block",
       "syllabus_key": "long-way"
     },
     {

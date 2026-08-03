@@ -2,46 +2,431 @@
   "date": "2026-05-30",
   "templates": [
     {
+      "cadence": "daily",
+      "description": "15 min, Mon-Sat. Cards come from one source: what I built or\nbroke \u2014 every failure mode, every gotcha from ladder rungs and\nplatform Saturdays becomes a card.\n\nIn practice this is ONE sitting with the devops-ready cert deck\n(07:15-07:45 back-to-back) \u2014 two templates, one habit. (A shared\ncommon-task is specced in specs/common-tasks.md but not built.)\n\nAdd 3-5 new cards per day. No more. Crunch week? This survives.\n",
+      "due": "today at 07:15",
+      "fires": true,
+      "id": "daily-anki",
+      "labels": [
+        "daily-ritual",
+        "srs"
+      ],
+      "syllabus_key": "marketplace-builder",
+      "title": "Anki review \u2014 build deck (15 min)"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-ship-log",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-restore-drill",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-game-day",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "build-session-monday",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "build-session-wednesday",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "friday-reflection",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "weekly",
+      "description": "Protected block \u2014 09:30-13:00, no meetings, no errands. This is\nthe real rental platform, live from week 1. (The devops-ready\nproject block owns Saturday afternoon.)\n\nFirst 30 min: ADR/RFC writing \u2014 one platform decision, written up\nproperly. Feeds the design review and Exam gate 5.\n\nRemainder: build the platform. The first 12 Saturdays follow this\nchecklist, one step per session (finish early, start the next):\nS1 repo + hello-world API running locally \u00b7 S2 Postgres via\ndocker-compose, `equipment` table, insert rows in psql \u00b7 S3\n`GET /equipment` reading from the DB \u00b7 S4 `POST /equipment` +\nfirst automated test \u00b7 S5 deploy skeleton to Railway/App Runner \u2014\nreal URL \u00b7 S6 equipment detail endpoint + seed script \u00b7 S7\navailability-calendar schema draft \u00b7 S8 naive `GET /availability` \u00b7\nS9 `holds` table + create-hold endpoint \u00b7 S10 hold expiry job \u00b7\nS11 stack ADR written up and final \u00b7 S12 confirm-booking happy\npath, payments stubbed.\n\nAfter S12, the platform roadmap (each stage leans on ladder rungs\ndone by then): no-double-booking under concurrent load (\u2605 EXAM\nGATE 1: hammer test in CI) -> spec-first public API -> Razorpay\ntest-mode end-to-end, idempotent under replay -> AWS production\ninfra via Terraform, applying the devops-ready SAA material\n(\u2605 EXAM GATE 2: blue-green deploy + rollback) -> operate: SLOs,\ntracing, \u2605 EXAM GATE 3: DB restore under 1 hour, \u2605 EXAM GATE 4:\nfirst game day + written postmortem -> launch hardening, go-live.\nWhen infra goes live, tick \"platform is in production\" in the\nSunday review \u2014 that starts the monthly drills.\n",
+      "due": "today at 09:30",
+      "fires": true,
+      "id": "saturday-deep-block",
+      "labels": [
+        "weekly-ritual",
+        "platform",
+        "deep-block"
+      ],
+      "syllabus_key": "marketplace-builder",
+      "title": "Saturday deep block (3-4 hr): THE PLATFORM \u2014 ADR first, then build"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-design-review",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-state-review",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "description": "Concept: small sharp tools; parsing; table-driven tests; clean errors.\nPick ONE:\n  A. Expression calculator CLI \u2014 precedence, parentheses, good errors.\n  B. Markdown -> HTML converter \u2014 subset of MD, golden-file tests.\n  C. Flashcard drill CLI over your exported Anki decks \u2014 spaced\n     ordering, stats. (Consumer: your own daily review.)\nMust (all options): table-driven tests, garbage input handled,\nREADME, a consumer named in the ADR.\nADR question: how do you parse \u2014 and where's the seam between the\nCLI and the reusable core?\n",
+      "due": "today at 20:00",
+      "fires": true,
+      "id": "rung-1",
+      "labels": [
+        "rung",
+        "phase-1"
+      ],
+      "syllabus_key": "marketplace-builder",
+      "title": "Rung 1: CLI craft & tests (~2 wk) \u2014 pick one of 3"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-2",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-3",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-4",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-5",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-6",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-7",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-8",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-9",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-10",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-11",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-12",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-13",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-14",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-15",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "rung-16",
+      "syllabus_key": "marketplace-builder"
+    },
+    {
+      "cadence": "daily",
+      "description": "10\u201315 min. Review AWS services, K8s concepts, LeetCode patterns, and\nsystem design principles. Add 3\u20135 new cards daily from what you learned\nin Udemy courses and hands-on work.\n\nCard categories:\n- AWS services & use cases\n- Kubernetes objects & commands\n- Data structures & algorithms\n- System design patterns\n",
+      "due": "today at 07:30",
+      "fires": true,
+      "id": "daily-devops-srs",
+      "labels": [
+        "daily-ritual",
+        "srs"
+      ],
+      "syllabus_key": "devops-ready",
+      "title": "Anki review (AWS/K8s/Interview prep)"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekday-morning-study-monday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekday-morning-study-tuesday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekday-morning-study-wednesday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekday-morning-study-thursday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekday-morning-study-friday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-github-project-publish",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-certification-prep",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "monthly",
+      "fires": false,
+      "id": "monthly-mock-interview",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "monthly",
+      "description": "Last Saturday: Reflect on the month's progress.\n\nReview:\n1. Module completion: Did you hit the milestone?\n2. Certification progress: On track for exam?\n3. LeetCode stats: Problems solved, patterns mastered\n4. GitHub projects: Quality and completeness\n5. Interview readiness: Confidence level 1-10\n\nAdjust next month's plan based on:\n- What worked well (do more of this)\n- What didn't work (change approach)\n- Unexpected challenges (plan mitigation)\n- Energy/motivation levels (adjust intensity)\n\nUpdate your learning journal with insights.\n",
+      "due": "today at 15:00",
+      "fires": true,
+      "id": "monthly-retrospective",
+      "labels": [
+        "monthly-ritual",
+        "reflection"
+      ],
+      "syllabus_key": "devops-ready",
+      "title": "Monthly retrospective \u2014 2026-05"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-bootdev-monday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-bootdev-tuesday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-bootdev-wednesday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-bootdev-thursday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-bootdev-friday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-leetcode-monday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-leetcode-wednesday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-leetcode-friday",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-state-review",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "weekly",
+      "description": "Dedicated time for building your GitHub portfolio project for the\ncurrent module. This is the devops \"doing\" for Saturday (long-way\nreading has the morning). Production-quality work that demonstrates\nyour skills to employers.\n\nCurrent module: Module AWS Core Services\n\nProject checklist:\n- [ ] Architecture diagram (draw.io or Lucidchart)\n- [ ] Infrastructure as Code (Terraform/CloudFormation)\n- [ ] CI/CD pipeline (GitHub Actions)\n- [ ] Comprehensive README with setup instructions\n- [ ] Error handling & logging\n- [ ] Tests (unit + integration)\n- [ ] Monitoring/observability hooks\n\nPush to GitHub with proper commit messages and PR descriptions.\n",
+      "due": "today at 14:00",
+      "fires": true,
+      "id": "weekly-project-work",
+      "labels": [
+        "weekly-ritual",
+        "project"
+      ],
+      "syllabus_key": "devops-ready",
+      "title": "Saturday deep block: Project work (3-4 hr)"
+    },
+    {
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-friday-reflection",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "description": "Welcome to Module 1! This month you'll master AWS fundamentals.\n\nGoals:\n- Complete Udemy AWS SAA course sections 1-5\n- Deploy a 3-tier web app manually (EC2, RDS, S3)\n- Create 50+ Anki cards on AWS services\n- Start LeetCode (Arrays & Hashing pattern)\n\nSetup tasks:\n- [ ] Create AWS free tier account\n- [ ] Install AWS CLI and configure credentials\n- [ ] Set up Terraform on your machine\n- [ ] Create GitHub repo: aws-3tier-webapp\n- [ ] Start LeetCode tracking spreadsheet\n\nResources:\n- Udemy: Ultimate AWS Certified Solutions Architect Associate\n- AWS Free Tier: https://aws.amazon.com/free/\n- Terraform docs: https://terraform.io/docs\n",
+      "due": "today at 08:00",
+      "fires": true,
+      "id": "module-1-onboarding",
+      "labels": [
+        "module-onboarding"
+      ],
+      "syllabus_key": "devops-ready",
+      "title": "Module 1: AWS Core Services \u2014 Setup & Goals"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-2-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-3-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-4-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-5-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-6-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-7-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-8-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-9-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-10-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-11-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-12-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
+      "cadence": "once-per-module",
+      "fires": false,
+      "id": "module-13-onboarding",
+      "syllabus_key": "devops-ready"
+    },
+    {
       "cadence": "annual",
       "fires": false,
       "id": "annual-review",
       "syllabus_key": "long-way"
     },
     {
-      "cadence": "daily",
-      "description": "30 min. Paper book, paper notebook, no laptop.\nSame chair, same time. This is sacred.\nToday's book: Computer Systems: A Programmer's Perspective.\n",
-      "due": "today at 06:00",
-      "fires": true,
-      "id": "daily-morning-reading",
-      "labels": [
-        "daily-ritual"
-      ],
-      "syllabus_key": "long-way",
-      "title": "Morning reading: Computer Systems: A Programmer's Perspective"
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-saturday-morning-reading",
+      "syllabus_key": "long-way"
     },
     {
-      "cadence": "daily",
-      "description": "10\u201315 min. Whenever \u2014 commute, lunch, before bed.\nAdd 3\u20135 new cards per day from what you read and built. No more.\n",
-      "due": "today at 08:30",
-      "fires": true,
-      "id": "daily-anki",
-      "labels": [
-        "daily-ritual"
-      ],
-      "syllabus_key": "long-way",
-      "title": "Anki review"
-    },
-    {
-      "cadence": "daily",
-      "description": "boot.dev, the side build, or the main project. In nvim.\nWithout AI writing code for you (using AI to *explain* concepts is fine).\n\nSkipped on Sunday (rest day) and on pair days (the weekly\npair-with-engineer session replaces solo evening work that day).\n",
-      "due": "today at 19:00",
-      "fires": true,
-      "id": "daily-evening-hands-on",
-      "labels": [
-        "daily-ritual"
-      ],
-      "syllabus_key": "long-way",
-      "title": "Evening hands-on (60\u201390 min)"
+      "cadence": "weekly",
+      "fires": false,
+      "id": "weekly-saturday-anki",
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "monthly",
@@ -51,64 +436,14 @@
     },
     {
       "cadence": "monthly",
-      "description": "60 min. Pull up the last four weeks of code-reading notes. Re-read\nyour one-page summaries. For each codebase, ask: could I sketch its\narchitecture from memory now? If not, that codebase needs revisiting\nbefore any new ones. Same for PRs (read your diffs and the reviewer's\ncomments) and any blog posts you wrote this month.\n",
-      "due": "today at 09:00",
-      "fires": true,
+      "fires": false,
       "id": "monthly-retrieval",
-      "labels": [
-        "monthly-ritual",
-        "reflection"
-      ],
-      "syllabus_key": "long-way",
-      "title": "Monthly retrieval: re-read 4 weeks of notes"
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "monthly",
-      "description": "Right after retrieval. End-of-month review \u2014 what worked, what\ndidn't. The plan is allowed to evolve, but only at month boundaries,\nnot in the middle of a tough week.\n",
-      "due": "today at 09:00",
-      "fires": true,
+      "fires": false,
       "id": "monthly-review",
-      "labels": [
-        "monthly-ritual",
-        "reflection"
-      ],
-      "syllabus_key": "long-way",
-      "title": "Monthly review: what worked, what didn't"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-trace-one-thing",
-      "syllabus_key": "long-way"
-    },
-    {
-      "cadence": "weekly",
-      "description": "Pick a target \u2014 a Go stdlib package, a small canonical project (BoltDB,\ngroupcache), a daily-use tool (git, ripgrep, fzf), or a piece of a\nlarger system (kube-scheduler, SQLite). Read the README, run the\ntests, find the entry point, trace one path. Don't read top-to-bottom.\nCode is a graph, not a book.\n\nWrite a one-page summary in your notebook: what you learned, what was\nconfusing, what was beautiful. Add 1\u20132 Anki cards. Push the notes\nto your public repo.\n\nPicker: https://sauravsuresh.github.io/long-way-engine/repopick/\nSurfaces one curated repo at a time from the 41-entry seed, with a\nscoped entry point and a concrete question. Click \"Mark complete\"\nwhen this week's read is done to unlock the next one.\n",
-      "due": "today at 09:00",
-      "fires": true,
-      "id": "weekly-read-real-code",
-      "labels": [
-        "active-practice"
-      ],
-      "syllabus_key": "long-way",
-      "title": "Read real code (1 hr)"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-pair-with-engineer",
-      "syllabus_key": "long-way"
-    },
-    {
-      "cadence": "monthly",
-      "fires": false,
-      "id": "monthly-oss-pr",
-      "syllabus_key": "long-way"
-    },
-    {
-      "cadence": "quarterly",
-      "fires": false,
-      "id": "quarterly-build-thing-under-thing",
       "syllabus_key": "long-way"
     },
     {
@@ -124,28 +459,10 @@
       "syllabus_key": "long-way"
     },
     {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-friday-review",
-      "syllabus_key": "long-way"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-saturday-deep-block",
-      "syllabus_key": "long-way"
-    },
-    {
       "cadence": "once-per-module",
-      "description": "Phase 1, ~60 hrs. boot.dev courses 1\u20137 (Python, Linux, Git, OOP,\nFunctional). Skim chapters where you already know the material;\ndo every exercise where you don't. boot.dev is your runway, not\nyour syllabus. Move fast through this.\n",
-      "due": "today",
-      "fires": true,
+      "fires": false,
       "id": "module-01-onboarding",
-      "labels": [
-        "module-work"
-      ],
-      "syllabus_key": "long-way",
-      "title": "Module 1: Python Basics \u2014 start"
+      "syllabus_key": "long-way"
     },
     {
       "cadence": "once-per-module",

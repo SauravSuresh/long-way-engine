@@ -694,7 +694,9 @@ def run(
                 sweep_result.errors,
             )
 
-    cache = prune(cache, now=clock.now().astimezone(timezone.utc))
+    # Prune against the injected run date, not wall clock — run() must be
+    # deterministic given `today` (goldens and date-injected tests rely on it).
+    cache = prune(cache, now=datetime(today.year, today.month, today.day, tzinfo=timezone.utc))
     if not dry_run:
         save_cache(cache_path, cache)
 
@@ -1019,7 +1021,7 @@ def run_for_syllabus(
             )
 
     # Prune per-syllabus cache slice in place.
-    pruned = prune(syllabus_cache, now=clock.now().astimezone(timezone.utc))
+    pruned = prune(syllabus_cache, now=datetime(today.year, today.month, today.day, tzinfo=timezone.utc))
     syllabus_cache.clear()
     syllabus_cache.update(pruned)
 

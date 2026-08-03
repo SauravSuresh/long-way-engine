@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import io
 import json
+import shutil
 from datetime import date
 from pathlib import Path
 from unittest.mock import patch
@@ -492,12 +493,35 @@ def test_cleanup_yes_with_empty_project(tmp_path: Path, monkeypatch, capsys):
 REAL_CURRICULUM_DIR = REPO_ROOT / "curricula" / "long-way"
 
 
+_FRIDAY_REVIEW_TPL = """
+- id: weekly-friday-review
+  title: "Friday review: 20-min retrieval"
+  description: |
+    Without looking at your notes, write down the 3 most important
+    things you learned this week.
+  due: "today at {ritual_times.friday_review}"
+  labels: [weekly-ritual, reflection]
+  cadence: weekly
+  day_of_week: friday
+  reflection:
+    create_stub: true
+    stub_path: "reflections/weekly/{iso_year}-W{iso_week:02d}.md"
+"""
+
+
 def _seed_repo_with_real_templates(tmp_path: Path, monkeypatch) -> Path:
-    """Same as _seed_repo, but the syllabus entry path points at the real
-    curriculum dir so the run uses the full cadence templates (reflection stubs, etc).
+    """Same as _seed_repo, but the syllabus entry path points at a COPY of the
+    real curriculum dir so the run uses the full cadence templates (reflection
+    stubs, etc). The copy gets the weekly friday-review stub template appended:
+    the live curriculum dropped it (reduced schedule), but these tests exercise
+    the engine's stub machinery, which shouldn't be coupled to schedule edits.
     """
     _seed_repo(tmp_path, monkeypatch)
-    # Rewrite config to point entry path at the real curriculum dir.
+    curriculum_copy = tmp_path / "real_curriculum"
+    shutil.copytree(REAL_CURRICULUM_DIR, curriculum_copy)
+    weekly = curriculum_copy / "rituals" / "weekly.yaml"
+    weekly.write_text(weekly.read_text() + _FRIDAY_REVIEW_TPL)
+    # Rewrite config to point entry path at the curriculum copy.
     state_dir = tmp_path / "state"
     config_path = tmp_path / "config.yaml"
     env_path = tmp_path / ".env"
@@ -514,7 +538,7 @@ def _seed_repo_with_real_templates(tmp_path: Path, monkeypatch) -> Path:
         f'  - {_TEST_SYLLABUS_KEY}\n'
         f'syllabuses:\n'
         f'  {_TEST_SYLLABUS_KEY}:\n'
-        f'    path: "{REAL_CURRICULUM_DIR}"\n'
+        f'    path: "{curriculum_copy}"\n'
         f'    todoist_project_id: "PROD-ID"\n'
         f'    state_file: "{state_dir / (_TEST_SYLLABUS_KEY + ".yaml")}"\n'
         f'    enabled: true\n'
