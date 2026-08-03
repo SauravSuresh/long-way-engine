@@ -17,9 +17,9 @@
   "syllabuses": {
     "devops-ready": {
       "adherence": {
-        "done": 3,
-        "expected": 4,
-        "percent": 75,
+        "done": 6,
+        "expected": 28,
+        "percent": 21,
         "since": "2026-07-01"
       },
       "books": [
@@ -64,44 +64,72 @@
           "phase": 3,
           "start_month": 7,
           "title": "Grokking the System Design Interview"
+        },
+        {
+          "author": "JJ Geewax",
+          "end_month": 8,
+          "phase": 4,
+          "start_month": 8,
+          "title": "API Design Patterns"
+        },
+        {
+          "author": "Martin Kleppmann",
+          "end_month": 9,
+          "phase": 4,
+          "start_month": 9,
+          "title": "Designing Data-Intensive Applications"
+        },
+        {
+          "author": "Ahmed Siddiqui",
+          "end_month": 10,
+          "phase": 4,
+          "start_month": 10,
+          "title": "The Anatomy of the Swipe"
+        },
+        {
+          "author": "Michael Nygard",
+          "end_month": 11,
+          "phase": 4,
+          "start_month": 11,
+          "title": "Release It! (2nd Edition)"
         }
       ],
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 5,
-      "day_total": 216,
+      "day_of_journey": 34,
+      "day_total": 336,
       "last_7_days": [
         {
-          "date": "2026-06-28",
-          "state": "gray"
+          "date": "2026-07-27",
+          "state": "red"
         },
         {
-          "date": "2026-06-29",
-          "state": "gray"
+          "date": "2026-07-28",
+          "state": "red"
         },
         {
-          "date": "2026-06-30",
-          "state": "gray"
+          "date": "2026-07-29",
+          "state": "green"
         },
         {
-          "date": "2026-07-01",
+          "date": "2026-07-30",
           "state": "yellow"
         },
         {
-          "date": "2026-07-02",
-          "state": "green"
+          "date": "2026-07-31",
+          "state": "red"
         },
         {
-          "date": "2026-07-03",
-          "state": "green"
+          "date": "2026-08-01",
+          "state": "red"
         },
         {
-          "date": "2026-07-04",
-          "state": "green"
+          "date": "2026-08-02",
+          "state": "gray"
         }
       ],
-      "month": 1,
+      "month": 2,
       "paused": null,
       "phase": 1,
       "practices": {
@@ -112,33 +140,33 @@
       },
       "reflections": [],
       "streaks": {
-        "Daily": 3,
+        "Daily": 0,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
           "best": 3,
-          "count": 3,
-          "hint": "Sunday \u2014 rest day"
+          "count": 0,
+          "hint": "complete morning reading + Anki today to start"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 27 days"
+          "hint": "next post in 29 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 5 days"
+          "hint": "next Friday in 4 days"
         }
       },
-      "today": "2026-07-05"
+      "today": "2026-08-03"
     },
     "long-way": {
       "adherence": {
         "done": 0,
-        "expected": 1,
+        "expected": 5,
         "percent": 0,
         "since": "2026-07-01"
       },
@@ -231,43 +259,43 @@
       "books_state": {},
       "current_book": "Computer Systems: A Programmer's Perspective",
       "current_module": 1,
-      "day_of_journey": 5,
+      "day_of_journey": 34,
       "day_total": 1189,
       "last_7_days": [
         {
-          "date": "2026-06-28",
+          "date": "2026-07-27",
           "state": "gray"
         },
         {
-          "date": "2026-06-29",
+          "date": "2026-07-28",
           "state": "gray"
         },
         {
-          "date": "2026-06-30",
+          "date": "2026-07-29",
           "state": "gray"
         },
         {
-          "date": "2026-07-01",
+          "date": "2026-07-30",
           "state": "gray"
         },
         {
-          "date": "2026-07-02",
+          "date": "2026-07-31",
           "state": "gray"
         },
         {
-          "date": "2026-07-03",
-          "state": "gray"
-        },
-        {
-          "date": "2026-07-04",
+          "date": "2026-08-01",
           "state": "red"
+        },
+        {
+          "date": "2026-08-02",
+          "state": "gray"
         }
       ],
-      "month": 1,
+      "month": 2,
       "paused": null,
       "phase": 1,
       "practices": {
-        "Code reading sessions": 1,
+        "Code reading sessions": 0,
         "PRs opened": 0,
         "Pair sessions": 0,
         "Traces completed": 0
@@ -295,6 +323,13 @@
           "word_count": 54
         },
         {
+          "cadence": "monthly",
+          "file": "2026-07",
+          "relative_path": "monthly/2026-07.md",
+          "status": "stub",
+          "word_count": 54
+        },
+        {
           "cadence": "quarterly",
           "file": "2026-Q3",
           "relative_path": "quarterly/2026-Q3.md",
@@ -311,20 +346,20 @@
         "Daily": {
           "best": 0,
           "count": 0,
-          "hint": "Sunday \u2014 rest day"
+          "hint": "rest day \u2014 no rituals scheduled"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 27 days"
+          "hint": "next post in 29 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 5 days"
+          "hint": "next Friday in 4 days"
         }
       },
-      "today": "2026-07-05"
+      "today": "2026-08-03"
     }
   }
 }

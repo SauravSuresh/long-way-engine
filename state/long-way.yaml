@@ -1,4 +1,4 @@
-start_date: '2026-08-02'
+start_date: '2026-08-04'
 phase: 1
 month: 1
 current_module: 1
@@ -6,7 +6,7 @@ current_book: 'Computer Systems: A Programmer''s Perspective'
 completed_modules: []
 active_branches: []
 paused: true
-paused_since: '2026-08-02'
+paused_since: '2026-08-04'
 paused_until: null
 notes: parked until platform launch
 pause_history: []

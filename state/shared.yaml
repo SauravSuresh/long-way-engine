@@ -6,6 +6,14 @@ manual_counters:
   lineage_detours_done: []
 notes: 'Most recent edit on top.
 
+  2026-08-03: the 08-02 restructure was never pushed — remote daily runs
+  (07-06..08-03) kept advancing the old devops-ready/long-way schedule, so
+  Monday ran on stale curriculum. Merged origin/main (kept marketplace-builder
+  curriculum + config; kept remote''s cache/LOG/reflections/dashboard) and
+  moved the full reset forward: start_date -> 2026-08-04 (Tuesday) for all
+  three syllabuses; month/phase/module -> 1. Same cache-intact pattern —
+  entries up to 08-03 pre-date start_date, walkers ignore them.
+
   2026-08-02 (later): post-grilling restructure + full reset. marketplace-builder
   is now two tracks: Mon/Wed = 16-rung ladder (pick 1 of 3 challenges per rung,
   real consumer required, polyglot allowed); Saturday = the real rental platform

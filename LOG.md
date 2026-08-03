@@ -694,3 +694,264 @@
 - Dashboard: ok
 - Errors: 0
 
+## 2026-07-06 (Asia/Kolkata)
+- Run at: 2026-07-06 03:57 IST
+- Created: 5 (daily-devops-srs, weekday-morning-study-monday, weekly-bootdev-monday, weekly-leetcode-monday, module-01-onboarding)
+- Skipped (cache hit): 1 (module-1-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-07 (Asia/Kolkata)
+- Run at: 2026-07-07 04:12 IST
+- Created: 3 (daily-devops-srs, weekday-morning-study-tuesday, weekly-bootdev-tuesday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-08 (Asia/Kolkata)
+- Run at: 2026-07-08 04:04 IST
+- Created: 4 (daily-devops-srs, weekday-morning-study-wednesday, weekly-bootdev-wednesday, weekly-leetcode-wednesday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-09 (Asia/Kolkata)
+- Run at: 2026-07-09 03:59 IST
+- Created: 3 (daily-devops-srs, weekday-morning-study-thursday, weekly-bootdev-thursday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-10 (Asia/Kolkata)
+- Run at: 2026-07-10 04:16 IST
+- Created: 5 (daily-devops-srs, weekday-morning-study-friday, weekly-bootdev-friday, weekly-leetcode-friday, weekly-friday-reflection)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-11 (Asia/Kolkata)
+- Run at: 2026-07-11 03:59 IST
+- Created: 4 (daily-devops-srs, weekly-project-work, weekly-saturday-morning-reading, weekly-saturday-anki)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-12 (Asia/Kolkata)
+- Run at: 2026-07-12 03:41 IST
+- Created: 2 (weekly-state-review, weekly-state-review)
+- Skipped (cache hit): 0 (none)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-13 (Asia/Kolkata)
+- Run at: 2026-07-13 03:41 IST
+- Created: 4 (daily-devops-srs, weekday-morning-study-monday, weekly-bootdev-monday, weekly-leetcode-monday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-14 (Asia/Kolkata)
+- Run at: 2026-07-14 03:45 IST
+- Created: 3 (daily-devops-srs, weekday-morning-study-tuesday, weekly-bootdev-tuesday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-15 (Asia/Kolkata)
+- Run at: 2026-07-15 03:57 IST
+- Created: 5 (daily-devops-srs, weekday-morning-study-wednesday, monthly-certification-prep, weekly-bootdev-wednesday, weekly-leetcode-wednesday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-16 (Asia/Kolkata)
+- Run at: 2026-07-16 03:56 IST
+- Created: 3 (daily-devops-srs, weekday-morning-study-thursday, weekly-bootdev-thursday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-17 (Asia/Kolkata)
+- Run at: 2026-07-17 03:57 IST
+- Created: 5 (daily-devops-srs, weekday-morning-study-friday, weekly-bootdev-friday, weekly-leetcode-friday, weekly-friday-reflection)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-18 (Asia/Kolkata)
+- Run at: 2026-07-18 03:40 IST
+- Created: 4 (daily-devops-srs, weekly-project-work, weekly-saturday-morning-reading, weekly-saturday-anki)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-19 (Asia/Kolkata)
+- Run at: 2026-07-19 03:41 IST
+- Created: 2 (weekly-state-review, weekly-state-review)
+- Skipped (cache hit): 0 (none)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-20 (Asia/Kolkata)
+- Run at: 2026-07-20 03:43 IST
+- Created: 4 (daily-devops-srs, weekday-morning-study-monday, weekly-bootdev-monday, weekly-leetcode-monday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-21 (Asia/Kolkata)
+- Run at: 2026-07-21 03:57 IST
+- Created: 3 (daily-devops-srs, weekday-morning-study-tuesday, weekly-bootdev-tuesday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-22 (Asia/Kolkata)
+- Run at: 2026-07-22 03:53 IST
+- Created: 4 (daily-devops-srs, weekday-morning-study-wednesday, weekly-bootdev-wednesday, weekly-leetcode-wednesday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-23 (Asia/Kolkata)
+- Run at: 2026-07-23 04:00 IST
+- Created: 3 (daily-devops-srs, weekday-morning-study-thursday, weekly-bootdev-thursday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-24 (Asia/Kolkata)
+- Run at: 2026-07-24 03:58 IST
+- Created: 5 (daily-devops-srs, weekday-morning-study-friday, weekly-bootdev-friday, weekly-leetcode-friday, weekly-friday-reflection)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-25 (Asia/Kolkata)
+- Run at: 2026-07-25 04:02 IST
+- Created: 7 (daily-devops-srs, monthly-retrospective, weekly-project-work, weekly-saturday-morning-reading, weekly-saturday-anki, monthly-retrieval, monthly-review)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 2 (/home/runner/work/long-way-engine/long-way-engine/reflections/devops-ready/devops-ready/monthly/2026-07.md, /home/runner/work/long-way-engine/long-way-engine/reflections/long-way/monthly/2026-07.md)
+- Reflection metadata updated: 1
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-26 (Asia/Kolkata)
+- Run at: 2026-07-26 03:44 IST
+- Created: 2 (weekly-state-review, weekly-state-review)
+- Skipped (cache hit): 0 (none)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-27 (Asia/Kolkata)
+- Run at: 2026-07-27 03:55 IST
+- Created: 4 (daily-devops-srs, weekday-morning-study-monday, weekly-bootdev-monday, weekly-leetcode-monday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-28 (Asia/Kolkata)
+- Run at: 2026-07-28 04:01 IST
+- Created: 3 (daily-devops-srs, weekday-morning-study-tuesday, weekly-bootdev-tuesday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-29 (Asia/Kolkata)
+- Run at: 2026-07-29 04:00 IST
+- Created: 4 (daily-devops-srs, weekday-morning-study-wednesday, weekly-bootdev-wednesday, weekly-leetcode-wednesday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-30 (Asia/Kolkata)
+- Run at: 2026-07-30 03:55 IST
+- Created: 3 (daily-devops-srs, weekday-morning-study-thursday, weekly-bootdev-thursday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-07-31 (Asia/Kolkata)
+- Run at: 2026-07-31 04:02 IST
+- Created: 5 (daily-devops-srs, weekday-morning-study-friday, weekly-bootdev-friday, weekly-leetcode-friday, weekly-friday-reflection)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-08-01 (Asia/Kolkata)
+- Run at: 2026-08-01 03:59 IST
+- Created: 6 (daily-devops-srs, monthly-github-project-publish, weekly-project-work, weekly-saturday-morning-reading, weekly-saturday-anki, monthly-blog-post)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-08-02 (Asia/Kolkata)
+- Run at: 2026-08-02 03:47 IST
+- Created: 2 (weekly-state-review, weekly-state-review)
+- Skipped (cache hit): 0 (none)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
+## 2026-08-03 (Asia/Kolkata)
+- Run at: 2026-08-03 03:45 IST
+- Created: 4 (daily-devops-srs, weekday-morning-study-monday, weekly-bootdev-monday, weekly-leetcode-monday)
+- Skipped (cache hit): 2 (module-1-onboarding, module-01-onboarding)
+- Reflection stubs created: 0 (none)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
