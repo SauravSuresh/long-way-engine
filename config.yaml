@@ -11,7 +11,6 @@ ritual_times:
 priority_order:
 - marketplace-builder
 - devops-ready
-- long-way
 
 syllabuses:
   marketplace-builder:
@@ -79,7 +78,7 @@ syllabuses:
     path: curricula/long-way
     todoist_project_id: 6gWxC2wh5WRvjfw2
     state_file: state/long-way.yaml
-    enabled: true
+    enabled: false  # parked until platform launch; disabled syllabuses stay off the dashboard
     # SATURDAY-ONLY: long-way is relegated to Saturdays while devops-ready is
     # the focus track. One long CS:APP reading session + Anki on Saturday
     # (see curricula/long-way/rituals/daily.yaml). Sunday state review still

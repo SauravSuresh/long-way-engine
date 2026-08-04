@@ -6,6 +6,12 @@ manual_counters:
   lineage_detours_done: []
 notes: 'Most recent edit on top.
 
+  2026-08-04: owner could not start today — start_date -> 2026-08-05 (Wednesday)
+  for all three syllabuses (same cache-intact pattern; 08-04 entries pre-date
+  start_date so walkers ignore them). long-way disabled in config (was paused
+  but still rendered) and removed from priority_order, so disabled syllabuses
+  no longer appear on the dashboard.
+
   2026-08-03: the 08-02 restructure was never pushed — remote daily runs
   (07-06..08-03) kept advancing the old devops-ready/long-way schedule, so
   Monday ran on stale curriculum. Merged origin/main (kept marketplace-builder
