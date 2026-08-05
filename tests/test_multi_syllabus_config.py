@@ -109,6 +109,22 @@ def test_slot_collision_suppressed_by_allow_slot_overlap(tmp_path: Path):
     assert "job-readiness" in cfg.syllabuses
 
 
+def test_cli_review_defaults_false(tmp_path: Path):
+    p = _write(tmp_path, BASE_YAML)
+    cfg = load_multi_syllabus_config(p, tmp_path / ".env")
+    assert cfg.syllabuses["long-way"].cli_review is False
+
+
+def test_cli_review_true_when_set(tmp_path: Path):
+    yaml = BASE_YAML.replace(
+        "    enabled: true\n",
+        "    enabled: true\n    cli_review: true\n",
+    )
+    p = _write(tmp_path, yaml)
+    cfg = load_multi_syllabus_config(p, tmp_path / ".env")
+    assert cfg.syllabuses["long-way"].cli_review is True
+
+
 def test_disabled_syllabus_skipped_for_collisions(tmp_path: Path):
     yaml = (BASE_YAML
         .replace(

@@ -18,6 +18,7 @@ syllabuses:
     todoist_project_id: 6hC4MRwQF7Rrpw3G
     state_file: state/marketplace-builder.yaml
     enabled: true
+    cli_review: true
     # Runs full-parallel with devops-ready. This curriculum is
     # build-only; all cert/course theory (SAA, CKA, boot.dev, LeetCode)
     # belongs to devops-ready. Times are packed around devops-ready's

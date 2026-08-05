@@ -549,6 +549,51 @@ def _seed_repo_with_real_templates(tmp_path: Path, monkeypatch) -> Path:
     return tmp_path
 
 
+def _set_cli_review(tmp_path: Path, value: bool) -> None:
+    """Toggle cli_review on the seeded 'main' syllabus entry in config.yaml."""
+    config_path = tmp_path / "config.yaml"
+    text = config_path.read_text()
+    text = text.replace(
+        "    enabled: true\n",
+        f"    enabled: true\n    cli_review: {'true' if value else 'false'}\n",
+    )
+    config_path.write_text(text)
+
+
+def test_cli_review_true_skips_subtasks_keeps_parent(tmp_path: Path, monkeypatch):
+    """cli_review: true still creates the Sunday parent reminder, but no
+    sub-tasks (including auto-generated learning-track ones), and no cache
+    entry carries a state_review_action — the observable gating contract."""
+    _seed_repo_with_real_templates(tmp_path, monkeypatch)
+    _set_cli_review(tmp_path, True)
+    with patch("src.main.TodoistClient", FakeClient):
+        rc = main_module.main(["--today", "2026-05-03"])  # Sunday
+    assert rc == 0
+
+    cache = json.loads((tmp_path / ".task_cache.json").read_text())
+    main_cache = cache[_TEST_SYLLABUS_KEY]
+    parent_entries = [
+        v for v in main_cache.values() if v.get("template_id") == "weekly-state-review"
+    ]
+    assert len(parent_entries) == 1, "parent task must still be created"
+    assert not any("state_review_action" in v for v in main_cache.values()), (
+        "no sub-task should be created when cli_review is true"
+    )
+
+
+def test_cli_review_false_creates_subtasks(tmp_path: Path, monkeypatch):
+    """Baseline: cli_review unset (default False) keeps today's behavior —
+    sub-tasks are created under the Sunday parent."""
+    _seed_repo_with_real_templates(tmp_path, monkeypatch)
+    with patch("src.main.TodoistClient", FakeClient):
+        rc = main_module.main(["--today", "2026-05-03"])  # Sunday
+    assert rc == 0
+
+    cache = json.loads((tmp_path / ".task_cache.json").read_text())
+    main_cache = cache[_TEST_SYLLABUS_KEY]
+    assert any("state_review_action" in v for v in main_cache.values())
+
+
 def test_friday_run_creates_weekly_stub(tmp_path: Path, monkeypatch):
     _seed_repo_with_real_templates(tmp_path, monkeypatch)
     with patch("src.main.TodoistClient", FakeClient):

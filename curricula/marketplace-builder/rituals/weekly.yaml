@@ -122,6 +122,9 @@
 - id: weekly-state-review
   title: "Weekly state review — {iso_year}-W{iso_week:02d}"
   description: |
+    Run `lw review` in the long-way-engine repo — this task is the
+    reminder; the questionnaire and state changes happen there.
+
     Check the sub-tasks that apply. Next cron run picks them up and
     mutates state.yaml. (Cert milestones live in devops-ready's own
     state review, 11:00.)

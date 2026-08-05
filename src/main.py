@@ -817,22 +817,23 @@ def run_for_syllabus(
 
     # PHASE 1: state-mutation.
     state_review_summary: StateReviewSummary | None = None
-    state, shared, state_review_summary = run_state_review_phase(
-        config=per_syllabus_cfg_shim,
-        state=state,
-        shared=shared,
-        syllabus=syllabus,
-        today=today,
-        cache=syllabus_cache,
-        state_path=entry.state_file,
-        shared_path=SHARED_STATE_PATH,
-        state_log_path=state_log_path,
-        review_factory=review_factory,
-        completion_factory=completion_factory,
-        dry_run=dry_run,
-        todoist_token=cfg.todoist_token,
-        project_id=entry.todoist_project_id,
-    )
+    if not entry.cli_review:
+        state, shared, state_review_summary = run_state_review_phase(
+            config=per_syllabus_cfg_shim,
+            state=state,
+            shared=shared,
+            syllabus=syllabus,
+            today=today,
+            cache=syllabus_cache,
+            state_path=entry.state_file,
+            shared_path=SHARED_STATE_PATH,
+            state_log_path=state_log_path,
+            review_factory=review_factory,
+            completion_factory=completion_factory,
+            dry_run=dry_run,
+            todoist_token=cfg.todoist_token,
+            project_id=entry.todoist_project_id,
+        )
 
     # Derive month/phase and persist per-syllabus state.
     state = update_derived_fields(state, syllabus, today)  # type: ignore[assignment]
@@ -902,7 +903,7 @@ def run_for_syllabus(
                 "due_date": cache_due,
             }
 
-        if resolved.state_review and tpl.cadence == "weekly":
+        if resolved.state_review and tpl.cadence == "weekly" and not entry.cli_review:
             syllabus_cache.setdefault(ext_id, {})["state_review_parent"] = True
             parent_task_id = (
                 syllabus_cache[ext_id].get("todoist_task_id") or result.todoist_task_id

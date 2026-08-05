@@ -65,6 +65,8 @@ class FakeClient:
         due_date: date,
         external_id: str,
         cache: dict,
+        *,
+        parent_id: str | None = None,
     ) -> CreateResult:
         if external_id in cache:
             return CreateResult(

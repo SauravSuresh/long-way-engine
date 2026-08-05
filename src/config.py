@@ -127,6 +127,7 @@ class SyllabusEntry:
     enabled: bool
     ritual_times: dict[str, str]
     allow_slot_overlap: bool = False
+    cli_review: bool = False
 
 
 @dataclass
@@ -171,6 +172,7 @@ def load_multi_syllabus_config(yaml_path: Path, env_path: Path, *, strict: bool 
             enabled=bool(block.get("enabled", True)),
             ritual_times=rt,
             allow_slot_overlap=bool(block.get("allow_slot_overlap", False)),
+            cli_review=bool(block.get("cli_review", False)),
         )
 
     # priority_order must equal the set of enabled syllabuses.
