@@ -18,16 +18,13 @@
   title: "Rung 1: CLI craft & tests (~2 wk) — pick one of 3"
   description: |
     Concept: small sharp tools; parsing; table-driven tests; clean errors.
-    Pick ONE:
-      A. Expression calculator CLI — precedence, parentheses, good errors.
-      B. Markdown -> HTML converter — subset of MD, golden-file tests.
-      C. Flashcard drill CLI over your exported Anki decks — spaced
-         ordering, stats. (Consumer: your own daily review.)
-    Must (all options): table-driven tests, garbage input handled,
-    README, a consumer named in the ADR.
-    ADR question: how do you parse — and where's the seam between the
-    CLI and the reusable core?
+    Pick ONE — read all three briefs first:
+    A. [Expression calculator CLI](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01a-expression-calculator.md)
+    B. [Markdown -> HTML converter](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01b-markdown-to-html.md)
+    C. [Flashcard drill CLI](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01c-flashcard-drill.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 14
   labels: [rung, phase-1]
   cadence: once-per-module
   module_number: 1
@@ -36,16 +33,13 @@
   title: "Rung 2: Crash-safe persistence (~2 wk) — pick one of 3"
   description: |
     Concept: file formats, atomic writes, recovery. Data survives kill -9.
-    Pick ONE:
-      A. Append-only key-value store CLI — rebuild on start, compaction.
-      B. Expense/cash ledger CLI — append-only entries, monthly rollup.
-         (Consumer: your actual spending.)
-      C. Local bookmarks manager — tags, search, atomic saves.
-    Must: kill-mid-write recovery test (temp file + rename or log
-    replay), corrupt-file handling without data loss, benchmark reads.
-    ADR question: log vs snapshot vs rewrite-whole-file — and when do
-    you fsync?
+    Pick ONE — read all three briefs first:
+    A. [Append-only key-value store CLI](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-02a-append-only-kv.md)
+    B. [Expense/cash ledger CLI](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-02b-cash-ledger.md)
+    C. [Local bookmarks manager](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-02c-bookmarks-manager.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 14
   labels: [rung, phase-1]
   cadence: once-per-module
   module_number: 2
@@ -54,15 +48,13 @@
   title: "Rung 3: Network clients that don't lie (~2 wk) — pick one of 3"
   description: |
     Concept: timeouts, retries with backoff, testing without the network.
-    Pick ONE:
-      A. Currency/weather CLI over a public API.
-      B. Render-status poller for your startup's previz jobs — notifies
-         when a render finishes. (Consumer: your own team.)
-      C. GitHub watcher — notify on PR reviews/CI results you care about.
-    Must: context timeouts, retry+backoff on 5xx, offline is a message
-    not a stack trace, HTTP mocked in tests (httptest or equivalent).
-    ADR question: how do you make network code testable?
+    Pick ONE — read all three briefs first:
+    A. [Currency/weather CLI](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-03a-currency-weather-cli.md)
+    B. [Render-status poller](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-03b-render-status-poller.md)
+    C. [GitHub watcher](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-03c-github-watcher.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 14
   labels: [rung, phase-1]
   cadence: once-per-module
   module_number: 3
@@ -71,14 +63,13 @@
   title: "Rung 4: Concurrency basics (~2 wk) — pick one of 3"
   description: |
     Concept: worker pools, bounded parallelism, cancellation, races.
-    Pick ONE:
-      A. Parallel file hasher/dedupe over your startup's render output.
-      B. Concurrent thumbnailer for an image directory.
-      C. Concurrent link checker for rung 2's bookmarks (or any site).
-    Must: bounded workers, first error cancels the rest, progress
-    output, `go test -race` clean (or the language's equivalent).
-    ADR question: channels vs errgroup vs semaphore — pattern and why.
+    Pick ONE — read all three briefs first:
+    A. [Parallel file hasher/dedupe](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-04a-parallel-file-hasher.md)
+    B. [Concurrent thumbnailer](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-04b-concurrent-thumbnailer.md)
+    C. [Concurrent link checker](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-04c-concurrent-link-checker.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 14
   labels: [rung, phase-1]
   cadence: once-per-module
   module_number: 4
@@ -87,17 +78,13 @@
   title: "Rung 5: A library with real users (~2-3 wk) — pick one of 3"
   description: |
     Concept: API design for strangers — the ADR discipline aimed at code.
-    Pick ONE (published for real: pkg.go.dev / crates.io / npm):
-      A. Rate limiter (token bucket, per-key, fake-clock tests).
-      B. Retry/backoff library (jitter, budgets, context-aware).
-      C. TTL + LRU cache (thread-safe, benchmarked).
-    Must: docs a stranger can use, semver tag, examples, zero-value
-    sanity, no test uses time.Sleep. Consumer: published + used by at
-    least one later rung of your own ladder.
-    ADR question: what does a good library API owe its users?
-    Polyglot invitation: doing this in a second language doubles the
-    API-design lesson — argue it in the ADR if tempted.
+    Pick ONE — read all three briefs first:
+    A. [Rate limiter](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-05a-rate-limiter.md)
+    B. [Retry/backoff library](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-05b-retry-backoff.md)
+    C. [TTL + LRU cache](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-05c-ttl-lru-cache.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 21
   labels: [rung, phase-1]
   cadence: once-per-module
   module_number: 5
@@ -106,16 +93,13 @@
   title: "Rung 6: HTTP service from scratch (~2 wk) — pick one of 3"
   description: |
     Concept: a real service skeleton — middleware, error envelope, layout.
-    Pick ONE (this service is your lab for rungs 7-13 — choose one you
-    will keep alive):
-      A. Notes/snippets API.
-      B. Pastebin with expiry.
-      C. Previz asset catalog API (gear, files, tags) for the startup.
-    Must: stdlib-first (no framework), middleware chain (logging,
-    request ID, panic recovery), ONE error envelope, httptest coverage,
-    store behind an interface.
-    ADR question: package layout you won't regret at rung 13.
+    Pick ONE — read all three briefs first:
+    A. [Notes/snippets API](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-06a-notes-api.md)
+    B. [Pastebin with expiry](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-06b-pastebin-expiry.md)
+    C. [Previz asset catalog API](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-06c-previz-asset-catalog.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 14
   labels: [rung, phase-2]
   cadence: once-per-module
   module_number: 6
@@ -123,17 +107,14 @@
 - id: rung-7
   title: "Rung 7: Postgres for real (~2 wk) — pick one of 3"
   description: |
-    Concept: migrations, integration tests, pools — SQL as a first-class
-    skill. (Saturday's platform needs this within weeks — that's why
-    it's here.)
-    Pick ONE:
-      A. Port rung 6's service to Postgres (pgx/sqlc, docker-compose).
-      B. Camera-gear inventory CRUD — platform-adjacent schema practice.
-      C. URL shortener with click stats — write-heavy flavor.
-    Must: versioned migrations, integration tests against real
-    Postgres, pool configured on purpose, store interface holds.
-    ADR question: ORM vs sqlc vs raw — justify for a solo maintainer.
+    Concept: migrations, integration tests, pools — SQL as a first-class skill.
+    Pick ONE — read all three briefs first:
+    A. [Port rung 6's service to Postgres](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-07a-postgres-port.md)
+    B. [Camera-gear inventory CRUD](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-07b-gear-inventory-crud.md)
+    C. [URL shortener with click stats](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-07c-url-shortener-stats.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 14
   labels: [rung, phase-2]
   cadence: once-per-module
   module_number: 7
@@ -142,15 +123,13 @@
   title: "Rung 8: Auth (~2 wk) — pick one of 3"
   description: |
     Concept: authN + authZ; attack-path testing, not happy-path testing.
-    Pick ONE:
-      A. Add users/roles to rung 7's service (owner vs admin).
-      B. Magic-link (passwordless) login service.
-      C. API-key issuing + scoping service for machine clients.
-    Must: real password hashing (bcrypt/argon2) where applicable,
-    sessions-vs-JWT decided in the ADR, middleware, tests for the
-    FORBIDDEN paths — prove the attacks fail.
-    ADR question: token lifetime + revocation story for THIS app.
+    Pick ONE — read all three briefs first:
+    A. [Users/roles for rung 7's service](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-08a-users-roles.md)
+    B. [Magic-link login service](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-08b-magic-link-login.md)
+    C. [API-key issuing + scoping service](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-08c-api-key-service.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 14
   labels: [rung, phase-2]
   cadence: once-per-module
   module_number: 8
@@ -158,18 +137,14 @@
 - id: rung-9
   title: "Rung 9: Spec-first API design (~2 wk) — pick one of 3"
   description: |
-    Concept: contract before code. (Rehearsal for the platform's public
-    API on Saturdays.)
-    Pick ONE:
-      A. Write the OpenAPI spec for rung 6-8's service, then refactor
-         the implementation to match it exactly.
-      B. Spec-first public URL shortener (spec -> lint -> implement).
-      C. Spec the previz asset API and implement a second client from
-         the spec alone (proves the contract carries the info).
-    Must: spectral-linted spec, contract tests in CI, cursor pagination,
-    documented error codes, idempotency on mutations.
-    Desk reference: API Design Patterns.
+    Concept: contract before code. (Rehearsal for the platform's public API on Saturdays.)
+    Pick ONE — read all three briefs first:
+    A. [OpenAPI retrofit of rungs 6-8's service](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-09a-openapi-retrofit.md)
+    B. [Spec-first public URL shortener](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-09b-spec-first-shortener.md)
+    C. [Previz asset API spec + second client](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-09c-previz-spec-second-client.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 14
   labels: [rung, phase-2]
   cadence: once-per-module
   module_number: 9
@@ -178,17 +153,13 @@
   title: "Rung 10: Webhooks & idempotency (~2 wk) — pick one of 3"
   description: |
     Concept: at-least-once delivery is the world's default — survive it.
-    (Direct rehearsal for the platform's Razorpay Saturdays.)
-    Pick ONE:
-      A. Signed webhook receiver + replay hammer test (payment-sim).
-      B. GitHub webhook -> notify/deploy pipeline for your own repos.
-      C. A webhook SENDER with retries, backoff and signing — the other
-         side of the contract.
-    Must: signature verification, idempotent processing (replay 10x ->
-    one effect), store-then-process, out-of-order tolerated.
-    ADR question: idempotency key design — who supplies it, where does
-    it live, when does it expire?
+    Pick ONE — read all three briefs first:
+    A. [Signed webhook receiver + replay hammer test](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-10a-webhook-receiver-replay.md)
+    B. [GitHub webhook -> notify/deploy pipeline](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-10b-github-webhook-pipeline.md)
+    C. [Webhook sender with retries, backoff, signing](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-10c-webhook-sender.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 14
   labels: [rung, phase-2]
   cadence: once-per-module
   module_number: 10
@@ -196,18 +167,14 @@
 - id: rung-11
   title: "Rung 11: Jobs, queues & retries (~2 wk) — pick one of 3"
   description: |
-    Concept: background work that survives crashes. (The platform's
-    reconciliation job will be built on this.)
-    Pick ONE:
-      A. Job queue on Postgres (FOR UPDATE SKIP LOCKED) + workers.
-      B. Email/digest sender with scheduling and dedup.
-      C. Render-job queue for the previz pipeline. (Consumer: startup.)
-    Must: retries with backoff, max-attempts -> dead letter, worker
-    crash mid-job loses nothing (test it), no double-processing under
-    concurrent workers (test it).
-    ADR question: why SKIP LOCKED beats naive polling; when would you
-    graduate to a real broker?
+    Concept: background work that survives crashes.
+    Pick ONE — read all three briefs first:
+    A. [Postgres job queue (SKIP LOCKED)](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-11a-postgres-job-queue.md)
+    B. [Email/digest sender](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-11b-email-digest-sender.md)
+    C. [Render-job queue](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-11c-render-job-queue.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 14
   labels: [rung, phase-2]
   cadence: once-per-module
   module_number: 11
@@ -215,18 +182,14 @@
 - id: rung-12
   title: "Rung 12: Ship it & keep it up (~2-3 wk) — pick one of 3"
   description: |
-    Concept: packaging, config, graceful shutdown, health — production
-    shape.
-    Pick ONE:
-      A. Dockerize the rung 6-11 stack: multi-stage build, compose,
-         healthz/readyz, SIGTERM drains in-flight requests (test it).
-      B. Deploy that stack to a cheap VPS with systemd + backups + a
-         domain — and keep it running for the rest of the ladder.
-      C. One-command dev environment for the startup's tooling.
-    Must: config from env (12-factor), image/binary small on purpose,
-    a documented "how I deploy" runbook.
-    ADR question: what's env, what's flag, what's file — and why.
+    Concept: packaging, config, graceful shutdown, health — production shape.
+    Pick ONE — read all three briefs first:
+    A. [Dockerize the rung 6-11 stack](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-12a-dockerize-stack.md)
+    B. [Deploy to a cheap VPS](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-12b-vps-deploy.md)
+    C. [One-command dev environment](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-12c-one-command-dev-env.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 21
   labels: [rung, phase-3]
   cadence: once-per-module
   module_number: 12
@@ -235,14 +198,13 @@
   title: "Rung 13: Performance — measure, then fix (~2 wk) — pick one of 3"
   description: |
     Concept: profiling discipline. Hypothesis -> measurement -> one fix.
-    Pick ONE:
-      A. k6 load profile + pprof hunt on your deployed rung-12 service.
-      B. Make rung 2's KV store 10x faster — prove it with benchmarks.
-      C. Find and fix a real slowness in the startup's tooling.
-    Must: before/after numbers committed, flamegraph, the fix is ONE
-    deliberate change, write-up of the hunt (this rung's ADR is a
-    performance report).
+    Pick ONE — read all three briefs first:
+    A. [k6 load profile + pprof hunt](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-13a-k6-pprof-hunt.md)
+    B. [Make rung 2's KV store 10x faster](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-13b-kv-store-10x.md)
+    C. [Fix real slowness in the startup's tooling](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-13c-startup-tooling-perf.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 14
   labels: [rung, phase-3]
   cadence: once-per-module
   module_number: 13
@@ -251,15 +213,13 @@
   title: "Rung 14: Wire protocols (~2-3 wk) — pick one of 3"
   description: |
     Concept: below HTTP — parsers, connections, backpressure.
-    Pick ONE:
-      A. Mini-Redis speaking RESP — works with the real redis-cli.
-      B. TCP chat server — rooms, broadcast, slow-client policy.
-      C. HTTP/1.1 server from raw TCP — enough to serve rung 6's API.
-    Must: protocol parser with its own tests, concurrent clients,
-    race-clean, a stated policy for clients that can't keep up.
-    ADR question: event loop vs goroutine-per-conn vs shards — measure.
-    Polyglot invitation: strongest rung to try a systems language.
+    Pick ONE — read all three briefs first:
+    A. [Mini-Redis speaking RESP](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-14a-mini-redis-resp.md)
+    B. [TCP chat server](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-14b-tcp-chat-server.md)
+    C. [HTTP/1.1 server from raw TCP](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-14c-http-from-tcp.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 21
   labels: [rung, phase-3]
   cadence: once-per-module
   module_number: 14
@@ -268,17 +228,13 @@
   title: "Rung 15: Distributed coordination (~3 wk) — pick one of 3"
   description: |
     Concept: more than one node, and the truth gets expensive.
-    Pick ONE:
-      A. Leader election + fencing tokens (Postgres advisory locks or
-         lease rows); kill the leader, another takes over, old leader
-         can't corrupt state (test it).
-      B. Replicated log, consensus-lite: 3 nodes, majority ack,
-         convergence proven by test; the ADR names every guarantee you
-         dropped vs real Raft.
-      C. Consistent-hashing client over 3 mini-redis nodes — adding a
-         node remaps ~1/N keys (prove it).
-    Pull reading: DDIA replication/consistency chapters when confused.
+    Pick ONE — read all three briefs first:
+    A. [Leader election + fencing tokens](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-15a-leader-election-fencing.md)
+    B. [Replicated log, consensus-lite](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-15b-replicated-log-lite.md)
+    C. [Consistent-hashing client](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-15c-consistent-hashing-client.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 21
   labels: [rung, phase-3]
   cadence: once-per-module
   module_number: 15
@@ -286,21 +242,14 @@
 - id: rung-16
   title: "Rung 16: Reliability engineering (~3 wk) — pick one of 3"
   description: |
-    Concept: correctness under failure — the platform's operations
-    rehearsal.
-    Pick ONE:
-      A. Transactional outbox: two services, a money-ish transfer,
-         crash between commit and publish loses nothing (test it).
-      B. Chaos week on your deployed stack: kill processes mid-work,
-         fill the disk, partition things — runbook before, postmortem
-         after, fixes shipped.
-      C. OpenTelemetry end-to-end: one trace follows a request across
-         service and queue boundaries; answer one real latency question
-         with a trace.
-    Pull reading: Release It! after whatever breaks worst.
-    Exit: after this rung the ladder ends — the platform (Saturdays)
-    absorbs all build time and its remaining milestones.
+    Concept: correctness under failure — the platform's operations rehearsal.
+    Pick ONE — read all three briefs first:
+    A. [Transactional outbox](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-16a-transactional-outbox.md)
+    B. [Chaos week on your deployed stack](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-16b-chaos-week.md)
+    C. [OpenTelemetry end-to-end](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-16c-otel-end-to-end.md)
+    Run `lw rung start` to pick and scaffold.
   due: "today at {ritual_times.build_monday}"
+  deadline_days: 21
   labels: [rung, phase-3]
   cadence: once-per-module
   module_number: 16

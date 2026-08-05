@@ -91,7 +91,7 @@
     },
     {
       "cadence": "once-per-module",
-      "description": "Concept: small sharp tools; parsing; table-driven tests; clean errors.\nPick ONE:\n  A. Expression calculator CLI \u2014 precedence, parentheses, good errors.\n  B. Markdown -> HTML converter \u2014 subset of MD, golden-file tests.\n  C. Flashcard drill CLI over your exported Anki decks \u2014 spaced\n     ordering, stats. (Consumer: your own daily review.)\nMust (all options): table-driven tests, garbage input handled,\nREADME, a consumer named in the ADR.\nADR question: how do you parse \u2014 and where's the seam between the\nCLI and the reusable core?\n",
+      "description": "Concept: small sharp tools; parsing; table-driven tests; clean errors.\nPick ONE \u2014 read all three briefs first:\nA. [Expression calculator CLI](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01a-expression-calculator.md)\nB. [Markdown -> HTML converter](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01b-markdown-to-html.md)\nC. [Flashcard drill CLI](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01c-flashcard-drill.md)\nRun `lw rung start` to pick and scaffold.\n",
       "due": "today at 20:00",
       "fires": true,
       "id": "rung-1",
