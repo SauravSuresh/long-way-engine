@@ -141,6 +141,17 @@ def build_deadline_gate(repo_root: Path, cur: CurriculumCtx, today: date) -> Dea
     return DeadlineGate(meta_path, meta)
 
 
+def forced_advance_answer(question: Question, gate_advance: bool) -> bool | None:
+    """When the deadline gate resolved fail-forward (shipped/failed →
+    advance=True), the advance_module question isn't optional — the spec's
+    "failed (logged, advance anyway)" means answering No would silently
+    leave the module unadvanced while the gate says otherwise. Returns True
+    to force the answer; None when this question isn't gated by the rule."""
+    if gate_advance and question.sub.action.get("type") == "advance_module":
+        return True
+    return None
+
+
 def preview_gate_outcome(
     choice: str, *, reason: str = "", extra_days: int = 0, today: date
 ) -> GateOutcome:

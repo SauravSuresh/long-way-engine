@@ -20,6 +20,7 @@ from src.lw.review_logic import (
     apply_gate,
     build_deadline_gate,
     build_questions,
+    forced_advance_answer,
     preview_gate_outcome,
 )
 from src.lw.status_logic import EngineCtx, load_engine
@@ -71,27 +72,33 @@ class GateScreen(Screen):
 
 
 class QuestionScreen(Screen):
-    """One state_review sub_task: Yes/No, or an int Input for wants_count."""
+    """One state_review sub_task: Yes/No, or an int Input for wants_count.
 
-    def __init__(self, question: Question, default_yes: bool) -> None:
+    `forced` means the deadline gate already decided this answer (fail-forward
+    advance) — rendered as informational text with no Yes/No choice, per the
+    spec's "failed (logged, advance anyway)"."""
+
+    def __init__(self, question: Question, forced: bool = False) -> None:
         super().__init__()
         self.question = question
-        self.default_yes = default_yes
+        self.forced = forced
 
     def compose(self) -> ComposeResult:
         yield Header()
-        if self.question.wants_count:
+        if self.forced:
+            yield Vertical(
+                Label(self.question.sub.title + "  [forced: yes — fail forward]"),
+                Button("Continue", id="continue", variant="primary"),
+            )
+        elif self.question.wants_count:
             yield Vertical(
                 Label(self.question.sub.title),
                 Input(placeholder="count", id="count"),
                 Button("Submit", id="submit"),
             )
         else:
-            title = self.question.sub.title
-            if self.default_yes:
-                title += "  [pre-checked: yes]"
             yield Vertical(
-                Label(title),
+                Label(self.question.sub.title),
                 Horizontal(
                     Button("Yes", id="yes", variant="success"),
                     Button("No", id="no"),
@@ -100,7 +107,9 @@ class QuestionScreen(Screen):
         yield Footer()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "submit":
+        if event.button.id == "continue":
+            self.app.answer_question(self.question, True)  # type: ignore[attr-defined]
+        elif event.button.id == "submit":
             count_str = self.query_one("#count", Input).value.strip()
             self.app.answer_question(self.question, int(count_str) if count_str.isdigit() else 0)  # type: ignore[attr-defined]
         elif event.button.id == "yes":
@@ -201,8 +210,8 @@ class ReviewApp(App):
             return
         question = self._questions[self._q_idx]
         self._q_idx += 1
-        default_yes = self._gate_advance and question.sub.action.get("type") == "advance_module"
-        self.push_screen(QuestionScreen(question, default_yes))
+        forced = forced_advance_answer(question, self._gate_advance)
+        self.push_screen(QuestionScreen(question, forced=forced is not None))
 
     def answer_question(self, question: Question, value: "bool | int") -> None:
         self._answers.append((question, value))

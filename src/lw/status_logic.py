@@ -3,16 +3,17 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, replace
-from datetime import date, datetime
+from datetime import date
 from pathlib import Path
 from typing import Any
 
 import yaml
 
-from src.config import load_multi_syllabus_config
+from src.config import Config, TodoistConfig, load_multi_syllabus_config
+from src.scheduler import should_create_today
 from src.state import load_shared_state, load_syllabus_state
 from src.syllabus import current_module_name, load_syllabus_for_entry
-from src.templates import load_templates
+from src.templates import MissingVariable, load_templates, resolve_string
 
 
 @dataclass
@@ -72,18 +73,63 @@ def build_status(repo_root: Path, today: date) -> list[str]:
         lines.append(f"  module {mod_no}: {current_module_name(mod_no, cur.syllabus)}")
         meta = current_rung_meta(repo_root, mod_no)
         if meta:
-            dl = effective_deadline(meta)
-            days = (date.fromisoformat(dl) - today).days if dl else None
-            ext = len(meta.get("extensions") or [])
-            lines.append(
-                f"  Rung {meta['rung']} option {meta['option']} — deadline {dl}"
-                f" ({days:+d}d){' · %d extension(s)' % ext if ext else ''}"
-            )
+            lines.append(_deadline_line(meta, today))
         elif _has_rungs(cur.templates):
             lines.append("  Rung not picked yet — run `lw rung start`")
+        lines.extend(_due_today_lines(ctx, key, cur, today))
         lines.extend(_streak_lines(repo_root, key))
         lines.append("")
     return lines
+
+
+def _deadline_line(meta: dict, today: date) -> str:
+    """meta lacking a deadline (empty string, no extensions) renders without
+    the countdown instead of crashing {days:+d} on days=None."""
+    dl = effective_deadline(meta)
+    days = (date.fromisoformat(dl) - today).days if dl else None
+    ext = len(meta.get("extensions") or [])
+    countdown = f" ({days:+d}d)" if days is not None else ""
+    return (
+        f"  Rung {meta['rung']} option {meta['option']} — deadline {dl}"
+        f"{countdown}{' · %d extension(s)' % ext if ext else ''}"
+    )
+
+
+def _cfg_shim(ctx: EngineCtx, key: str) -> Config:
+    """Per-syllabus Config shim for should_create_today/resolve_string,
+    mirroring src/main.py's per_syllabus_cfg_shim (and reflect_logic._cfg_shim)."""
+    entry = ctx.per_key[key].entry
+    return Config(
+        todoist=TodoistConfig(project_id=entry.todoist_project_id, labels={}),
+        ritual_times=entry.ritual_times,
+        sunday_off=ctx.cfg.sunday_off,
+        pair_day=ctx.cfg.pair_day,
+        dashboard=ctx.cfg.dashboard,
+        todoist_token=ctx.cfg.todoist_token,
+        curriculum_dir=entry.path,
+    )
+
+
+def _due_today_lines(ctx: EngineCtx, key: str, cur: CurriculumCtx, today: date) -> list[str]:
+    """'due today' titles for this curriculum's templates that fire today,
+    per scheduler.should_create_today. Read-only: no state writes, no
+    Todoist. Titles are resolve_string'd where cheap; unresolvable
+    placeholders fall back to the raw title rather than dropping the item."""
+    cfg_shim = _cfg_shim(ctx, key)
+    titles: list[str] = []
+    for tpl in cur.templates:
+        try:
+            if not should_create_today(tpl, today, cur.state, cfg_shim):
+                continue
+        except NotImplementedError:
+            continue
+        try:
+            titles.append(resolve_string(tpl.title, cur.state, cfg_shim, today, syllabus=cur.syllabus))
+        except MissingVariable:
+            titles.append(tpl.title)
+    if not titles:
+        return []
+    return ["  due today: " + ", ".join(titles)]
 
 
 def _has_rungs(templates: list) -> bool:

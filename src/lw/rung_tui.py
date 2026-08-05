@@ -119,7 +119,9 @@ def run_rung_start(repo_root: Path) -> int:
     opt, code_path = app.result
 
     code_dir = Path(code_path).expanduser()
-    result: ScaffoldResult = scaffold(repo_root, cur, opt, code_dir.parent, date.today())
+    result: ScaffoldResult = scaffold(
+        repo_root, cur, opt, code_dir.parent, date.today(), code_dir=code_dir
+    )
 
     commit_and_push(
         repo_root, [result.paper_dir],

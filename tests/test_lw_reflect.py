@@ -72,6 +72,45 @@ def test_initial_sections_blank_fallback_on_unresolvable_placeholder(tmp_path):
     assert sections == [Section("", "")]
 
 
+def test_initial_sections_returns_template_frontmatter_for_new_file():
+    """When the stub file doesn't exist yet, initial_sections must hand back
+    the template's rendered frontmatter (e.g. long-way's `type:` block) so
+    reflect_tui writes it into the new file instead of discarding it."""
+    from datetime import date
+    from pathlib import Path
+
+    from src.config import DashboardConfig, MultiSyllabusConfig, SyllabusEntry
+    from src.lw.reflect_logic import ReflectTarget, initial_sections
+    from src.lw.status_logic import CurriculumCtx, EngineCtx
+    from src.templates import Template
+
+    repo = Path(__file__).resolve().parents[1]
+    cur_path = repo / "curricula" / "long-way"
+    entry = SyllabusEntry(
+        key="long-way", path=cur_path, todoist_project_id="1",
+        state_file=cur_path / "state.yaml", enabled=True, ritual_times={},
+    )
+    cfg = MultiSyllabusConfig(
+        default_ritual_times={}, priority_order=["long-way"], syllabuses={"long-way": entry},
+        sunday_off=True, pair_day=None,
+        dashboard=DashboardConfig(github_username="u", repo_name="r"),
+        todoist_token="t",
+    )
+    ctx = EngineCtx(
+        cfg, shared=None,
+        per_key={"long-way": CurriculumCtx(entry, state=None, syllabus=None, templates=[])},
+        repo_root=repo,
+    )
+    tpl = Template(id="lw-weekly", title="t", description="d", due="today", labels=[], cadence="weekly")
+    target = ReflectTarget(
+        key="long-way", cadence="weekly", template=tpl,
+        stub_path=cur_path / "reflections" / "weekly" / "does-not-exist.md",
+    )
+
+    fm, _sections = initial_sections(ctx, target, date(2026, 8, 7))
+    assert "type: weekly" in fm
+
+
 def test_marketplace_builder_weekly_template_renders(tmp_path):
     """Regression: {week} in the weekly reflection template used to be an
     unknown placeholder (resolve_string only knows {iso_week}), so

@@ -105,19 +105,20 @@ class ReflectApp(App):
         self.ctx = ctx
         self.targets = targets
         self.today = today
-        self.result: tuple[ReflectTarget, list[Section]] | None = None
+        self.result: tuple[ReflectTarget, str, list[Section]] | None = None
         self._target: ReflectTarget | None = None
+        self._fm: str = ""
 
     def on_mount(self) -> None:
         self.push_screen(ListScreen(self.targets))
 
     def start_form(self, target: ReflectTarget) -> None:
         self._target = target
-        _fm, sections = initial_sections(self.ctx, target, self.today)
+        self._fm, sections = initial_sections(self.ctx, target, self.today)
         self.push_screen(FormScreen(sections))
 
     def finish_form(self, sections: list[Section]) -> None:
-        self.result = (self._target, sections)
+        self.result = (self._target, self._fm, sections)
         self.exit()
 
 
@@ -133,10 +134,14 @@ def run_reflect(repo_root: Path) -> int:
     app.run()
     if app.result is None:
         return 1
-    target, sections = app.result
+    target, rendered_fm, sections = app.result
 
-    existing = target.stub_path.read_text(encoding="utf-8") if target.stub_path.exists() else ""
-    fm_block = raw_frontmatter_block(existing)
+    # Existing files keep their on-disk frontmatter verbatim; new files use
+    # the template-rendered frontmatter the form was seeded from.
+    if target.stub_path.exists():
+        fm_block = raw_frontmatter_block(target.stub_path.read_text(encoding="utf-8"))
+    else:
+        fm_block = rendered_fm
     target.stub_path.parent.mkdir(parents=True, exist_ok=True)
     target.stub_path.write_text(assemble(fm_block, sections), encoding="utf-8")
 

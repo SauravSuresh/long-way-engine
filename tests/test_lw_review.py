@@ -167,6 +167,24 @@ def test_preview_gate_outcome_does_not_touch_disk(tmp_path: Path):
     assert meta_path.read_text(encoding="utf-8") == before
 
 
+def test_forced_advance_answer_only_forces_advance_module_on_fail_forward():
+    from src.lw.review_logic import Question, forced_advance_answer
+    from src.templates import SubtaskSpec
+
+    advance_q = Question(
+        sub=SubtaskSpec(title="advance", action={"type": "advance_module"}, show_if=[]),
+        wants_count=False,
+    )
+    other_q = Question(
+        sub=SubtaskSpec(title="anki", action={"type": "increment_counter"}, show_if=[]),
+        wants_count=True,
+    )
+
+    assert forced_advance_answer(advance_q, gate_advance=True) is True
+    assert forced_advance_answer(advance_q, gate_advance=False) is None
+    assert forced_advance_answer(other_q, gate_advance=True) is None
+
+
 def test_apply_gate_failed_is_fail_forward(tmp_path: Path):
     from src.lw.review_logic import DeadlineGate, apply_gate
 
