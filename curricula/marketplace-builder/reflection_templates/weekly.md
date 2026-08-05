@@ -1,4 +1,4 @@
-# Weekly Reflection — Week {week}, {year}
+# Weekly Reflection — Week {iso_week}, {year}
 
 ## What I Learned This Week
 
