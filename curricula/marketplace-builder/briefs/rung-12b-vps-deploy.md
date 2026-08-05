@@ -62,6 +62,9 @@ you were gone, because it hasn't been living in your terminal for weeks.
 - Config values are loaded via a systemd `EnvironmentFile` with
   restricted permissions; no secret appears in the unit file or any
   committed file.
+- The deployed binary's size is measured and documented in the runbook,
+  alongside what was deliberately done to keep it small — a naive build
+  is shown for comparison.
 - README "how I deploy" runbook: exact steps to push a new version of
   the service to this box.
 - ADR answers what's env, what's flag, what's file — and why.
