@@ -141,6 +141,28 @@ def build_deadline_gate(repo_root: Path, cur: CurriculumCtx, today: date) -> Dea
     return DeadlineGate(meta_path, meta)
 
 
+def preview_gate_outcome(
+    choice: str, *, reason: str = "", extra_days: int = 0, today: date
+) -> GateOutcome:
+    """Same choice/validation semantics as apply_gate below, but pure — no
+    gate, no meta, no disk write. lw review's TUI calls this the moment the
+    user picks Shipped/Extend/Failed (to decide the next screen's pre-check),
+    then only calls the persisting apply_gate if the user reaches Confirm —
+    quitting before Confirm must leave meta.yaml untouched."""
+    if choice == "shipped":
+        return GateOutcome(advance=True, message="shipped — advance the rung below")
+    if choice == "failed":
+        return GateOutcome(advance=True, message="failed — fail forward, advance the rung below")
+    if choice == "extend":
+        if not reason:
+            raise ValueError("extend requires a reason")
+        if extra_days <= 0:
+            raise ValueError("extend requires extra_days > 0")
+        new_deadline = today + timedelta(days=extra_days)
+        return GateOutcome(advance=False, message=f"extended to {new_deadline.isoformat()}")
+    raise ValueError(f"unknown gate choice {choice!r}")
+
+
 def apply_gate(
     gate: DeadlineGate,
     choice: str,
@@ -150,26 +172,18 @@ def apply_gate(
     today: date,
 ) -> GateOutcome:
     """choice in {shipped, extend, failed}. shipped/failed fail-forward (advance=True);
-    extend requires a reason and extra_days > 0, leaves outcome null."""
+    extend requires a reason and extra_days > 0, leaves outcome null. Writes
+    meta.yaml immediately — see preview_gate_outcome for the non-persisting
+    twin used to preview the outcome before the user commits to it."""
+    outcome = preview_gate_outcome(choice, reason=reason, extra_days=extra_days, today=today)
     meta = gate.meta
-    if choice == "shipped":
-        meta["outcome"] = "shipped"
-        outcome = GateOutcome(advance=True, message="shipped — advance the rung below")
-    elif choice == "failed":
-        meta["outcome"] = "failed"
-        outcome = GateOutcome(advance=True, message="failed — fail forward, advance the rung below")
-    elif choice == "extend":
-        if not reason:
-            raise ValueError("extend requires a reason")
-        if extra_days <= 0:
-            raise ValueError("extend requires extra_days > 0")
+    if choice in ("shipped", "failed"):
+        meta["outcome"] = choice
+    else:  # extend — already validated by preview_gate_outcome above
         new_deadline = today + timedelta(days=extra_days)
         meta.setdefault("extensions", []).append(
             {"date": today.isoformat(), "new_deadline": new_deadline.isoformat(), "reason": reason}
         )
-        outcome = GateOutcome(advance=False, message=f"extended to {new_deadline.isoformat()}")
-    else:
-        raise ValueError(f"unknown gate choice {choice!r}")
     gate.meta_path.write_text(
         yaml.safe_dump(meta, sort_keys=False, default_flow_style=False), encoding="utf-8"
     )

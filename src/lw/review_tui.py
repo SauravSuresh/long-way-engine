@@ -20,6 +20,7 @@ from src.lw.review_logic import (
     apply_gate,
     build_deadline_gate,
     build_questions,
+    preview_gate_outcome,
 )
 from src.lw.status_logic import EngineCtx, load_engine
 
@@ -153,7 +154,10 @@ class ReviewApp(App):
         self.results: list[CurriculumResult] = []
         self._idx = 0
         self._key: str | None = None
-        self._gate_meta_path: Path | None = None
+        # (gate, choice, reason, extra_days) once the user has picked one on
+        # GateScreen — NOT persisted to meta.yaml until confirm_summary, so
+        # quitting mid-curriculum leaves meta.yaml untouched.
+        self._pending_gate: tuple[DeadlineGate, str, str, int] | None = None
         self._gate_advance = False
         self._questions: list[Question] = []
         self._q_idx = 0
@@ -168,7 +172,7 @@ class ReviewApp(App):
             return
         self._key = self.keys[self._idx]
         self._idx += 1
-        self._gate_meta_path = None
+        self._pending_gate = None
         self._gate_advance = False
         cur = self.ctx.per_key[self._key]
         gate = build_deadline_gate(self.ctx.repo_root, cur, self.today)
@@ -178,8 +182,8 @@ class ReviewApp(App):
             self._start_questions()
 
     def resolve_gate(self, gate: DeadlineGate, choice: str, *, reason: str = "", extra_days: int = 0) -> None:
-        outcome = apply_gate(gate, choice, reason=reason, extra_days=extra_days, today=self.today)
-        self._gate_meta_path = gate.meta_path
+        outcome = preview_gate_outcome(choice, reason=reason, extra_days=extra_days, today=self.today)
+        self._pending_gate = (gate, choice, reason, extra_days)
         self._gate_advance = outcome.advance
         self.pop_screen()
         self._start_questions()
@@ -206,7 +210,13 @@ class ReviewApp(App):
         self._next_question()
 
     def confirm_summary(self) -> None:
-        self.results.append(CurriculumResult(self._key, list(self._answers), self._gate_meta_path))
+        gate_meta_path = None
+        if self._pending_gate is not None:
+            gate, choice, reason, extra_days = self._pending_gate
+            apply_gate(gate, choice, reason=reason, extra_days=extra_days, today=self.today)
+            gate_meta_path = gate.meta_path
+        self.results.append(CurriculumResult(self._key, list(self._answers), gate_meta_path))
+        self._pending_gate = None
         self.pop_screen()
         self._start_next()
 

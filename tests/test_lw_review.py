@@ -142,6 +142,31 @@ def test_apply_gate_extend_requires_reason_and_appends(tmp_path: Path):
         apply_gate(gate, "extend", reason="", extra_days=7, today=today)
 
 
+def test_preview_gate_outcome_does_not_touch_disk(tmp_path: Path):
+    """lw review's TUI calls preview_gate_outcome the moment a gate choice is
+    picked (to pre-check the advance question), before the user confirms.
+    Quitting before confirm must leave meta.yaml untouched — preview_gate_outcome
+    takes no gate/meta_path at all, so it structurally cannot write."""
+    from src.lw.review_logic import preview_gate_outcome
+
+    today = date(2026, 8, 20)
+    rung_dir = tmp_path / "ladder" / "rung-01a-expression-calculator"
+    rung_dir.mkdir(parents=True)
+    meta_path = rung_dir / "meta.yaml"
+    _write_meta(meta_path, (today - timedelta(days=1)).isoformat())
+    before = meta_path.read_text(encoding="utf-8")
+
+    outcome = preview_gate_outcome("shipped", today=today)
+    assert outcome.advance is True
+    outcome = preview_gate_outcome("extend", reason="sick week", extra_days=7, today=today)
+    assert outcome.advance is False
+    assert meta_path.read_text(encoding="utf-8") == before
+
+    with pytest.raises(ValueError):
+        preview_gate_outcome("extend", reason="", extra_days=7, today=today)
+    assert meta_path.read_text(encoding="utf-8") == before
+
+
 def test_apply_gate_failed_is_fail_forward(tmp_path: Path):
     from src.lw.review_logic import DeadlineGate, apply_gate
 
