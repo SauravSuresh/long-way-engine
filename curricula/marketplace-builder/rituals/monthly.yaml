@@ -23,7 +23,7 @@
   day_of_month: 1
   reflection:
     create_stub: true
-    stub_path: "reflections/marketplace-builder/monthly/{year}-{month:02d}.md"
+    stub_path: "reflections/monthly/{year}-{month:02d}.md"
 
 # (Cert check-ins are devops-ready's concern — its 15th-of-month
 # certification-prep ritual covers SAA and CKA.)

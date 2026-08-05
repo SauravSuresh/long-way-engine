@@ -218,6 +218,6 @@
   day_of_week: friday
   reflection:
     create_stub: true
-    stub_path: "reflections/devops-ready/weekly/{iso_year}-W{iso_week:02d}.md"
+    stub_path: "reflections/weekly/{iso_year}-W{iso_week:02d}.md"
 
 # Made with Bob

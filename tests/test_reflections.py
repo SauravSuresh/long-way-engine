@@ -429,3 +429,28 @@ def test_update_metadata_returns_count_of_files_touched(tmp_path: Path):
     _seed_stub(f2, body_words=10, recorded_count=0)
     n = update_metadata(tmp_path / "reflections", REFLECTION_TEMPLATES)
     assert n == 2
+
+
+def test_stub_paths_do_not_repeat_curriculum_key():
+    """reflections_root already includes the curriculum key (src/main.py:795);
+    a stub_path that repeats it files stubs at reflections/<key>/<key>/..."""
+    import yaml as _yaml
+    from pathlib import Path as _Path
+
+    curricula_dir = _Path(__file__).resolve().parents[1] / "curricula"
+    checked = 0
+    for ritual_yaml in curricula_dir.glob("*/rituals/*.yaml"):
+        key = ritual_yaml.parent.parent.name
+        entries = _yaml.safe_load(ritual_yaml.read_text(encoding="utf-8")) or []
+        if not isinstance(entries, list):
+            continue
+        for entry in entries:
+            stub = ((entry or {}).get("reflection") or {}).get("stub_path", "")
+            if not stub:
+                continue
+            checked += 1
+            assert not stub.startswith(f"reflections/{key}/"), (
+                f"{ritual_yaml}: stub_path {stub!r} repeats curriculum key "
+                f"{key!r}; engine will file it at reflections/{key}/{key}/..."
+            )
+    assert checked > 0, "no stub_paths found — glob or repo layout changed"

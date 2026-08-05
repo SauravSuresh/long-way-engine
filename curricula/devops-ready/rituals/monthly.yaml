@@ -100,6 +100,6 @@
   day_of_month: last-saturday
   reflection:
     create_stub: true
-    stub_path: "reflections/devops-ready/monthly/{year}-{month:02d}.md"
+    stub_path: "reflections/monthly/{year}-{month:02d}.md"
 
 # Made with Bob
