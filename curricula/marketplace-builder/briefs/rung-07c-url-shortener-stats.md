@@ -53,6 +53,9 @@ guess.
   against a real Postgres instance.
 - Pool size and timeouts are explicit configuration sized for
   write-heavy load, and the ADR states the numbers and why.
+- The full handler test suite runs unmodified against an in-memory fake
+  implementing the same store interface as the Postgres-backed store —
+  proving handler code depends only on the interface, not the database.
 - `go test ./...` and `go vet ./...` clean.
 - README documents setup, migrations, and example requests.
 

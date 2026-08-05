@@ -69,6 +69,8 @@ you wrote back then is on screen before your coffee's cold.
   references a concrete store type.
 - README documents how to run the server and lists every endpoint with a
   real example request and response.
+- `go.mod` lists no HTTP framework/router dependency — the module graph
+  shows only stdlib for routing and serving; the router is `net/http`.
 - ADR names a real consumer (you, operating it) and states plainly that
   this is the rung 6–13 lab service.
 

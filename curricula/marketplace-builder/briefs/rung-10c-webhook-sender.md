@@ -53,6 +53,14 @@ subscriber can verify came from you.
   proving the subscriber could validate it came from this sender.
 - A test asserts each delivery carries a stable id, unique per
   (event, subscriber).
+- A test asserts a triggering event is durably recorded (store) before
+  any send attempt is made, and a crash right after that record — before
+  the first send attempt completes — leaves the delivery recoverable and
+  still sent exactly once on recovery, not skipped.
+- A test replays a subscriber's ack for a delivery out of order (a later
+  delivery's ack arrives before an earlier one's, or the same ack
+  arrives twice) and asserts delivery/retry state isn't corrupted by
+  it — the sender's bookkeeping per delivery id stays consistent.
 - `go test ./...` and `go vet ./...` clean; README shows how a
   subscriber verifies the signature.
 

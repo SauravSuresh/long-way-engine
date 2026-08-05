@@ -62,6 +62,8 @@ and get the answer back as JSON in under a second.
   implementing the storage interface.
 - README documents how to run the server and lists every endpoint with
   a real example request and response.
+- `go.mod` lists no HTTP framework/router dependency — the module graph
+  shows only stdlib for routing and serving; the router is `net/http`.
 - ADR names the real consumer (the startup) and states plainly that
   this is the rung 6–13 lab service.
 
