@@ -636,3 +636,43 @@ def test_create_task_no_syllabus_label_when_key_empty():
     labels = kwargs["json"].get("labels", [])
     assert not any(l.startswith("syllabus:") for l in labels)
     assert "daily-ritual" in labels
+
+
+def test_create_task_sets_deadline_date_when_present():
+    session = MagicMock()
+    session.post.return_value = make_response(200, {"id": "111"})
+    client = make_client(session)
+
+    tpl = ResolvedTemplate(
+        id="rung-1",
+        title="Rung 1",
+        description="",
+        labels=[],
+        due="today",
+        cadence="once-per-module",
+        deadline_date="2026-08-19",
+    )
+    client.create_task_idempotent(tpl, date(2026, 8, 5), "a1234567890abcde", cache={})
+
+    _, kwargs = session.post.call_args
+    assert kwargs["json"]["deadline_date"] == "2026-08-19"
+
+
+def test_create_task_no_deadline_date_when_empty():
+    session = MagicMock()
+    session.post.return_value = make_response(200, {"id": "112"})
+    client = make_client(session)
+
+    tpl = ResolvedTemplate(
+        id="rung-1",
+        title="Rung 1",
+        description="",
+        labels=[],
+        due="today",
+        cadence="once-per-module",
+        # deadline_date omitted — defaults to ""
+    )
+    client.create_task_idempotent(tpl, date(2026, 8, 5), "a1234567890abcde", cache={})
+
+    _, kwargs = session.post.call_args
+    assert "deadline_date" not in kwargs["json"]

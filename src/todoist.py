@@ -170,6 +170,8 @@ class TodoistClient:
         }
         if template.due:
             body["due_string"] = template.due
+        if template.deadline_date:
+            body["deadline_date"] = template.deadline_date
         if template.labels:
             body["labels"] = list(template.labels)
         if template.syllabus_key:

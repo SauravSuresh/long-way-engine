@@ -312,3 +312,20 @@ def test_current_book_carry_forward_in_book_less_month():
         syllabus=make_syllabus(),
     )
     assert out == "Computer Networking: A Top-Down Approach"
+
+
+def test_deadline_days_resolves_to_iso_date():
+    t = Template(
+        id="rung-1", title="Rung 1", description="d", due="today at 18:30",
+        labels=[], cadence="once-per-module", deadline_days=14,
+    )
+    resolved = resolve_variables(t, make_state(), make_config(), date(2026, 8, 5))
+    assert resolved.deadline_date == "2026-08-19"
+
+
+def test_no_deadline_days_means_empty_deadline_date():
+    t = Template(
+        id="x", title="T", description="d", due="", labels=[], cadence="weekly",
+    )
+    resolved = resolve_variables(t, make_state(), make_config(), date(2026, 8, 5))
+    assert resolved.deadline_date == ""

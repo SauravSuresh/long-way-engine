@@ -17,7 +17,7 @@ from __future__ import annotations
 import logging
 import re
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -51,6 +51,7 @@ class Template:
     day_of_week: str | None = None
     day_of_month: int | str | None = None
     module_number: int | None = None
+    deadline_days: int | None = None
     state_review: bool = False
     counts_toward_streak: bool = False
     sub_tasks: list[SubtaskSpec] = field(default_factory=list)
@@ -71,6 +72,7 @@ class ResolvedTemplate:
     sub_tasks: list[SubtaskSpec] = field(default_factory=list)
     gated_by: list[dict[str, Any]] = field(default_factory=list)
     syllabus_key: str = ""
+    deadline_date: str = ""
 
 
 class MissingVariable(KeyError):
@@ -111,6 +113,9 @@ def _load_one_file(path: Path) -> list[Template]:
         module_number = entry.get("module_number")
         if module_number is not None:
             module_number = int(module_number)
+        deadline_days = entry.get("deadline_days")
+        if deadline_days is not None:
+            deadline_days = int(deadline_days)
         # skip_if accepts either a single string ("sunday") or a list
         # (["sunday", "pair_day"]). Normalize to list internally.
         skip_if_raw = entry.get("skip_if")
@@ -153,6 +158,7 @@ def _load_one_file(path: Path) -> list[Template]:
                 day_of_week=entry.get("day_of_week"),
                 day_of_month=day_of_month,
                 module_number=module_number,
+                deadline_days=deadline_days,
                 state_review=bool(entry.get("state_review", False)),
                 counts_toward_streak=bool(entry.get("counts_toward_streak", False)),
                 sub_tasks=sub_tasks,
@@ -273,6 +279,11 @@ def resolve_variables(
             state_review=template.state_review,
             sub_tasks=resolved_subs,
             gated_by=[dict(g) for g in template.gated_by],
+            deadline_date=(
+                (today + timedelta(days=template.deadline_days)).isoformat()
+                if template.deadline_days
+                else ""
+            ),
         )
     except MissingVariable as e:
         logger.warning(
