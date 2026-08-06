@@ -79,6 +79,9 @@ def build_status(repo_root: Path, today: date) -> list[str]:
         lines.extend(_due_today_lines(ctx, key, cur, today))
         lines.extend(_streak_lines(repo_root, key))
         lines.append("")
+    xp = xp_line(repo_root)
+    if xp is not None:
+        lines.append(xp)
     return lines
 
 
@@ -134,6 +137,26 @@ def _due_today_lines(ctx: EngineCtx, key: str, cur: CurriculumCtx, today: date) 
 
 def _has_rungs(templates: list) -> bool:
     return any(t.cadence == "once-per-module" and t.deadline_days for t in templates)
+
+
+def xp_line(repo_root: Path) -> str | None:
+    """Global XP summary line, or None if data.json/its xp block is absent."""
+    data_path = repo_root / "docs" / "assets" / "data.json"
+    if not data_path.exists():
+        return None
+    try:
+        data = json.loads(data_path.read_text(encoding="utf-8"))
+    except (ValueError, OSError):
+        return None
+    xp = data.get("xp")
+    if not xp:
+        return None
+    to_next = xp["next_level_at"] - xp["total"]
+    n_unlocked = len(xp.get("unlocked") or [])
+    return (
+        f"XP {xp['total']} · Level {xp['level']} · {to_next} to Level {xp['level'] + 1} "
+        f"· {n_unlocked} reward(s) unlocked"
+    )
 
 
 def _streak_lines(repo_root: Path, key: str) -> list[str]:

@@ -13,6 +13,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="lw", description="long-way engine CLI")
     sub = parser.add_subparsers(dest="cmd", required=True)
     sub.add_parser("status", help="dashboard across curricula")
+    sub.add_parser("xp", help="XP breakdown and reward ladder")
     sub.add_parser("reflect", help="write a reflection (TUI)")
     sub.add_parser("review", help="Sunday state review (TUI)")
     rung = sub.add_parser("rung", help="ladder commands")
@@ -24,6 +25,11 @@ def main(argv: list[str] | None = None) -> int:
         from src.lw.status_logic import build_status
 
         print("\n".join(build_status(REPO_ROOT, date.today())))
+        return 0
+    if args.cmd == "xp":
+        from src.lw.xp_view import build_xp_lines
+
+        print("\n".join(build_xp_lines(REPO_ROOT)))
         return 0
     if args.cmd == "reflect":
         from src.lw.reflect_tui import run_reflect

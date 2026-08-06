@@ -38,3 +38,18 @@ def test_deadline_line_handles_missing_deadline_without_crashing():
     line = _deadline_line(meta, date(2026, 8, 5))
     assert "deadline" in line
     assert "d)" not in line
+
+
+def test_status_includes_global_xp_line_when_present(tmp_path):  # use the same tmp data.json trick
+    from src.lw.status_logic import xp_line
+
+    # no data.json -> None
+    assert xp_line(tmp_path) is None
+
+
+def test_build_status_does_not_crash_without_xp_block():
+    """Real data.json (pre-Task-2-cron) lacks an xp block — build_status
+    must still run cleanly."""
+    from src.lw.status_logic import build_status
+
+    build_status(REPO, date(2026, 8, 6))
