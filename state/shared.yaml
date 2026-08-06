@@ -6,6 +6,14 @@ manual_counters:
   lineage_detours_done: []
 notes: 'Most recent edit on top.
 
+  2026-08-06: fresh start now that the rung system is properly set up (48
+  briefs, lw CLI, deadlines). start_date -> 2026-08-06 (Thursday, mid-week
+  start is deliberate) for all three syllabuses. Marketplace-builder ONLY:
+  RentalBuilder Todoist project wiped (3 stale tasks incl. the old vague
+  rung-1 brief) and its cache namespace dropped, so today''s run recreates
+  the rung task with brief links + deadline_date. devops-ready cache kept
+  intact — its once-per-module tasks are unchanged and stay valid.
+
   2026-08-04: owner could not start today — start_date -> 2026-08-05 (Wednesday)
   for all three syllabuses (same cache-intact pattern; 08-04 entries pre-date
   start_date so walkers ignore them). long-way disabled in config (was paused
