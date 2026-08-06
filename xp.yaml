@@ -1,0 +1,27 @@
+# Owner-editable. Missing keys fall back to built-in defaults.
+
+weights:
+  daily: 10
+  weekly_ritual: 25
+  reflection_filled: 30
+  weekly_review: 40
+  deep_block: 40
+  rung_shipped: 200
+  rung_zero_extension_bonus: 50
+  rung_extension_penalty: 25
+  rung_shipped_floor: 100
+  rung_failed_moved_on: 50
+  exam_gate: 300
+  streak_bonus_per_task: 5
+  streak_bonus_threshold: 7
+
+level_base: 100
+level_growth: 1.4
+
+rewards:
+  - level: 2
+    reward: "PLACEHOLDER — e.g. movie night, no guilt"
+  - level: 4
+    reward: "PLACEHOLDER — e.g. that lens filter"
+  - level: 7
+    reward: "PLACEHOLDER — e.g. weekend trip"
