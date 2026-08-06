@@ -35,11 +35,17 @@ two local sources:
 - `ladder/*/meta.yaml` files (rung outcomes, extensions, failures),
 - reflections metadata (`status: filled` frontmatter — a reflection pays
   only when actually written, not when the stub was created),
-- state (for exam-gate counters) and the xp config.
+- state (for exam-gate counters) and the xp config,
+- state logs (`state/<key>_state_log.yaml`): entries whose
+  `todoist_task_id` starts with `lw-review-` mark a completed `lw review`
+  session — one `weekly_review` award per distinct date across all
+  curricula (2026-08-06 owner addition: doing the weekly review itself
+  must pay XP). Known edge, accepted: a review where nothing was checked
+  writes no log entries and earns nothing.
 
 Output dataclass `XPResult`: `total: int`, `by_source: dict[str, int]`
-(keys: daily, weekly_ritual, reflections, deep_block, rungs, exam_gates,
-streak_bonus), `level: int`, `level_progress: int`, `next_level_at: int`,
+(keys: daily, weekly_ritual, weekly_review, reflections, deep_block,
+rungs, exam_gates, streak_bonus), `level: int`, `level_progress: int`, `next_level_at: int`,
 `unlocked: list[Reward]`, `next_reward: Reward | None`.
 
 Classification of a cache entry uses what the cache already stores
@@ -54,6 +60,7 @@ weights:
   daily: 10
   weekly_ritual: 25
   reflection_filled: 30
+  weekly_review: 40            # a completed lw review session (per date)
   deep_block: 40
   rung_shipped: 200
   rung_zero_extension_bonus: 50
