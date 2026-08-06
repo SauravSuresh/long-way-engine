@@ -73,14 +73,17 @@ from src.state_review import (
     PERSISTENT_RESUME_TITLE,
     StateReviewSummary,
     evaluate_show_if,
+    load_state_log,
     open_persistent_cache_entry,
     persistent_pause_external_id,
     persistent_resume_external_id,
     run_state_review_phase,
 )
+from src.streaks import daily_streak
 from src.syllabus import Syllabus, load_syllabus, load_syllabus_for_entry
 from src.curriculum_validator import validate as validate_curriculum, validate_multi_syllabus
 from src.templates import ResolvedTemplate, load_templates, resolve_variables
+from src.xp import compute_xp, load_xp_config, to_data_block
 from src.todoist import (
     CreateResult,
     TodoistAdminClient,
@@ -342,6 +345,24 @@ def _ensure_persistent_tasks(
             "persistent_action": {"type": "unset_pause"},
             "persistent_consumed": False,
         })
+
+
+def _template_kinds(templates) -> dict[str, str]:
+    """Map template id -> XP-earning kind ("daily" | "deep_block" |
+    "weekly_ritual"). Templates that aren't state-review, once-per-module,
+    daily, deep-block-labelled, or weekly/monthly cadence earn no XP and are
+    omitted."""
+    kinds: dict[str, str] = {}
+    for tpl in templates:
+        if tpl.state_review or tpl.cadence == "once-per-module":
+            continue
+        if tpl.cadence == "daily":
+            kinds[tpl.id] = "daily"
+        elif "deep-block" in tpl.labels:
+            kinds[tpl.id] = "deep_block"
+        elif tpl.cadence in ("weekly", "monthly"):
+            kinds[tpl.id] = "weekly_ritual"
+    return kinds
 
 
 def _module_titles_from_templates(templates) -> dict[int, str]:
@@ -1050,12 +1071,17 @@ def run_for_syllabus(
         and not str(entry_v["todoist_task_id"]).startswith("DRY-RUN")
         and entry_v.get("status") == "completed"
     }
+    streak_specs = build_streak_specs(templates)
     dashboard_data: dict[str, Any] = {
         "completion_set": completion_set,
         "module_titles": _module_titles_from_templates(templates),
         "books": syllabus.books,
         "reflections_root": reflections_root,
-        "streak_specs": build_streak_specs(templates),
+        "streak_specs": streak_specs,
+        "template_kinds": _template_kinds(templates),
+        "daily_streak": daily_streak(
+            today, state, syllabus_cache, completion_set, streak_specs
+        ),
     }
 
     return summary, state, shared, dashboard_data
@@ -1411,6 +1437,8 @@ def main(argv: list[str] | None = None) -> int:
     per_syllabus_books: dict[str, list] = {}
     per_syllabus_reflections_root: dict[str, Path] = {}
     per_syllabus_streak_specs: dict[str, Any] = {}
+    per_syllabus_template_kinds: dict[str, dict[str, str]] = {}
+    per_syllabus_daily_streak: dict[str, int] = {}
 
     aggregate = AggregateSummary()
     new_shared = shared
@@ -1444,6 +1472,8 @@ def main(argv: list[str] | None = None) -> int:
         per_syllabus_books[key] = dash_data["books"]
         per_syllabus_reflections_root[key] = dash_data["reflections_root"]
         per_syllabus_streak_specs[key] = dash_data["streak_specs"]
+        per_syllabus_template_kinds[key] = dash_data["template_kinds"]
+        per_syllabus_daily_streak[key] = dash_data["daily_streak"]
 
     # After all syllabuses: persist cache + shared state, render dashboard.
     if not args.dry_run:
@@ -1464,6 +1494,37 @@ def main(argv: list[str] | None = None) -> int:
                     if cfg.syllabuses[key].enabled
                 }
 
+                per_syllabus_xp: dict[str, dict] = {}
+                state_log_entries: list[dict] = []
+                exam_gates = new_shared.manual_counters.get("exam_gates_passed", 0)
+                for key in cfg.priority_order:
+                    if not cfg.syllabuses[key].enabled:
+                        continue
+                    st = per_syllabus_states[key]
+                    per_syllabus_xp[key] = {
+                        "cache": per_syllabus_cache_data[key],
+                        "completion_set": per_syllabus_completion[key],
+                        "template_kinds": per_syllabus_template_kinds[key],
+                        "start_date": st.start_date,
+                        "daily_streak": per_syllabus_daily_streak[key],
+                        "reflections_root": per_syllabus_reflections_root[key],
+                    }
+                    state_log_entries.extend(
+                        load_state_log(REPO_ROOT / "state" / f"{key}_state_log.yaml")
+                    )
+                    exam_gates += st.manual_counters.get("exam_gates_passed", 0)
+
+                cfg_xp = load_xp_config(REPO_ROOT / "xp.yaml")
+                xp_block = to_data_block(
+                    compute_xp(
+                        per_syllabus=per_syllabus_xp,
+                        ladder_dir=REPO_ROOT / "ladder",
+                        state_log_entries=state_log_entries,
+                        exam_gates=exam_gates,
+                        cfg=cfg_xp,
+                    )
+                )
+
                 html, data = render_multi_syllabus(
                     cfg=cfg,
                     shared=new_shared,
@@ -1478,6 +1539,7 @@ def main(argv: list[str] | None = None) -> int:
                     reflections_root=REFLECTIONS_DIR,
                     module_titles_by_syllabus=per_syllabus_module_titles,
                     streak_specs_by_syllabus=per_syllabus_streak_specs,
+                    xp=xp_block,
                 )
                 DOCS_HTML_PATH.parent.mkdir(parents=True, exist_ok=True)
                 DOCS_DATA_PATH.parent.mkdir(parents=True, exist_ok=True)

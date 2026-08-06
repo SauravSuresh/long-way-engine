@@ -531,6 +531,95 @@ def test_render_multi_syllabus_one_syllabus_smoke(tmp_path: Path):
     assert data["shared"]["anki_card_count"] == 150
 
 
+def test_render_multi_syllabus_xp_band_and_data(tmp_path: Path):
+    """xp kwarg lands in combined_data and renders a summary band; omitting
+    it keeps backward compat (no "xp" key, no band)."""
+    CURRICULA_DIR = Path(__file__).resolve().parent.parent / "curricula"
+    long_way_path = CURRICULA_DIR / "long-way"
+
+    try:
+        syllabus_obj = load_syllabus(long_way_path)
+        books = syllabus_obj.books
+    except OSError:
+        syllabus_obj = None
+        books = []
+
+    today = date(2026, 5, 4)
+    tz = ZoneInfo("Asia/Kolkata")
+
+    shared = SharedState(timezone=tz, manual_counters={"anki_card_count": 150})
+    syllabus_state = SyllabusState(
+        start_date=date(2026, 1, 1),
+        phase=1,
+        month=4,
+        current_module=2,
+        current_book="Computer Systems: A Programmer's Perspective",
+    )
+
+    cfg = MultiSyllabusConfig(
+        default_ritual_times={"morning_reading": "06:00", "anki": "08:30"},
+        priority_order=["long-way"],
+        syllabuses={
+            "long-way": SyllabusEntry(
+                key="long-way",
+                path=long_way_path,
+                todoist_project_id="proj123",
+                state_file=tmp_path / "state.yaml",
+                enabled=True,
+                ritual_times={"morning_reading": "06:00", "anki": "08:30"},
+            )
+        },
+        sunday_off=True,
+        pair_day="thursday",
+        dashboard=DashboardConfig(
+            github_username="SauravSuresh", repo_name="long-way-engine"
+        ),
+        todoist_token="",
+    )
+
+    xp = {
+        "total": 120,
+        "level": 1,
+        "next_level_at": 264,
+        "level_progress": 20,
+        "by_source": {},
+        "unlocked": [],
+        "next_reward": None,
+    }
+
+    html, data = render_multi_syllabus(
+        cfg=cfg,
+        shared=shared,
+        syllabus_states={"long-way": syllabus_state},
+        syllabuses={"long-way": syllabus_obj} if syllabus_obj else {},
+        completion_by_syllabus={"long-way": set()},
+        cache_by_syllabus={"long-way": {}},
+        reflections_by_syllabus={"long-way": []},
+        books_by_syllabus={"long-way": books},
+        today=today,
+        clock=FrozenClock(today, tz),
+        reflections_root=tmp_path / "reflections",
+        xp=xp,
+    )
+    assert data["xp"]["total"] == 120
+    assert "XP 120" in html
+
+    html_no_xp, data_no_xp = render_multi_syllabus(
+        cfg=cfg,
+        shared=shared,
+        syllabus_states={"long-way": syllabus_state},
+        syllabuses={"long-way": syllabus_obj} if syllabus_obj else {},
+        completion_by_syllabus={"long-way": set()},
+        cache_by_syllabus={"long-way": {}},
+        reflections_by_syllabus={"long-way": []},
+        books_by_syllabus={"long-way": books},
+        today=today,
+        clock=FrozenClock(today, tz),
+        reflections_root=tmp_path / "reflections",
+    )
+    assert "xp" not in data_no_xp
+
+
 def _make_multi_syllabus_render(tmp_path: Path):
     """Helper: build a minimal multi-syllabus render with non-zero shared counters."""
     CURRICULA_DIR = Path(__file__).resolve().parent.parent / "curricula"

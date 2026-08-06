@@ -1088,6 +1088,15 @@ def _shared_data(shared: SharedState) -> dict[str, Any]:
     }
 
 
+def _xp_band(xp: dict[str, Any]) -> str:
+    to_next = xp["next_level_at"] - xp["total"]
+    text = (
+        f'XP {xp["total"]} &middot; Level {xp["level"]} &middot; '
+        f'{to_next} to next &middot; {len(xp["unlocked"])} reward(s) unlocked'
+    )
+    return f'<div class="trmnl-head"><span class="t-headmeta">{text}</span></div>'
+
+
 def render_multi_syllabus(
     *,
     cfg: MultiSyllabusConfig,
@@ -1103,6 +1112,7 @@ def render_multi_syllabus(
     reflections_root: Path,
     module_titles_by_syllabus: dict[str, dict[int, str]] | None = None,
     streak_specs_by_syllabus: dict[str, Sequence[StreakTemplateSpec]] | None = None,
+    xp: dict[str, Any] | None = None,
 ) -> tuple[str, dict[str, Any]]:
     """Render the multi-syllabus dashboard.
 
@@ -1121,6 +1131,8 @@ def render_multi_syllabus(
         "syllabuses": {},
         "priority_order": list(cfg.priority_order),
     }
+    if xp is not None:
+        combined_data["xp"] = xp
 
     for key in cfg.priority_order:
         syllabus_entry = cfg.syllabuses[key]
@@ -1191,6 +1203,7 @@ def render_multi_syllabus(
         })
 
     trmnl_band = _trmnl_band(band_summaries, today, shared)
+    xp_band = "" if xp is None else _xp_band(xp)
 
     html_doc = (
         '<!doctype html>\n'
@@ -1201,6 +1214,7 @@ def render_multi_syllabus(
         '<link rel="stylesheet" href="assets/style.css">'
         f'</head><body><main class="dashboard">'
         f'{trmnl_band}'
+        f'{xp_band}'
         f'{"".join(sections)}'
         f'</main></body></html>\n'
     )

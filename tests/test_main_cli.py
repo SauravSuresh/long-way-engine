@@ -353,6 +353,17 @@ def test_main_real_run_writes_cache_and_log(tmp_path: Path, monkeypatch):
     assert "Created: 2" in log
 
 
+def test_main_real_run_data_json_has_xp(tmp_path: Path, monkeypatch):
+    """The multi-syllabus render writes a top-level "xp" block into data.json,
+    computed end-to-end from run_for_syllabus's template_kinds/daily_streak."""
+    _seed_repo(tmp_path, monkeypatch)
+    with patch("src.main.TodoistClient", FakeClient):
+        rc = main_module.main(["--today", "2026-05-04"])
+    assert rc == 0
+    data = json.loads(main_module.DOCS_DATA_PATH.read_text())
+    assert isinstance(data["xp"]["total"], int)
+
+
 def test_main_cache_file_override(tmp_path: Path, monkeypatch):
     _seed_repo(tmp_path, monkeypatch)
     sandbox = tmp_path / ".task_cache.sandbox.json"
