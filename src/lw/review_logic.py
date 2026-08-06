@@ -162,8 +162,15 @@ def preview_gate_outcome(
     quitting before Confirm must leave meta.yaml untouched."""
     if choice == "shipped":
         return GateOutcome(advance=True, message="shipped — advance the rung below")
-    if choice == "failed":
-        return GateOutcome(advance=True, message="failed — fail forward, advance the rung below")
+    if choice == "failed_move_on":
+        return GateOutcome(advance=True, message="failed — logged, moving on; advance the rung below")
+    if choice == "failed_retry":
+        if extra_days <= 0:
+            raise ValueError("failed_retry requires extra_days > 0")
+        new_deadline = today + timedelta(days=extra_days)
+        return GateOutcome(
+            advance=False, message=f"failed — retrying, new deadline {new_deadline.isoformat()}"
+        )
     if choice == "extend":
         if not reason:
             raise ValueError("extend requires a reason")
@@ -182,14 +189,33 @@ def apply_gate(
     extra_days: int = 0,
     today: date,
 ) -> GateOutcome:
-    """choice in {shipped, extend, failed}. shipped/failed fail-forward (advance=True);
-    extend requires a reason and extra_days > 0, leaves outcome null. Writes
+    """choice in {shipped, extend, failed_move_on, failed_retry}. shipped and
+    failed_move_on resolve the rung (advance=True); failed_retry logs the
+    failure but keeps the rung open with a new deadline (outcome stays null,
+    so the gate re-fires); extend requires a reason and extra_days > 0. Writes
     meta.yaml immediately — see preview_gate_outcome for the non-persisting
     twin used to preview the outcome before the user commits to it."""
     outcome = preview_gate_outcome(choice, reason=reason, extra_days=extra_days, today=today)
     meta = gate.meta
-    if choice in ("shipped", "failed"):
-        meta["outcome"] = choice
+    if choice == "shipped":
+        meta["outcome"] = "shipped"
+    elif choice == "failed_move_on":
+        meta["outcome"] = "failed"
+        meta.setdefault("failures", []).append(
+            {"date": today.isoformat(), "decision": "move_on"}
+        )
+    elif choice == "failed_retry":
+        new_deadline = today + timedelta(days=extra_days)
+        meta.setdefault("failures", []).append(
+            {"date": today.isoformat(), "decision": "retry"}
+        )
+        meta.setdefault("extensions", []).append(
+            {
+                "date": today.isoformat(),
+                "new_deadline": new_deadline.isoformat(),
+                "reason": "failed — retrying",
+            }
+        )
     else:  # extend — already validated by preview_gate_outcome above
         new_deadline = today + timedelta(days=extra_days)
         meta.setdefault("extensions", []).append(

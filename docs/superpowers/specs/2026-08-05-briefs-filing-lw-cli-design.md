@@ -93,9 +93,12 @@ Commands (v1, exactly these):
   - **Deadline gate**: when the current rung's deadline falls on or
     before this review, the questionnaire forces exactly one of:
     **shipped** (advance) / **extend** (reason required, logged to the
-    rung's meta — extension count is honesty data) / **failed** (logged,
-    advance anyway). Extension exists ONLY here; there is no standalone
-    extend command.
+    rung's meta — extension count is honesty data) / **failed**, which
+    asks a follow-up: **move on** (outcome=failed, advance anyway) or
+    **retry** (failure logged to the meta's failures list, rung stays
+    open with a new deadline — the gate fires again when it lapses).
+    Extension exists ONLY here; there is no standalone extend command.
+    (2026-08-06: failed split into move-on/retry at the owner's request.)
 - **`lw rung start`** — shows the current rung's 3 briefs, owner picks
   one; scaffolds the paper-trail dir in the engine repo and the local
   code dir; drops `adr.md` from a template with the pick + why at top.

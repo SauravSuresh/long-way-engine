@@ -185,7 +185,7 @@ def test_forced_advance_answer_only_forces_advance_module_on_fail_forward():
     assert forced_advance_answer(other_q, gate_advance=True) is None
 
 
-def test_apply_gate_failed_is_fail_forward(tmp_path: Path):
+def test_apply_gate_failed_move_on_advances_and_logs(tmp_path: Path):
     from src.lw.review_logic import DeadlineGate, apply_gate
 
     today = date(2026, 8, 20)
@@ -196,15 +196,50 @@ def test_apply_gate_failed_is_fail_forward(tmp_path: Path):
     meta = yaml.safe_load(meta_path.read_text(encoding="utf-8"))
     gate = DeadlineGate(meta_path, meta)
 
-    outcome = apply_gate(gate, "failed", today=today)
+    outcome = apply_gate(gate, "failed_move_on", today=today)
     assert outcome.advance is True
     reloaded = yaml.safe_load(meta_path.read_text(encoding="utf-8"))
     assert reloaded["outcome"] == "failed"
+    assert reloaded["failures"][-1] == {"date": today.isoformat(), "decision": "move_on"}
 
-    # shipped is fail-forward too — same advance=True contract.
+    # shipped resolves the same way — advance=True contract.
     _write_meta(meta_path, (today - timedelta(days=1)).isoformat())
     meta2 = yaml.safe_load(meta_path.read_text(encoding="utf-8"))
     gate2 = DeadlineGate(meta_path, meta2)
     outcome2 = apply_gate(gate2, "shipped", today=today)
     assert outcome2.advance is True
     assert yaml.safe_load(meta_path.read_text(encoding="utf-8"))["outcome"] == "shipped"
+
+
+def test_apply_gate_failed_retry_keeps_rung_open_with_new_deadline(tmp_path: Path):
+    from src.lw.review_logic import DeadlineGate, apply_gate, build_deadline_gate, preview_gate_outcome
+
+    today = date(2026, 8, 20)
+    rung_dir = tmp_path / "ladder" / "rung-01a-expression-calculator"
+    rung_dir.mkdir(parents=True)
+    meta_path = rung_dir / "meta.yaml"
+    _write_meta(meta_path, (today - timedelta(days=1)).isoformat())
+    meta = yaml.safe_load(meta_path.read_text(encoding="utf-8"))
+    gate = DeadlineGate(meta_path, meta)
+
+    outcome = apply_gate(gate, "failed_retry", extra_days=7, today=today)
+    assert outcome.advance is False
+
+    reloaded = yaml.safe_load(meta_path.read_text(encoding="utf-8"))
+    assert reloaded["outcome"] is None
+    assert reloaded["failures"][-1] == {"date": today.isoformat(), "decision": "retry"}
+    assert reloaded["extensions"][-1]["new_deadline"] == (today + timedelta(days=7)).isoformat()
+    assert reloaded["extensions"][-1]["reason"] == "failed — retrying"
+
+    # Rung stays open: gate is quiet until the retry deadline, fires again after it.
+    cur = _mk_cur(module=1)
+    assert build_deadline_gate(tmp_path, cur, today) is None
+    assert build_deadline_gate(tmp_path, cur, today + timedelta(days=8)) is not None
+
+    # retry demands a positive day count, and validation is pure (no disk write).
+    before = meta_path.read_text(encoding="utf-8")
+    with pytest.raises(ValueError):
+        preview_gate_outcome("failed_retry", extra_days=0, today=today)
+    with pytest.raises(ValueError):
+        apply_gate(DeadlineGate(meta_path, reloaded), "failed_retry", extra_days=0, today=today)
+    assert meta_path.read_text(encoding="utf-8") == before

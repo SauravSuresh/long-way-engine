@@ -27,7 +27,9 @@ from src.lw.status_logic import EngineCtx, load_engine
 
 
 class GateScreen(Screen):
-    """Shipped / Extend(reason, days) / Failed for the picked rung's deadline."""
+    """Shipped / Extend(reason, days) / Failed for the picked rung's deadline.
+    Failed asks a follow-up: move on (advance, outcome=failed) or retry
+    (failure logged, rung stays open with a new deadline)."""
 
     def __init__(self, key: str, gate: DeadlineGate) -> None:
         super().__init__()
@@ -52,23 +54,52 @@ class GateScreen(Screen):
                 Button("Submit extension", id="submit_extend"),
                 id="extend_form",
             ),
+            Vertical(
+                Label("Failed — what now?"),
+                Horizontal(
+                    Button("Move on (advance)", id="failed_move_on", variant="error"),
+                    Button("Retry — new deadline", id="failed_retry_reveal"),
+                ),
+                id="failed_form",
+            ),
+            Vertical(
+                Input(placeholder="retry days", id="retry_days"),
+                Button("Submit retry", id="submit_retry"),
+                id="retry_form",
+            ),
         )
         yield Footer()
 
     def on_mount(self) -> None:
         self.query_one("#extend_form").display = False
+        self.query_one("#failed_form").display = False
+        self.query_one("#retry_form").display = False
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "extend":
             self.query_one("#extend_form").display = True
+            self.query_one("#failed_form").display = False
+            self.query_one("#retry_form").display = False
         elif event.button.id == "submit_extend":
             reason = self.query_one("#reason", Input).value.strip()
             days_str = self.query_one("#extra_days", Input).value.strip()
             if not reason or not days_str.isdigit() or int(days_str) <= 0:
                 return
             self.app.resolve_gate(self.gate, "extend", reason=reason, extra_days=int(days_str))  # type: ignore[attr-defined]
-        elif event.button.id in ("shipped", "failed"):
-            self.app.resolve_gate(self.gate, event.button.id)  # type: ignore[attr-defined]
+        elif event.button.id == "failed":
+            self.query_one("#failed_form").display = True
+            self.query_one("#extend_form").display = False
+        elif event.button.id == "failed_move_on":
+            self.app.resolve_gate(self.gate, "failed_move_on")  # type: ignore[attr-defined]
+        elif event.button.id == "failed_retry_reveal":
+            self.query_one("#retry_form").display = True
+        elif event.button.id == "submit_retry":
+            days_str = self.query_one("#retry_days", Input).value.strip()
+            if not days_str.isdigit() or int(days_str) <= 0:
+                return
+            self.app.resolve_gate(self.gate, "failed_retry", extra_days=int(days_str))  # type: ignore[attr-defined]
+        elif event.button.id == "shipped":
+            self.app.resolve_gate(self.gate, "shipped")  # type: ignore[attr-defined]
 
 
 class QuestionScreen(Screen):
