@@ -60,6 +60,43 @@ def test_partial_config_fills_missing_keys(tmp_path):
     assert cfg.rewards[0].level == 2
 
 
+def test_malformed_reward_entry_skipped_valid_kept(tmp_path):
+    from src.xp import load_xp_config
+
+    p = tmp_path / "xp.yaml"
+    p.write_text(yaml.safe_dump({
+        "rewards": [
+            {"level": "two", "reward": "bad"},
+            {"level": 3, "reward": "good"},
+        ]
+    }))
+    cfg = load_xp_config(p)
+    assert len(cfg.rewards) == 1
+    assert cfg.rewards[0].level == 3
+    assert cfg.rewards[0].reward == "good"
+
+
+def test_non_int_weight_falls_back_to_default(tmp_path):
+    from src.xp import load_xp_config
+
+    p = tmp_path / "xp.yaml"
+    p.write_text(yaml.safe_dump({"weights": {"daily": "lots"}}))
+    cfg = load_xp_config(p)
+    assert cfg.weights["daily"] == 10
+
+
+def test_invalid_yaml_syntax_falls_back_to_full_defaults(tmp_path):
+    from src.xp import load_xp_config
+
+    p = tmp_path / "xp.yaml"
+    p.write_text("weights: {daily: 10\n  broken: [1, 2\n")  # unbalanced -> YAMLError
+    cfg = load_xp_config(p)
+    assert cfg.weights["daily"] == 10
+    assert cfg.weights["rung_shipped"] == 200
+    assert cfg.level_base == 100 and cfg.level_growth == 1.4
+    assert cfg.rewards == []
+
+
 def test_cache_walk_classifies_and_respects_start_date(tmp_path):
     cache = {
         "e1": {"todoist_task_id": "t1", "template_id": "anki", "due_date": "2026-08-06"},

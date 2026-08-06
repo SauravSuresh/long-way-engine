@@ -7,6 +7,7 @@ total onto a level curve with owner-configurable reward unlocks.
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from datetime import date, timedelta
 from pathlib import Path
@@ -15,6 +16,8 @@ from typing import Any
 import yaml
 
 from src.reflections import split_frontmatter
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_WEIGHTS: dict[str, int] = {
     "daily": 10,
@@ -53,23 +56,55 @@ class XPConfig:
 
 
 def load_xp_config(path: Path) -> XPConfig:
-    """Load xp.yaml, filling any missing keys from built-in defaults."""
+    """Load xp.yaml, filling any missing keys from built-in defaults.
+
+    Owner-editable file: a bad edit (typo'd weight, malformed reward, broken
+    YAML syntax) must never break the engine run. Anything malformed is
+    dropped/defaulted piecemeal rather than raising.
+    """
     raw: dict[str, Any] = {}
     if path.exists():
-        raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        try:
+            loaded = yaml.safe_load(path.read_text(encoding="utf-8"))
+        except yaml.YAMLError as e:
+            logger.warning("xp.yaml unreadable (%s); using defaults", e)
+            loaded = None
+        if isinstance(loaded, dict):
+            raw = loaded
 
     weights = dict(DEFAULT_WEIGHTS)
-    weights.update(raw.get("weights") or {})
+    raw_weights = raw.get("weights")
+    if isinstance(raw_weights, dict):
+        for key, value in raw_weights.items():
+            try:
+                weights[key] = int(value)
+            except (TypeError, ValueError):
+                continue
 
-    rewards = [
-        Reward(level=int(r["level"]), reward=str(r["reward"]))
-        for r in (raw.get("rewards") or [])
-    ]
+    rewards: list[Reward] = []
+    raw_rewards = raw.get("rewards")
+    if isinstance(raw_rewards, list):
+        for r in raw_rewards:
+            if not isinstance(r, dict):
+                continue
+            try:
+                rewards.append(Reward(level=int(r["level"]), reward=str(r["reward"])))
+            except (KeyError, TypeError, ValueError):
+                continue
+
+    try:
+        level_base = int(raw.get("level_base", DEFAULT_LEVEL_BASE))
+    except (TypeError, ValueError):
+        level_base = DEFAULT_LEVEL_BASE
+    try:
+        level_growth = float(raw.get("level_growth", DEFAULT_LEVEL_GROWTH))
+    except (TypeError, ValueError):
+        level_growth = DEFAULT_LEVEL_GROWTH
 
     return XPConfig(
         weights=weights,
-        level_base=int(raw.get("level_base", DEFAULT_LEVEL_BASE)),
-        level_growth=float(raw.get("level_growth", DEFAULT_LEVEL_GROWTH)),
+        level_base=level_base,
+        level_growth=level_growth,
         rewards=rewards,
     )
 
