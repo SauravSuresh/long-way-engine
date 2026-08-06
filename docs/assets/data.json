@@ -310,12 +310,69 @@
       "weekly_review": 0,
       "weekly_ritual": 0
     },
+    "ladder": [
+      {
+        "level": 1,
+        "reward": "Fancy dessert run \u2014 the good bakery, no price-checking",
+        "unlocked": false
+      },
+      {
+        "level": 2,
+        "reward": "Movie night, zero guilt \u2014 theatre, popcorn, phone off",
+        "unlocked": false
+      },
+      {
+        "level": 3,
+        "reward": "One full lazy Saturday morning \u2014 no alarm, no Anki before noon (streak-safe: do it at 1pm)",
+        "unlocked": false
+      },
+      {
+        "level": 4,
+        "reward": "Order that thing sitting in your cart under \u20b92k. You know the one.",
+        "unlocked": false
+      },
+      {
+        "level": 5,
+        "reward": "Big biryani feast with a friend \u2014 you're buying, you're bragging about the ladder",
+        "unlocked": false
+      },
+      {
+        "level": 7,
+        "reward": "A game you've been eyeing + one whole evening to play it",
+        "unlocked": false
+      },
+      {
+        "level": 9,
+        "reward": "Camera accessory under \u20b98k \u2014 filter, strap, SD cards, your call",
+        "unlocked": false
+      },
+      {
+        "level": 11,
+        "reward": "Massage / spa day. Shipped rungs earn shoulder repairs.",
+        "unlocked": false
+      },
+      {
+        "level": 13,
+        "reward": "Mechanical keyboard (or one serious desk upgrade) \u2014 you type for a living now",
+        "unlocked": false
+      },
+      {
+        "level": 16,
+        "reward": "Weekend trip out of the city \u2014 book it the same week, no deferring",
+        "unlocked": false
+      },
+      {
+        "level": 20,
+        "reward": "The big one: lens fund \u20b925k installment \u2014 Level 20 built half a platform",
+        "unlocked": false
+      }
+    ],
     "level": 0,
     "level_progress": 0,
     "next_level_at": 100,
     "next_reward": {
-      "level": 2,
-      "reward": "PLACEHOLDER \u2014 e.g. movie night, no guilt"
+      "level": 1,
+      "reward": "Fancy dessert run \u2014 the good bakery, no price-checking"
     },
     "total": 0,
     "unlocked": []
