@@ -8,7 +8,7 @@ total onto a level curve with owner-configurable reward unlocks.
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
@@ -118,6 +118,7 @@ class XPResult:
     next_level_at: int
     unlocked: list[Reward]
     next_reward: Reward | None
+    rewards: list[Reward] = field(default_factory=list)  # full configured ladder, sorted
 
 
 def level_threshold(n: int, cfg: XPConfig) -> int:
@@ -275,6 +276,7 @@ def compute_xp(
         next_level_at=level_threshold(level + 1, cfg),
         unlocked=unlocked,
         next_reward=next_reward,
+        rewards=unlocked + locked,
     )
 
 
@@ -292,4 +294,8 @@ def to_data_block(result: XPResult) -> dict:
             if result.next_reward
             else None
         ),
+        "ladder": [
+            {"level": r.level, "reward": r.reward, "unlocked": r.level <= result.level}
+            for r in result.rewards
+        ],
     }

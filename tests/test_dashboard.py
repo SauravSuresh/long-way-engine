@@ -584,7 +584,11 @@ def test_render_multi_syllabus_xp_band_and_data(tmp_path: Path):
         "level_progress": 20,
         "by_source": {},
         "unlocked": [],
-        "next_reward": None,
+        "next_reward": {"level": 2, "reward": "movie night"},
+        "ladder": [
+            {"level": 1, "reward": "dessert", "unlocked": True},
+            {"level": 2, "reward": "movie night", "unlocked": False},
+        ],
     }
 
     html, data = render_multi_syllabus(
@@ -602,7 +606,13 @@ def test_render_multi_syllabus_xp_band_and_data(tmp_path: Path):
         xp=xp,
     )
     assert data["xp"]["total"] == 120
-    assert "XP 120" in html
+    # XP strip lives INSIDE the trmnl band: bar, chips (unlocked inverted),
+    # next-reward text. Progress = 20/(20 + 144) ≈ 12%.
+    band = html.split('<header class="trmnl-band">')[1].split("</header>")[0]
+    assert 't-xpbar-fill" style="width:12%"' in band
+    assert 't-chip t-chip-open" title="dessert">1</span>' in band
+    assert 't-chip" title="movie night">2</span>' in band
+    assert "NEXT L2: movie night" in band
 
     html_no_xp, data_no_xp = render_multi_syllabus(
         cfg=cfg,

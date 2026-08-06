@@ -747,6 +747,7 @@ def _trmnl_band(
     summaries: list[dict[str, Any]],
     today: date,
     shared: SharedState,
+    xp: dict[str, Any] | None = None,
 ) -> str:
     """At-a-glance band sized for the TRMNL OG (800×480) screenshot.
 
@@ -765,10 +766,12 @@ def _trmnl_band(
         f'</div>'
     )
     tiles = "".join(_trmnl_tile(s) for s in summaries)
+    xp_strip = "" if xp is None else _xp_band(xp)
     return (
         f'<header class="trmnl-band">'
         f'{head}'
         f'<div class="trmnl-tiles">{tiles}</div>'
+        f'{xp_strip}'
         f'</header>'
     )
 
@@ -1089,12 +1092,38 @@ def _shared_data(shared: SharedState) -> dict[str, Any]:
 
 
 def _xp_band(xp: dict[str, Any]) -> str:
+    """XP strip inside the TRMNL band: totals, progress bar, reward ladder.
+
+    Black/white only — chips invert when unlocked, the bar is a solid
+    fill, so everything survives e-ink dithering."""
     to_next = xp["next_level_at"] - xp["total"]
-    text = (
-        f'XP {xp["total"]} &middot; Level {xp["level"]} &middot; '
-        f'{to_next} to next &middot; {len(xp["unlocked"])} reward(s) unlocked'
+    span = xp["level_progress"] + to_next
+    pct = round(100 * xp["level_progress"] / span) if span > 0 else 0
+    ladder = xp.get("ladder") or []
+    chips = "".join(
+        f'<span class="t-chip{" t-chip-open" if r["unlocked"] else ""}"'
+        f' title="{_h(r["reward"])}">{r["level"]}</span>'
+        for r in ladder
     )
-    return f'<div class="trmnl-head"><span class="t-headmeta">{text}</span></div>'
+    nxt = xp.get("next_reward")
+    nxt_html = (
+        f'<span class="t-xp-next">NEXT L{nxt["level"]}: {_h(nxt["reward"])}</span>'
+        if nxt
+        else ('<span class="t-xp-next">ALL REWARDS UNLOCKED</span>' if ladder else "")
+    )
+    return (
+        f'<div class="trmnl-xp">'
+        f'<div class="t-xp-line">'
+        f'<span class="t-key">XP</span> <span class="t-strong">{xp["total"]}</span>'
+        f'<span class="t-key">LVL</span> <span class="t-strong">{xp["level"]}</span>'
+        f'<span class="t-xpbar"><span class="t-xpbar-fill" style="width:{pct}%"></span></span>'
+        f'<span class="t-xp-tonext">{to_next} to L{xp["level"] + 1}</span>'
+        f'</div>'
+        f'<div class="t-xp-line">'
+        f'<span class="t-chips">{chips}</span>{nxt_html}'
+        f'</div>'
+        f'</div>'
+    )
 
 
 def render_multi_syllabus(
@@ -1202,8 +1231,7 @@ def render_multi_syllabus(
             "last_7_days": per_data["last_7_days"],
         })
 
-    trmnl_band = _trmnl_band(band_summaries, today, shared)
-    xp_band = "" if xp is None else _xp_band(xp)
+    trmnl_band = _trmnl_band(band_summaries, today, shared, xp)
 
     html_doc = (
         '<!doctype html>\n'
@@ -1214,7 +1242,6 @@ def render_multi_syllabus(
         '<link rel="stylesheet" href="assets/style.css">'
         f'</head><body><main class="dashboard">'
         f'{trmnl_band}'
-        f'{xp_band}'
         f'{"".join(sections)}'
         f'</main></body></html>\n'
     )

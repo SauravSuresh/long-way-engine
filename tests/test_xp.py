@@ -192,3 +192,17 @@ def test_to_data_block_json_safe(tmp_path):
     json.dumps(block)  # must not raise
     assert block["total"] == 300 and block["by_source"]["exam_gates"] == 300
     assert block["next_reward"] is None
+    assert block["ladder"] == []  # no rewards configured
+
+
+def test_to_data_block_ladder_marks_unlocked(tmp_path):
+    from src.xp import Reward, to_data_block
+
+    cfg = _cfg()
+    cfg.rewards = [Reward(1, "dessert"), Reward(9, "spa")]
+    result = _compute(tmp_path, {"mb": _syllabus(tmp_path)}, gates=1, cfg=cfg)  # 300 XP -> L2
+    block = to_data_block(result)
+    assert block["ladder"] == [
+        {"level": 1, "reward": "dessert", "unlocked": True},
+        {"level": 9, "reward": "spa", "unlocked": False},
+    ]
