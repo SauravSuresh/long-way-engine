@@ -71,10 +71,9 @@ weights:
   streak_bonus_per_task: 5     # while daily streak >= threshold
   streak_bonus_threshold: 7
 
-levels:
-  base: 100
-  growth: 1.4    # cumulative XP for level N = round(base * N^growth)
-                 # L1 100, L2 ~264, L3 ~466, L5 ~957, L10 ~2612
+level_base: 100
+level_growth: 1.4   # cumulative XP for level N = round(base * N^growth)
+                    # L1 100, L2 ~264, L3 ~466, L5 ~957, L10 ~2612
 
 rewards:
   - level: 2
@@ -97,8 +96,11 @@ failures list does not reduce the shipped score beyond its extensions).
 - **Cron/local run:** `src/main.py` computes XP after streaks (it has the
   completion sets there) and adds an `xp` block to the dashboard data
   (`docs/assets/data.json`) at top level (XP is global across curricula,
-  not per-syllabus). Dashboard HTML renders total, level, progress bar,
-  and the reward ladder.
+  not per-syllabus). Dashboard HTML renders a single XP band (total,
+  level, to-next, rewards-unlocked count). (Accepted deviation
+  2026-08-06: the originally sketched progress bar + full ladder render
+  was narrowed to the band; data.json carries every field needed if a
+  richer render is ever wanted.)
 - **`lw status`:** one global line read from data.json (stale ≤ last
   cron, same as streaks): `XP 340 · Level 2 · 126 to Level 3 · 1 reward
   unlocked`. Graceful-absent (older data.json → no line).
