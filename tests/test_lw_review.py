@@ -243,3 +243,17 @@ def test_apply_gate_failed_retry_keeps_rung_open_with_new_deadline(tmp_path: Pat
     with pytest.raises(ValueError):
         apply_gate(DeadlineGate(meta_path, reloaded), "failed_retry", extra_days=0, today=today)
     assert meta_path.read_text(encoding="utf-8") == before
+
+
+def test_is_review_time_only_on_the_state_review_day():
+    from datetime import date as _date
+    from pathlib import Path as _Path
+
+    from src.lw.review_logic import is_review_time, review_day
+    from src.lw.status_logic import load_engine
+
+    ctx = load_engine(_Path(__file__).resolve().parents[1])
+    cur = ctx.per_key["marketplace-builder"]
+    assert review_day(cur) == "sunday"
+    assert is_review_time(cur, _date(2026, 8, 6)) is False  # Thursday
+    assert is_review_time(cur, _date(2026, 8, 9)) is True  # Sunday

@@ -44,6 +44,22 @@ class Question:
     wants_count: bool
 
 
+def review_day(cur: CurriculumCtx) -> str | None:
+    """The state_review template's scheduled day_of_week (lowercase), or
+    None when the curriculum has no state_review template or no fixed day."""
+    tpl = next((t for t in cur.templates if t.state_review), None)
+    if tpl is None or not tpl.day_of_week:
+        return None
+    return str(tpl.day_of_week).lower()
+
+
+def is_review_time(cur: CurriculumCtx, today: date) -> bool:
+    """True when today is the curriculum's state-review day. No fixed day
+    (or no state_review template) means any day is fine."""
+    day = review_day(cur)
+    return day is None or day == today.strftime("%A").lower()
+
+
 def build_questions(cur: CurriculumCtx, today: date) -> list[Question]:
     """The state_review template's sub_tasks, show_if-filtered, titles resolved."""
     tpl = next((t for t in cur.templates if t.state_review), None)

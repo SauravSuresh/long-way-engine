@@ -21,6 +21,8 @@ from src.lw.review_logic import (
     build_deadline_gate,
     build_questions,
     forced_advance_answer,
+    is_review_time,
+    review_day,
     preview_gate_outcome,
 )
 from src.lw.status_logic import EngineCtx, load_engine
@@ -264,10 +266,20 @@ class ReviewApp(App):
 def run_review(repo_root: Path) -> int:
     ctx = load_engine(repo_root)
     today = date.today()
-    keys = [key for key, cur in ctx.per_key.items() if cur.entry.cli_review]
-    if not keys:
+    enabled = [key for key, cur in ctx.per_key.items() if cur.entry.cli_review]
+    if not enabled:
         print("No curriculum has cli_review enabled.")
         return 0
+
+    keys = [key for key in enabled if is_review_time(ctx.per_key[key], today)]
+    if not keys:
+        for key in enabled:
+            day = review_day(ctx.per_key[key]) or "any day"
+            print(
+                f"Not review time — {key} reviews on {day}"
+                f" (today is {today.strftime('%A').lower()})."
+            )
+        return 1
 
     app = ReviewApp(ctx, keys, today)
     app.run()
