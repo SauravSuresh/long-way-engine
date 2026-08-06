@@ -18,10 +18,29 @@ weights:
 level_base: 100
 level_growth: 1.4
 
+# Pacing at current weights: ~200-250 XP in a normal week.
+# L1 ~week 1 · L2 ~week 2 · L3 ~week 3 · L5 ~month 1+ · L7 ~month 2 ·
+# L10 ~month 3 · L13 ~month 5 · L16 ~month 7 · L20 ~month 9-10.
 rewards:
+  - level: 1
+    reward: "Fancy dessert run — the good bakery, no price-checking"
   - level: 2
-    reward: "PLACEHOLDER — e.g. movie night, no guilt"
+    reward: "Movie night, zero guilt — theatre, popcorn, phone off"
+  - level: 3
+    reward: "One full lazy Saturday morning — no alarm, no Anki before noon (streak-safe: do it at 1pm)"
   - level: 4
-    reward: "PLACEHOLDER — e.g. that lens filter"
+    reward: "Order that thing sitting in your cart under ₹2k. You know the one."
+  - level: 5
+    reward: "Big biryani feast with a friend — you're buying, you're bragging about the ladder"
   - level: 7
-    reward: "PLACEHOLDER — e.g. weekend trip"
+    reward: "A game you've been eyeing + one whole evening to play it"
+  - level: 9
+    reward: "Camera accessory under ₹8k — filter, strap, SD cards, your call"
+  - level: 11
+    reward: "Massage / spa day. Shipped rungs earn shoulder repairs."
+  - level: 13
+    reward: "Mechanical keyboard (or one serious desk upgrade) — you type for a living now"
+  - level: 16
+    reward: "Weekend trip out of the city — book it the same week, no deferring"
+  - level: 20
+    reward: "The big one: lens fund ₹25k installment — Level 20 built half a platform"
