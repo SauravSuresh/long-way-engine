@@ -18,9 +18,9 @@
     "devops-ready": {
       "adherence": {
         "done": 0,
-        "expected": 1,
-        "percent": 0,
-        "since": "2026-08-05"
+        "expected": 0,
+        "percent": null,
+        "since": "2026-08-06"
       },
       "books": [
         {
@@ -97,7 +97,7 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 2,
+      "day_of_journey": 1,
       "day_total": 335,
       "last_7_days": [
         {
@@ -126,7 +126,7 @@
         },
         {
           "date": "2026-08-05",
-          "state": "red"
+          "state": "gray"
         }
       ],
       "month": 1,
@@ -181,9 +181,9 @@
     "marketplace-builder": {
       "adherence": {
         "done": 0,
-        "expected": 1,
-        "percent": 0,
-        "since": "2026-08-05"
+        "expected": 0,
+        "percent": null,
+        "since": "2026-08-06"
       },
       "books": [
         {
@@ -232,7 +232,7 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 2,
+      "day_of_journey": 1,
       "day_total": 366,
       "last_7_days": [
         {
@@ -261,7 +261,7 @@
         },
         {
           "date": "2026-08-05",
-          "state": "yellow"
+          "state": "gray"
         }
       ],
       "month": 1,

@@ -3526,5 +3526,32 @@
       "template_id": "weekly-wednesday-morning-reading",
       "todoist_task_id": "6gqV4r78Mq45H772"
     }
+  },
+  "marketplace-builder": {
+    "16aa18059e1ff70d": {
+      "created_at": "2026-08-06T03:55:27.361278+00:00",
+      "due_date": "persistent",
+      "persistent_action": {
+        "days": 365,
+        "reason": "emergency",
+        "type": "set_pause"
+      },
+      "persistent_category": "emergency-pause",
+      "persistent_consumed": false,
+      "template_id": "persistent-emergency-pause",
+      "todoist_task_id": "6hCvmwmV463VFjHG"
+    },
+    "3caa13a7d63d5f59": {
+      "created_at": "2026-08-06T03:55:26.727024+00:00",
+      "due_date": "module:1",
+      "template_id": "rung-1",
+      "todoist_task_id": "6hCvmwfrWXhqWjgp"
+    },
+    "9111549aa4196e38": {
+      "created_at": "2026-08-06T03:55:25.817883+00:00",
+      "due_date": "2026-08-06",
+      "template_id": "daily-anki",
+      "todoist_task_id": "6hCvmwh7CjjvHCcG"
+    }
   }
 }
