@@ -18,7 +18,7 @@
     "devops-ready": {
       "adherence": {
         "done": 0,
-        "expected": 3,
+        "expected": 4,
         "percent": 0,
         "since": "2026-08-06"
       },
@@ -97,13 +97,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 5,
+      "day_of_journey": 6,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-08-03",
-          "state": "gray"
-        },
         {
           "date": "2026-08-04",
           "state": "gray"
@@ -127,6 +123,10 @@
         {
           "date": "2026-08-09",
           "state": "gray"
+        },
+        {
+          "date": "2026-08-10",
+          "state": "red"
         }
       ],
       "month": 1,
@@ -175,21 +175,21 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 22 days"
+          "hint": "next post in 21 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 4 days"
+          "hint": "next Friday in 3 days"
         }
       },
-      "today": "2026-08-10"
+      "today": "2026-08-11"
     },
     "marketplace-builder": {
       "adherence": {
-        "done": 2,
-        "expected": 3,
-        "percent": 67,
+        "done": 3,
+        "expected": 4,
+        "percent": 75,
         "since": "2026-08-06"
       },
       "books": [
@@ -239,13 +239,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 5,
+      "day_of_journey": 6,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-08-03",
-          "state": "gray"
-        },
         {
           "date": "2026-08-04",
           "state": "gray"
@@ -269,6 +265,10 @@
         {
           "date": "2026-08-09",
           "state": "gray"
+        },
+        {
+          "date": "2026-08-10",
+          "state": "green"
         }
       ],
       "month": 1,
@@ -290,40 +290,40 @@
         }
       ],
       "streaks": {
-        "Daily": 0,
+        "Daily": 1,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
           "best": 2,
-          "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "count": 1,
+          "hint": "morning reading + Anki by 23:59 to keep it"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 22 days"
+          "hint": "next post in 21 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 4 days"
+          "hint": "next Friday in 3 days"
         }
       },
-      "today": "2026-08-10"
+      "today": "2026-08-11"
     }
   },
   "xp": {
     "by_source": {
-      "daily": 30,
+      "daily": 40,
       "deep_block": 0,
       "exam_gates": 0,
       "reflections": 0,
       "rungs": 0,
       "streak_bonus": 0,
       "weekly_review": 0,
-      "weekly_ritual": 0
+      "weekly_ritual": 50
     },
     "ladder": [
       {
@@ -383,13 +383,13 @@
       }
     ],
     "level": 0,
-    "level_progress": 30,
+    "level_progress": 90,
     "next_level_at": 100,
     "next_reward": {
       "level": 1,
       "reward": "Fancy dessert run \u2014 the good bakery, no price-checking"
     },
-    "total": 30,
+    "total": 90,
     "unlocked": []
   }
 }
