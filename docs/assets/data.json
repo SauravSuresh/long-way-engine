@@ -18,7 +18,7 @@
     "devops-ready": {
       "adherence": {
         "done": 0,
-        "expected": 6,
+        "expected": 7,
         "percent": 0,
         "since": "2026-08-06"
       },
@@ -97,13 +97,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 8,
+      "day_of_journey": 9,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-08-06",
-          "state": "red"
-        },
         {
           "date": "2026-08-07",
           "state": "red"
@@ -127,6 +123,10 @@
         {
           "date": "2026-08-12",
           "state": "red"
+        },
+        {
+          "date": "2026-08-13",
+          "state": "red"
         }
       ],
       "month": 1,
@@ -143,6 +143,13 @@
           "cadence": "weekly",
           "file": "2026-W32",
           "relative_path": "weekly/2026-W32.md",
+          "status": "stub",
+          "word_count": 0
+        },
+        {
+          "cadence": "weekly",
+          "file": "2026-W33",
+          "relative_path": "weekly/2026-W33.md",
           "status": "stub",
           "word_count": 0
         },
@@ -175,21 +182,21 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 19 days"
+          "hint": "next post in 18 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 1 day"
+          "hint": "Friday review + filled reflection due today"
         }
       },
-      "today": "2026-08-13"
+      "today": "2026-08-14"
     },
     "marketplace-builder": {
       "adherence": {
-        "done": 4,
-        "expected": 6,
-        "percent": 67,
+        "done": 5,
+        "expected": 7,
+        "percent": 71,
         "since": "2026-08-06"
       },
       "books": [
@@ -239,13 +246,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 8,
+      "day_of_journey": 9,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-08-06",
-          "state": "green"
-        },
         {
           "date": "2026-08-07",
           "state": "green"
@@ -269,6 +272,10 @@
         {
           "date": "2026-08-12",
           "state": "yellow"
+        },
+        {
+          "date": "2026-08-13",
+          "state": "green"
         }
       ],
       "month": 1,
@@ -287,36 +294,43 @@
           "relative_path": "weekly/2026-W32.md",
           "status": "stub",
           "word_count": 0
+        },
+        {
+          "cadence": "weekly",
+          "file": "2026-W33",
+          "relative_path": "weekly/2026-W33.md",
+          "status": "stub",
+          "word_count": 0
         }
       ],
       "streaks": {
-        "Daily": 0,
+        "Daily": 1,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
           "best": 2,
-          "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "count": 1,
+          "hint": "morning reading + Anki by 23:59 to keep it"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 19 days"
+          "hint": "next post in 18 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 1 day"
+          "hint": "Friday review + filled reflection due today"
         }
       },
-      "today": "2026-08-13"
+      "today": "2026-08-14"
     }
   },
   "xp": {
     "by_source": {
-      "daily": 60,
+      "daily": 70,
       "deep_block": 0,
       "exam_gates": 0,
       "reflections": 0,
@@ -383,13 +397,13 @@
       }
     ],
     "level": 1,
-    "level_progress": 10,
+    "level_progress": 20,
     "next_level_at": 264,
     "next_reward": {
       "level": 2,
       "reward": "Movie night, zero guilt \u2014 theatre, popcorn, phone off"
     },
-    "total": 110,
+    "total": 120,
     "unlocked": [
       {
         "level": 1,
