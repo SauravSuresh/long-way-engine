@@ -3,7 +3,7 @@
   "templates": [
     {
       "cadence": "daily",
-      "description": "15 min, Mon-Sat. Cards come from one source: what I built or\nbroke \u2014 every failure mode, every gotcha from ladder rungs and\nplatform Saturdays becomes a card.\n\nIn practice this is ONE sitting with the devops-ready cert deck\n(07:15-07:45 back-to-back) \u2014 two templates, one habit. (A shared\ncommon-task is specced in specs/common-tasks.md but not built.)\n\nAdd 3-5 new cards per day. No more. Crunch week? This survives.\n",
+      "description": "15-20 min, Mon-Sat, one sitting, whatever Anki says is due across\nevery deck \u2014 build deck AND the devops cert deck (AWS/K8s/interview\npatterns). This is the ONLY Anki task; the old devops-ready SRS\ncheckbox was merged into this one (2026-08-17).\n\nBuild cards come from one source: what I built or broke \u2014 every\nfailure mode, every gotcha from ladder rungs and platform\nSaturdays becomes a card. Cert cards come from the morning AWS\nstudy.\n\nAdd 3-5 new cards per day. No more. Crunch week? This survives.\n",
       "due": "today at 07:15",
       "fires": true,
       "id": "daily-anki",
@@ -12,7 +12,7 @@
         "srs"
       ],
       "syllabus_key": "marketplace-builder",
-      "title": "Anki review \u2014 build deck (15 min)"
+      "title": "Anki review \u2014 all decks (15-20 min)"
     },
     {
       "cadence": "monthly",
@@ -35,24 +35,25 @@
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "build-session-monday",
+      "id": "build-session-tuesday",
       "syllabus_key": "marketplace-builder"
     },
     {
       "cadence": "weekly",
-      "fires": false,
-      "id": "build-session-wednesday",
-      "syllabus_key": "marketplace-builder"
+      "description": "Part of the Saturday close-out sitting, right after the platform\ndeep block. Run `lw reflect` in the long-way-engine repo \u2014 this\ntask is the reminder; the sectioned form and auto-filing happen\nthere.\n\nWithout looking at notes:\n1. The 3 most important things I learned this week\n2. One thing I struggled with and how I overcame it\n3. The dive-deeper list from this week's build sessions (\"what did\n   I just build that has a known failure mode?\")\n4. What problem did I hit this week that has earned a reading?\n   (This is the only way book reading gets scheduled.)\n\nThen compare to notes. The gap is what needs more Anki cards.\n",
+      "due": "today at 13:30",
+      "fires": true,
+      "id": "weekly-reflection",
+      "labels": [
+        "weekly-ritual",
+        "reflection"
+      ],
+      "syllabus_key": "marketplace-builder",
+      "title": "Weekly reflection \u2014 run `lw reflect` (15 min)"
     },
     {
       "cadence": "weekly",
-      "fires": false,
-      "id": "friday-reflection",
-      "syllabus_key": "marketplace-builder"
-    },
-    {
-      "cadence": "weekly",
-      "description": "Protected block \u2014 09:30-13:00, no meetings, no errands. This is\nthe real rental platform, live from week 1. (The devops-ready\nproject block owns Saturday afternoon.)\n\nFirst 30 min: ADR/RFC writing \u2014 one platform decision, written up\nproperly. Feeds the design review and Exam gate 5.\n\nRemainder: build the platform. The first 12 Saturdays follow this\nchecklist, one step per session (finish early, start the next):\nS1 repo + hello-world API running locally \u00b7 S2 Postgres via\ndocker-compose, `equipment` table, insert rows in psql \u00b7 S3\n`GET /equipment` reading from the DB \u00b7 S4 `POST /equipment` +\nfirst automated test \u00b7 S5 deploy skeleton to Railway/App Runner \u2014\nreal URL \u00b7 S6 equipment detail endpoint + seed script \u00b7 S7\navailability-calendar schema draft \u00b7 S8 naive `GET /availability` \u00b7\nS9 `holds` table + create-hold endpoint \u00b7 S10 hold expiry job \u00b7\nS11 stack ADR written up and final \u00b7 S12 confirm-booking happy\npath, payments stubbed.\n\nAfter S12, the platform roadmap (each stage leans on ladder rungs\ndone by then): no-double-booking under concurrent load (\u2605 EXAM\nGATE 1: hammer test in CI) -> spec-first public API -> Razorpay\ntest-mode end-to-end, idempotent under replay -> AWS production\ninfra via Terraform, applying the devops-ready SAA material\n(\u2605 EXAM GATE 2: blue-green deploy + rollback) -> operate: SLOs,\ntracing, \u2605 EXAM GATE 3: DB restore under 1 hour, \u2605 EXAM GATE 4:\nfirst game day + written postmortem -> launch hardening, go-live.\nWhen infra goes live, tick \"platform is in production\" in the\nSunday review \u2014 that starts the monthly drills.\n",
+      "description": "Protected block \u2014 09:30-13:00, no meetings, no errands. This is\nthe real rental platform, live from week 1. Afternoon after the\nclose-out sitting is free, and Sunday is completely free.\n\nFirst 30 min: ADR/RFC writing \u2014 one platform decision, written up\nproperly. /ladder-review is the reviewer (Exam gate 5).\n\nRemainder: build the platform. The first 12 Saturdays follow this\nchecklist, one step per session (finish early, start the next):\nS1 repo + hello-world API running locally \u00b7 S2 Postgres via\ndocker-compose, `equipment` table, insert rows in psql \u00b7 S3\n`GET /equipment` reading from the DB \u00b7 S4 `POST /equipment` +\nfirst automated test \u00b7 S5 deploy skeleton to Railway/App Runner \u2014\nreal URL \u00b7 S6 equipment detail endpoint + seed script \u00b7 S7\navailability-calendar schema draft \u00b7 S8 naive `GET /availability` \u00b7\nS9 `holds` table + create-hold endpoint \u00b7 S10 hold expiry job \u00b7\nS11 stack ADR written up and final \u00b7 S12 confirm-booking happy\npath, payments stubbed.\n\nAfter S12, the platform roadmap (each stage leans on ladder rungs\ndone by then): no-double-booking under concurrent load (\u2605 EXAM\nGATE 1: hammer test in CI) -> spec-first public API -> Razorpay\ntest-mode end-to-end, idempotent under replay -> AWS production\ninfra via Terraform, applying the devops-ready SAA material\n(\u2605 EXAM GATE 2: blue-green deploy + rollback) -> operate: SLOs,\ntracing, \u2605 EXAM GATE 3: DB restore under 1 hour, \u2605 EXAM GATE 4:\nfirst game day + written postmortem -> launch hardening, go-live.\nWhen infra goes live, tick \"platform is in production\" in the\nSaturday review \u2014 that starts the monthly drills.\n",
       "due": "today at 09:30",
       "fires": true,
       "id": "saturday-deep-block",
@@ -66,20 +67,21 @@
     },
     {
       "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-design-review",
-      "syllabus_key": "marketplace-builder"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
+      "description": "Run `lw review` in the long-way-engine repo \u2014 this task is the\nreminder; the questionnaire and state changes happen there.\nSaturday close-out sitting: reflection first, then this review\n(devops-ready's review is 15 min later). After this the weekend is\nofficially over \u2014 Sunday is completely free.\n\nCheck the sub-tasks that apply. Next cron run picks them up and\nmutates state.yaml. (Cert milestones live in devops-ready's own\nstate review.)\n\nReview the week:\n- Rung: challenge shipped to its consumer? /ladder-review run and\n  its verdict committed? Be honest \u2014 the checkbox is the gate,\n  the review is only advisory.\n- Platform: which Saturday step landed? Any exam gate?\n- Any ADR/RFC passed /ladder-review (Exam gate 5, from month 2\n  onward)?\n- Crunch week? Minimum viable week (Anki + one session + this\n  review) still counts. No guilt.\n",
+      "due": "today at 14:00",
+      "fires": true,
       "id": "weekly-state-review",
-      "syllabus_key": "marketplace-builder"
+      "labels": [
+        "weekly-ritual",
+        "state-review"
+      ],
+      "syllabus_key": "marketplace-builder",
+      "title": "Weekly state review \u2014 2026-W21"
     },
     {
       "cadence": "once-per-module",
       "description": "Concept: small sharp tools; parsing; table-driven tests; clean errors.\nPick ONE \u2014 read all three briefs first:\nA. [Expression calculator CLI](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01a-expression-calculator.md)\nB. [Markdown -> HTML converter](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01b-markdown-to-html.md)\nC. [Flashcard drill CLI](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01c-flashcard-drill.md)\nRun `lw rung start` to pick and scaffold.\n",
-      "due": "today at 20:00",
+      "due": "today at 20:45",
       "fires": true,
       "id": "rung-1",
       "labels": [
@@ -180,19 +182,6 @@
       "syllabus_key": "marketplace-builder"
     },
     {
-      "cadence": "daily",
-      "description": "10\u201315 min. Review AWS services, K8s concepts, LeetCode patterns, and\nsystem design principles. Add 3\u20135 new cards daily from what you learned\nin Udemy courses and hands-on work.\n\nCard categories:\n- AWS services & use cases\n- Kubernetes objects & commands\n- Data structures & algorithms\n- System design patterns\n",
-      "due": "today at 07:30",
-      "fires": true,
-      "id": "daily-devops-srs",
-      "labels": [
-        "daily-ritual",
-        "srs"
-      ],
-      "syllabus_key": "devops-ready",
-      "title": "Anki review (AWS/K8s/Interview prep)"
-    },
-    {
       "cadence": "weekly",
       "fires": false,
       "id": "weekday-morning-study-monday",
@@ -255,12 +244,6 @@
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-bootdev-tuesday",
-      "syllabus_key": "devops-ready"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
       "id": "weekly-bootdev-wednesday",
       "syllabus_key": "devops-ready"
     },
@@ -273,51 +256,34 @@
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-bootdev-friday",
-      "syllabus_key": "devops-ready"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-leetcode-monday",
-      "syllabus_key": "devops-ready"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-leetcode-wednesday",
-      "syllabus_key": "devops-ready"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
       "id": "weekly-leetcode-friday",
       "syllabus_key": "devops-ready"
     },
     {
       "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-state-review",
-      "syllabus_key": "devops-ready"
-    },
-    {
-      "cadence": "weekly",
-      "description": "Dedicated time for building your GitHub portfolio project for the\ncurrent module. This is the devops \"doing\" for Saturday (long-way\nreading has the morning). Production-quality work that demonstrates\nyour skills to employers.\n\nCurrent module: Module AWS Core Services\n\nProject checklist:\n- [ ] Architecture diagram (draw.io or Lucidchart)\n- [ ] Infrastructure as Code (Terraform/CloudFormation)\n- [ ] CI/CD pipeline (GitHub Actions)\n- [ ] Comprehensive README with setup instructions\n- [ ] Error handling & logging\n- [ ] Tests (unit + integration)\n- [ ] Monitoring/observability hooks\n\nPush to GitHub with proper commit messages and PR descriptions.\n",
-      "due": "today at 14:00",
+      "description": "Part of the Saturday close-out sitting (after the platform deep\nblock, alongside the marketplace reflection and both state reviews).\nRun `lw reflect` in the long-way-engine repo \u2014 this task is the\nreminder; the sectioned form and auto-filing happen there.\n\nWithout looking at notes:\n1. The 3 most important things you learned this week\n2. One thing you struggled with and how you overcame it\n3. One thing you want to dive deeper into next week\n\nThen compare to your notes. The gap is what needs more Anki cards.\n",
+      "due": "today at 13:45",
       "fires": true,
-      "id": "weekly-project-work",
+      "id": "weekly-reflection",
       "labels": [
         "weekly-ritual",
-        "project"
+        "reflection"
       ],
       "syllabus_key": "devops-ready",
-      "title": "Saturday deep block: Project work (3-4 hr)"
+      "title": "Weekly reflection \u2014 run `lw reflect` (10 min)"
     },
     {
       "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-friday-reflection",
-      "syllabus_key": "devops-ready"
+      "description": "Run `lw review` in the long-way-engine repo \u2014 this task is the\nreminder; the questionnaire and state changes happen there.\nSaturday close-out: after this, the weekend is officially over.\nSunday is completely free.\n\nCheck the sub-tasks that apply to your week. Next cron run picks\nthem up and mutates state.yaml: module advance, certification\nmilestones, track updates, counter increments.\n",
+      "due": "today at 14:15",
+      "fires": true,
+      "id": "weekly-state-review",
+      "labels": [
+        "weekly-ritual",
+        "state-review"
+      ],
+      "syllabus_key": "devops-ready",
+      "title": "Weekly state review \u2014 2026-W21"
     },
     {
       "cadence": "once-per-module",

@@ -5,15 +5,17 @@
 # parallel. This file carries only what the platform build needs.
 
 - id: daily-anki
-  title: "Anki review — build deck (15 min)"
+  title: "Anki review — all decks (15-20 min)"
   description: |
-    15 min, Mon-Sat. Cards come from one source: what I built or
-    broke — every failure mode, every gotcha from ladder rungs and
-    platform Saturdays becomes a card.
+    15-20 min, Mon-Sat, one sitting, whatever Anki says is due across
+    every deck — build deck AND the devops cert deck (AWS/K8s/interview
+    patterns). This is the ONLY Anki task; the old devops-ready SRS
+    checkbox was merged into this one (2026-08-17).
 
-    In practice this is ONE sitting with the devops-ready cert deck
-    (07:15-07:45 back-to-back) — two templates, one habit. (A shared
-    common-task is specced in specs/common-tasks.md but not built.)
+    Build cards come from one source: what I built or broke — every
+    failure mode, every gotcha from ladder rungs and platform
+    Saturdays becomes a card. Cert cards come from the morning AWS
+    study.
 
     Add 3-5 new cards per day. No more. Crunch week? This survives.
   due: "today at {ritual_times.anki}"

@@ -2,18 +2,13 @@
 # Declares required ritual_times and placeholders used
 
 ritual_times_required:
-  - devops_srs                    # Daily Anki review
-  - morning_udemy                 # Daily Udemy course study
-  - evening_hands_on              # Daily project work + LeetCode
-  - weekly_state_review           # Sunday state review
-  - bootdev_monday                # boot.dev session (every weekday)
-  - bootdev_tuesday               # boot.dev session
-  - bootdev_wednesday             # boot.dev session
-  - bootdev_thursday              # boot.dev session
-  - bootdev_friday                # boot.dev session
-  - leetcode_session              # LeetCode alternate days (Mon/Wed/Fri)
-  - saturday_deep_block           # Saturday project work
-  - friday_reflection             # Friday weekly reflection
+  - morning_udemy                 # Daily Udemy course study (Mon-Fri 08:00)
+  - weekly_state_review           # Saturday close-out state review
+  - bootdev_monday                # boot.dev evening session
+  - bootdev_wednesday             # boot.dev evening session
+  - bootdev_thursday              # boot.dev evening session
+  - leetcode_session              # LeetCode (Friday evening)
+  - weekly_reflection             # Saturday close-out reflection (lw reflect)
   - monthly_project_publish       # 1st of month: GitHub project push
   - monthly_cert_check            # 15th: Certification prep check
   - monthly_mock_interview        # Last Saturday: Mock interview
@@ -29,18 +24,13 @@ placeholders_used:
   - iso_week                      # ISO week number
   - year                          # Calendar year
   - month                         # Calendar month
-  - ritual_times.devops_srs
   - ritual_times.morning_udemy
-  - ritual_times.evening_hands_on
   - ritual_times.weekly_state_review
   - ritual_times.bootdev_monday
-  - ritual_times.bootdev_tuesday
   - ritual_times.bootdev_wednesday
   - ritual_times.bootdev_thursday
-  - ritual_times.bootdev_friday
   - ritual_times.leetcode_session
-  - ritual_times.saturday_deep_block
-  - ritual_times.friday_reflection
+  - ritual_times.weekly_reflection
   - ritual_times.monthly_project_publish
   - ritual_times.monthly_cert_check
   - ritual_times.monthly_mock_interview

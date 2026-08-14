@@ -1,33 +1,17 @@
 # Daily rituals for DevOps Job Ready curriculum
 # Required: SRS review and morning study must be present in every curriculum
 #
-# FOCUS SCHEDULE (2026-07): devops-ready is the primary track.
-#   Mornings Mon-Fri  -> long study session ({current_book})
-#   Anki daily Mon-Sat
-#   Evenings           -> boot.dev every weekday + LeetCode alternate days
-#                         (see rituals/weekly.yaml)
-# Saturday mornings belong to the long-way curriculum (CS:APP), so the
-# morning study fires Mon-Fri only, expressed as weekday templates.
+# RHYTHMIC SCHEDULE (2026-08-17): one theme per evening, anchored 20:45.
+#   Mornings Mon-Fri  -> long study session ({current_book}) at 08:00
+#   Evenings          -> Mon/Wed/Thu boot.dev, Fri LeetCode
+#                        (see rituals/weekly.yaml; Tue = marketplace ladder)
+#
+# REQUIRED-RITUAL NOTE: the daily SRS ritual is NOT omitted — it lives on
+# the marketplace-builder curriculum's `daily-anki` template (07:15), one
+# sitting that reviews every deck including this curriculum's cert deck.
+# Two checkbox tasks for one Anki habit was bookkeeping theater.
 
-- id: daily-devops-srs
-  title: "Anki review (AWS/K8s/Interview prep)"
-  description: |
-    10–15 min. Review AWS services, K8s concepts, LeetCode patterns, and
-    system design principles. Add 3–5 new cards daily from what you learned
-    in Udemy courses and hands-on work.
-
-    Card categories:
-    - AWS services & use cases
-    - Kubernetes objects & commands
-    - Data structures & algorithms
-    - System design patterns
-  due: "today at {ritual_times.devops_srs}"
-  labels: [daily-ritual, srs]
-  cadence: daily
-  skip_if: sunday
-  counts_toward_streak: true
-
-# --- Morning study: one long session, Mon-Fri (Saturday AM = long-way) ---
+# --- Morning study: one long session, Mon-Fri ---
 
 - id: weekday-morning-study-monday
   title: "Morning study (long session): {current_book}"

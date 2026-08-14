@@ -5,13 +5,11 @@
 # which runs in parallel — one concern, one curriculum.
 
 ritual_times_required:
-  - anki                    # Daily Anki, build deck (Mon-Sat)
-  - build_monday            # Build session (Mon 20:00, between devops bootdev & LeetCode)
-  - build_wednesday         # Build session (Wed 20:00)
-  - friday_reflection       # Friday reflection (18:30, before devops bootdev)
-  - saturday_deep_block     # Saturday deep block 09:30 (devops project block owns 14:00)
-  - design_review           # Weekly design review with senior engineers
-  - weekly_state_review     # Sunday state review (11:30; devops review is 11:00)
+  - anki                    # Daily Anki, ALL decks in one sitting (Mon-Sat 07:15)
+  - build_tuesday           # Ladder session (Tue 20:45 — the week's one rung evening)
+  - weekly_reflection       # Saturday close-out reflection (lw reflect)
+  - saturday_deep_block     # Saturday deep block 09:30-13:00 (the platform)
+  - weekly_state_review     # Saturday close-out state review (lw review)
   - ship_log                # 1st of month: ship log publish
   - restore_drill           # Monthly restore drill (module 5 onward)
   - game_day                # Monthly game day (module 5 onward, last Saturday)
@@ -26,11 +24,9 @@ placeholders_used:
   - year
   - month
   - ritual_times.anki
-  - ritual_times.build_monday
-  - ritual_times.build_wednesday
-  - ritual_times.friday_reflection
+  - ritual_times.build_tuesday
+  - ritual_times.weekly_reflection
   - ritual_times.saturday_deep_block
-  - ritual_times.design_review
   - ritual_times.weekly_state_review
   - ritual_times.ship_log
   - ritual_times.restore_drill

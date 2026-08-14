@@ -6,6 +6,22 @@ manual_counters:
   lineage_detours_done: []
 notes: 'Most recent edit on top.
 
+  2026-08-14: rhythmic restructure (owner was silently choking on stacked
+  evenings). One theme per evening at 20:45 — Mon/Wed/Thu bootdev, Tue
+  ladder rung, Fri LeetCode; mornings unchanged (07:15 Anki all-decks,
+  08:00 AWS). devops SRS checkbox merged into mb daily-anki. Killed:
+  Wednesday build session, weekly-design-review (no seniors; /ladder-review
+  is the reviewer), devops Saturday project block, bootdev tue/fri,
+  leetcode mon/wed. Reflections + both state reviews moved to the Saturday
+  13:30-14:30 close-out sitting — Sunday is completely free. Rung
+  deadlines doubled (14->28, 21->42) to match 1 ladder evening/week.
+  Fixed engine bug: shared completion cache had no project key, so the
+  second syllabus swept against the completed set of the first — every
+  devops-ready completion since 08-06 was falsely marked missed (owner
+  was ~90% adherent). devops-ready start_date -> 2026-08-17 (Monday) for
+  clean numbers; marketplace keeps 08-06 (its record was real). Also
+  wired cli_review: true for devops-ready.
+
   2026-08-06: fresh start now that the rung system is properly set up (48
   briefs, lw CLI, deadlines). start_date -> 2026-08-06 (Thursday, mid-week
   start is deliberate) for all three syllabuses. Marketplace-builder ONLY:

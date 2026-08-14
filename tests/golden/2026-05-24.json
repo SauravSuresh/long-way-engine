@@ -28,19 +28,13 @@
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "build-session-monday",
+      "id": "build-session-tuesday",
       "syllabus_key": "marketplace-builder"
     },
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "build-session-wednesday",
-      "syllabus_key": "marketplace-builder"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "friday-reflection",
+      "id": "weekly-reflection",
       "syllabus_key": "marketplace-builder"
     },
     {
@@ -52,21 +46,8 @@
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-design-review",
-      "syllabus_key": "marketplace-builder"
-    },
-    {
-      "cadence": "weekly",
-      "description": "Run `lw review` in the long-way-engine repo \u2014 this task is the\nreminder; the questionnaire and state changes happen there.\n\nCheck the sub-tasks that apply. Next cron run picks them up and\nmutates state.yaml. (Cert milestones live in devops-ready's own\nstate review, 11:00.)\n\nReview the week:\n- Rung: challenge shipped to its consumer? /ladder-review run and\n  its verdict committed? Be honest \u2014 the checkbox is the gate,\n  the review is only advisory.\n- Platform: which Saturday step landed? Any exam gate?\n- Any RFC approved by the senior engineers (Exam gate 5, from\n  month 2 onward)?\n- Crunch week? Minimum viable week (Anki + one session + this\n  review) still counts. No guilt.\n",
-      "due": "today at 11:30",
-      "fires": true,
       "id": "weekly-state-review",
-      "labels": [
-        "weekly-ritual",
-        "state-review"
-      ],
-      "syllabus_key": "marketplace-builder",
-      "title": "Weekly state review \u2014 2026-W21"
+      "syllabus_key": "marketplace-builder"
     },
     {
       "cadence": "once-per-module",
@@ -165,12 +146,6 @@
       "syllabus_key": "marketplace-builder"
     },
     {
-      "cadence": "daily",
-      "fires": false,
-      "id": "daily-devops-srs",
-      "syllabus_key": "devops-ready"
-    },
-    {
       "cadence": "weekly",
       "fires": false,
       "id": "weekday-morning-study-monday",
@@ -233,12 +208,6 @@
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-bootdev-tuesday",
-      "syllabus_key": "devops-ready"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
       "id": "weekly-bootdev-wednesday",
       "syllabus_key": "devops-ready"
     },
@@ -251,50 +220,19 @@
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-bootdev-friday",
-      "syllabus_key": "devops-ready"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-leetcode-monday",
-      "syllabus_key": "devops-ready"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-leetcode-wednesday",
-      "syllabus_key": "devops-ready"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
       "id": "weekly-leetcode-friday",
       "syllabus_key": "devops-ready"
     },
     {
       "cadence": "weekly",
-      "description": "Check the sub-tasks that apply to your week. Next cron run picks\nthem up and mutates state.yaml: module advance, certification milestones,\ntrack updates, counter increments.\n\nReview your progress:\n- Did you complete the module milestone?\n- Did you pass a certification exam?\n- How many LeetCode problems solved?\n- Did you push a project to GitHub?\n",
-      "due": "today at 11:00",
-      "fires": true,
-      "id": "weekly-state-review",
-      "labels": [
-        "weekly-ritual",
-        "state-review"
-      ],
-      "syllabus_key": "devops-ready",
-      "title": "Weekly state review \u2014 2026-W21"
-    },
-    {
-      "cadence": "weekly",
       "fires": false,
-      "id": "weekly-project-work",
+      "id": "weekly-reflection",
       "syllabus_key": "devops-ready"
     },
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-friday-reflection",
+      "id": "weekly-state-review",
       "syllabus_key": "devops-ready"
     },
     {

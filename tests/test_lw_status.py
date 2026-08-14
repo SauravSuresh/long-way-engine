@@ -18,13 +18,13 @@ def test_build_status_shows_current_module_and_deadline_fields():
     assert "Rung" in lines or "module" in lines.lower()
 
 
-def test_build_status_lists_due_today_on_a_monday():
-    """2026-08-10 is a Monday: marketplace-builder's build-session-monday
-    template (weekly, day_of_week=monday) fires — its resolved title should
+def test_build_status_lists_due_today_on_a_tuesday():
+    """2026-08-18 is a Tuesday: marketplace-builder's build-session-tuesday
+    template (weekly, day_of_week=tuesday) fires — its resolved title should
     show up in the due-today section."""
     from src.lw.status_logic import build_status
 
-    lines = "\n".join(build_status(REPO, date(2026, 8, 10)))
+    lines = "\n".join(build_status(REPO, date(2026, 8, 18)))
     assert "due today" in lines
     assert "Ladder session" in lines
 

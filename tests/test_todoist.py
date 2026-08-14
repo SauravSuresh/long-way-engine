@@ -513,6 +513,27 @@ def test_completion_cache_hit_skips_api(tmp_path):
     session.get.assert_not_called()
 
 
+def test_completion_cache_other_projects_cache_is_stale(tmp_path):
+    # Regression: every syllabus shares one cache file but filters by its own
+    # project. Reading another project's fresh cache marked all of this
+    # project's completed tasks as missed (and the sweep deleted them).
+    cache_path = tmp_path / ".completion_cache.json"
+    cache_path.write_text(_json.dumps({
+        "fetched_at": "2026-05-04T06:00:00+00:00",  # fresh, but wrong project
+        "completed_ids": ["other-project-task"],
+        "project_id": "proj-A",
+    }))
+    session = MagicMock()
+    session.get.return_value = make_response(
+        200, {"items": [{"id": "mine"}], "next_cursor": None}
+    )
+    client = make_completion_client(session, cache_path, project_id="proj-B")
+    result = client.get_completion_status(["mine"])
+    assert result == {"mine": True}
+    assert session.get.call_count == 1
+    assert _json.loads(cache_path.read_text())["project_id"] == "proj-B"
+
+
 def test_completion_cache_expired_refetches(tmp_path):
     cache_path = tmp_path / ".completion_cache.json"
     # 7h before frozen now (12:00 IST 2026-05-04 = 06:30 UTC 2026-05-04)

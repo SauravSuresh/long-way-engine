@@ -254,6 +254,6 @@ def test_is_review_time_only_on_the_state_review_day():
 
     ctx = load_engine(_Path(__file__).resolve().parents[1])
     cur = ctx.per_key["marketplace-builder"]
-    assert review_day(cur) == "sunday"
+    assert review_day(cur) == "saturday"
     assert is_review_time(cur, _date(2026, 8, 6)) is False  # Thursday
-    assert is_review_time(cur, _date(2026, 8, 9)) is True  # Sunday
+    assert is_review_time(cur, _date(2026, 8, 8)) is True  # Saturday

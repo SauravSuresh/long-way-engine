@@ -454,6 +454,12 @@ class TodoistCompletionClient:
         ids_raw = data.get("completed_ids")
         if not isinstance(fetched_at_raw, str) or not isinstance(ids_raw, list):
             return None
+        # The completed-ids set is project-filtered, but every syllabus shares
+        # one cache file. A cache written for another project would report all
+        # of this project's tasks as incomplete (and the sweep would delete
+        # them), so a project mismatch means stale.
+        if data.get("project_id") != self._project_id_filter:
+            return None
         try:
             fetched_at = datetime.fromisoformat(fetched_at_raw)
         except ValueError:
@@ -468,7 +474,11 @@ class TodoistCompletionClient:
 
     def _write_cache(self, ids: set[str]) -> None:
         now_iso = self._completion_clock.now().astimezone(timezone.utc).isoformat()
-        payload = {"fetched_at": now_iso, "completed_ids": sorted(ids)}
+        payload = {
+            "fetched_at": now_iso,
+            "completed_ids": sorted(ids),
+            "project_id": self._project_id_filter,
+        }
         tmp = self._cache_path.with_suffix(self._cache_path.suffix + ".tmp")
         tmp.write_text(json.dumps(payload), encoding="utf-8")
         tmp.replace(self._cache_path)

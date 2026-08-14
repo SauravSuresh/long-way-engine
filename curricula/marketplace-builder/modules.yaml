@@ -1,6 +1,6 @@
 # The 16 rungs of the Marketplace Builder ladder.
 # One module = one rung = one concept. Each rung offers THREE candidate
-# challenges — pick ONE in the first Monday session and note the pick
+# challenges — pick ONE in the first Tuesday session and note the pick
 # (and why) at the top of the ADR. The other two are dead; no guilt.
 #
 # Rules for every rung:
@@ -23,8 +23,8 @@
     B. [Markdown -> HTML converter](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01b-markdown-to-html.md)
     C. [Flashcard drill CLI](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01c-flashcard-drill.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 14
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 28
   labels: [rung, phase-1]
   cadence: once-per-module
   module_number: 1
@@ -38,8 +38,8 @@
     B. [Expense/cash ledger CLI](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-02b-cash-ledger.md)
     C. [Local bookmarks manager](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-02c-bookmarks-manager.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 14
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 28
   labels: [rung, phase-1]
   cadence: once-per-module
   module_number: 2
@@ -53,8 +53,8 @@
     B. [Render-status poller](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-03b-render-status-poller.md)
     C. [GitHub watcher](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-03c-github-watcher.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 14
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 28
   labels: [rung, phase-1]
   cadence: once-per-module
   module_number: 3
@@ -68,8 +68,8 @@
     B. [Concurrent thumbnailer](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-04b-concurrent-thumbnailer.md)
     C. [Concurrent link checker](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-04c-concurrent-link-checker.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 14
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 28
   labels: [rung, phase-1]
   cadence: once-per-module
   module_number: 4
@@ -83,8 +83,8 @@
     B. [Retry/backoff library](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-05b-retry-backoff.md)
     C. [TTL + LRU cache](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-05c-ttl-lru-cache.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 21
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 42
   labels: [rung, phase-1]
   cadence: once-per-module
   module_number: 5
@@ -98,8 +98,8 @@
     B. [Pastebin with expiry](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-06b-pastebin-expiry.md)
     C. [Previz asset catalog API](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-06c-previz-asset-catalog.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 14
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 28
   labels: [rung, phase-2]
   cadence: once-per-module
   module_number: 6
@@ -113,8 +113,8 @@
     B. [Camera-gear inventory CRUD](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-07b-gear-inventory-crud.md)
     C. [URL shortener with click stats](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-07c-url-shortener-stats.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 14
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 28
   labels: [rung, phase-2]
   cadence: once-per-module
   module_number: 7
@@ -128,8 +128,8 @@
     B. [Magic-link login service](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-08b-magic-link-login.md)
     C. [API-key issuing + scoping service](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-08c-api-key-service.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 14
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 28
   labels: [rung, phase-2]
   cadence: once-per-module
   module_number: 8
@@ -143,8 +143,8 @@
     B. [Spec-first public URL shortener](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-09b-spec-first-shortener.md)
     C. [Previz asset API spec + second client](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-09c-previz-spec-second-client.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 14
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 28
   labels: [rung, phase-2]
   cadence: once-per-module
   module_number: 9
@@ -158,8 +158,8 @@
     B. [GitHub webhook -> notify/deploy pipeline](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-10b-github-webhook-pipeline.md)
     C. [Webhook sender with retries, backoff, signing](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-10c-webhook-sender.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 14
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 28
   labels: [rung, phase-2]
   cadence: once-per-module
   module_number: 10
@@ -173,8 +173,8 @@
     B. [Email/digest sender](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-11b-email-digest-sender.md)
     C. [Render-job queue](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-11c-render-job-queue.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 14
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 28
   labels: [rung, phase-2]
   cadence: once-per-module
   module_number: 11
@@ -188,8 +188,8 @@
     B. [Deploy to a cheap VPS](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-12b-vps-deploy.md)
     C. [One-command dev environment](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-12c-one-command-dev-env.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 21
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 42
   labels: [rung, phase-3]
   cadence: once-per-module
   module_number: 12
@@ -203,8 +203,8 @@
     B. [Make rung 2's KV store 10x faster](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-13b-kv-store-10x.md)
     C. [Fix real slowness in the startup's tooling](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-13c-startup-tooling-perf.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 14
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 28
   labels: [rung, phase-3]
   cadence: once-per-module
   module_number: 13
@@ -218,8 +218,8 @@
     B. [TCP chat server](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-14b-tcp-chat-server.md)
     C. [HTTP/1.1 server from raw TCP](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-14c-http-from-tcp.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 21
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 42
   labels: [rung, phase-3]
   cadence: once-per-module
   module_number: 14
@@ -233,8 +233,8 @@
     B. [Replicated log, consensus-lite](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-15b-replicated-log-lite.md)
     C. [Consistent-hashing client](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-15c-consistent-hashing-client.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 21
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 42
   labels: [rung, phase-3]
   cadence: once-per-module
   module_number: 15
@@ -248,8 +248,8 @@
     B. [Chaos week on your deployed stack](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-16b-chaos-week.md)
     C. [OpenTelemetry end-to-end](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-16c-otel-end-to-end.md)
     Run `lw rung start` to pick and scaffold.
-  due: "today at {ritual_times.build_monday}"
-  deadline_days: 21
+  due: "today at {ritual_times.build_tuesday}"
+  deadline_days: 42
   labels: [rung, phase-3]
   cadence: once-per-module
   module_number: 16

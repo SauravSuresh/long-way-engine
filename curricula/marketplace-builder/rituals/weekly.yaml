@@ -1,15 +1,21 @@
 # Weekly rituals for Marketplace Builder curriculum
 #
-# Two tracks: Mon/Wed evenings = the ladder (16 rungs, pick 1 of 3 per
-# rung); Saturday = the REAL rental platform from week 1.
-# Clock times are packed around devops-ready's day (bootdev 19:00,
-# LeetCode 21:30, Saturday project block 14:00, state review 11:00).
+# RHYTHMIC SCHEDULE (2026-08-17): one theme per evening, anchored 20:45.
+#   Tue evening -> the ladder rung (Mon/Wed/Thu are devops boot.dev,
+#                  Fri is LeetCode). One session/week at 28-day rung
+#                  deadlines = ~4 focused sessions per rung.
+#   Saturday    -> 09:30-13:00 THE PLATFORM deep block, then the
+#                  close-out sitting (reflection + both state reviews).
+#                  Sunday is completely free.
+# REMOVED 2026-08-17: Wednesday build session (evening now boot.dev),
+# weekly-design-review (no senior engineers to review with — the
+# /ladder-review skill is the reviewer, run when a rung finishes).
 #
 # CRUNCH RULE (applies to every week that goes sideways): the minimum
-# viable week is Anki + ONE build session + the Sunday state review
+# viable week is Anki + ONE build session + the Saturday state review
 # (~3.5 h). Everything else drops guilt-free. Streaks keep counting.
 
-- id: build-session-monday
+- id: build-session-tuesday
   title: "Ladder session — Rung {current_module} (60-90 min)"
   description: |
     60-90 min on the current rung's chosen challenge (see the rung
@@ -18,37 +24,30 @@
     ADR before code. The problems you hit here are what pull reading
     and feed Anki.
 
-    AI assist rule: Claude may list options or point at docs. Stuck >30 min → ask for a hint, never the solution. Claude does not write the code in this slot.
-
-    Close every session by asking Claude: 'What did I just build that has a known failure mode?' Add the answer to Friday's dive-deeper list.
-
-    Crunch week? This session + Anki + Sunday review is the whole week.
-  due: "today at {ritual_times.build_monday}"
-  labels: [weekly-ritual, ladder]
-  cadence: weekly
-  day_of_week: monday
-  counts_toward_streak: true
-
-- id: build-session-wednesday
-  title: "Ladder session — Rung {current_module} (60-90 min)"
-  description: |
-    60-90 min on the current rung's chosen challenge (see the rung
-    brief task). ADR before code. The problems you hit here are what
-    pull reading and feed Anki.
+    Getting-into-the-groove rule: the first 10 min are always the same —
+    re-read the brief, write down the next smallest step, do that step.
+    No blank-page staring.
 
     AI assist rule: Claude may list options or point at docs. Stuck >30 min → ask for a hint, never the solution. Claude does not write the code in this slot.
 
-    Close every session by asking Claude: 'What did I just build that has a known failure mode?' Add the answer to Friday's dive-deeper list.
-  due: "today at {ritual_times.build_wednesday}"
+    Close every session by asking Claude: 'What did I just build that has a known failure mode?' Add the answer to the reflection's dive-deeper list.
+
+    Crunch week? This session + Anki + Saturday review is the whole week.
+  due: "today at {ritual_times.build_tuesday}"
   labels: [weekly-ritual, ladder]
   cadence: weekly
-  day_of_week: wednesday
+  day_of_week: tuesday
   counts_toward_streak: true
 
-- id: friday-reflection
-  title: "Friday reflection (20 min)"
+- id: weekly-reflection
+  title: "Weekly reflection — run `lw reflect` (15 min)"
   description: |
-    20 min. Without looking at notes, write down:
+    Part of the Saturday close-out sitting, right after the platform
+    deep block. Run `lw reflect` in the long-way-engine repo — this
+    task is the reminder; the sectioned form and auto-filing happen
+    there.
+
+    Without looking at notes:
     1. The 3 most important things I learned this week
     2. One thing I struggled with and how I overcame it
     3. The dive-deeper list from this week's build sessions ("what did
@@ -57,10 +56,10 @@
        (This is the only way book reading gets scheduled.)
 
     Then compare to notes. The gap is what needs more Anki cards.
-  due: "today at {ritual_times.friday_reflection}"
+  due: "today at {ritual_times.weekly_reflection}"
   labels: [weekly-ritual, reflection]
   cadence: weekly
-  day_of_week: friday
+  day_of_week: saturday
   reflection:
     create_stub: true
     stub_path: "reflections/weekly/{iso_year}-W{iso_week:02d}.md"
@@ -69,11 +68,11 @@
   title: "Saturday deep block (3-4 hr): THE PLATFORM — ADR first, then build"
   description: |
     Protected block — 09:30-13:00, no meetings, no errands. This is
-    the real rental platform, live from week 1. (The devops-ready
-    project block owns Saturday afternoon.)
+    the real rental platform, live from week 1. Afternoon after the
+    close-out sitting is free, and Sunday is completely free.
 
     First 30 min: ADR/RFC writing — one platform decision, written up
-    properly. Feeds the design review and Exam gate 5.
+    properly. /ladder-review is the reviewer (Exam gate 5).
 
     Remainder: build the platform. The first 12 Saturdays follow this
     checklist, one step per session (finish early, start the next):
@@ -96,52 +95,39 @@
     tracing, ★ EXAM GATE 3: DB restore under 1 hour, ★ EXAM GATE 4:
     first game day + written postmortem -> launch hardening, go-live.
     When infra goes live, tick "platform is in production" in the
-    Sunday review — that starts the monthly drills.
+    Saturday review — that starts the monthly drills.
   due: "today at {ritual_times.saturday_deep_block}"
   labels: [weekly-ritual, platform, deep-block]
   cadence: weekly
   day_of_week: saturday
   counts_toward_streak: true
 
-- id: weekly-design-review
-  title: "Design review with senior engineers (45 min)"
-  description: |
-    45 min, flexible slot — scheduled Monday by default; move it in
-    Todoist to whenever the senior engineers can make it this week.
-
-    Present the week's platform ADR/RFC (written in the Saturday deep
-    block). Take notes on every objection — objections are pull-reading
-    triggers and Anki material. An approved RFC counts toward Exam
-    gate 5 (log it in the Sunday state review). Owner arranges the
-    humans; /ladder-review is the fallback reviewer, advisory only.
-  due: "today at {ritual_times.design_review}"
-  labels: [weekly-ritual, design-review]
-  cadence: weekly
-  day_of_week: monday
-
 - id: weekly-state-review
   title: "Weekly state review — {iso_year}-W{iso_week:02d}"
   description: |
     Run `lw review` in the long-way-engine repo — this task is the
     reminder; the questionnaire and state changes happen there.
+    Saturday close-out sitting: reflection first, then this review
+    (devops-ready's review is 15 min later). After this the weekend is
+    officially over — Sunday is completely free.
 
     Check the sub-tasks that apply. Next cron run picks them up and
     mutates state.yaml. (Cert milestones live in devops-ready's own
-    state review, 11:00.)
+    state review.)
 
     Review the week:
     - Rung: challenge shipped to its consumer? /ladder-review run and
       its verdict committed? Be honest — the checkbox is the gate,
       the review is only advisory.
     - Platform: which Saturday step landed? Any exam gate?
-    - Any RFC approved by the senior engineers (Exam gate 5, from
-      month 2 onward)?
+    - Any ADR/RFC passed /ladder-review (Exam gate 5, from month 2
+      onward)?
     - Crunch week? Minimum viable week (Anki + one session + this
       review) still counts. No guilt.
   due: "today at {ritual_times.weekly_state_review}"
   labels: [weekly-ritual, state-review]
   cadence: weekly
-  day_of_week: sunday
+  day_of_week: saturday
   state_review: true
   sub_tasks:
     - title: "Rung done honestly (shipped + /ladder-review run) — advance to Rung {next_module}"
@@ -151,7 +137,7 @@
     - title: "Exam gate passed this week (say which in comment; put 1)"
       action: { type: increment_counter, counter: exam_gates_passed }
 
-    - title: "Exam gate 5: RFC approved by senior engineers this week (from month 2; put count in comment)"
+    - title: "Exam gate 5: ADR/RFC passed /ladder-review this week (from month 2; put count in comment)"
       action: { type: increment_counter, counter: rfcs_approved }
 
     - title: "The platform is deployed to production — start monthly drills"

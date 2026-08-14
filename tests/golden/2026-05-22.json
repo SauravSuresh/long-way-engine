@@ -3,7 +3,7 @@
   "templates": [
     {
       "cadence": "daily",
-      "description": "15 min, Mon-Sat. Cards come from one source: what I built or\nbroke \u2014 every failure mode, every gotcha from ladder rungs and\nplatform Saturdays becomes a card.\n\nIn practice this is ONE sitting with the devops-ready cert deck\n(07:15-07:45 back-to-back) \u2014 two templates, one habit. (A shared\ncommon-task is specced in specs/common-tasks.md but not built.)\n\nAdd 3-5 new cards per day. No more. Crunch week? This survives.\n",
+      "description": "15-20 min, Mon-Sat, one sitting, whatever Anki says is due across\nevery deck \u2014 build deck AND the devops cert deck (AWS/K8s/interview\npatterns). This is the ONLY Anki task; the old devops-ready SRS\ncheckbox was merged into this one (2026-08-17).\n\nBuild cards come from one source: what I built or broke \u2014 every\nfailure mode, every gotcha from ladder rungs and platform\nSaturdays becomes a card. Cert cards come from the morning AWS\nstudy.\n\nAdd 3-5 new cards per day. No more. Crunch week? This survives.\n",
       "due": "today at 07:15",
       "fires": true,
       "id": "daily-anki",
@@ -12,7 +12,7 @@
         "srs"
       ],
       "syllabus_key": "marketplace-builder",
-      "title": "Anki review \u2014 build deck (15 min)"
+      "title": "Anki review \u2014 all decks (15-20 min)"
     },
     {
       "cadence": "monthly",
@@ -35,38 +35,19 @@
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "build-session-monday",
+      "id": "build-session-tuesday",
       "syllabus_key": "marketplace-builder"
     },
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "build-session-wednesday",
+      "id": "weekly-reflection",
       "syllabus_key": "marketplace-builder"
-    },
-    {
-      "cadence": "weekly",
-      "description": "20 min. Without looking at notes, write down:\n1. The 3 most important things I learned this week\n2. One thing I struggled with and how I overcame it\n3. The dive-deeper list from this week's build sessions (\"what did\n   I just build that has a known failure mode?\")\n4. What problem did I hit this week that has earned a reading?\n   (This is the only way book reading gets scheduled.)\n\nThen compare to notes. The gap is what needs more Anki cards.\n",
-      "due": "today at 18:30",
-      "fires": true,
-      "id": "friday-reflection",
-      "labels": [
-        "weekly-ritual",
-        "reflection"
-      ],
-      "syllabus_key": "marketplace-builder",
-      "title": "Friday reflection (20 min)"
     },
     {
       "cadence": "weekly",
       "fires": false,
       "id": "saturday-deep-block",
-      "syllabus_key": "marketplace-builder"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-design-review",
       "syllabus_key": "marketplace-builder"
     },
     {
@@ -78,7 +59,7 @@
     {
       "cadence": "once-per-module",
       "description": "Concept: small sharp tools; parsing; table-driven tests; clean errors.\nPick ONE \u2014 read all three briefs first:\nA. [Expression calculator CLI](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01a-expression-calculator.md)\nB. [Markdown -> HTML converter](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01b-markdown-to-html.md)\nC. [Flashcard drill CLI](https://github.com/SauravSuresh/long-way-engine/blob/main/curricula/marketplace-builder/briefs/rung-01c-flashcard-drill.md)\nRun `lw rung start` to pick and scaffold.\n",
-      "due": "today at 20:00",
+      "due": "today at 20:45",
       "fires": true,
       "id": "rung-1",
       "labels": [
@@ -179,19 +160,6 @@
       "syllabus_key": "marketplace-builder"
     },
     {
-      "cadence": "daily",
-      "description": "10\u201315 min. Review AWS services, K8s concepts, LeetCode patterns, and\nsystem design principles. Add 3\u20135 new cards daily from what you learned\nin Udemy courses and hands-on work.\n\nCard categories:\n- AWS services & use cases\n- Kubernetes objects & commands\n- Data structures & algorithms\n- System design patterns\n",
-      "due": "today at 07:30",
-      "fires": true,
-      "id": "daily-devops-srs",
-      "labels": [
-        "daily-ritual",
-        "srs"
-      ],
-      "syllabus_key": "devops-ready",
-      "title": "Anki review (AWS/K8s/Interview prep)"
-    },
-    {
       "cadence": "weekly",
       "fires": false,
       "id": "weekday-morning-study-monday",
@@ -261,12 +229,6 @@
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-bootdev-tuesday",
-      "syllabus_key": "devops-ready"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
       "id": "weekly-bootdev-wednesday",
       "syllabus_key": "devops-ready"
     },
@@ -278,33 +240,8 @@
     },
     {
       "cadence": "weekly",
-      "description": "Continue your boot.dev backend path. Work through the current course\nmodule, complete exercises, and build the projects. This is your\nstructured evening \"doing\" time for backend fundamentals.\n\nTrack progress in the course platform. When you complete a major\nmilestone (finish a course, complete a project), mark it in your\nweekly state review.\n",
-      "due": "today at 19:00",
-      "fires": true,
-      "id": "weekly-bootdev-friday",
-      "labels": [
-        "weekly-ritual",
-        "bootdev"
-      ],
-      "syllabus_key": "devops-ready",
-      "title": "boot.dev backend path session"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-leetcode-monday",
-      "syllabus_key": "devops-ready"
-    },
-    {
-      "cadence": "weekly",
-      "fires": false,
-      "id": "weekly-leetcode-wednesday",
-      "syllabus_key": "devops-ready"
-    },
-    {
-      "cadence": "weekly",
-      "description": "Focus on one pattern. Do 3-4 problems of the same pattern, then write\nit up in your notes: when to use it, template code, common variations,\ntime/space complexity.\n",
-      "due": "today at 21:30",
+      "description": "Focus on one pattern. Do 3-4 problems of the same pattern, then write\nit up in your notes: when to use it, template code, common variations,\ntime/space complexity.\n\nPattern rotation (roughly): Arrays & Hashing, Two Pointers & Sliding\nWindow, Stack & Queue, Binary Search & Trees, Graphs (DFS/BFS),\nDynamic Programming, Backtracking & Greedy, Heap & Priority Queue.\n\nOne scheduled session per week is the floor, not the ceiling \u2014 an\nextra unscheduled session any day you feel like it is a bonus, never\na debt.\n",
+      "due": "today at 20:45",
       "fires": true,
       "id": "weekly-leetcode-friday",
       "labels": [
@@ -317,27 +254,14 @@
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-state-review",
+      "id": "weekly-reflection",
       "syllabus_key": "devops-ready"
     },
     {
       "cadence": "weekly",
       "fires": false,
-      "id": "weekly-project-work",
+      "id": "weekly-state-review",
       "syllabus_key": "devops-ready"
-    },
-    {
-      "cadence": "weekly",
-      "description": "15-20 min. Without looking at notes, write down:\n1. The 3 most important things you learned this week\n2. One thing you struggled with and how you overcame it\n3. One thing you want to dive deeper into next week\n\nThen compare to your notes. The gap is what needs more Anki cards.\n\nAlso review:\n- LeetCode problems solved (aim for 10-15/week)\n- Course progress (aim for 1-2 sections/week)\n- Project milestones hit\n",
-      "due": "today at 20:15",
-      "fires": true,
-      "id": "weekly-friday-reflection",
-      "labels": [
-        "weekly-ritual",
-        "reflection"
-      ],
-      "syllabus_key": "devops-ready",
-      "title": "Friday reflection: What did I learn?"
     },
     {
       "cadence": "once-per-module",

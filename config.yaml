@@ -21,9 +21,11 @@ syllabuses:
     cli_review: true
     # Runs full-parallel with devops-ready. This curriculum is
     # build-only; all cert/course theory (SAA, CKA, boot.dev, LeetCode)
-    # belongs to devops-ready. Times are packed around devops-ready's
-    # day: srs 07:30, morning study 08:00, bootdev 19:00, LeetCode
-    # 21:30, Saturday project block 14:00, state review 11:00.
+    # belongs to devops-ready. RHYTHMIC SCHEDULE 2026-08-17: one theme
+    # per evening at 20:45 (Tue = ladder rung; Mon/Wed/Thu = devops
+    # bootdev, Fri = LeetCode). Saturday 09:30 platform block, then the
+    # 13:30-14:30 close-out sitting (reflections + reviews, both
+    # curricula). Sunday completely free.
     ritual_times:
       # Overrides of the 7 global (long-way) slot names — every
       # (slot, time) pair must be unique across enabled syllabuses.
@@ -33,43 +35,40 @@ syllabuses:
       friday_review: '20:45'          # unused here
       saturday_deep_block: '09:30'    # Sat deep block (devops project block owns 14:00)
       sunday_trace: '20:30'           # unused here
-      weekly_state_review: '11:30'    # Sunday state review (devops review is 11:00)
+      weekly_state_review: '14:00'    # Saturday close-out review (devops review is 14:15)
       # marketplace-builder's own slots
-      build_monday: '20:00'           # build session, between bootdev (19:00) & LeetCode (21:30)
-      build_wednesday: '20:00'        # build session
-      friday_reflection: '18:30'      # Friday reflection, before bootdev
-      design_review: '17:00'          # weekly design review (flexible; Monday default)
+      build_tuesday: '20:45'          # the week's one ladder evening
+      weekly_reflection: '13:30'      # Saturday close-out reflection (lw reflect)
       ship_log: '09:30'               # 1st of month
       restore_drill: '20:00'          # monthly, day 10, module 5 onward
       game_day: '09:30'               # monthly, last Saturday — takes over the deep block
 
   # Full parallel with marketplace-builder. Owns all cert/course
-  # theory: SAA + CKA, boot.dev, LeetCode, its own Anki deck.
+  # theory: SAA + CKA, boot.dev, LeetCode. (Its Anki deck is reviewed
+  # inside marketplace-builder's single daily-anki sitting, 07:15.)
+  # RHYTHMIC SCHEDULE 2026-08-17: evenings anchored 20:45, one theme
+  # per day — Mon/Wed/Thu bootdev, Fri LeetCode (Tue = mb ladder).
+  # Saturday project block removed; reviews/reflections close out
+  # Saturday afternoon. Sunday completely free.
   devops-ready:
     path: curricula/devops-ready
     todoist_project_id: 6gpVRwqVmjqRc7hX
     state_file: state/devops-ready.yaml
     enabled: true
-    # Adjusted ritual times to avoid collisions with long-way
+    cli_review: true
     ritual_times:
       morning_reading: 08:00           # Reusing morning_udemy slot (same ritual)
-      anki: 07:30                      # Reusing devops_srs slot (same ritual)
-      devops_srs: 07:30                # No collision
-      morning_udemy: 08:00             # No collision
-      evening_hands_on: '21:30'        # Shifted from 19:00, then 20:00 to avoid all long-way collisions
-      weekly_state_review: '11:00'     # Shifted from 10:00 to avoid long-way
-      bootdev_monday: '19:00'          # boot.dev session (every weekday)
-      bootdev_tuesday: '19:00'         # boot.dev session
-      bootdev_wednesday: '19:00'       # boot.dev session
-      bootdev_thursday: '19:00'        # boot.dev session
-      bootdev_friday: '19:00'          # boot.dev session (before reflection)
-      leetcode_session: '21:30'        # LeetCode Mon/Wed/Fri — shifted from 20:30 so the
-                                       # marketplace-builder build session fits at 20:00
-      saturday_deep_block: '14:00'     # Shifted from 09:00 to avoid long-way
-      friday_review: '20:15'           # Reusing friday_reflection slot (same ritual)
-      friday_reflection: '20:15'       # Between bootdev (ends 20:00) and LeetCode (21:30);
-                                       # 22:00 would sit inside the shifted LeetCode slot
-      sunday_trace: '20:00'            # Shifted from 19:00 to avoid long-way
+      anki: 07:30                      # unused dodge; the real Anki task is mb's 07:15
+      morning_udemy: 08:00             # Mon-Fri long study session
+      evening_hands_on: '21:30'        # unused dodge (no template)
+      weekly_state_review: '14:15'     # Saturday close-out (mb review is 14:00)
+      bootdev_monday: '20:45'          # boot.dev evening
+      bootdev_wednesday: '20:45'       # boot.dev evening
+      bootdev_thursday: '20:45'        # boot.dev evening
+      leetcode_session: '20:45'        # LeetCode (Friday evening)
+      weekly_reflection: '13:45'       # Saturday close-out reflection (mb's is 13:30)
+      friday_review: '20:15'           # unused dodge (no template)
+      sunday_trace: '20:00'            # unused dodge (no template)
       monthly_project_publish: 09:00   # No collision
       monthly_cert_check: '14:00'      # No collision
       monthly_mock_interview: '14:00'  # No collision

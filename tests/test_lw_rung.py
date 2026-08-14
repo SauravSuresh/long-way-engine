@@ -30,7 +30,7 @@ def test_scaffold_writes_meta_and_adr(tmp_path):
     meta = yaml.safe_load((result.paper_dir / "meta.yaml").read_text())
     assert meta["rung"] == cur.state.current_module
     assert meta["option"] == opt.option
-    assert meta["deadline"] == "2026-08-19"  # picked_at + deadline_days(14)
+    assert meta["deadline"] == "2026-09-02"  # picked_at + deadline_days(28)
     assert meta["outcome"] is None
     adr = (result.paper_dir / "adr.md").read_text()
     assert "Context" in adr and "Decision" in adr
