@@ -101,10 +101,6 @@
       "day_total": 335,
       "last_7_days": [
         {
-          "date": "2026-08-08",
-          "state": "gray"
-        },
-        {
           "date": "2026-08-09",
           "state": "gray"
         },
@@ -126,6 +122,10 @@
         },
         {
           "date": "2026-08-14",
+          "state": "gray"
+        },
+        {
+          "date": "2026-08-15",
           "state": "gray"
         }
       ],
@@ -190,13 +190,13 @@
           "hint": "starts 2026-08-17"
         }
       },
-      "today": "2026-08-15"
+      "today": "2026-08-16"
     },
     "marketplace-builder": {
       "adherence": {
         "done": 6,
-        "expected": 8,
-        "percent": 75,
+        "expected": 9,
+        "percent": 67,
         "since": "2026-08-06"
       },
       "books": [
@@ -246,13 +246,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 10,
+      "day_of_journey": 11,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-08-08",
-          "state": "yellow"
-        },
         {
           "date": "2026-08-09",
           "state": "gray"
@@ -276,6 +272,10 @@
         {
           "date": "2026-08-14",
           "state": "green"
+        },
+        {
+          "date": "2026-08-15",
+          "state": "red"
         }
       ],
       "month": 1,
@@ -304,28 +304,28 @@
         }
       ],
       "streaks": {
-        "Daily": 3,
+        "Daily": 0,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
           "best": 3,
-          "count": 3,
-          "hint": "morning reading + Anki by 23:59 to keep it"
+          "count": 0,
+          "hint": "Sunday \u2014 rest day"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 17 days"
+          "hint": "next post in 16 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 6 days"
+          "hint": "next Friday in 5 days"
         }
       },
-      "today": "2026-08-15"
+      "today": "2026-08-16"
     }
   },
   "xp": {
