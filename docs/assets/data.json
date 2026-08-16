@@ -97,13 +97,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 0,
+      "day_of_journey": 1,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-08-09",
-          "state": "gray"
-        },
         {
           "date": "2026-08-10",
           "state": "gray"
@@ -126,6 +122,10 @@
         },
         {
           "date": "2026-08-15",
+          "state": "gray"
+        },
+        {
+          "date": "2026-08-16",
           "state": "gray"
         }
       ],
@@ -177,20 +177,20 @@
         "Daily": {
           "best": 0,
           "count": 0,
-          "hint": "starts 2026-08-17"
+          "hint": "complete morning reading + Anki today to start"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "starts 2026-08-17"
+          "hint": "next post in 15 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "starts 2026-08-17"
+          "hint": "next Friday in 4 days"
         }
       },
-      "today": "2026-08-16"
+      "today": "2026-08-17"
     },
     "marketplace-builder": {
       "adherence": {
@@ -246,13 +246,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 11,
+      "day_of_journey": 12,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-08-09",
-          "state": "gray"
-        },
         {
           "date": "2026-08-10",
           "state": "green"
@@ -276,6 +272,10 @@
         {
           "date": "2026-08-15",
           "state": "red"
+        },
+        {
+          "date": "2026-08-16",
+          "state": "gray"
         }
       ],
       "month": 1,
@@ -312,20 +312,20 @@
         "Daily": {
           "best": 3,
           "count": 0,
-          "hint": "Sunday \u2014 rest day"
+          "hint": "complete morning reading + Anki today to start"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 16 days"
+          "hint": "next post in 15 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 5 days"
+          "hint": "next Friday in 4 days"
         }
       },
-      "today": "2026-08-16"
+      "today": "2026-08-17"
     }
   },
   "xp": {
