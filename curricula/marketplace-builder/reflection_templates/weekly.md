@@ -31,8 +31,10 @@
 
 ## Platform (Saturday)
 
-- **Which step landed (S1-S12 or roadmap stage)**: 
+- **What did the free build ship**: 
 - **Exam gate progress**: 
+- **Learn cluster (C-number) done? (session + cards + note)**: 
+- **Anything from the cluster worth pulling into the build? (optional)**: 
 - **Crunch week? (minimum viable week still counts)**: Yes / No
 
 ### RFC / Design Review

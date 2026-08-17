@@ -54,6 +54,9 @@
        I just build that has a known failure mode?")
     4. What problem did I hit this week that has earned a reading?
        (This is the only way book reading gets scheduled.)
+    5. Anything from this week's learn cluster worth pulling into the
+       platform build? (Optional — awareness first, adoption on your
+       terms.)
 
     Then compare to notes. The gap is what needs more Anki cards.
   due: "today at {ritual_times.weekly_reflection}"
@@ -65,37 +68,71 @@
     stub_path: "reflections/weekly/{iso_year}-W{iso_week:02d}.md"
 
 - id: saturday-deep-block
-  title: "Saturday deep block (3-4 hr): THE PLATFORM — ADR first, then build"
+  title: "Saturday deep block (3-4 hr): THE PLATFORM free build + learn cluster"
   description: |
     Protected block — 09:30-13:00, no meetings, no errands. This is
     the real rental platform, live from week 1. Afternoon after the
     close-out sitting is free, and Sunday is completely free.
 
-    First 30 min: ADR/RFC writing — one platform decision, written up
-    properly. /ladder-review is the reviewer (Exam gate 5).
+    TWO STRANDS, DECOUPLED (2026-08-17 restructure):
 
-    Remainder: build the platform. The first 12 Saturdays follow this
-    checklist, one step per session (finish early, start the next):
-    S1 repo + hello-world API running locally · S2 Postgres via
-    docker-compose, `equipment` table, insert rows in psql · S3
-    `GET /equipment` reading from the DB · S4 `POST /equipment` +
-    first automated test · S5 deploy skeleton to Railway/App Runner —
-    real URL · S6 equipment detail endpoint + seed script · S7
-    availability-calendar schema draft · S8 naive `GET /availability` ·
-    S9 `holds` table + create-hold endpoint · S10 hold expiry job ·
-    S11 stack ADR written up and final · S12 confirm-booking happy
-    path, payments stubbed.
+    BUILD (~first 2.5 h): unstructured, uncurated, yours. No
+    checklist, no prescribed steps — build whatever the platform
+    needs next, however you want. The only fixed structure is the
+    exam gates, hit whenever you're ready: ★ GATE 1 no-double-booking
+    hammer test in CI · ★ GATE 2 blue-green deploy + rollback ·
+    ★ GATE 3 DB restore under 1 hour · ★ GATE 4 game day + written
+    postmortem. When infra goes live, tick "platform is in
+    production" in the Saturday review — that starts the monthly
+    drills. ADRs whenever a decision deserves one; /ladder-review is
+    the reviewer (Exam gate 5).
 
-    After S12, the platform roadmap (each stage leans on ladder rungs
-    done by then): no-double-booking under concurrent load (★ EXAM
-    GATE 1: hammer test in CI) -> spec-first public API -> Razorpay
-    test-mode end-to-end, idempotent under replay -> AWS production
-    infra via Terraform, applying the devops-ready SAA material
-    (★ EXAM GATE 2: blue-green deploy + rollback) -> operate: SLOs,
-    tracing, ★ EXAM GATE 3: DB restore under 1 hour, ★ EXAM GATE 4:
-    first game day + written postmortem -> launch hardening, go-live.
-    When infra goes live, tick "platform is in production" in the
-    Saturday review — that starts the monthly drills.
+    LEARN CLUSTER (~last hour; soft split — [P] weeks may run long
+    and eat build time, that's accepted): the rental-platform
+    syllabus as a sequenced awareness march, one cluster per
+    Saturday, in order, self-paced (finish early, start the next).
+    [P] = practice spike in a THROWAWAY repo, [R] = focused read.
+    First pass is awareness — depth gets pulled later when the build
+    collides with the topic. Incorporating into the platform is
+    always optional. Every session ends with 3-5 Anki cards (07:15
+    deck) + a 5-line note at notes/syllabus/NN-slug.md in this repo.
+    Done = session happened + cards made.
+
+    C1 [P] Event-storm the rental domain; surface the state machine ·
+    C2 [R] DDD Distilled: aggregates, value objects, bounded contexts ·
+    C3 [P] Reservation lifecycle as a pure-Go state machine, illegal
+    states unrepresentable · C4 [R] Uber style guide; error wrapping,
+    errors.Is/As, domain-error -> HTTP mapping · C5 [P] context +
+    errgroup + worker pool spike; -race clean, goleak · C6 [P] pprof +
+    benchstat on a toy hot path; slog with request IDs · C7 [R]
+    Hexagonal architecture (Cockburn) + Ben Johnson package layout ·
+    C8 [R] wild-workouts guided tour; sketch the platform's bounded
+    contexts on paper · C9 [P] Functional options, strategy,
+    decorator/middleware chain · C10 [R] Saga, outbox, CQRS,
+    idempotency keys (microservices.io + Brandur) · C11 [P]
+    Transactional outbox spike: Postgres table + relay loop · C12 [P]
+    Exclusion constraints (tstzrange + btree_gist) + 100-goroutine
+    hammer, exactly one wins · C13 [R] Isolation levels, write skew,
+    FOR UPDATE, advisory locks · C14 [P] sqlc + pgx + testcontainers;
+    hold-with-TTL + expiry sweeper · C15 [R] Stripe API docs tour,
+    RFC 9457, cursor pagination · C16 [P] OpenAPI spec-first ->
+    codegen -> idempotency middleware · C17 [R] Auth vs capture,
+    deposit holds, refunds, chargebacks, SCA — mapped to Razorpay ·
+    C18 [P] Money value object: minor units, allocation without
+    losing a cent, property tests · C19 [R] Modern Treasury
+    "Accounting for Developers"; double-entry design · C20 [P] Mini
+    double-entry ledger in Postgres, balanced-transaction enforced ·
+    C21 [R] DDIA awareness pass: delivery semantics, PACELC, the
+    "exactly-once" lie · C22 [P] Retry + backoff + jitter + circuit
+    breaker around a flaky mock · C23 [P] Temporal money-transfer
+    sample; compare with the C11 outbox · C24 [P] Timezone/DST
+    table-driven tests; falsehoods about time · C25 [R] Multi-region:
+    active-passive vs active-active, data residency · C26 [P] OTel
+    trace across two toy services; RED metrics · C27 [R] OWASP API
+    Top 10 (esp. BOLA); paper threat-model of the booking flow ·
+    C28 [P] testcontainers integration test + one k6 load script ·
+    C29 [R] Graceful shutdown, GOMEMLIMIT/automaxprocs,
+    expand-contract migrations.
   due: "today at {ritual_times.saturday_deep_block}"
   labels: [weekly-ritual, platform, deep-block]
   cadence: weekly
@@ -119,7 +156,9 @@
     - Rung: challenge shipped to its consumer? /ladder-review run and
       its verdict committed? Be honest — the checkbox is the gate,
       the review is only advisory.
-    - Platform: which Saturday step landed? Any exam gate?
+    - Platform: what did the free build ship? Any exam gate?
+    - Learn cluster: done (session + 3-5 Anki cards + note)? Tick the
+      counter sub-task.
     - Any ADR/RFC passed /ladder-review (Exam gate 5, from month 2
       onward)?
     - Crunch week? Minimum viable week (Anki + one session + this
@@ -145,6 +184,9 @@
 
     - title: "I finished {current_book}"
       action: { type: mark_book_finished, book: "{current_book}" }
+
+    - title: "Learn cluster completed this Saturday (session + cards + note)"
+      action: { type: increment_counter, counter: learn_clusters_done }
 
     - title: "Anki cards added this week (put count in comment)"
       action: { type: increment_counter, counter: anki_card_count }

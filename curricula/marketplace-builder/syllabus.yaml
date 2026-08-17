@@ -3,15 +3,20 @@ meta:
   total_months: 12
   start_month_index: 1
 
-# TWO TRACKS, ONE CURRICULUM (post-grilling shape, 2026-08-02):
+# TWO TRACKS, ONE CURRICULUM (post-grilling shape, 2026-08-02;
+# reshaped 2026-08-17):
 #
-#   Saturdays  -> the REAL rental platform, from week 1. The first-12-
-#                 sessions checklist lives in the Saturday deep block
-#                 ritual; exam gates 1-4 and the stack ADR happen there.
-#   Mon + Wed  -> the ladder: 16 concept rungs. Each rung = one concept;
+#   Saturdays  -> the REAL rental platform, two decoupled strands:
+#                 FREE BUILD (unstructured, uncurated — only the exam
+#                 gates 1-4 are fixed) + LEARN CLUSTER (structured
+#                 awareness march through the 29-cluster rental-platform
+#                 syllabus, ~last hour; [P] spikes in throwaway repos,
+#                 [R] reads; every session ends in Anki cards + a note).
+#                 Sequence lives in the Saturday deep block ritual.
+#   Tuesday    -> the ladder: 16 concept rungs. Each rung = one concept;
 #                 the rung's brief offers 3 candidate challenges and the
 #                 owner picks ONE in the first session. Rungs advance via
-#                 the Sunday state review (module advance).
+#                 the Saturday state review (module advance).
 #
 # Rules that survived the grilling:
 #   - Every challenge names a REAL CONSUMER before it starts (deployed,
@@ -39,9 +44,13 @@ phases:
     name: "Systems (rungs 12-16)"
     months: [8, 12]
 
-# BOOKS: no scheduled reading. Reading is PULLED — reviews and felt
-# problems name the chapter. primary_book_by_month keys are validator
-# anchors only.
+# BOOKS: no scheduled book reading. Book reading is PULLED — reviews
+# and felt problems name the chapter. The ONE exception (2026-08-17):
+# syllabus AWARENESS is scheduled — the Saturday learn cluster marches
+# through the 29-cluster sequence so unknown-unknowns can't hide.
+# Pull-only loses the topics you never feel blocked by; the cluster
+# makes you aware, the build pulls the depth. primary_book_by_month
+# keys are validator anchors only.
 books:
   - title: "The Go Programming Language"
     author: "Donovan & Kernighan"

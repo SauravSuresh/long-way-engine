@@ -1,4 +1,4 @@
-start_date: '2026-08-06'
+start_date: '2026-08-18'
 phase: 1
 month: 1
 current_module: 1
@@ -18,3 +18,4 @@ manual_counters:
   anki_card_count: 0
   rfcs_approved: 0
   exam_gates_passed: 0
+  learn_clusters_done: 0

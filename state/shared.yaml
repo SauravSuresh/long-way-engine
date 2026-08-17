@@ -6,6 +6,20 @@ manual_counters:
   lineage_detours_done: []
 notes: 'Most recent edit on top.
 
+  2026-08-17: Saturday restructure (post-grilling) — two decoupled strands.
+  BUILD strand: unstructured free build, S1-S12 checklist deleted, only exam
+  gates 1-4 remain as fixed structure. LEARN strand: the 16-phase rental
+  syllabus compressed to 29 weekly clusters (C1-C29, [P] throwaway spikes /
+  [R] reads), ~last hour of the deep block, soft split ([P] may eat build
+  time — accepted). Done = session + 3-5 Anki cards + note in
+  notes/syllabus/. Incorporation into the build optional; weekly reflection
+  gained the bridge question. New counter learn_clusters_done. Rule amended:
+  book reading stays pulled, syllabus awareness is scheduled.
+  marketplace-builder ONLY full reset: start_date -> 2026-08-18 (Monday),
+  rung 1, counters 0; RentalBuilder Todoist project wiped via
+  --cleanup-project and mb cache namespace dropped so Monday''s run
+  recreates day-1 tasks. devops-ready untouched (start 08-17).
+
   2026-08-14: rhythmic restructure (owner was silently choking on stacked
   evenings). One theme per evening at 20:45 — Mon/Wed/Thu bootdev, Tue
   ladder rung, Fri LeetCode; mornings unchanged (07:15 Anki all-decks,
