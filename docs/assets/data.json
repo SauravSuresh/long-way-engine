@@ -17,9 +17,9 @@
   "syllabuses": {
     "devops-ready": {
       "adherence": {
-        "done": 0,
-        "expected": 1,
-        "percent": 0,
+        "done": 1,
+        "expected": 2,
+        "percent": 50,
         "since": "2026-08-17"
       },
       "books": [
@@ -97,13 +97,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 2,
+      "day_of_journey": 3,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-08-11",
-          "state": "gray"
-        },
         {
           "date": "2026-08-12",
           "state": "gray"
@@ -127,6 +123,10 @@
         {
           "date": "2026-08-17",
           "state": "red"
+        },
+        {
+          "date": "2026-08-18",
+          "state": "green"
         }
       ],
       "month": 1,
@@ -169,34 +169,34 @@
         }
       ],
       "streaks": {
-        "Daily": 0,
+        "Daily": 1,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
-          "best": 0,
-          "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "best": 1,
+          "count": 1,
+          "hint": "morning reading + Anki by 23:59 to keep it"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 14 days"
+          "hint": "next post in 13 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 3 days"
+          "hint": "next Friday in 2 days"
         }
       },
-      "today": "2026-08-18"
+      "today": "2026-08-19"
     },
     "marketplace-builder": {
       "adherence": {
-        "done": 0,
-        "expected": 0,
-        "percent": null,
+        "done": 1,
+        "expected": 1,
+        "percent": 100,
         "since": "2026-08-18"
       },
       "books": [
@@ -246,13 +246,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 1,
+      "day_of_journey": 2,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-08-11",
-          "state": "gray"
-        },
         {
           "date": "2026-08-12",
           "state": "gray"
@@ -276,6 +272,10 @@
         {
           "date": "2026-08-17",
           "state": "gray"
+        },
+        {
+          "date": "2026-08-18",
+          "state": "green"
         }
       ],
       "month": 1,
@@ -304,40 +304,40 @@
         }
       ],
       "streaks": {
-        "Daily": 0,
+        "Daily": 1,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
-          "best": 0,
-          "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "best": 1,
+          "count": 1,
+          "hint": "morning reading + Anki by 23:59 to keep it"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 14 days"
+          "hint": "next post in 13 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 3 days"
+          "hint": "next Friday in 2 days"
         }
       },
-      "today": "2026-08-18"
+      "today": "2026-08-19"
     }
   },
   "xp": {
     "by_source": {
-      "daily": 0,
+      "daily": 10,
       "deep_block": 0,
       "exam_gates": 0,
       "reflections": 0,
       "rungs": 0,
       "streak_bonus": 0,
       "weekly_review": 0,
-      "weekly_ritual": 25
+      "weekly_ritual": 75
     },
     "ladder": [
       {
@@ -397,13 +397,13 @@
       }
     ],
     "level": 0,
-    "level_progress": 25,
+    "level_progress": 85,
     "next_level_at": 100,
     "next_reward": {
       "level": 1,
       "reward": "Fancy dessert run \u2014 the good bakery, no price-checking"
     },
-    "total": 25,
+    "total": 85,
     "unlocked": []
   }
 }
