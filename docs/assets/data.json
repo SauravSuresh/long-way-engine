@@ -17,9 +17,9 @@
   "syllabuses": {
     "devops-ready": {
       "adherence": {
-        "done": 1,
-        "expected": 2,
-        "percent": 50,
+        "done": 2,
+        "expected": 3,
+        "percent": 67,
         "since": "2026-08-17"
       },
       "books": [
@@ -97,13 +97,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 3,
+      "day_of_journey": 4,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-08-12",
-          "state": "gray"
-        },
         {
           "date": "2026-08-13",
           "state": "gray"
@@ -126,6 +122,10 @@
         },
         {
           "date": "2026-08-18",
+          "state": "green"
+        },
+        {
+          "date": "2026-08-19",
           "state": "green"
         }
       ],
@@ -169,33 +169,33 @@
         }
       ],
       "streaks": {
-        "Daily": 1,
+        "Daily": 2,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
-          "best": 1,
-          "count": 1,
+          "best": 2,
+          "count": 2,
           "hint": "morning reading + Anki by 23:59 to keep it"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 13 days"
+          "hint": "next post in 12 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 2 days"
+          "hint": "next Friday in 1 day"
         }
       },
-      "today": "2026-08-19"
+      "today": "2026-08-20"
     },
     "marketplace-builder": {
       "adherence": {
-        "done": 1,
-        "expected": 1,
+        "done": 2,
+        "expected": 2,
         "percent": 100,
         "since": "2026-08-18"
       },
@@ -246,13 +246,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 2,
+      "day_of_journey": 3,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-08-12",
-          "state": "gray"
-        },
         {
           "date": "2026-08-13",
           "state": "gray"
@@ -275,6 +271,10 @@
         },
         {
           "date": "2026-08-18",
+          "state": "green"
+        },
+        {
+          "date": "2026-08-19",
           "state": "green"
         }
       ],
@@ -304,46 +304,46 @@
         }
       ],
       "streaks": {
-        "Daily": 1,
+        "Daily": 2,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
-          "best": 1,
-          "count": 1,
+          "best": 2,
+          "count": 2,
           "hint": "morning reading + Anki by 23:59 to keep it"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 13 days"
+          "hint": "next post in 12 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 2 days"
+          "hint": "next Friday in 1 day"
         }
       },
-      "today": "2026-08-19"
+      "today": "2026-08-20"
     }
   },
   "xp": {
     "by_source": {
-      "daily": 10,
+      "daily": 20,
       "deep_block": 0,
       "exam_gates": 0,
       "reflections": 0,
       "rungs": 0,
       "streak_bonus": 0,
       "weekly_review": 0,
-      "weekly_ritual": 75
+      "weekly_ritual": 125
     },
     "ladder": [
       {
         "level": 1,
         "reward": "Fancy dessert run \u2014 the good bakery, no price-checking",
-        "unlocked": false
+        "unlocked": true
       },
       {
         "level": 2,
@@ -396,14 +396,19 @@
         "unlocked": false
       }
     ],
-    "level": 0,
-    "level_progress": 85,
-    "next_level_at": 100,
+    "level": 1,
+    "level_progress": 45,
+    "next_level_at": 264,
     "next_reward": {
-      "level": 1,
-      "reward": "Fancy dessert run \u2014 the good bakery, no price-checking"
+      "level": 2,
+      "reward": "Movie night, zero guilt \u2014 theatre, popcorn, phone off"
     },
-    "total": 85,
-    "unlocked": []
+    "total": 145,
+    "unlocked": [
+      {
+        "level": 1,
+        "reward": "Fancy dessert run \u2014 the good bakery, no price-checking"
+      }
+    ]
   }
 }
