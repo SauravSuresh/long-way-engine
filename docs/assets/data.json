@@ -17,9 +17,9 @@
   "syllabuses": {
     "devops-ready": {
       "adherence": {
-        "done": 2,
-        "expected": 3,
-        "percent": 67,
+        "done": 3,
+        "expected": 4,
+        "percent": 75,
         "since": "2026-08-17"
       },
       "books": [
@@ -97,13 +97,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 4,
+      "day_of_journey": 5,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-08-13",
-          "state": "gray"
-        },
         {
           "date": "2026-08-14",
           "state": "gray"
@@ -126,6 +122,10 @@
         },
         {
           "date": "2026-08-19",
+          "state": "green"
+        },
+        {
+          "date": "2026-08-20",
           "state": "green"
         }
       ],
@@ -169,33 +169,33 @@
         }
       ],
       "streaks": {
-        "Daily": 2,
+        "Daily": 3,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
-          "best": 2,
-          "count": 2,
+          "best": 3,
+          "count": 3,
           "hint": "morning reading + Anki by 23:59 to keep it"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 12 days"
+          "hint": "next post in 11 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 1 day"
+          "hint": "Friday review + filled reflection due today"
         }
       },
-      "today": "2026-08-20"
+      "today": "2026-08-21"
     },
     "marketplace-builder": {
       "adherence": {
-        "done": 2,
-        "expected": 2,
+        "done": 3,
+        "expected": 3,
         "percent": 100,
         "since": "2026-08-18"
       },
@@ -246,13 +246,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 3,
+      "day_of_journey": 4,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-08-13",
-          "state": "gray"
-        },
         {
           "date": "2026-08-14",
           "state": "gray"
@@ -275,6 +271,10 @@
         },
         {
           "date": "2026-08-19",
+          "state": "green"
+        },
+        {
+          "date": "2026-08-20",
           "state": "green"
         }
       ],
@@ -304,40 +304,40 @@
         }
       ],
       "streaks": {
-        "Daily": 2,
+        "Daily": 3,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
-          "best": 2,
-          "count": 2,
+          "best": 3,
+          "count": 3,
           "hint": "morning reading + Anki by 23:59 to keep it"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 12 days"
+          "hint": "next post in 11 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 1 day"
+          "hint": "Friday review + filled reflection due today"
         }
       },
-      "today": "2026-08-20"
+      "today": "2026-08-21"
     }
   },
   "xp": {
     "by_source": {
-      "daily": 20,
+      "daily": 30,
       "deep_block": 0,
       "exam_gates": 0,
       "reflections": 0,
       "rungs": 0,
       "streak_bonus": 0,
       "weekly_review": 0,
-      "weekly_ritual": 125
+      "weekly_ritual": 150
     },
     "ladder": [
       {
@@ -397,13 +397,13 @@
       }
     ],
     "level": 1,
-    "level_progress": 45,
+    "level_progress": 80,
     "next_level_at": 264,
     "next_reward": {
       "level": 2,
       "reward": "Movie night, zero guilt \u2014 theatre, popcorn, phone off"
     },
-    "total": 145,
+    "total": 180,
     "unlocked": [
       {
         "level": 1,
