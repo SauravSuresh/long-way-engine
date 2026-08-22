@@ -4,9 +4,10 @@
     "devops-ready"
   ],
   "shared": {
-    "anki_card_count": 0,
+    "anki_card_count": 200,
     "manual_counters": {
-      "anki_card_count": 0,
+      "anki_card_count": 200,
+      "learn_clusters_done": 2,
       "lineage_detours_done": [],
       "prs_opened": 0,
       "traces_completed": 0
@@ -97,13 +98,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 6,
+      "day_of_journey": 7,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-08-15",
-          "state": "gray"
-        },
         {
           "date": "2026-08-16",
           "state": "gray"
@@ -127,6 +124,10 @@
         {
           "date": "2026-08-21",
           "state": "green"
+        },
+        {
+          "date": "2026-08-22",
+          "state": "gray"
         }
       ],
       "month": 1,
@@ -184,26 +185,26 @@
         "Daily": {
           "best": 4,
           "count": 4,
-          "hint": "rest day \u2014 no rituals scheduled"
+          "hint": "Sunday \u2014 rest day"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 10 days"
+          "hint": "next post in 9 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 6 days"
+          "hint": "next Friday in 5 days"
         }
       },
-      "today": "2026-08-22"
+      "today": "2026-08-23"
     },
     "marketplace-builder": {
       "adherence": {
         "done": 4,
-        "expected": 4,
-        "percent": 100,
+        "expected": 5,
+        "percent": 80,
         "since": "2026-08-18"
       },
       "books": [
@@ -253,13 +254,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 5,
+      "day_of_journey": 6,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-08-15",
-          "state": "gray"
-        },
         {
           "date": "2026-08-16",
           "state": "gray"
@@ -283,6 +280,10 @@
         {
           "date": "2026-08-21",
           "state": "green"
+        },
+        {
+          "date": "2026-08-22",
+          "state": "red"
         }
       ],
       "month": 1,
@@ -318,28 +319,28 @@
         }
       ],
       "streaks": {
-        "Daily": 4,
+        "Daily": 0,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
           "best": 4,
-          "count": 4,
-          "hint": "morning reading + Anki by 23:59 to keep it"
+          "count": 0,
+          "hint": "Sunday \u2014 rest day"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 10 days"
+          "hint": "next post in 9 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 6 days"
+          "hint": "next Friday in 5 days"
         }
       },
-      "today": "2026-08-22"
+      "today": "2026-08-23"
     }
   },
   "xp": {
@@ -350,8 +351,8 @@
       "reflections": 0,
       "rungs": 0,
       "streak_bonus": 0,
-      "weekly_review": 0,
-      "weekly_ritual": 175
+      "weekly_review": 40,
+      "weekly_ritual": 225
     },
     "ladder": [
       {
@@ -362,7 +363,7 @@
       {
         "level": 2,
         "reward": "Movie night, zero guilt \u2014 theatre, popcorn, phone off",
-        "unlocked": false
+        "unlocked": true
       },
       {
         "level": 3,
@@ -410,18 +411,22 @@
         "unlocked": false
       }
     ],
-    "level": 1,
-    "level_progress": 115,
-    "next_level_at": 264,
+    "level": 2,
+    "level_progress": 41,
+    "next_level_at": 466,
     "next_reward": {
-      "level": 2,
-      "reward": "Movie night, zero guilt \u2014 theatre, popcorn, phone off"
+      "level": 3,
+      "reward": "One full lazy Saturday morning \u2014 no alarm, no Anki before noon (streak-safe: do it at 1pm)"
     },
-    "total": 215,
+    "total": 305,
     "unlocked": [
       {
         "level": 1,
         "reward": "Fancy dessert run \u2014 the good bakery, no price-checking"
+      },
+      {
+        "level": 2,
+        "reward": "Movie night, zero guilt \u2014 theatre, popcorn, phone off"
       }
     ]
   }
