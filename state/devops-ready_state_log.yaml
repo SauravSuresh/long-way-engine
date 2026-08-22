@@ -1,0 +1,10 @@
+- timestamp: '2026-08-22'
+  action: increment_counter
+  todoist_task_id: lw-review-2026-08-22-0
+  counter: anki_card_count
+  delta: 100
+  prior:
+    anki_card_count: 100
+  new:
+    anki_card_count: 200
+  message: 'anki_card_count: 100 -> 200 (+100)'

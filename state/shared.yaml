@@ -1,6 +1,6 @@
 timezone: Asia/Kolkata
 manual_counters:
-  anki_card_count: 100
+  anki_card_count: 200
   prs_opened: 0
   traces_completed: 0
   lineage_detours_done: []
