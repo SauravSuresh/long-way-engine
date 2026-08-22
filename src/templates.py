@@ -37,6 +37,9 @@ class SubtaskSpec:
     title: str
     action: dict[str, Any]
     show_if: str | None = None
+    # "yesno" renders an increment_counter question as Yes/No in lw review
+    # (Yes dispatches +1) instead of a numeric input.
+    input: str | None = None
 
 
 @dataclass
@@ -138,6 +141,7 @@ def _load_one_file(path: Path) -> list[Template]:
                     title=str(sub.get("title", "")),
                     action=dict(action),
                     show_if=(str(sub["show_if"]) if sub.get("show_if") else None),
+                    input=(str(sub["input"]) if sub.get("input") else None),
                 )
             )
         gated_by_raw = entry.get("gated_by") or []
@@ -264,6 +268,7 @@ def resolve_variables(
                     title=resolve_string(sub.title, state, config, today, syllabus=syllabus),
                     action=dict(sub.action),
                     show_if=sub.show_if,
+                    input=sub.input,
                 )
             )
         return ResolvedTemplate(

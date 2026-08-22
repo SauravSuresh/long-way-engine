@@ -29,7 +29,7 @@ def test_build_questions_filters_show_if_and_resolves_titles():
     assert cur.state.current_module == 1  # not the last of 16 rungs
 
     questions = build_questions(cur, date(2026, 8, 9))
-    assert len(questions) == 7
+    assert len(questions) == 8
 
     advance_q = next(q for q in questions if q.sub.action["type"] == "advance_module")
     assert "Rung" in advance_q.sub.title
@@ -43,11 +43,16 @@ def test_counter_questions_flagged():
     cur = ctx.per_key["marketplace-builder"]
     questions = build_questions(cur, date(2026, 8, 9))
 
-    anki_q = next(q for q in questions if "Anki cards added" in q.sub.title)
+    anki_q = next(q for q in questions if "How many Anki cards" in q.sub.title)
     assert anki_q.wants_count is True
 
     advance_q = next(q for q in questions if q.sub.action["type"] == "advance_module")
     assert advance_q.wants_count is False
+
+    # input: yesno renders an increment_counter as Yes/No
+    cluster_q = next(q for q in questions if "learn cluster" in q.sub.title)
+    assert cluster_q.sub.action["type"] == "increment_counter"
+    assert cluster_q.wants_count is False
 
 
 def test_apply_answers_advances_module_and_writes_log(tmp_path: Path):

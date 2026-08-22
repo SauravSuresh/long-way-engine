@@ -148,17 +148,16 @@
     (devops-ready's review is 15 min later). After this the weekend is
     officially over — Sunday is completely free.
 
-    Check the sub-tasks that apply. Next cron run picks them up and
-    mutates state.yaml. (Cert milestones live in devops-ready's own
-    state review.)
+    Answer the questionnaire honestly — it updates state.yaml
+    directly. (Cert milestones live in devops-ready's own state
+    review.)
 
     Review the week:
     - Rung: challenge shipped to its consumer? /ladder-review run and
-      its verdict committed? Be honest — the checkbox is the gate,
+      its verdict committed? Be honest — your answer is the gate,
       the review is only advisory.
     - Platform: what did the free build ship? Any exam gate?
-    - Learn cluster: done (session + 3-5 Anki cards + note)? Tick the
-      counter sub-task.
+    - Learn cluster: done (session + 3-5 Anki cards + note)?
     - Any ADR/RFC passed /ladder-review (Exam gate 5, from month 2
       onward)?
     - Crunch week? Minimum viable week (Anki + one session + this
@@ -169,27 +168,28 @@
   day_of_week: saturday
   state_review: true
   sub_tasks:
-    - title: "Rung done honestly (shipped + /ladder-review run) — advance to Rung {next_module}"
+    - title: "Did you finish this week's rung — shipped, /ladder-review run? Yes moves you to Rung {next_module}."
       action: { type: advance_module }
       show_if: not_on_last_module
 
-    - title: "Exam gate passed this week (say which in comment; put 1)"
+    - title: "How many exam gates did you pass this week? (usually 0 or 1)"
       action: { type: increment_counter, counter: exam_gates_passed }
 
-    - title: "Exam gate 5: ADR/RFC passed /ladder-review this week (from month 2; put count in comment)"
+    - title: "How many ADRs/RFCs passed /ladder-review this week? (exam gate 5, counts from month 2)"
       action: { type: increment_counter, counter: rfcs_approved }
 
-    - title: "The platform is deployed to production — start monthly drills"
+    - title: "Is the platform now live in production? Yes kicks off the monthly drills."
       action: { type: mark_track_started, category: Platform, item: "Platform in production" }
 
-    - title: "I finished {current_book}"
+    - title: "Did you finish {current_book}?"
       action: { type: mark_book_finished, book: "{current_book}" }
 
-    - title: "Learn cluster completed this Saturday (session + cards + note)"
+    - title: "Did you do this Saturday's learn cluster — session, 3-5 Anki cards, and a note?"
       action: { type: increment_counter, counter: learn_clusters_done }
+      input: yesno
 
-    - title: "Anki cards added this week (put count in comment)"
+    - title: "How many Anki cards did you add this week?"
       action: { type: increment_counter, counter: anki_card_count }
 
-    - title: "Revert last week's state change (only if a mistake)"
+    - title: "Was last week's review a mistake you want to undo? (Yes reverts the last state change)"
       action: { type: revert_last }

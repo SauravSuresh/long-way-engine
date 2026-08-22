@@ -116,31 +116,31 @@
     Saturday close-out: after this, the weekend is officially over.
     Sunday is completely free.
 
-    Check the sub-tasks that apply to your week. Next cron run picks
-    them up and mutates state.yaml: module advance, certification
-    milestones, track updates, counter increments.
+    Answer the questionnaire honestly — it updates state.yaml
+    directly: module advance, certification milestones, track
+    updates, counter increments.
   due: "today at {ritual_times.weekly_state_review}"
   labels: [weekly-ritual, state-review]
   cadence: weekly
   day_of_week: saturday
   state_review: true
   sub_tasks:
-    - title: "I'm ready to advance to Module {next_module}"
+    - title: "Are you ready to move on to Module {next_module}?"
       action: { type: advance_module }
       show_if: not_on_last_module
 
-    - title: "I finished {current_book}"
+    - title: "Did you finish {current_book}?"
       action: { type: mark_book_finished, book: "{current_book}" }
 
-    - title: "I started a new course this week"
+    - title: "Did you start the next course ({next_book}) this week?"
       action: { type: mark_book_started, book: "{next_book}" }
       show_if: book_transition_this_month
 
-    - title: "Anki cards added this week (put count in comment)"
+    - title: "How many Anki cards did you add this week?"
       action: { type: increment_counter, counter: anki_card_count }
 
-    - title: "LeetCode problems solved this week (put count in comment)"
+    - title: "How many LeetCode problems did you solve this week?"
       action: { type: increment_counter, counter: leetcode_count }
 
-    - title: "Revert last week's state change (only if a mistake)"
+    - title: "Was last week's review a mistake you want to undo? (Yes reverts the last state change)"
       action: { type: revert_last }

@@ -76,8 +76,8 @@ def build_questions(cur: CurriculumCtx, today: date) -> list[Question]:
             continue
         questions.append(
             Question(
-                sub=SubtaskSpec(title=title, action=sub.action, show_if=sub.show_if),
-                wants_count=sub.action.get("type") == "increment_counter",
+                sub=SubtaskSpec(title=title, action=sub.action, show_if=sub.show_if, input=sub.input),
+                wants_count=sub.action.get("type") == "increment_counter" and sub.input != "yesno",
             )
         )
     return questions
@@ -104,7 +104,12 @@ def apply_answers(
         checked = answer if isinstance(answer, bool) else answer > 0
         if not checked:
             continue
-        comment = str(answer) if question.wants_count else None
+        # increment_counter needs a delta: the typed count, or 1 for a
+        # yesno-rendered counter answered Yes.
+        if question.sub.action.get("type") == "increment_counter":
+            comment = "1" if isinstance(answer, bool) else str(answer)
+        else:
+            comment = None
         result = _dispatch(
             question.sub.action, new_state, new_shared, cur.syllabus,
             log_entries, f"lw-review-{today.isoformat()}-{n}", today,

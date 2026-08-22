@@ -41,9 +41,10 @@ class GateScreen(Screen):
     def compose(self) -> ComposeResult:
         yield Header()
         yield Vertical(
+            Label(f"[b]{self.key}[/b]"),
             Label(
-                f"{self.key}: rung {self.gate.meta['rung']} option {self.gate.meta['option']}"
-                " is past its deadline"
+                f"Rung {self.gate.meta['rung']} option {self.gate.meta['option']}"
+                " went past its deadline. What happened?"
             ),
             Horizontal(
                 Button("Shipped", id="shipped", variant="success"),
@@ -107,30 +108,43 @@ class GateScreen(Screen):
 class QuestionScreen(Screen):
     """One state_review sub_task: Yes/No, or an int Input for wants_count.
 
+    Every screen leads with which curriculum is asking and how far along
+    the questionnaire is, so back-to-back reviews can't blur together.
+
     `forced` means the deadline gate already decided this answer (fail-forward
     advance) — rendered as informational text with no Yes/No choice, per the
     spec's "failed (logged, advance anyway)"."""
 
-    def __init__(self, question: Question, forced: bool = False) -> None:
+    def __init__(
+        self, question: Question, key: str, number: int, total: int, forced: bool = False
+    ) -> None:
         super().__init__()
         self.question = question
+        self.key = key
+        self.number = number
+        self.total = total
         self.forced = forced
 
     def compose(self) -> ComposeResult:
         yield Header()
+        context = Label(f"[b]{self.key}[/b] — question {self.number} of {self.total}")
         if self.forced:
             yield Vertical(
-                Label(self.question.sub.title + "  [forced: yes — fail forward]"),
-                Button("Continue", id="continue", variant="primary"),
+                context,
+                Label(self.question.sub.title),
+                Label("(Already settled by the deadline gate — this rung advances.)"),
+                Button("Got it, continue", id="continue", variant="primary"),
             )
         elif self.question.wants_count:
             yield Vertical(
+                context,
                 Label(self.question.sub.title),
-                Input(placeholder="count", id="count"),
+                Input(placeholder="type a number, 0 for none — Enter to submit", id="count"),
                 Button("Submit", id="submit"),
             )
         else:
             yield Vertical(
+                context,
                 Label(self.question.sub.title),
                 Horizontal(
                     Button("Yes", id="yes", variant="success"),
@@ -139,12 +153,18 @@ class QuestionScreen(Screen):
             )
         yield Footer()
 
+    def _submit_count(self) -> None:
+        count_str = self.query_one("#count", Input).value.strip()
+        self.app.answer_question(self.question, int(count_str) if count_str.isdigit() else 0)  # type: ignore[attr-defined]
+
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        self._submit_count()
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "continue":
             self.app.answer_question(self.question, True)  # type: ignore[attr-defined]
         elif event.button.id == "submit":
-            count_str = self.query_one("#count", Input).value.strip()
-            self.app.answer_question(self.question, int(count_str) if count_str.isdigit() else 0)  # type: ignore[attr-defined]
+            self._submit_count()
         elif event.button.id == "yes":
             self.app.answer_question(self.question, True)  # type: ignore[attr-defined]
         elif event.button.id == "no":
@@ -159,13 +179,25 @@ class SummaryScreen(Screen):
         self.key = key
         self.answers = answers
 
+    @staticmethod
+    def _fmt(answer: "bool | int") -> str:
+        if isinstance(answer, bool):
+            return "✓ yes" if answer else "· no"
+        return f"✓ {answer}" if answer > 0 else "· 0"
+
     def compose(self) -> ComposeResult:
         yield Header()
-        lines = [f"{q.sub.title}: {a}" for q, a in self.answers]
+        lines = [f"{self._fmt(a)}  {q.sub.title}" for q, a in self.answers]
+        acted_on = sum(1 for _, a in self.answers if (a if isinstance(a, bool) else a > 0))
         yield Vertical(
-            Label(f"{self.key} — summary"),
-            Label("\n".join(lines) or "(nothing checked)"),
-            Button("Confirm", id="confirm", variant="primary"),
+            Label(f"[b]{self.key}[/b] — here's what you said"),
+            Label("\n".join(lines) or "(no questions this week)"),
+            Label(
+                f"{acted_on} answer(s) will change state; the rest change nothing."
+                if acted_on
+                else "Nothing to change — a quiet week is fine."
+            ),
+            Button("Looks right — save it", id="confirm", variant="primary"),
         )
         yield Footer()
 
@@ -244,7 +276,15 @@ class ReviewApp(App):
         question = self._questions[self._q_idx]
         self._q_idx += 1
         forced = forced_advance_answer(question, self._gate_advance)
-        self.push_screen(QuestionScreen(question, forced=forced is not None))
+        self.push_screen(
+            QuestionScreen(
+                question,
+                key=self._key or "",
+                number=self._q_idx,
+                total=len(self._questions),
+                forced=forced is not None,
+            )
+        )
 
     def answer_question(self, question: Question, value: "bool | int") -> None:
         self._answers.append((question, value))
@@ -297,6 +337,11 @@ def run_review(repo_root: Path) -> int:
         if result.gate_meta_path is not None:
             paths.append(result.gate_meta_path)
         commit_and_push(repo_root, paths, f"review({result.key}): {today.isoformat()} state review via lw")
-        for message in messages:
-            print(message)
+        if messages:
+            print(f"{result.key}:")
+            for message in messages:
+                print(f"  {message}")
+        else:
+            print(f"{result.key}: nothing changed this week — noted.")
+    print("Review saved. Enjoy the rest of your Saturday.")
     return 0
