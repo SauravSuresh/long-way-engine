@@ -1,95 +1,73 @@
 timezone: Asia/Kolkata
 manual_counters:
-  anki_card_count: 0
+  anki_card_count: 100
   prs_opened: 0
   traces_completed: 0
   lineage_detours_done: []
-notes: 'Most recent edit on top.
-
-  2026-08-17: Saturday restructure (post-grilling) — two decoupled strands.
-  BUILD strand: unstructured free build, S1-S12 checklist deleted, only exam
-  gates 1-4 remain as fixed structure. LEARN strand: the 16-phase rental
-  syllabus compressed to 29 weekly clusters (C1-C29, [P] throwaway spikes /
-  [R] reads), ~last hour of the deep block, soft split ([P] may eat build
-  time — accepted). Done = session + 3-5 Anki cards + note in
-  notes/syllabus/. Incorporation into the build optional; weekly reflection
-  gained the bridge question. New counter learn_clusters_done. Rule amended:
-  book reading stays pulled, syllabus awareness is scheduled.
-  marketplace-builder ONLY full reset: start_date -> 2026-08-18 (Monday),
-  rung 1, counters 0; RentalBuilder Todoist project wiped via
-  --cleanup-project and mb cache namespace dropped so Monday''s run
-  recreates day-1 tasks. devops-ready untouched (start 08-17).
-
-  2026-08-14: rhythmic restructure (owner was silently choking on stacked
-  evenings). One theme per evening at 20:45 — Mon/Wed/Thu bootdev, Tue
-  ladder rung, Fri LeetCode; mornings unchanged (07:15 Anki all-decks,
-  08:00 AWS). devops SRS checkbox merged into mb daily-anki. Killed:
-  Wednesday build session, weekly-design-review (no seniors; /ladder-review
-  is the reviewer), devops Saturday project block, bootdev tue/fri,
-  leetcode mon/wed. Reflections + both state reviews moved to the Saturday
-  13:30-14:30 close-out sitting — Sunday is completely free. Rung
-  deadlines doubled (14->28, 21->42) to match 1 ladder evening/week.
-  Fixed engine bug: shared completion cache had no project key, so the
-  second syllabus swept against the completed set of the first — every
-  devops-ready completion since 08-06 was falsely marked missed (owner
-  was ~90% adherent). devops-ready start_date -> 2026-08-17 (Monday) for
-  clean numbers; marketplace keeps 08-06 (its record was real). Also
-  wired cli_review: true for devops-ready.
-
-  2026-08-06: fresh start now that the rung system is properly set up (48
-  briefs, lw CLI, deadlines). start_date -> 2026-08-06 (Thursday, mid-week
-  start is deliberate) for all three syllabuses. Marketplace-builder ONLY:
-  RentalBuilder Todoist project wiped (3 stale tasks incl. the old vague
-  rung-1 brief) and its cache namespace dropped, so today''s run recreates
-  the rung task with brief links + deadline_date. devops-ready cache kept
-  intact — its once-per-module tasks are unchanged and stay valid.
-
-  2026-08-04: owner could not start today — start_date -> 2026-08-05 (Wednesday)
-  for all three syllabuses (same cache-intact pattern; 08-04 entries pre-date
-  start_date so walkers ignore them). long-way disabled in config (was paused
-  but still rendered) and removed from priority_order, so disabled syllabuses
-  no longer appear on the dashboard.
-
-  2026-08-03: the 08-02 restructure was never pushed — remote daily runs
-  (07-06..08-03) kept advancing the old devops-ready/long-way schedule, so
-  Monday ran on stale curriculum. Merged origin/main (kept marketplace-builder
-  curriculum + config; kept remote''s cache/LOG/reflections/dashboard) and
-  moved the full reset forward: start_date -> 2026-08-04 (Tuesday) for all
-  three syllabuses; month/phase/module -> 1. Same cache-intact pattern —
-  entries up to 08-03 pre-date start_date, walkers ignore them.
-
-  2026-08-02 (later): post-grilling restructure + full reset. marketplace-builder
-  is now two tracks: Mon/Wed = 16-rung ladder (pick 1 of 3 challenges per rung,
-  real consumer required, polyglot allowed); Saturday = the real rental platform
-  from week 1 (first-12-sessions checklist; exam gates 1-4 live there). New
-  advisory /ladder-review skill (verdict committed to repo). Crunch rule: Anki +
-  one build session + Sunday review is a valid week. FULL reset: start_date ->
-  2026-08-02 for ALL syllabuses (marketplace-builder, devops-ready, and paused
-  long-way); month/phase/module -> 1; counters 0. Caches left intact per the
-  established pattern — old entries pre-date start_date so streak/adherence
-  walkers ignore them and the dashboard reports day 1 for everything.
-
-  2026-08-02: marketplace-builder replaces devops-ready as the focus track
-  (build-first syllabus; booking platform is the spine; SAA cert = parallel
-  theory track months 1-3, CKA parked post-launch). devops-ready disabled in
-  config (superseded — cert goals live on inside marketplace-builder; files
-  kept as reference). long-way paused (paused_since 2026-08-02, parked until
-  platform launch).
-
-  2026-07-01: focus switch to devops-ready. boot.dev now every weekday; LeetCode
-  alternate days (Mon/Wed/Fri); morning study Mon-Fri; Saturday = long-way CS:APP
-  long reading (AM) + devops project block (PM). long-way relegated to Saturdays
-  only. start_date->2026-07-01 for both (fresh slate; new template ids have no
-  cache history, so old dates would false-read as missed). Streaks: devops grades
-  morning-study + Anki; long-way grades Saturday reading + Anki. Common-tasks spec
-  drafted (specs/common-tasks.md) but deferred.
-
-  2026-06-21: full tracking reset for both tracks (owner request). start_date->2026-06-21,
-  month/phase/module->1 for long-way and devops-ready. Adherence/streaks/last-7 start
-  fresh from today. Cache left intact (cron idempotency ledger); old entries pre-date
-  start_date so the streak walkers ignore them.
-
-  2026-05-05: starting day 1. May 4 setup tasks wiped via --cleanup-project; cache
-  reset.
-
-  '
+  learn_clusters_done: 2
+notes: "Most recent edit on top.\n2026-08-17: Saturday restructure (post-grilling)\
+  \ \u2014 two decoupled strands. BUILD strand: unstructured free build, S1-S12 checklist\
+  \ deleted, only exam gates 1-4 remain as fixed structure. LEARN strand: the 16-phase\
+  \ rental syllabus compressed to 29 weekly clusters (C1-C29, [P] throwaway spikes\
+  \ / [R] reads), ~last hour of the deep block, soft split ([P] may eat build time\
+  \ \u2014 accepted). Done = session + 3-5 Anki cards + note in notes/syllabus/. Incorporation\
+  \ into the build optional; weekly reflection gained the bridge question. New counter\
+  \ learn_clusters_done. Rule amended: book reading stays pulled, syllabus awareness\
+  \ is scheduled. marketplace-builder ONLY full reset: start_date -> 2026-08-18 (Monday),\
+  \ rung 1, counters 0; RentalBuilder Todoist project wiped via --cleanup-project\
+  \ and mb cache namespace dropped so Monday's run recreates day-1 tasks. devops-ready\
+  \ untouched (start 08-17).\n2026-08-14: rhythmic restructure (owner was silently\
+  \ choking on stacked evenings). One theme per evening at 20:45 \u2014 Mon/Wed/Thu\
+  \ bootdev, Tue ladder rung, Fri LeetCode; mornings unchanged (07:15 Anki all-decks,\
+  \ 08:00 AWS). devops SRS checkbox merged into mb daily-anki. Killed: Wednesday build\
+  \ session, weekly-design-review (no seniors; /ladder-review is the reviewer), devops\
+  \ Saturday project block, bootdev tue/fri, leetcode mon/wed. Reflections + both\
+  \ state reviews moved to the Saturday 13:30-14:30 close-out sitting \u2014 Sunday\
+  \ is completely free. Rung deadlines doubled (14->28, 21->42) to match 1 ladder\
+  \ evening/week. Fixed engine bug: shared completion cache had no project key, so\
+  \ the second syllabus swept against the completed set of the first \u2014 every\
+  \ devops-ready completion since 08-06 was falsely marked missed (owner was ~90%\
+  \ adherent). devops-ready start_date -> 2026-08-17 (Monday) for clean numbers; marketplace\
+  \ keeps 08-06 (its record was real). Also wired cli_review: true for devops-ready.\n\
+  2026-08-06: fresh start now that the rung system is properly set up (48 briefs,\
+  \ lw CLI, deadlines). start_date -> 2026-08-06 (Thursday, mid-week start is deliberate)\
+  \ for all three syllabuses. Marketplace-builder ONLY: RentalBuilder Todoist project\
+  \ wiped (3 stale tasks incl. the old vague rung-1 brief) and its cache namespace\
+  \ dropped, so today's run recreates the rung task with brief links + deadline_date.\
+  \ devops-ready cache kept intact \u2014 its once-per-module tasks are unchanged\
+  \ and stay valid.\n2026-08-04: owner could not start today \u2014 start_date ->\
+  \ 2026-08-05 (Wednesday) for all three syllabuses (same cache-intact pattern; 08-04\
+  \ entries pre-date start_date so walkers ignore them). long-way disabled in config\
+  \ (was paused but still rendered) and removed from priority_order, so disabled syllabuses\
+  \ no longer appear on the dashboard.\n2026-08-03: the 08-02 restructure was never\
+  \ pushed \u2014 remote daily runs (07-06..08-03) kept advancing the old devops-ready/long-way\
+  \ schedule, so Monday ran on stale curriculum. Merged origin/main (kept marketplace-builder\
+  \ curriculum + config; kept remote's cache/LOG/reflections/dashboard) and moved\
+  \ the full reset forward: start_date -> 2026-08-04 (Tuesday) for all three syllabuses;\
+  \ month/phase/module -> 1. Same cache-intact pattern \u2014 entries up to 08-03\
+  \ pre-date start_date, walkers ignore them.\n2026-08-02 (later): post-grilling restructure\
+  \ + full reset. marketplace-builder is now two tracks: Mon/Wed = 16-rung ladder\
+  \ (pick 1 of 3 challenges per rung, real consumer required, polyglot allowed); Saturday\
+  \ = the real rental platform from week 1 (first-12-sessions checklist; exam gates\
+  \ 1-4 live there). New advisory /ladder-review skill (verdict committed to repo).\
+  \ Crunch rule: Anki + one build session + Sunday review is a valid week. FULL reset:\
+  \ start_date -> 2026-08-02 for ALL syllabuses (marketplace-builder, devops-ready,\
+  \ and paused long-way); month/phase/module -> 1; counters 0. Caches left intact\
+  \ per the established pattern \u2014 old entries pre-date start_date so streak/adherence\
+  \ walkers ignore them and the dashboard reports day 1 for everything.\n2026-08-02:\
+  \ marketplace-builder replaces devops-ready as the focus track (build-first syllabus;\
+  \ booking platform is the spine; SAA cert = parallel theory track months 1-3, CKA\
+  \ parked post-launch). devops-ready disabled in config (superseded \u2014 cert goals\
+  \ live on inside marketplace-builder; files kept as reference). long-way paused\
+  \ (paused_since 2026-08-02, parked until platform launch).\n2026-07-01: focus switch\
+  \ to devops-ready. boot.dev now every weekday; LeetCode alternate days (Mon/Wed/Fri);\
+  \ morning study Mon-Fri; Saturday = long-way CS:APP long reading (AM) + devops project\
+  \ block (PM). long-way relegated to Saturdays only. start_date->2026-07-01 for both\
+  \ (fresh slate; new template ids have no cache history, so old dates would false-read\
+  \ as missed). Streaks: devops grades morning-study + Anki; long-way grades Saturday\
+  \ reading + Anki. Common-tasks spec drafted (specs/common-tasks.md) but deferred.\n\
+  2026-06-21: full tracking reset for both tracks (owner request). start_date->2026-06-21,\
+  \ month/phase/module->1 for long-way and devops-ready. Adherence/streaks/last-7\
+  \ start fresh from today. Cache left intact (cron idempotency ledger); old entries\
+  \ pre-date start_date so the streak walkers ignore them.\n2026-05-05: starting day\
+  \ 1. May 4 setup tasks wiped via --cleanup-project; cache reset.\n"

@@ -1,0 +1,20 @@
+- timestamp: '2026-08-22'
+  action: increment_counter
+  todoist_task_id: lw-review-2026-08-22-0
+  counter: learn_clusters_done
+  delta: 2
+  prior:
+    learn_clusters_done: 0
+  new:
+    learn_clusters_done: 2
+  message: 'learn_clusters_done: 0 -> 2 (+2)'
+- timestamp: '2026-08-22'
+  action: increment_counter
+  todoist_task_id: lw-review-2026-08-22-1
+  counter: anki_card_count
+  delta: 100
+  prior:
+    anki_card_count: 0
+  new:
+    anki_card_count: 100
+  message: 'anki_card_count: 0 -> 100 (+100)'
