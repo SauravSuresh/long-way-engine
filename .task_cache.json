@@ -489,6 +489,12 @@
       "template_id": "weekly-leetcode-friday",
       "todoist_task_id": "6h7pg278Vpm7v5m5"
     },
+    "3005dfb8f56d6e51": {
+      "created_at": "2026-08-23T21:40:55.351769+00:00",
+      "due_date": "2026-08-24",
+      "template_id": "weekday-morning-study-monday",
+      "todoist_task_id": "6hM4j6MVj2F6wmjX"
+    },
     "30581e49feaa545e": {
       "created_at": "2026-08-03T22:31:01.816799+00:00",
       "due_date": "2026-08-04",
@@ -647,6 +653,12 @@
       "status": "missed",
       "template_id": "weekly-bootdev-thursday",
       "todoist_task_id": "6h5wh9Q9w6V5MxQX"
+    },
+    "3d58ccbe46004f82": {
+      "created_at": "2026-08-23T21:40:56.418344+00:00",
+      "due_date": "2026-08-24",
+      "template_id": "weekly-bootdev-monday",
+      "todoist_task_id": "6hM4j6PxF5CjMWCX"
     },
     "40d3f8a0c61b89cf": {
       "created_at": "2026-07-26T22:25:52.066576+00:00",
@@ -1474,14 +1486,6 @@
       "template_id": "weekday-morning-study-friday",
       "todoist_task_id": "6h7pg24X75Pxp7X5"
     },
-    "a74f14b97749f961": {
-      "completed_at": "2026-06-26",
-      "created_at": "2026-06-24T22:46:53.221889+00:00",
-      "due_date": "2026-06-25",
-      "status": "completed",
-      "template_id": "daily-devops-srs",
-      "todoist_task_id": "6gx3PcCvqJjx4X7X"
-    },
     "a77dfef9148a448e": {
       "completed_at": "2026-07-02",
       "created_at": "2026-06-30T22:45:55.870000+00:00",
@@ -1978,14 +1982,6 @@
       "template_id": "weekly-state-review:sub:0",
       "todoist_task_id": "6hFWJmRxVvXR59q5"
     },
-    "eab925fb0a35d99b": {
-      "created_at": "2026-06-24T22:46:54.603565+00:00",
-      "due_date": "2026-06-25",
-      "missed_at": "2026-06-26",
-      "status": "missed",
-      "template_id": "weekly-bootdev-thursday",
-      "todoist_task_id": "6gx3PcHRQqCHv6qX"
-    },
     "eb7101442361194c": {
       "created_at": "2026-07-10T22:29:26.220917+00:00",
       "due_date": "2026-07-11",
@@ -2157,14 +2153,6 @@
       "status": "completed",
       "template_id": "weekly-bootdev-thursday",
       "todoist_task_id": "6h4GF3qH9v2Grv75"
-    },
-    "f8b128ee0b4bca15": {
-      "created_at": "2026-06-24T22:46:53.881562+00:00",
-      "due_date": "2026-06-25",
-      "missed_at": "2026-06-26",
-      "status": "missed",
-      "template_id": "daily-morning-udemy",
-      "todoist_task_id": "6gx3PcG6MC5rXJCX"
     },
     "faddab3097f4e9ac": {
       "completed_at": "2026-07-11",
@@ -3283,6 +3271,12 @@
       "due_date": "module:1",
       "template_id": "rung-1",
       "todoist_task_id": "6hHfp4Fw3737PR2G"
+    },
+    "400c5d2a893e3a4b": {
+      "created_at": "2026-08-23T21:40:53.887711+00:00",
+      "due_date": "2026-08-24",
+      "template_id": "daily-anki",
+      "todoist_task_id": "6hM4j6CHcQvVC62G"
     },
     "99a13f71e34de1db": {
       "created_at": "2026-08-21T21:44:03.534943+00:00",
