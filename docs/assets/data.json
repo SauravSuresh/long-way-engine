@@ -19,8 +19,8 @@
     "devops-ready": {
       "adherence": {
         "done": 4,
-        "expected": 6,
-        "percent": 67,
+        "expected": 7,
+        "percent": 57,
         "since": "2026-08-17"
       },
       "books": [
@@ -98,13 +98,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 9,
+      "day_of_journey": 10,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-08-18",
-          "state": "green"
-        },
         {
           "date": "2026-08-19",
           "state": "green"
@@ -127,6 +123,10 @@
         },
         {
           "date": "2026-08-24",
+          "state": "red"
+        },
+        {
+          "date": "2026-08-25",
           "state": "red"
         }
       ],
@@ -190,21 +190,21 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 7 days"
+          "hint": "next post in 6 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 3 days"
+          "hint": "next Friday in 2 days"
         }
       },
-      "today": "2026-08-25"
+      "today": "2026-08-26"
     },
     "marketplace-builder": {
       "adherence": {
-        "done": 5,
-        "expected": 6,
-        "percent": 83,
+        "done": 6,
+        "expected": 7,
+        "percent": 86,
         "since": "2026-08-18"
       },
       "books": [
@@ -254,13 +254,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 8,
+      "day_of_journey": 9,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-08-18",
-          "state": "green"
-        },
         {
           "date": "2026-08-19",
           "state": "green"
@@ -283,6 +279,10 @@
         },
         {
           "date": "2026-08-24",
+          "state": "green"
+        },
+        {
+          "date": "2026-08-25",
           "state": "green"
         }
       ],
@@ -319,40 +319,40 @@
         }
       ],
       "streaks": {
-        "Daily": 1,
+        "Daily": 2,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
           "best": 4,
-          "count": 1,
+          "count": 2,
           "hint": "morning reading + Anki by 23:59 to keep it"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 7 days"
+          "hint": "next post in 6 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 3 days"
+          "hint": "next Friday in 2 days"
         }
       },
-      "today": "2026-08-25"
+      "today": "2026-08-26"
     }
   },
   "xp": {
     "by_source": {
-      "daily": 50,
+      "daily": 60,
       "deep_block": 0,
       "exam_gates": 0,
       "reflections": 0,
       "rungs": 0,
       "streak_bonus": 0,
       "weekly_review": 40,
-      "weekly_ritual": 225
+      "weekly_ritual": 250
     },
     "ladder": [
       {
@@ -412,13 +412,13 @@
       }
     ],
     "level": 2,
-    "level_progress": 51,
+    "level_progress": 86,
     "next_level_at": 466,
     "next_reward": {
       "level": 3,
       "reward": "One full lazy Saturday morning \u2014 no alarm, no Anki before noon (streak-safe: do it at 1pm)"
     },
-    "total": 315,
+    "total": 350,
     "unlocked": [
       {
         "level": 1,
