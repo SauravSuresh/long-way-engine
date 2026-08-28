@@ -11,6 +11,8 @@
     "012b9cf8710a230c": {
       "created_at": "2026-08-27T00:54:05.494436+00:00",
       "due_date": "2026-08-27",
+      "missed_at": "2026-08-28",
+      "status": "missed",
       "template_id": "weekday-morning-study-thursday",
       "todoist_task_id": "6hMp9hJFWWXWrmRX"
     },
@@ -79,6 +81,8 @@
     "09c30687bed4f990": {
       "created_at": "2026-08-27T00:54:05.950803+00:00",
       "due_date": "2026-08-27",
+      "missed_at": "2026-08-28",
+      "status": "missed",
       "template_id": "weekly-bootdev-thursday",
       "todoist_task_id": "6hMp9hQ4VwjF9h6X"
     },
@@ -293,6 +297,12 @@
       "template_id": "weekly-bootdev-monday",
       "todoist_task_id": "6hFmv7J9gxMP63c5"
     },
+    "1d84adb49f967245": {
+      "created_at": "2026-08-28T05:29:55.599773+00:00",
+      "due_date": "2026-08-28",
+      "template_id": "weekday-morning-study-friday",
+      "todoist_task_id": "6hP57Q8gWQpCgwCX"
+    },
     "1ddb18a5d28f9f6c": {
       "created_at": "2026-07-18T22:10:53.772978+00:00",
       "due_date": "2026-07-19",
@@ -304,14 +314,6 @@
       "status": "missed",
       "template_id": "weekly-state-review:sub:5",
       "todoist_task_id": "6h6f633xxCRGR2J5"
-    },
-    "1e1687ba1545c465": {
-      "completed_at": "2026-06-30",
-      "created_at": "2026-06-28T22:32:47.787524+00:00",
-      "due_date": "2026-06-29",
-      "status": "completed",
-      "template_id": "weekly-bootdev-monday",
-      "todoist_task_id": "6gxxHRW3C9wwPWX5"
     },
     "1f17885ed4822b9a": {
       "completed_at": "2026-07-01",
@@ -390,6 +392,12 @@
       "status": "missed",
       "template_id": "monthly-github-project-publish",
       "todoist_task_id": "6h9gcWCX5RMGfQrX"
+    },
+    "2b5ae9a46c42a70c": {
+      "created_at": "2026-08-28T05:29:56.043288+00:00",
+      "due_date": "2026-08-28",
+      "template_id": "weekly-leetcode-friday",
+      "todoist_task_id": "6hP57QFGMHxRJhFX"
     },
     "2b60b24c7ed1ec14": {
       "completed_at": "2026-07-02",
@@ -978,14 +986,6 @@
       "template_id": "weekday-morning-study-tuesday",
       "todoist_task_id": "6h8jfgqPPj6C8hRX"
     },
-    "73f37b94ff93f60b": {
-      "completed_at": "2026-06-30",
-      "created_at": "2026-06-28T22:32:46.125716+00:00",
-      "due_date": "2026-06-29",
-      "status": "completed",
-      "template_id": "daily-devops-srs",
-      "todoist_task_id": "6gxxHRQhXg9XhmmX"
-    },
     "756038e2cc3cb075": {
       "created_at": "2026-08-11T22:09:06.352073+00:00",
       "due_date": "2026-08-12",
@@ -1407,14 +1407,6 @@
       "status": "completed",
       "template_id": "daily-devops-srs",
       "todoist_task_id": "6h2frvPfMw76C2JX"
-    },
-    "a8010dfc542abadc": {
-      "created_at": "2026-06-28T22:32:47.377271+00:00",
-      "due_date": "2026-06-29",
-      "missed_at": "2026-06-30",
-      "status": "missed",
-      "template_id": "daily-evening-hands-on",
-      "todoist_task_id": "6gxxHRWCC7xppjGX"
     },
     "a91f20f340ddf819": {
       "created_at": "2026-07-15T22:26:38.176078+00:00",
@@ -1901,14 +1893,6 @@
       "status": "completed",
       "template_id": "weekly-bootdev-tuesday",
       "todoist_task_id": "6h28qWJQ35Jjgc4X"
-    },
-    "f34500cb984f3ce2": {
-      "created_at": "2026-06-28T22:32:46.656134+00:00",
-      "due_date": "2026-06-29",
-      "missed_at": "2026-06-30",
-      "status": "missed",
-      "template_id": "daily-morning-udemy",
-      "todoist_task_id": "6gxxHRW36cxfm34X"
     },
     "f35270849be1fe85": {
       "created_at": "2026-08-08T21:51:40.417400+00:00",
@@ -3096,6 +3080,12 @@
       "template_id": "daily-anki",
       "todoist_task_id": "6hJJG6JmWXvg3jFG"
     },
+    "1c7e5bfa5ddc5d98": {
+      "created_at": "2026-08-28T05:29:54.444661+00:00",
+      "due_date": "2026-08-28",
+      "template_id": "daily-anki",
+      "todoist_task_id": "6hP57Q5r4Vfpmvqp"
+    },
     "1e50ba140e56fa46": {
       "completed_at": "2026-08-26",
       "created_at": "2026-08-24T21:49:26.928175+00:00",
@@ -3172,8 +3162,10 @@
       "todoist_task_id": "6hHfp4Ghf7QcCc4G"
     },
     "c5c269c84bc6cd56": {
+      "completed_at": "2026-08-28",
       "created_at": "2026-08-27T00:54:04.230888+00:00",
       "due_date": "2026-08-27",
+      "status": "completed",
       "template_id": "daily-anki",
       "todoist_task_id": "6hMp9hGFvQfcWWPp"
     },
