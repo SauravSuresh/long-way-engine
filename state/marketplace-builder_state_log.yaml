@@ -18,3 +18,13 @@
   new:
     anki_card_count: 100
   message: 'anki_card_count: 0 -> 100 (+100)'
+- timestamp: '2026-08-29'
+  action: increment_counter
+  todoist_task_id: lw-review-2026-08-29-0
+  counter: anki_card_count
+  delta: 40
+  prior:
+    anki_card_count: 200
+  new:
+    anki_card_count: 240
+  message: 'anki_card_count: 200 -> 240 (+40)'
