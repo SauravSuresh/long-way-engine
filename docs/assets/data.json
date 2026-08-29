@@ -4,9 +4,9 @@
     "devops-ready"
   ],
   "shared": {
-    "anki_card_count": 200,
+    "anki_card_count": 280,
     "manual_counters": {
-      "anki_card_count": 200,
+      "anki_card_count": 280,
       "learn_clusters_done": 2,
       "lineage_detours_done": [],
       "prs_opened": 0,
@@ -372,7 +372,7 @@
       "reflections": 0,
       "rungs": 0,
       "streak_bonus": 0,
-      "weekly_review": 40,
+      "weekly_review": 80,
       "weekly_ritual": 275
     },
     "ladder": [
@@ -433,13 +433,13 @@
       }
     ],
     "level": 2,
-    "level_progress": 131,
+    "level_progress": 171,
     "next_level_at": 466,
     "next_reward": {
       "level": 3,
       "reward": "One full lazy Saturday morning \u2014 no alarm, no Anki before noon (streak-safe: do it at 1pm)"
     },
-    "total": 395,
+    "total": 435,
     "unlocked": [
       {
         "level": 1,
