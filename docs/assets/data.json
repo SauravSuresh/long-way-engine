@@ -19,8 +19,8 @@
     "devops-ready": {
       "adherence": {
         "done": 4,
-        "expected": 9,
-        "percent": 44,
+        "expected": 10,
+        "percent": 40,
         "since": "2026-08-17"
       },
       "books": [
@@ -98,13 +98,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 12,
+      "day_of_journey": 13,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-08-21",
-          "state": "green"
-        },
         {
           "date": "2026-08-22",
           "state": "gray"
@@ -127,6 +123,10 @@
         },
         {
           "date": "2026-08-27",
+          "state": "red"
+        },
+        {
+          "date": "2026-08-28",
           "state": "red"
         }
       ],
@@ -162,6 +162,13 @@
           "word_count": 0
         },
         {
+          "cadence": "weekly",
+          "file": "2026-W35",
+          "relative_path": "weekly/2026-W35.md",
+          "status": "stub",
+          "word_count": 0
+        },
+        {
           "cadence": "monthly",
           "file": "2026-06",
           "relative_path": "monthly/2026-06.md",
@@ -172,6 +179,13 @@
           "cadence": "monthly",
           "file": "2026-07",
           "relative_path": "monthly/2026-07.md",
+          "status": "stub",
+          "word_count": 0
+        },
+        {
+          "cadence": "monthly",
+          "file": "2026-08",
+          "relative_path": "monthly/2026-08.md",
           "status": "stub",
           "word_count": 0
         }
@@ -185,26 +199,26 @@
         "Daily": {
           "best": 4,
           "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "hint": "rest day \u2014 no rituals scheduled"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 4 days"
+          "hint": "next post in 3 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "Friday review + filled reflection due today"
+          "hint": "next Friday in 6 days"
         }
       },
-      "today": "2026-08-28"
+      "today": "2026-08-29"
     },
     "marketplace-builder": {
       "adherence": {
-        "done": 7,
-        "expected": 9,
-        "percent": 78,
+        "done": 8,
+        "expected": 10,
+        "percent": 80,
         "since": "2026-08-18"
       },
       "books": [
@@ -254,13 +268,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 11,
+      "day_of_journey": 12,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-08-21",
-          "state": "green"
-        },
         {
           "date": "2026-08-22",
           "state": "red"
@@ -283,6 +293,10 @@
         },
         {
           "date": "2026-08-27",
+          "state": "green"
+        },
+        {
+          "date": "2026-08-28",
           "state": "green"
         }
       ],
@@ -316,36 +330,43 @@
           "relative_path": "weekly/2026-W34.md",
           "status": "stub",
           "word_count": 0
+        },
+        {
+          "cadence": "weekly",
+          "file": "2026-W35",
+          "relative_path": "weekly/2026-W35.md",
+          "status": "stub",
+          "word_count": 0
         }
       ],
       "streaks": {
-        "Daily": 1,
+        "Daily": 2,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
           "best": 4,
-          "count": 1,
+          "count": 2,
           "hint": "morning reading + Anki by 23:59 to keep it"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 4 days"
+          "hint": "next post in 3 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "Friday review + filled reflection due today"
+          "hint": "next Friday in 6 days"
         }
       },
-      "today": "2026-08-28"
+      "today": "2026-08-29"
     }
   },
   "xp": {
     "by_source": {
-      "daily": 70,
+      "daily": 80,
       "deep_block": 0,
       "exam_gates": 0,
       "reflections": 0,
@@ -412,13 +433,13 @@
       }
     ],
     "level": 2,
-    "level_progress": 121,
+    "level_progress": 131,
     "next_level_at": 466,
     "next_reward": {
       "level": 3,
       "reward": "One full lazy Saturday morning \u2014 no alarm, no Anki before noon (streak-safe: do it at 1pm)"
     },
-    "total": 385,
+    "total": 395,
     "unlocked": [
       {
         "level": 1,
