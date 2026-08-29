@@ -168,7 +168,7 @@
   day_of_week: saturday
   state_review: true
   sub_tasks:
-    - title: "Did you finish this week's rung — shipped, /ladder-review run? Yes moves you to Rung {next_module}."
+    - title: "Did you finish this week's rung — shipped, /ladder-review run? Ready to move on? Yes advances you to Rung {next_module}: {next_module_name}."
       action: { type: advance_module }
       show_if: not_on_last_module
 
@@ -181,8 +181,9 @@
     - title: "Is the platform now live in production? Yes kicks off the monthly drills."
       action: { type: mark_track_started, category: Platform, item: "Platform in production" }
 
-    - title: "Did you finish {current_book}?"
-      action: { type: mark_book_finished, book: "{current_book}" }
+    # No book question here — marketplace-builder books are pull-only
+    # references (see syllabus.yaml BOOKS note); asking "did you finish
+    # The Go Programming Language?" weekly contradicted that.
 
     - title: "Did you do this Saturday's learn cluster — session, 3-5 Anki cards, and a note?"
       action: { type: increment_counter, counter: learn_clusters_done }

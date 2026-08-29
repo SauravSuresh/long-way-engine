@@ -29,11 +29,11 @@ def test_build_questions_filters_show_if_and_resolves_titles():
     assert cur.state.current_module == 1  # not the last of 16 rungs
 
     questions = build_questions(cur, date(2026, 8, 9))
-    assert len(questions) == 8
+    assert len(questions) == 7  # no book question: mb books are pull-only
 
     advance_q = next(q for q in questions if q.sub.action["type"] == "advance_module")
     assert "Rung" in advance_q.sub.title
-    assert "2" in advance_q.sub.title
+    assert "2: Crash-safe persistence" in advance_q.sub.title
 
 
 def test_counter_questions_flagged():
@@ -262,3 +262,15 @@ def test_is_review_time_only_on_the_state_review_day():
     assert review_day(cur) == "saturday"
     assert is_review_time(cur, _date(2026, 8, 6)) is False  # Thursday
     assert is_review_time(cur, _date(2026, 8, 8)) is True  # Saturday
+
+
+def test_due_monthly_reflections_only_on_firing_day():
+    from src.lw.review_logic import due_monthly_reflections
+
+    ctx = load_engine(REPO)
+    # 2026-09-26 is the last Saturday of September: the devops-ready
+    # monthly retrospective (a reflection-stub template) fires.
+    due = due_monthly_reflections(ctx, date(2026, 9, 26))
+    assert any(t.key == "devops-ready" and t.cadence == "monthly" for t in due)
+    # A non-last Saturday fires no monthly reflection.
+    assert due_monthly_reflections(load_engine(REPO), date(2026, 9, 19)) == []

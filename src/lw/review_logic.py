@@ -133,6 +133,26 @@ def apply_answers(
     return messages
 
 
+def due_monthly_reflections(ctx: EngineCtx, today: date):
+    """Monthly reflection-stub templates that fire today (e.g. the
+    last-Saturday retrospective, the 1st-of-month ship log) and haven't
+    been written yet. lw review chains into the reflect form for these
+    after the questionnaires, so the retro can't be skipped silently."""
+    from src.lw.reflect_logic import ReflectTarget, reflect_targets
+    from src.scheduler import _monthly_fires
+
+    out: list[ReflectTarget] = []
+    for target in reflect_targets(ctx, today):
+        if target.cadence != "monthly":
+            continue
+        if not _monthly_fires(target.template, today):
+            continue
+        if target.stub_path.exists():
+            continue
+        out.append(target)
+    return out
+
+
 @dataclass
 class DeadlineGate:
     meta_path: Path

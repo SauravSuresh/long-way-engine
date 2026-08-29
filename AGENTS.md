@@ -402,7 +402,7 @@ Sub-task vocabulary:
 `not_paused`, `paused`. Sub-tasks with a false `show_if` are not created.
 
 Placeholders available in sub-task titles: standard ones plus
-`{next_module}`, `{next_book}`, `{current_phase_name}`.
+`{next_module}`, `{next_module_name}`, `{next_book}`, `{current_phase_name}`.
 
 ```yaml
 - id: weekly-state-review

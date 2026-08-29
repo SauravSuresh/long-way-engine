@@ -125,7 +125,7 @@
   day_of_week: saturday
   state_review: true
   sub_tasks:
-    - title: "Are you ready to move on to Module {next_module}?"
+    - title: "Are you ready to move on to Module {next_module}: {next_module_name}?"
       action: { type: advance_module }
       show_if: not_on_last_module
 

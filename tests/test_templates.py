@@ -329,3 +329,13 @@ def test_no_deadline_days_means_empty_deadline_date():
     )
     resolved = resolve_variables(t, make_state(), make_config(), date(2026, 8, 5))
     assert resolved.deadline_date == ""
+
+
+def test_next_module_name_resolves_from_syllabus():
+    syl = make_syllabus()
+    syl.modules.append(Module(number=2, name="M2", phase=1))
+    out = resolve_string(
+        "Ready for Module {next_module}: {next_module_name}?",
+        make_state(), make_config(), date(2026, 8, 29), syllabus=syl,
+    )
+    assert out == "Ready for Module 2: M2?"

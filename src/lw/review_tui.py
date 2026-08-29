@@ -20,6 +20,7 @@ from src.lw.review_logic import (
     apply_gate,
     build_deadline_gate,
     build_questions,
+    due_monthly_reflections,
     forced_advance_answer,
     is_review_time,
     review_day,
@@ -343,5 +344,15 @@ def run_review(repo_root: Path) -> int:
                 print(f"  {message}")
         else:
             print(f"{result.key}: nothing changed this week — noted.")
+
+    # Chain into any monthly reflection due today (retrospective / ship
+    # log) — reload the engine so the reflect form sees post-review state.
+    retros = due_monthly_reflections(load_engine(repo_root), today)
+    if retros:
+        from src.lw.reflect_tui import run_reflect
+
+        print("Monthly reflection due today — opening the reflect form.")
+        run_reflect(repo_root, only=retros)
+
     print("Review saved. Enjoy the rest of your Saturday.")
     return 0

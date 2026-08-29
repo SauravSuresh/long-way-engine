@@ -78,8 +78,10 @@
 - id: monthly-retrospective
   title: "Monthly retrospective — {year}-{month:02d}"
   description: |
-    Last Saturday: Reflect on the month's progress.
-    
+    Last Saturday: Reflect on the month's progress. This task is the
+    reminder — `lw review` opens the retro form automatically after the
+    Saturday questionnaires (or run `lw reflect` directly).
+
     Review:
     1. Module completion: Did you hit the milestone?
     2. Certification progress: On track for exam?

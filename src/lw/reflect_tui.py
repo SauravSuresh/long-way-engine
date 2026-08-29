@@ -122,10 +122,10 @@ class ReflectApp(App):
         self.exit()
 
 
-def run_reflect(repo_root: Path) -> int:
+def run_reflect(repo_root: Path, only: list[ReflectTarget] | None = None) -> int:
     ctx = load_engine(repo_root)
     today = date.today()
-    targets = reflect_targets(ctx, today)
+    targets = only if only is not None else reflect_targets(ctx, today)
     if not targets:
         print("No reflection targets due today.")
         return 0

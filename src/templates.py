@@ -193,6 +193,9 @@ def _lookup(
         return _resolve_current_module(state.current_module, syllabus_obj)
     if name == "next_module":
         return state.current_module + 1
+    if name == "next_module_name":
+        from src.syllabus import current_module_name as _resolve_current_module
+        return _resolve_current_module(state.current_module + 1, syllabus_obj)
     if name == "next_book":
         from src.syllabus import current_book as _resolve_current_book
         cur = state.current_book or _resolve_current_book(state.month, syllabus_obj)
