@@ -152,14 +152,6 @@
       "template_id": "weekly-leetcode-friday",
       "todoist_task_id": "6hF6M4QmwWG7FR4X"
     },
-    "1996d4984a3cac77": {
-      "created_at": "2026-07-14T22:27:03.513753+00:00",
-      "due_date": "2026-07-15",
-      "missed_at": "2026-07-16",
-      "status": "missed",
-      "template_id": "weekly-leetcode-wednesday",
-      "todoist_task_id": "6h5h9QjW2MJVHGVX"
-    },
     "19baebe5522b821c": {
       "created_at": "2026-08-01T22:17:13.535459+00:00",
       "due_date": "2026-08-02",
@@ -189,14 +181,6 @@
       "status": "missed",
       "template_id": "weekday-morning-study-tuesday",
       "todoist_task_id": "6h768JMCWqM3CW65"
-    },
-    "1aff75c00aea63a1": {
-      "created_at": "2026-07-14T22:27:01.956246+00:00",
-      "due_date": "2026-07-15",
-      "missed_at": "2026-07-16",
-      "status": "missed",
-      "template_id": "weekly-bootdev-wednesday",
-      "todoist_task_id": "6h5h9Qh6vcxR44F5"
     },
     "1bb02a63a7dcdaa7": {
       "created_at": "2026-08-10T22:03:27.459205+00:00",
@@ -1116,14 +1100,6 @@
       "template_id": "weekly-leetcode-monday",
       "todoist_task_id": "6hFmv7M6px8mXq8X"
     },
-    "aaf5f57a667c1cc3": {
-      "created_at": "2026-07-14T22:27:00.985928+00:00",
-      "due_date": "2026-07-15",
-      "missed_at": "2026-07-16",
-      "status": "missed",
-      "template_id": "monthly-certification-prep",
-      "todoist_task_id": "6h5h9QWpjqwMPwgX"
-    },
     "ab44019b3edab1e0": {
       "created_at": "2026-09-01T00:40:47.017346+00:00",
       "due_date": "2026-09-01",
@@ -1208,14 +1184,6 @@
       "status": "missed",
       "template_id": "monthly-retrospective",
       "todoist_task_id": "6hPFwJ8gP6J5PC95"
-    },
-    "c2566b2cdf2e3c82": {
-      "created_at": "2026-07-14T22:27:00.366818+00:00",
-      "due_date": "2026-07-15",
-      "missed_at": "2026-07-16",
-      "status": "missed",
-      "template_id": "weekday-morning-study-wednesday",
-      "todoist_task_id": "6h5h9QQjGFmXp2w5"
     },
     "c3a53faa050145e7": {
       "completed_at": "2026-07-30",
@@ -1355,6 +1323,8 @@
     "d6a9344b038f2296": {
       "created_at": "2026-09-11T23:23:16.298951+00:00",
       "due_date": "2026-09-12",
+      "missed_at": "2026-09-13",
+      "status": "missed",
       "template_id": "weekly-reflection",
       "todoist_task_id": "6hVVfV8jjfP99H8X"
     },
@@ -1439,6 +1409,8 @@
     "e4f086458926db9c": {
       "created_at": "2026-09-11T23:23:16.775551+00:00",
       "due_date": "2026-09-12",
+      "missed_at": "2026-09-13",
+      "status": "missed",
       "template_id": "weekly-state-review",
       "todoist_task_id": "6hVVfV9PWFv7jmR5"
     },
@@ -1552,14 +1524,6 @@
       "status": "missed",
       "template_id": "weekday-morning-study-friday",
       "todoist_task_id": "6h9Q79hRQrWMQGR5"
-    },
-    "f3da7f3c206744b3": {
-      "created_at": "2026-07-14T22:26:59.615758+00:00",
-      "due_date": "2026-07-15",
-      "missed_at": "2026-07-16",
-      "status": "missed",
-      "template_id": "daily-devops-srs",
-      "todoist_task_id": "6h5h9QPMFhjhrxxX"
     },
     "f55ea822a00927bb": {
       "created_at": "2026-08-08T21:51:41.679748+00:00",
@@ -2743,6 +2707,8 @@
     "3987ac261d257224": {
       "created_at": "2026-09-11T23:23:14.433775+00:00",
       "due_date": "2026-09-12",
+      "missed_at": "2026-09-13",
+      "status": "missed",
       "template_id": "saturday-deep-block",
       "todoist_task_id": "6hVVfV3FcRChRWrp"
     },
@@ -2803,6 +2769,8 @@
     "724aafa6ec3d5637": {
       "created_at": "2026-09-11T23:23:13.314316+00:00",
       "due_date": "2026-09-12",
+      "missed_at": "2026-09-13",
+      "status": "missed",
       "template_id": "daily-anki",
       "todoist_task_id": "6hVVfRrcpgmfRW8G"
     },
@@ -2934,6 +2902,8 @@
     "d6a9344b038f2296": {
       "created_at": "2026-09-11T23:23:14.013023+00:00",
       "due_date": "2026-09-12",
+      "missed_at": "2026-09-13",
+      "status": "missed",
       "template_id": "weekly-reflection",
       "todoist_task_id": "6hVVfV3GqCXpx3Vp"
     },
@@ -2964,6 +2934,8 @@
     "e4f086458926db9c": {
       "created_at": "2026-09-11T23:23:14.899696+00:00",
       "due_date": "2026-09-12",
+      "missed_at": "2026-09-13",
+      "status": "missed",
       "template_id": "weekly-state-review",
       "todoist_task_id": "6hVVfV3CHqqp437G"
     },
