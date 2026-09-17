@@ -19,8 +19,8 @@
     "devops-ready": {
       "adherence": {
         "done": 9,
-        "expected": 23,
-        "percent": 39,
+        "expected": 24,
+        "percent": 38,
         "since": "2026-08-17"
       },
       "books": [
@@ -98,13 +98,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 32,
+      "day_of_journey": 33,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-09-10",
-          "state": "red"
-        },
         {
           "date": "2026-09-11",
           "state": "red"
@@ -127,6 +123,10 @@
         },
         {
           "date": "2026-09-16",
+          "state": "red"
+        },
+        {
+          "date": "2026-09-17",
           "state": "red"
         }
       ],
@@ -218,21 +218,21 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 14 days"
+          "hint": "next post in 13 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 1 day"
+          "hint": "Friday review + filled reflection due today"
         }
       },
-      "today": "2026-09-17"
+      "today": "2026-09-18"
     },
     "marketplace-builder": {
       "adherence": {
         "done": 12,
-        "expected": 26,
-        "percent": 46,
+        "expected": 27,
+        "percent": 44,
         "since": "2026-08-18"
       },
       "books": [
@@ -282,13 +282,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 31,
+      "day_of_journey": 32,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-09-10",
-          "state": "red"
-        },
         {
           "date": "2026-09-11",
           "state": "red"
@@ -311,6 +307,10 @@
         },
         {
           "date": "2026-09-16",
+          "state": "red"
+        },
+        {
+          "date": "2026-09-17",
           "state": "red"
         }
       ],
@@ -388,15 +388,15 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 14 days"
+          "hint": "next post in 13 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 1 day"
+          "hint": "Friday review + filled reflection due today"
         }
       },
-      "today": "2026-09-17"
+      "today": "2026-09-18"
     }
   },
   "xp": {
