@@ -19,8 +19,8 @@
     "devops-ready": {
       "adherence": {
         "done": 9,
-        "expected": 24,
-        "percent": 38,
+        "expected": 25,
+        "percent": 36,
         "since": "2026-08-17"
       },
       "books": [
@@ -98,13 +98,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 33,
+      "day_of_journey": 34,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-09-11",
-          "state": "red"
-        },
         {
           "date": "2026-09-12",
           "state": "gray"
@@ -127,6 +123,10 @@
         },
         {
           "date": "2026-09-17",
+          "state": "red"
+        },
+        {
+          "date": "2026-09-18",
           "state": "red"
         }
       ],
@@ -183,6 +183,13 @@
           "word_count": 0
         },
         {
+          "cadence": "weekly",
+          "file": "2026-W38",
+          "relative_path": "weekly/2026-W38.md",
+          "status": "stub",
+          "word_count": 0
+        },
+        {
           "cadence": "monthly",
           "file": "2026-06",
           "relative_path": "monthly/2026-06.md",
@@ -213,26 +220,26 @@
         "Daily": {
           "best": 5,
           "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "hint": "rest day \u2014 no rituals scheduled"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 13 days"
+          "hint": "next post in 12 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "Friday review + filled reflection due today"
+          "hint": "next Friday in 6 days"
         }
       },
-      "today": "2026-09-18"
+      "today": "2026-09-19"
     },
     "marketplace-builder": {
       "adherence": {
         "done": 12,
-        "expected": 27,
-        "percent": 44,
+        "expected": 28,
+        "percent": 43,
         "since": "2026-08-18"
       },
       "books": [
@@ -282,13 +289,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 32,
+      "day_of_journey": 33,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-09-11",
-          "state": "red"
-        },
         {
           "date": "2026-09-12",
           "state": "red"
@@ -311,6 +314,10 @@
         },
         {
           "date": "2026-09-17",
+          "state": "red"
+        },
+        {
+          "date": "2026-09-18",
           "state": "red"
         }
       ],
@@ -367,6 +374,13 @@
           "word_count": 0
         },
         {
+          "cadence": "weekly",
+          "file": "2026-W38",
+          "relative_path": "weekly/2026-W38.md",
+          "status": "stub",
+          "word_count": 0
+        },
+        {
           "cadence": "monthly",
           "file": "2026-09",
           "relative_path": "monthly/2026-09.md",
@@ -388,15 +402,15 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 13 days"
+          "hint": "next post in 12 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "Friday review + filled reflection due today"
+          "hint": "next Friday in 6 days"
         }
       },
-      "today": "2026-09-18"
+      "today": "2026-09-19"
     }
   },
   "xp": {
