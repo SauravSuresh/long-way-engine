@@ -98,13 +98,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 34,
+      "day_of_journey": 35,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-09-12",
-          "state": "gray"
-        },
         {
           "date": "2026-09-13",
           "state": "gray"
@@ -128,6 +124,10 @@
         {
           "date": "2026-09-18",
           "state": "red"
+        },
+        {
+          "date": "2026-09-19",
+          "state": "gray"
         }
       ],
       "month": 2,
@@ -220,26 +220,26 @@
         "Daily": {
           "best": 5,
           "count": 0,
-          "hint": "rest day \u2014 no rituals scheduled"
+          "hint": "Sunday \u2014 rest day"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 12 days"
+          "hint": "next post in 11 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 6 days"
+          "hint": "next Friday in 5 days"
         }
       },
-      "today": "2026-09-19"
+      "today": "2026-09-20"
     },
     "marketplace-builder": {
       "adherence": {
         "done": 12,
-        "expected": 28,
-        "percent": 43,
+        "expected": 29,
+        "percent": 41,
         "since": "2026-08-18"
       },
       "books": [
@@ -289,13 +289,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 33,
+      "day_of_journey": 34,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-09-12",
-          "state": "red"
-        },
         {
           "date": "2026-09-13",
           "state": "gray"
@@ -318,6 +314,10 @@
         },
         {
           "date": "2026-09-18",
+          "state": "red"
+        },
+        {
+          "date": "2026-09-19",
           "state": "red"
         }
       ],
@@ -397,20 +397,20 @@
         "Daily": {
           "best": 4,
           "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "hint": "Sunday \u2014 rest day"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 12 days"
+          "hint": "next post in 11 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 6 days"
+          "hint": "next Friday in 5 days"
         }
       },
-      "today": "2026-09-19"
+      "today": "2026-09-20"
     }
   },
   "xp": {
