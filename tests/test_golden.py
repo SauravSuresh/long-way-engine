@@ -22,6 +22,7 @@ from pathlib import Path
 
 import pytest
 
+from tests.conftest import live_state_paused
 from tests.golden.capture import build_multi_syllabus_scenario, capture
 
 GOLDEN_DIR = Path(__file__).parent / "golden"
@@ -35,6 +36,10 @@ GOLDEN_DATES = sorted(
 )
 
 
+@pytest.mark.skipif(
+    live_state_paused(),
+    reason="a live syllabus is paused; golden fixtures pin an unpaused schedule",
+)
 @pytest.mark.parametrize("iso_date", GOLDEN_DATES)
 def test_golden_matches(iso_date: str) -> None:
     """The capture for `iso_date` must match the pinned JSON byte-for-byte."""

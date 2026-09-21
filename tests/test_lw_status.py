@@ -1,6 +1,10 @@
 from datetime import date
 from pathlib import Path
 
+import pytest
+
+from tests.conftest import live_state_paused
+
 REPO = Path(__file__).resolve().parents[1]
 
 
@@ -18,6 +22,10 @@ def test_build_status_shows_current_module_and_deadline_fields():
     assert "Rung" in lines or "module" in lines.lower()
 
 
+@pytest.mark.skipif(
+    live_state_paused(),
+    reason="a live syllabus is paused; no template fires",
+)
 def test_build_status_lists_due_today_on_a_tuesday():
     """2026-08-18 is a Tuesday: marketplace-builder's build-session-tuesday
     template (weekly, day_of_week=tuesday) fires — its resolved title should

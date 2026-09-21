@@ -77,3 +77,24 @@ def _isolate_engine_paths(monkeypatch, tmp_path_factory):
     monkeypatch.setattr(
         "src.main.DOCS_CSS_PATH", root / "docs" / "assets" / "style.css"
     )
+
+
+def live_state_paused() -> bool:
+    """True when any *enabled* syllabus in the real state/ dir is paused.
+
+    The tests that read live config.yaml + state/*.yaml (golden captures,
+    lw status) encode an unpaused schedule, so a genuine pause — vacation,
+    the emergency-pause task — turns every one of them red. A pause is a
+    supported state, not a regression, so those tests skip instead.
+    """
+    import yaml
+
+    repo = Path(__file__).resolve().parents[1]
+    config = yaml.safe_load((repo / "config.yaml").read_text()) or {}
+    for entry in (config.get("syllabuses") or {}).values():
+        if not entry.get("enabled"):
+            continue
+        state = yaml.safe_load((repo / entry["state_file"]).read_text()) or {}
+        if state.get("paused"):
+            return True
+    return False
