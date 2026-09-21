@@ -10403,18 +10403,18 @@
       "file_type": "rationale",
       "source_file": "src/templates.py",
       "source_location": "L240",
-      "id": "templates_rationale_240",
       "community": 12,
-      "norm_label": "resolve placeholders in `s`. public so reflections.py can reuse."
+      "norm_label": "resolve placeholders in `s`. public so reflections.py can reuse.",
+      "id": "templates_rationale_240"
     },
     {
       "label": "Resolve placeholders. Returns None if any variable is missing.",
       "file_type": "rationale",
       "source_file": "src/templates.py",
       "source_location": "L265",
-      "id": "templates_rationale_265",
       "community": 12,
-      "norm_label": "resolve placeholders. returns none if any variable is missing."
+      "norm_label": "resolve placeholders. returns none if any variable is missing.",
+      "id": "templates_rationale_265"
     },
     {
       "label": "todoist.py",
@@ -12599,36 +12599,36 @@
       "file_type": "rationale",
       "source_file": "src/lw/review_tui.py",
       "source_location": "L33",
-      "id": "review_tui_rationale_33",
       "community": 0,
-      "norm_label": "shipped / extend(reason, days) / failed for the picked rung's deadline.     fail"
+      "norm_label": "shipped / extend(reason, days) / failed for the picked rung's deadline.     fail",
+      "id": "review_tui_rationale_33"
     },
     {
       "label": "One state_review sub_task: Yes/No, or an int Input for wants_count.      Every s",
       "file_type": "rationale",
       "source_file": "src/lw/review_tui.py",
       "source_location": "L110",
-      "id": "review_tui_rationale_110",
       "community": 0,
-      "norm_label": "one state_review sub_task: yes/no, or an int input for wants_count.      every s"
+      "norm_label": "one state_review sub_task: yes/no, or an int input for wants_count.      every s",
+      "id": "review_tui_rationale_110"
     },
     {
       "label": "Recap of this curriculum's checked answers; confirm to apply.",
       "file_type": "rationale",
       "source_file": "src/lw/review_tui.py",
       "source_location": "L176",
-      "id": "review_tui_rationale_176",
       "community": 0,
-      "norm_label": "recap of this curriculum's checked answers; confirm to apply."
+      "norm_label": "recap of this curriculum's checked answers; confirm to apply.",
+      "id": "review_tui_rationale_176"
     },
     {
       "label": "One gate+questionnaire+summary flow per cli_review curriculum, in order.      `r",
       "file_type": "rationale",
       "source_file": "src/lw/review_tui.py",
       "source_location": "L218",
-      "id": "review_tui_rationale_218",
       "community": 0,
-      "norm_label": "one gate+questionnaire+summary flow per cli_review curriculum, in order.      `r"
+      "norm_label": "one gate+questionnaire+summary flow per cli_review curriculum, in order.      `r",
+      "id": "review_tui_rationale_218"
     },
     {
       "label": "__init__.py",
@@ -12806,45 +12806,45 @@
       "file_type": "rationale",
       "source_file": "src/lw/review_logic.py",
       "source_location": "L137",
-      "id": "review_logic_rationale_137",
       "community": 0,
-      "norm_label": "monthly reflection-stub templates that fire today (e.g. the     last-saturday re"
+      "norm_label": "monthly reflection-stub templates that fire today (e.g. the     last-saturday re",
+      "id": "review_logic_rationale_137"
     },
     {
       "label": "The picked rung's gate, or None if not picked / already resolved / not yet due.",
       "file_type": "rationale",
       "source_file": "src/lw/review_logic.py",
       "source_location": "L169",
-      "id": "review_logic_rationale_169",
       "community": 0,
-      "norm_label": "the picked rung's gate, or none if not picked / already resolved / not yet due."
+      "norm_label": "the picked rung's gate, or none if not picked / already resolved / not yet due.",
+      "id": "review_logic_rationale_169"
     },
     {
       "label": "When the deadline gate resolved fail-forward (shipped/failed \u2192     advance=True)",
       "file_type": "rationale",
       "source_file": "src/lw/review_logic.py",
       "source_location": "L186",
-      "id": "review_logic_rationale_186",
       "community": 0,
-      "norm_label": "when the deadline gate resolved fail-forward (shipped/failed \u2192     advance=true)"
+      "norm_label": "when the deadline gate resolved fail-forward (shipped/failed \u2192     advance=true)",
+      "id": "review_logic_rationale_186"
     },
     {
       "label": "Same choice/validation semantics as apply_gate below, but pure \u2014 no     gate, no",
       "file_type": "rationale",
       "source_file": "src/lw/review_logic.py",
       "source_location": "L199",
-      "id": "review_logic_rationale_199",
       "community": 0,
-      "norm_label": "same choice/validation semantics as apply_gate below, but pure \u2014 no     gate, no"
+      "norm_label": "same choice/validation semantics as apply_gate below, but pure \u2014 no     gate, no",
+      "id": "review_logic_rationale_199"
     },
     {
       "label": "choice in {shipped, extend, failed_move_on, failed_retry}. shipped and     faile",
       "file_type": "rationale",
       "source_file": "src/lw/review_logic.py",
       "source_location": "L233",
-      "id": "review_logic_rationale_233",
       "community": 0,
-      "norm_label": "choice in {shipped, extend, failed_move_on, failed_retry}. shipped and     faile"
+      "norm_label": "choice in {shipped, extend, failed_move_on, failed_retry}. shipped and     faile",
+      "id": "review_logic_rationale_233"
     },
     {
       "label": "reflect_tui.py",
@@ -59245,11 +59245,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_logic_rationale_137",
-      "_tgt": "config_todoistconfig",
+      "_src": "config_todoistconfig",
+      "_tgt": "review_logic_rationale_137",
+      "confidence_score": 0.5,
       "source": "config_todoistconfig",
-      "target": "review_logic_rationale_137",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_137"
     },
     {
       "relation": "uses",
@@ -59257,11 +59257,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_logic_rationale_169",
-      "_tgt": "config_todoistconfig",
+      "_src": "config_todoistconfig",
+      "_tgt": "review_logic_rationale_169",
+      "confidence_score": 0.5,
       "source": "config_todoistconfig",
-      "target": "review_logic_rationale_169",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_169"
     },
     {
       "relation": "uses",
@@ -59269,11 +59269,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_logic_rationale_199",
-      "_tgt": "config_todoistconfig",
+      "_src": "config_todoistconfig",
+      "_tgt": "review_logic_rationale_199",
+      "confidence_score": 0.5,
       "source": "config_todoistconfig",
-      "target": "review_logic_rationale_199",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_199"
     },
     {
       "relation": "uses",
@@ -59281,11 +59281,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_logic_rationale_233",
-      "_tgt": "config_todoistconfig",
+      "_src": "config_todoistconfig",
+      "_tgt": "review_logic_rationale_233",
+      "confidence_score": 0.5,
       "source": "config_todoistconfig",
-      "target": "review_logic_rationale_233",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_233"
     },
     {
       "relation": "uses",
@@ -60373,11 +60373,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_logic_rationale_137",
-      "_tgt": "config_dashboardconfig",
+      "_src": "config_dashboardconfig",
+      "_tgt": "review_logic_rationale_137",
+      "confidence_score": 0.5,
       "source": "config_dashboardconfig",
-      "target": "review_logic_rationale_137",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_137"
     },
     {
       "relation": "uses",
@@ -60385,11 +60385,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_logic_rationale_169",
-      "_tgt": "config_dashboardconfig",
+      "_src": "config_dashboardconfig",
+      "_tgt": "review_logic_rationale_169",
+      "confidence_score": 0.5,
       "source": "config_dashboardconfig",
-      "target": "review_logic_rationale_169",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_169"
     },
     {
       "relation": "uses",
@@ -60397,11 +60397,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_logic_rationale_199",
-      "_tgt": "config_dashboardconfig",
+      "_src": "config_dashboardconfig",
+      "_tgt": "review_logic_rationale_199",
+      "confidence_score": 0.5,
       "source": "config_dashboardconfig",
-      "target": "review_logic_rationale_199",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_199"
     },
     {
       "relation": "uses",
@@ -60409,11 +60409,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_logic_rationale_233",
-      "_tgt": "config_dashboardconfig",
+      "_src": "config_dashboardconfig",
+      "_tgt": "review_logic_rationale_233",
+      "confidence_score": 0.5,
       "source": "config_dashboardconfig",
-      "target": "review_logic_rationale_233",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_233"
     },
     {
       "relation": "uses",
@@ -61381,11 +61381,11 @@
       "source_file": "src/templates.py",
       "source_location": "L26",
       "weight": 0.8,
-      "_src": "templates_rationale_240",
-      "_tgt": "config_config",
+      "_src": "config_config",
+      "_tgt": "templates_rationale_240",
+      "confidence_score": 0.5,
       "source": "config_config",
-      "target": "templates_rationale_240",
-      "confidence_score": 0.5
+      "target": "templates_rationale_240"
     },
     {
       "relation": "uses",
@@ -61393,11 +61393,11 @@
       "source_file": "src/templates.py",
       "source_location": "L26",
       "weight": 0.8,
-      "_src": "templates_rationale_265",
-      "_tgt": "config_config",
+      "_src": "config_config",
+      "_tgt": "templates_rationale_265",
+      "confidence_score": 0.5,
       "source": "config_config",
-      "target": "templates_rationale_265",
-      "confidence_score": 0.5
+      "target": "templates_rationale_265"
     },
     {
       "relation": "uses",
@@ -61885,11 +61885,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_logic_rationale_137",
-      "_tgt": "config_config",
+      "_src": "config_config",
+      "_tgt": "review_logic_rationale_137",
+      "confidence_score": 0.5,
       "source": "config_config",
-      "target": "review_logic_rationale_137",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_137"
     },
     {
       "relation": "uses",
@@ -61897,11 +61897,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_logic_rationale_169",
-      "_tgt": "config_config",
+      "_src": "config_config",
+      "_tgt": "review_logic_rationale_169",
+      "confidence_score": 0.5,
       "source": "config_config",
-      "target": "review_logic_rationale_169",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_169"
     },
     {
       "relation": "uses",
@@ -61909,11 +61909,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_logic_rationale_199",
-      "_tgt": "config_config",
+      "_src": "config_config",
+      "_tgt": "review_logic_rationale_199",
+      "confidence_score": 0.5,
       "source": "config_config",
-      "target": "review_logic_rationale_199",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_199"
     },
     {
       "relation": "uses",
@@ -61921,11 +61921,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_logic_rationale_233",
-      "_tgt": "config_config",
+      "_src": "config_config",
+      "_tgt": "review_logic_rationale_233",
+      "confidence_score": 0.5,
       "source": "config_config",
-      "target": "review_logic_rationale_233",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_233"
     },
     {
       "relation": "uses",
@@ -74209,11 +74209,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L25",
       "weight": 0.8,
-      "_src": "review_logic_rationale_137",
-      "_tgt": "templates_subtaskspec",
+      "_src": "templates_subtaskspec",
+      "_tgt": "review_logic_rationale_137",
+      "confidence_score": 0.5,
       "source": "templates_subtaskspec",
-      "target": "review_logic_rationale_137",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_137"
     },
     {
       "relation": "uses",
@@ -74221,11 +74221,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L25",
       "weight": 0.8,
-      "_src": "review_logic_rationale_169",
-      "_tgt": "templates_subtaskspec",
+      "_src": "templates_subtaskspec",
+      "_tgt": "review_logic_rationale_169",
+      "confidence_score": 0.5,
       "source": "templates_subtaskspec",
-      "target": "review_logic_rationale_169",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_169"
     },
     {
       "relation": "uses",
@@ -74233,11 +74233,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L25",
       "weight": 0.8,
-      "_src": "review_logic_rationale_199",
-      "_tgt": "templates_subtaskspec",
+      "_src": "templates_subtaskspec",
+      "_tgt": "review_logic_rationale_199",
+      "confidence_score": 0.5,
       "source": "templates_subtaskspec",
-      "target": "review_logic_rationale_199",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_199"
     },
     {
       "relation": "uses",
@@ -74245,11 +74245,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L25",
       "weight": 0.8,
-      "_src": "review_logic_rationale_233",
-      "_tgt": "templates_subtaskspec",
+      "_src": "templates_subtaskspec",
+      "_tgt": "review_logic_rationale_233",
+      "confidence_score": 0.5,
       "source": "templates_subtaskspec",
-      "target": "review_logic_rationale_233",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_233"
     },
     {
       "relation": "calls",
@@ -75541,11 +75541,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L25",
       "weight": 0.8,
-      "_src": "review_logic_rationale_137",
-      "_tgt": "templates_missingvariable",
+      "_src": "templates_missingvariable",
+      "_tgt": "review_logic_rationale_137",
+      "confidence_score": 0.5,
       "source": "templates_missingvariable",
-      "target": "review_logic_rationale_137",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_137"
     },
     {
       "relation": "uses",
@@ -75553,11 +75553,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L25",
       "weight": 0.8,
-      "_src": "review_logic_rationale_169",
-      "_tgt": "templates_missingvariable",
+      "_src": "templates_missingvariable",
+      "_tgt": "review_logic_rationale_169",
+      "confidence_score": 0.5,
       "source": "templates_missingvariable",
-      "target": "review_logic_rationale_169",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_169"
     },
     {
       "relation": "uses",
@@ -75565,11 +75565,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L25",
       "weight": 0.8,
-      "_src": "review_logic_rationale_199",
-      "_tgt": "templates_missingvariable",
+      "_src": "templates_missingvariable",
+      "_tgt": "review_logic_rationale_199",
+      "confidence_score": 0.5,
       "source": "templates_missingvariable",
-      "target": "review_logic_rationale_199",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_199"
     },
     {
       "relation": "uses",
@@ -75577,11 +75577,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L25",
       "weight": 0.8,
-      "_src": "review_logic_rationale_233",
-      "_tgt": "templates_missingvariable",
+      "_src": "templates_missingvariable",
+      "_tgt": "review_logic_rationale_233",
+      "confidence_score": 0.5,
       "source": "templates_missingvariable",
-      "target": "review_logic_rationale_233",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_233"
     },
     {
       "relation": "uses",
@@ -76011,9 +76011,9 @@
       "weight": 0.8,
       "_src": "templates_rationale_240",
       "_tgt": "state_state",
+      "confidence_score": 0.5,
       "source": "templates_rationale_240",
-      "target": "state_state",
-      "confidence_score": 0.5
+      "target": "state_state"
     },
     {
       "relation": "uses",
@@ -76023,9 +76023,9 @@
       "weight": 0.8,
       "_src": "templates_rationale_265",
       "_tgt": "state_state",
+      "confidence_score": 0.5,
       "source": "templates_rationale_265",
-      "target": "state_state",
-      "confidence_score": 0.5
+      "target": "state_state"
     },
     {
       "relation": "contains",
@@ -79082,8 +79082,8 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L148",
       "weight": 1.0,
-      "_src": "review_logic_due_monthly_reflections",
-      "_tgt": "scheduler_monthly_fires",
+      "_src": "scheduler_monthly_fires",
+      "_tgt": "review_logic_due_monthly_reflections",
       "source": "scheduler_monthly_fires",
       "target": "review_logic_due_monthly_reflections"
     },
@@ -84061,11 +84061,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L23",
       "weight": 0.8,
-      "_src": "review_logic_rationale_137",
-      "_tgt": "state_sharedstate",
+      "_src": "state_sharedstate",
+      "_tgt": "review_logic_rationale_137",
+      "confidence_score": 0.5,
       "source": "state_sharedstate",
-      "target": "review_logic_rationale_137",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_137"
     },
     {
       "relation": "uses",
@@ -84073,11 +84073,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L23",
       "weight": 0.8,
-      "_src": "review_logic_rationale_169",
-      "_tgt": "state_sharedstate",
+      "_src": "state_sharedstate",
+      "_tgt": "review_logic_rationale_169",
+      "confidence_score": 0.5,
       "source": "state_sharedstate",
-      "target": "review_logic_rationale_169",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_169"
     },
     {
       "relation": "uses",
@@ -84085,11 +84085,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L23",
       "weight": 0.8,
-      "_src": "review_logic_rationale_199",
-      "_tgt": "state_sharedstate",
+      "_src": "state_sharedstate",
+      "_tgt": "review_logic_rationale_199",
+      "confidence_score": 0.5,
       "source": "state_sharedstate",
-      "target": "review_logic_rationale_199",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_199"
     },
     {
       "relation": "uses",
@@ -84097,11 +84097,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L23",
       "weight": 0.8,
-      "_src": "review_logic_rationale_233",
-      "_tgt": "state_sharedstate",
+      "_src": "state_sharedstate",
+      "_tgt": "review_logic_rationale_233",
+      "confidence_score": 0.5,
       "source": "state_sharedstate",
-      "target": "review_logic_rationale_233",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_233"
     },
     {
       "relation": "uses",
@@ -85153,8 +85153,8 @@
       "source_file": "src/templates.py",
       "source_location": "L27",
       "weight": 0.8,
-      "_src": "templates_rationale_237",
-      "_tgt": "state_state",
+      "_src": "state_state",
+      "_tgt": "templates_rationale_237",
       "confidence_score": 0.5,
       "source": "state_state",
       "target": "templates_rationale_237"
@@ -85165,8 +85165,8 @@
       "source_file": "src/templates.py",
       "source_location": "L27",
       "weight": 0.8,
-      "_src": "templates_rationale_262",
-      "_tgt": "state_state",
+      "_src": "state_state",
+      "_tgt": "templates_rationale_262",
       "confidence_score": 0.5,
       "source": "state_state",
       "target": "templates_rationale_262"
@@ -86329,11 +86329,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L17",
       "weight": 0.8,
-      "_src": "review_logic_rationale_137",
-      "_tgt": "status_logic_curriculumctx",
+      "_src": "status_logic_curriculumctx",
+      "_tgt": "review_logic_rationale_137",
+      "confidence_score": 0.5,
       "source": "status_logic_curriculumctx",
-      "target": "review_logic_rationale_137",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_137"
     },
     {
       "relation": "uses",
@@ -86341,11 +86341,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L17",
       "weight": 0.8,
-      "_src": "review_logic_rationale_169",
-      "_tgt": "status_logic_curriculumctx",
+      "_src": "status_logic_curriculumctx",
+      "_tgt": "review_logic_rationale_169",
+      "confidence_score": 0.5,
       "source": "status_logic_curriculumctx",
-      "target": "review_logic_rationale_169",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_169"
     },
     {
       "relation": "uses",
@@ -86353,11 +86353,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L17",
       "weight": 0.8,
-      "_src": "review_logic_rationale_199",
-      "_tgt": "status_logic_curriculumctx",
+      "_src": "status_logic_curriculumctx",
+      "_tgt": "review_logic_rationale_199",
+      "confidence_score": 0.5,
       "source": "status_logic_curriculumctx",
-      "target": "review_logic_rationale_199",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_199"
     },
     {
       "relation": "uses",
@@ -86365,11 +86365,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L17",
       "weight": 0.8,
-      "_src": "review_logic_rationale_233",
-      "_tgt": "status_logic_curriculumctx",
+      "_src": "status_logic_curriculumctx",
+      "_tgt": "review_logic_rationale_233",
+      "confidence_score": 0.5,
       "source": "status_logic_curriculumctx",
-      "target": "review_logic_rationale_233",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_233"
     },
     {
       "relation": "uses",
@@ -86797,11 +86797,11 @@
       "source_file": "src/lw/review_tui.py",
       "source_location": "L29",
       "weight": 0.8,
-      "_src": "review_tui_rationale_33",
-      "_tgt": "status_logic_enginectx",
+      "_src": "status_logic_enginectx",
+      "_tgt": "review_tui_rationale_33",
+      "confidence_score": 0.5,
       "source": "status_logic_enginectx",
-      "target": "review_tui_rationale_33",
-      "confidence_score": 0.5
+      "target": "review_tui_rationale_33"
     },
     {
       "relation": "uses",
@@ -86809,11 +86809,11 @@
       "source_file": "src/lw/review_tui.py",
       "source_location": "L29",
       "weight": 0.8,
-      "_src": "review_tui_rationale_110",
-      "_tgt": "status_logic_enginectx",
+      "_src": "status_logic_enginectx",
+      "_tgt": "review_tui_rationale_110",
+      "confidence_score": 0.5,
       "source": "status_logic_enginectx",
-      "target": "review_tui_rationale_110",
-      "confidence_score": 0.5
+      "target": "review_tui_rationale_110"
     },
     {
       "relation": "uses",
@@ -86821,11 +86821,11 @@
       "source_file": "src/lw/review_tui.py",
       "source_location": "L29",
       "weight": 0.8,
-      "_src": "review_tui_rationale_176",
-      "_tgt": "status_logic_enginectx",
+      "_src": "status_logic_enginectx",
+      "_tgt": "review_tui_rationale_176",
+      "confidence_score": 0.5,
       "source": "status_logic_enginectx",
-      "target": "review_tui_rationale_176",
-      "confidence_score": 0.5
+      "target": "review_tui_rationale_176"
     },
     {
       "relation": "uses",
@@ -86833,11 +86833,11 @@
       "source_file": "src/lw/review_tui.py",
       "source_location": "L29",
       "weight": 0.8,
-      "_src": "review_tui_rationale_218",
-      "_tgt": "status_logic_enginectx",
+      "_src": "status_logic_enginectx",
+      "_tgt": "review_tui_rationale_218",
+      "confidence_score": 0.5,
       "source": "status_logic_enginectx",
-      "target": "review_tui_rationale_218",
-      "confidence_score": 0.5
+      "target": "review_tui_rationale_218"
     },
     {
       "relation": "uses",
@@ -86941,11 +86941,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L17",
       "weight": 0.8,
-      "_src": "review_logic_rationale_137",
-      "_tgt": "status_logic_enginectx",
+      "_src": "status_logic_enginectx",
+      "_tgt": "review_logic_rationale_137",
+      "confidence_score": 0.5,
       "source": "status_logic_enginectx",
-      "target": "review_logic_rationale_137",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_137"
     },
     {
       "relation": "uses",
@@ -86953,11 +86953,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L17",
       "weight": 0.8,
-      "_src": "review_logic_rationale_169",
-      "_tgt": "status_logic_enginectx",
+      "_src": "status_logic_enginectx",
+      "_tgt": "review_logic_rationale_169",
+      "confidence_score": 0.5,
       "source": "status_logic_enginectx",
-      "target": "review_logic_rationale_169",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_169"
     },
     {
       "relation": "uses",
@@ -86965,11 +86965,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L17",
       "weight": 0.8,
-      "_src": "review_logic_rationale_199",
-      "_tgt": "status_logic_enginectx",
+      "_src": "status_logic_enginectx",
+      "_tgt": "review_logic_rationale_199",
+      "confidence_score": 0.5,
       "source": "status_logic_enginectx",
-      "target": "review_logic_rationale_199",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_199"
     },
     {
       "relation": "uses",
@@ -86977,11 +86977,11 @@
       "source_file": "src/lw/review_logic.py",
       "source_location": "L17",
       "weight": 0.8,
-      "_src": "review_logic_rationale_233",
-      "_tgt": "status_logic_enginectx",
+      "_src": "status_logic_enginectx",
+      "_tgt": "review_logic_rationale_233",
+      "confidence_score": 0.5,
       "source": "status_logic_enginectx",
-      "target": "review_logic_rationale_233",
-      "confidence_score": 0.5
+      "target": "review_logic_rationale_233"
     },
     {
       "relation": "uses",
@@ -88911,9 +88911,9 @@
       "weight": 0.8,
       "_src": "review_tui_rationale_33",
       "_tgt": "review_logic_deadlinegate",
+      "confidence_score": 0.5,
       "source": "review_tui_rationale_33",
-      "target": "review_logic_deadlinegate",
-      "confidence_score": 0.5
+      "target": "review_logic_deadlinegate"
     },
     {
       "relation": "uses",
@@ -88923,9 +88923,9 @@
       "weight": 0.8,
       "_src": "review_tui_rationale_33",
       "_tgt": "review_logic_question",
+      "confidence_score": 0.5,
       "source": "review_tui_rationale_33",
-      "target": "review_logic_question",
-      "confidence_score": 0.5
+      "target": "review_logic_question"
     },
     {
       "relation": "uses",
@@ -88935,9 +88935,9 @@
       "weight": 0.8,
       "_src": "review_tui_rationale_110",
       "_tgt": "review_logic_deadlinegate",
+      "confidence_score": 0.5,
       "source": "review_tui_rationale_110",
-      "target": "review_logic_deadlinegate",
-      "confidence_score": 0.5
+      "target": "review_logic_deadlinegate"
     },
     {
       "relation": "uses",
@@ -88947,9 +88947,9 @@
       "weight": 0.8,
       "_src": "review_tui_rationale_110",
       "_tgt": "review_logic_question",
+      "confidence_score": 0.5,
       "source": "review_tui_rationale_110",
-      "target": "review_logic_question",
-      "confidence_score": 0.5
+      "target": "review_logic_question"
     },
     {
       "relation": "uses",
@@ -88959,9 +88959,9 @@
       "weight": 0.8,
       "_src": "review_tui_rationale_176",
       "_tgt": "review_logic_deadlinegate",
+      "confidence_score": 0.5,
       "source": "review_tui_rationale_176",
-      "target": "review_logic_deadlinegate",
-      "confidence_score": 0.5
+      "target": "review_logic_deadlinegate"
     },
     {
       "relation": "uses",
@@ -88971,9 +88971,9 @@
       "weight": 0.8,
       "_src": "review_tui_rationale_176",
       "_tgt": "review_logic_question",
+      "confidence_score": 0.5,
       "source": "review_tui_rationale_176",
-      "target": "review_logic_question",
-      "confidence_score": 0.5
+      "target": "review_logic_question"
     },
     {
       "relation": "uses",
@@ -88983,9 +88983,9 @@
       "weight": 0.8,
       "_src": "review_tui_rationale_218",
       "_tgt": "review_logic_deadlinegate",
+      "confidence_score": 0.5,
       "source": "review_tui_rationale_218",
-      "target": "review_logic_deadlinegate",
-      "confidence_score": 0.5
+      "target": "review_logic_deadlinegate"
     },
     {
       "relation": "uses",
@@ -88995,9 +88995,9 @@
       "weight": 0.8,
       "_src": "review_tui_rationale_218",
       "_tgt": "review_logic_question",
+      "confidence_score": 0.5,
       "source": "review_tui_rationale_218",
-      "target": "review_logic_question",
-      "confidence_score": 0.5
+      "target": "review_logic_question"
     },
     {
       "relation": "contains",
@@ -89175,9 +89175,9 @@
       "weight": 0.8,
       "_src": "review_logic_question",
       "_tgt": "reflect_logic_reflecttarget",
+      "confidence_score": 0.5,
       "source": "review_logic_question",
-      "target": "reflect_logic_reflecttarget",
-      "confidence_score": 0.5
+      "target": "reflect_logic_reflecttarget"
     },
     {
       "relation": "uses",
@@ -89185,8 +89185,8 @@
       "source_file": "src/lw/review_tui.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_tui_rationale_32",
-      "_tgt": "review_logic_question",
+      "_src": "review_logic_question",
+      "_tgt": "review_tui_rationale_32",
       "confidence_score": 0.5,
       "source": "review_logic_question",
       "target": "review_tui_rationale_32"
@@ -89197,8 +89197,8 @@
       "source_file": "src/lw/review_tui.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_tui_rationale_109",
-      "_tgt": "review_logic_question",
+      "_src": "review_logic_question",
+      "_tgt": "review_tui_rationale_109",
       "confidence_score": 0.5,
       "source": "review_logic_question",
       "target": "review_tui_rationale_109"
@@ -89209,8 +89209,8 @@
       "source_file": "src/lw/review_tui.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_tui_rationale_175",
-      "_tgt": "review_logic_question",
+      "_src": "review_logic_question",
+      "_tgt": "review_tui_rationale_175",
       "confidence_score": 0.5,
       "source": "review_logic_question",
       "target": "review_tui_rationale_175"
@@ -89221,8 +89221,8 @@
       "source_file": "src/lw/review_tui.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_tui_rationale_217",
-      "_tgt": "review_logic_question",
+      "_src": "review_logic_question",
+      "_tgt": "review_tui_rationale_217",
       "confidence_score": 0.5,
       "source": "review_logic_question",
       "target": "review_tui_rationale_217"
@@ -89559,9 +89559,9 @@
       "weight": 0.8,
       "_src": "review_logic_deadlinegate",
       "_tgt": "reflect_logic_reflecttarget",
+      "confidence_score": 0.5,
       "source": "review_logic_deadlinegate",
-      "target": "reflect_logic_reflecttarget",
-      "confidence_score": 0.5
+      "target": "reflect_logic_reflecttarget"
     },
     {
       "relation": "uses",
@@ -89569,8 +89569,8 @@
       "source_file": "src/lw/review_tui.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_tui_rationale_32",
-      "_tgt": "review_logic_deadlinegate",
+      "_src": "review_logic_deadlinegate",
+      "_tgt": "review_tui_rationale_32",
       "confidence_score": 0.5,
       "source": "review_logic_deadlinegate",
       "target": "review_tui_rationale_32"
@@ -89581,8 +89581,8 @@
       "source_file": "src/lw/review_tui.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_tui_rationale_109",
-      "_tgt": "review_logic_deadlinegate",
+      "_src": "review_logic_deadlinegate",
+      "_tgt": "review_tui_rationale_109",
       "confidence_score": 0.5,
       "source": "review_logic_deadlinegate",
       "target": "review_tui_rationale_109"
@@ -89593,8 +89593,8 @@
       "source_file": "src/lw/review_tui.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_tui_rationale_175",
-      "_tgt": "review_logic_deadlinegate",
+      "_src": "review_logic_deadlinegate",
+      "_tgt": "review_tui_rationale_175",
       "confidence_score": 0.5,
       "source": "review_logic_deadlinegate",
       "target": "review_tui_rationale_175"
@@ -89605,8 +89605,8 @@
       "source_file": "src/lw/review_tui.py",
       "source_location": "L16",
       "weight": 0.8,
-      "_src": "review_tui_rationale_217",
-      "_tgt": "review_logic_deadlinegate",
+      "_src": "review_logic_deadlinegate",
+      "_tgt": "review_tui_rationale_217",
       "confidence_score": 0.5,
       "source": "review_logic_deadlinegate",
       "target": "review_tui_rationale_217"
@@ -89859,9 +89859,9 @@
       "weight": 0.8,
       "_src": "review_logic_gateoutcome",
       "_tgt": "reflect_logic_reflecttarget",
+      "confidence_score": 0.5,
       "source": "review_logic_gateoutcome",
-      "target": "reflect_logic_reflecttarget",
-      "confidence_score": 0.5
+      "target": "reflect_logic_reflecttarget"
     },
     {
       "relation": "rationale_for",
@@ -89931,9 +89931,9 @@
       "weight": 0.8,
       "_src": "review_logic_rationale_1",
       "_tgt": "reflect_logic_reflecttarget",
+      "confidence_score": 0.5,
       "source": "review_logic_rationale_1",
-      "target": "reflect_logic_reflecttarget",
-      "confidence_score": 0.5
+      "target": "reflect_logic_reflecttarget"
     },
     {
       "relation": "uses",
@@ -89943,9 +89943,9 @@
       "weight": 0.8,
       "_src": "review_logic_rationale_48",
       "_tgt": "reflect_logic_reflecttarget",
+      "confidence_score": 0.5,
       "source": "review_logic_rationale_48",
-      "target": "reflect_logic_reflecttarget",
-      "confidence_score": 0.5
+      "target": "reflect_logic_reflecttarget"
     },
     {
       "relation": "uses",
@@ -89955,9 +89955,9 @@
       "weight": 0.8,
       "_src": "review_logic_rationale_57",
       "_tgt": "reflect_logic_reflecttarget",
+      "confidence_score": 0.5,
       "source": "review_logic_rationale_57",
-      "target": "reflect_logic_reflecttarget",
-      "confidence_score": 0.5
+      "target": "reflect_logic_reflecttarget"
     },
     {
       "relation": "uses",
@@ -89967,9 +89967,9 @@
       "weight": 0.8,
       "_src": "review_logic_rationale_64",
       "_tgt": "reflect_logic_reflecttarget",
+      "confidence_score": 0.5,
       "source": "review_logic_rationale_64",
-      "target": "reflect_logic_reflecttarget",
-      "confidence_score": 0.5
+      "target": "reflect_logic_reflecttarget"
     },
     {
       "relation": "uses",
@@ -89979,9 +89979,9 @@
       "weight": 0.8,
       "_src": "review_logic_rationale_92",
       "_tgt": "reflect_logic_reflecttarget",
+      "confidence_score": 0.5,
       "source": "review_logic_rationale_92",
-      "target": "reflect_logic_reflecttarget",
-      "confidence_score": 0.5
+      "target": "reflect_logic_reflecttarget"
     },
     {
       "relation": "uses",
@@ -89991,9 +89991,9 @@
       "weight": 0.8,
       "_src": "review_logic_rationale_137",
       "_tgt": "reflect_logic_reflecttarget",
+      "confidence_score": 0.5,
       "source": "review_logic_rationale_137",
-      "target": "reflect_logic_reflecttarget",
-      "confidence_score": 0.5
+      "target": "reflect_logic_reflecttarget"
     },
     {
       "relation": "uses",
@@ -90003,9 +90003,9 @@
       "weight": 0.8,
       "_src": "review_logic_rationale_169",
       "_tgt": "reflect_logic_reflecttarget",
+      "confidence_score": 0.5,
       "source": "review_logic_rationale_169",
-      "target": "reflect_logic_reflecttarget",
-      "confidence_score": 0.5
+      "target": "reflect_logic_reflecttarget"
     },
     {
       "relation": "uses",
@@ -90015,9 +90015,9 @@
       "weight": 0.8,
       "_src": "review_logic_rationale_199",
       "_tgt": "reflect_logic_reflecttarget",
+      "confidence_score": 0.5,
       "source": "review_logic_rationale_199",
-      "target": "reflect_logic_reflecttarget",
-      "confidence_score": 0.5
+      "target": "reflect_logic_reflecttarget"
     },
     {
       "relation": "uses",
@@ -90027,9 +90027,9 @@
       "weight": 0.8,
       "_src": "review_logic_rationale_233",
       "_tgt": "reflect_logic_reflecttarget",
+      "confidence_score": 0.5,
       "source": "review_logic_rationale_233",
-      "target": "reflect_logic_reflecttarget",
-      "confidence_score": 0.5
+      "target": "reflect_logic_reflecttarget"
     },
     {
       "relation": "contains",

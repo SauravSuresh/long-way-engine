@@ -1,7 +1,7 @@
-# Graph Report - .  (2026-08-29)
+# Graph Report - .  (2026-09-06)
 
 ## Corpus Check
-- 81 files · ~180,128 words
+- 81 files · ~181,257 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -296,11 +296,11 @@ Nodes (1): Strip the Todoist token from any log record. Defense in depth.
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Config` connect `Community 0` to `Community 1`, `Community 2`, `Community 3`, `Community 5`, `Community 6`, `Community 9`, `Community 12`?**
-  _High betweenness centrality (0.090) - this node is a cross-community bridge._
-- **Why does `SyllabusState` connect `Community 1` to `Community 0`, `Community 3`, `Community 4`, `Community 5`, `Community 6`, `Community 7`, `Community 9`, `Community 11`?**
-  _High betweenness centrality (0.075) - this node is a cross-community bridge._
-- **Why does `SyllabusEntry` connect `Community 1` to `Community 0`, `Community 4`, `Community 5`, `Community 6`, `Community 16`, `Community 18`?**
-  _High betweenness centrality (0.075) - this node is a cross-community bridge._
+  _High betweenness centrality (0.109) - this node is a cross-community bridge._
+- **Why does `State` connect `Community 1` to `Community 0`, `Community 2`, `Community 5`, `Community 6`, `Community 7`, `Community 12`, `Community 13`?**
+  _High betweenness centrality (0.063) - this node is a cross-community bridge._
+- **Why does `Module` connect `Community 6` to `Community 8`, `Community 1`, `Community 12`, `Community 4`?**
+  _High betweenness centrality (0.063) - this node is a cross-community bridge._
 - **Are the 206 inferred relationships involving `Config` (e.g. with `FakeSubtask` and `FakeReviewClient`) actually correct?**
   _`Config` has 206 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 166 inferred relationships involving `SyllabusState` (e.g. with `Add anki + morning-reading entries for date d. Returns (anki_id, morning_id).` and `Mon-Tue-Wed before Thu: 3 days, all done. Today=Thu.`) actually correct?**
