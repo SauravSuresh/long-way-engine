@@ -132,14 +132,6 @@
       "template_id": "weekly-state-review:auto-finish:7",
       "todoist_task_id": "6h9w4JpjQF7JHqPX"
     },
-    "19d0610b580f4d66": {
-      "created_at": "2026-07-24T22:32:21.374204+00:00",
-      "due_date": "2026-07-25",
-      "missed_at": "2026-07-26",
-      "status": "missed",
-      "template_id": "daily-devops-srs",
-      "todoist_task_id": "6h848Pc8rxqR5FgX"
-    },
     "1bb02a63a7dcdaa7": {
       "created_at": "2026-08-10T22:03:27.459205+00:00",
       "due_date": "2026-08-11",
@@ -698,14 +690,6 @@
       "template_id": "weekly-state-review:sub:3",
       "todoist_task_id": "6hFWJmgFwR9Cx78X"
     },
-    "7d14ac9df7e4b6b6": {
-      "created_at": "2026-07-24T22:32:23.191043+00:00",
-      "due_date": "2026-07-25",
-      "missed_at": "2026-07-26",
-      "status": "missed",
-      "template_id": "weekly-project-work",
-      "todoist_task_id": "6h848Pq34VXrW355"
-    },
     "7d5780abb0c71143": {
       "completed_at": "2026-08-30",
       "created_at": "2026-08-29T03:12:24.937577+00:00",
@@ -1252,14 +1236,6 @@
       "status": "missed",
       "template_id": "weekday-morning-study-monday",
       "todoist_task_id": "6hHPFG99vG785Cg5"
-    },
-    "ef4c091e7f52cce6": {
-      "created_at": "2026-07-24T22:32:22.388729+00:00",
-      "due_date": "2026-07-25",
-      "missed_at": "2026-07-26",
-      "status": "missed",
-      "template_id": "monthly-retrospective",
-      "todoist_task_id": "6h848PhP9222PFgX"
     },
     "efd6cdd98cc326cd": {
       "completed_at": "2026-08-23",
