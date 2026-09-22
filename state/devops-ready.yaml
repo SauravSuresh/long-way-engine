@@ -6,8 +6,8 @@ current_book: Ultimate AWS Certified Solutions Architect Associate (Udemy)
 completed_modules: []
 active_branches: []
 paused: true
-paused_since: 2026-09-22
-paused_until: 2026-10-07
+paused_since: '2026-09-22'
+paused_until: '2026-10-07'
 pause_history: []
 books_state: {}
 learning_tracks:

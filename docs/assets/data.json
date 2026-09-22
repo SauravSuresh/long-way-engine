@@ -4,9 +4,9 @@
     "devops-ready"
   ],
   "shared": {
-    "anki_card_count": 280,
+    "anki_card_count": 360,
     "manual_counters": {
-      "anki_card_count": 280,
+      "anki_card_count": 360,
       "learn_clusters_done": 2,
       "lineage_detours_done": [],
       "prs_opened": 0,
@@ -19,8 +19,8 @@
     "devops-ready": {
       "adherence": {
         "done": 9,
-        "expected": 25,
-        "percent": 36,
+        "expected": 26,
+        "percent": 35,
         "since": "2026-08-17"
       },
       "books": [
@@ -98,13 +98,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 36,
+      "day_of_journey": 37,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-09-14",
-          "state": "red"
-        },
         {
           "date": "2026-09-15",
           "state": "red"
@@ -128,10 +124,14 @@
         {
           "date": "2026-09-20",
           "state": "gray"
+        },
+        {
+          "date": "2026-09-21",
+          "state": "red"
         }
       ],
       "month": 2,
-      "paused": null,
+      "paused": "Paused since 2026-09-22 (0 days)",
       "phase": 1,
       "practices": {
         "Code reading sessions": 0,
@@ -220,26 +220,26 @@
         "Daily": {
           "best": 5,
           "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "hint": "paused"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 10 days"
+          "hint": "paused"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 4 days"
+          "hint": "paused"
         }
       },
-      "today": "2026-09-21"
+      "today": "2026-09-22"
     },
     "marketplace-builder": {
       "adherence": {
         "done": 12,
-        "expected": 29,
-        "percent": 41,
+        "expected": 30,
+        "percent": 40,
         "since": "2026-08-18"
       },
       "books": [
@@ -289,13 +289,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 35,
+      "day_of_journey": 36,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-09-14",
-          "state": "red"
-        },
         {
           "date": "2026-09-15",
           "state": "red"
@@ -319,10 +315,14 @@
         {
           "date": "2026-09-20",
           "state": "gray"
+        },
+        {
+          "date": "2026-09-21",
+          "state": "red"
         }
       ],
       "month": 2,
-      "paused": null,
+      "paused": "Paused since 2026-09-22 (0 days)",
       "phase": 1,
       "practices": {
         "Code reading sessions": 0,
@@ -397,20 +397,20 @@
         "Daily": {
           "best": 4,
           "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "hint": "paused"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 10 days"
+          "hint": "paused"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 4 days"
+          "hint": "paused"
         }
       },
-      "today": "2026-09-21"
+      "today": "2026-09-22"
     }
   },
   "xp": {
@@ -421,7 +421,7 @@
       "reflections": 0,
       "rungs": 0,
       "streak_bonus": 0,
-      "weekly_review": 80,
+      "weekly_review": 120,
       "weekly_ritual": 525
     },
     "ladder": [
@@ -482,13 +482,13 @@
       }
     ],
     "level": 4,
-    "level_progress": 49,
+    "level_progress": 89,
     "next_level_at": 952,
     "next_reward": {
       "level": 5,
       "reward": "Big biryani feast with a friend \u2014 you're buying, you're bragging about the ladder"
     },
-    "total": 745,
+    "total": 785,
     "unlocked": [
       {
         "level": 1,

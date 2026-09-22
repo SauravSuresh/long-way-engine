@@ -275,14 +275,6 @@
       "template_id": "weekly-bootdev-wednesday",
       "todoist_task_id": "6hWQgQ7rMPgv2cjX"
     },
-    "2edc8a52c5dfe89b": {
-      "created_at": "2026-07-23T22:28:29.725020+00:00",
-      "due_date": "2026-07-24",
-      "missed_at": "2026-07-25",
-      "status": "missed",
-      "template_id": "weekly-leetcode-friday",
-      "todoist_task_id": "6h7pg278Vpm7v5m5"
-    },
     "3005dfb8f56d6e51": {
       "created_at": "2026-08-23T21:40:55.351769+00:00",
       "due_date": "2026-08-24",
@@ -343,22 +335,6 @@
       "status": "completed",
       "template_id": "weekday-morning-study-thursday",
       "todoist_task_id": "6hJ6mj6JC5pq5qQX"
-    },
-    "36112a6f34ba5dc0": {
-      "created_at": "2026-07-23T22:28:30.536005+00:00",
-      "due_date": "2026-07-24",
-      "missed_at": "2026-07-25",
-      "status": "missed",
-      "template_id": "weekly-friday-reflection",
-      "todoist_task_id": "6h7pg2C9F5hjqFh5"
-    },
-    "38fe9265e4abae9d": {
-      "created_at": "2026-07-23T22:28:27.510130+00:00",
-      "due_date": "2026-07-24",
-      "missed_at": "2026-07-25",
-      "status": "missed",
-      "template_id": "daily-devops-srs",
-      "todoist_task_id": "6h7pfxxg8JC9vVmX"
     },
     "3b2d9547461fb1cb": {
       "created_at": "2026-08-04T22:32:41.817783+00:00",
@@ -619,6 +595,8 @@
     "6cac8ca0a42488b4": {
       "created_at": "2026-09-20T23:19:20.955735+00:00",
       "due_date": "2026-09-21",
+      "missed_at": "2026-09-22",
+      "status": "missed",
       "template_id": "weekday-morning-study-monday",
       "todoist_task_id": "6hXf574qvhj2P4mX"
     },
@@ -816,6 +794,8 @@
     "8888a6cfab6ac361": {
       "created_at": "2026-09-20T23:19:21.408641+00:00",
       "due_date": "2026-09-21",
+      "missed_at": "2026-09-22",
+      "status": "missed",
       "template_id": "weekly-bootdev-monday",
       "todoist_task_id": "6hXf574QQ5Vmrq35"
     },
@@ -963,14 +943,6 @@
       "status": "missed",
       "template_id": "weekday-morning-study-friday",
       "todoist_task_id": "6hF6M4HMw4VCJF2X"
-    },
-    "a713dfff85514f60": {
-      "created_at": "2026-07-23T22:28:28.380531+00:00",
-      "due_date": "2026-07-24",
-      "missed_at": "2026-07-25",
-      "status": "missed",
-      "template_id": "weekday-morning-study-friday",
-      "todoist_task_id": "6h7pg24X75Pxp7X5"
     },
     "a95b4a8eb570deb1": {
       "created_at": "2026-08-09T21:55:00.639203+00:00",
@@ -1176,14 +1148,6 @@
       "template_id": "weekly-reflection",
       "todoist_task_id": "6hVVfV8jjfP99H8X"
     },
-    "d849ded11d4da20c": {
-      "created_at": "2026-07-23T22:28:29.187913+00:00",
-      "due_date": "2026-07-24",
-      "missed_at": "2026-07-25",
-      "status": "missed",
-      "template_id": "weekly-bootdev-friday",
-      "todoist_task_id": "6h7pg28RCwPJXHMX"
-    },
     "da63c8a954571117": {
       "created_at": "2026-08-04T22:32:40.400054+00:00",
       "due_date": "2026-08-05",
@@ -1304,6 +1268,17 @@
       "status": "completed",
       "template_id": "weekly-state-review",
       "todoist_task_id": "6hJXm3x6HPcQ9cJ5"
+    },
+    "f2db2a852101e64b": {
+      "created_at": "2026-09-22T00:11:23.915104+00:00",
+      "due_date": "persistent",
+      "persistent_action": {
+        "type": "unset_pause"
+      },
+      "persistent_category": "resume",
+      "persistent_consumed": false,
+      "template_id": "persistent-resume",
+      "todoist_task_id": "6hXrqc8wWc8gr2cX"
     },
     "f35270849be1fe85": {
       "created_at": "2026-08-08T21:51:40.417400+00:00",
@@ -2611,6 +2586,8 @@
     "7237e56928f11f11": {
       "created_at": "2026-09-20T23:19:20.235748+00:00",
       "due_date": "2026-09-21",
+      "missed_at": "2026-09-22",
+      "status": "missed",
       "template_id": "daily-anki",
       "todoist_task_id": "6hXf56wpmv5fqQ6p"
     },
@@ -2850,6 +2827,17 @@
       "status": "completed",
       "template_id": "weekly-state-review",
       "todoist_task_id": "6hJXm3gXvcRmRF2G"
+    },
+    "f2db2a852101e64b": {
+      "created_at": "2026-09-22T00:11:22.940341+00:00",
+      "due_date": "persistent",
+      "persistent_action": {
+        "type": "unset_pause"
+      },
+      "persistent_category": "resume",
+      "persistent_consumed": false,
+      "template_id": "persistent-resume",
+      "todoist_task_id": "6hXrqc7rQpG9cfjG"
     },
     "fc207251bc491af8": {
       "created_at": "2026-09-07T23:36:19.377852+00:00",
