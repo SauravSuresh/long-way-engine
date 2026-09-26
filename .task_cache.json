@@ -188,14 +188,6 @@
       "template_id": "weekly-reflection",
       "todoist_task_id": "6hJXm3vJh6xr32R5"
     },
-    "1ff9e57110732e2a": {
-      "completed_at": "2026-07-30",
-      "created_at": "2026-07-28T22:30:00.625863+00:00",
-      "due_date": "2026-07-29",
-      "status": "completed",
-      "template_id": "daily-devops-srs",
-      "todoist_task_id": "6h927FRP39rxFGcX"
-    },
     "2079c23b0f2ccad5": {
       "created_at": "2026-08-08T21:51:37.090916+00:00",
       "due_date": "2026-08-09",
@@ -400,14 +392,6 @@
       "status": "missed",
       "template_id": "monthly-certification-prep",
       "todoist_task_id": "6hGxGcW88QjfjQw5"
-    },
-    "56c0fbad0a63d308": {
-      "completed_at": "2026-07-30",
-      "created_at": "2026-07-28T22:30:02.597090+00:00",
-      "due_date": "2026-07-29",
-      "status": "completed",
-      "template_id": "weekday-morning-study-wednesday",
-      "todoist_task_id": "6h927FqG4PpVcHv5"
     },
     "57435215f46b4207": {
       "created_at": "2026-08-07T01:03:08.651504+00:00",
@@ -665,14 +649,6 @@
       "template_id": "weekday-morning-study-thursday",
       "todoist_task_id": "6hWh9XCHcmfmQr4X"
     },
-    "86811372fb7eba6a": {
-      "created_at": "2026-07-28T22:30:05.662743+00:00",
-      "due_date": "2026-07-29",
-      "missed_at": "2026-07-30",
-      "status": "missed",
-      "template_id": "weekly-leetcode-wednesday",
-      "todoist_task_id": "6h927Fwg9MP3c4gX"
-    },
     "87afee9e406bcdbd": {
       "created_at": "2026-09-14T23:54:32.129462+00:00",
       "due_date": "2026-09-15",
@@ -884,14 +860,6 @@
       "status": "missed",
       "template_id": "monthly-retrospective",
       "todoist_task_id": "6hPFwJ8gP6J5PC95"
-    },
-    "c3a53faa050145e7": {
-      "completed_at": "2026-07-30",
-      "created_at": "2026-07-28T22:30:04.221033+00:00",
-      "due_date": "2026-07-29",
-      "status": "completed",
-      "template_id": "weekly-bootdev-wednesday",
-      "todoist_task_id": "6h927FwfXJGW4MJX"
     },
     "c5467abe9724f739": {
       "completed_at": "2026-08-18",
