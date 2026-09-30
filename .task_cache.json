@@ -197,14 +197,6 @@
       "template_id": "weekly-bootdev-wednesday",
       "todoist_task_id": "6hRq8r993hFwH3WX"
     },
-    "276dcae1e7a2282e": {
-      "created_at": "2026-07-31T22:29:05.384222+00:00",
-      "due_date": "2026-08-01",
-      "missed_at": "2026-08-02",
-      "status": "missed",
-      "template_id": "monthly-github-project-publish",
-      "todoist_task_id": "6h9gcWCX5RMGfQrX"
-    },
     "27a68f722f756518": {
       "created_at": "2026-09-06T22:56:11.094977+00:00",
       "due_date": "2026-09-07",
@@ -454,14 +446,6 @@
       "template_id": "weekday-morning-study-wednesday",
       "todoist_task_id": "6hMVm5mf56Xwp7JX"
     },
-    "6be2672af70ab547": {
-      "created_at": "2026-07-31T22:29:05.859625+00:00",
-      "due_date": "2026-08-01",
-      "missed_at": "2026-08-02",
-      "status": "missed",
-      "template_id": "weekly-project-work",
-      "todoist_task_id": "6h9gcWHxvrxh8RqX"
-    },
     "6be6705aacb97d95": {
       "created_at": "2026-08-01T22:17:12.745526+00:00",
       "due_date": "2026-08-02",
@@ -571,14 +555,6 @@
       "status": "completed",
       "template_id": "weekly-reflection",
       "todoist_task_id": "6hPFwJC2Xcf7G6h5"
-    },
-    "82652256681244a6": {
-      "created_at": "2026-07-31T22:29:04.577831+00:00",
-      "due_date": "2026-08-01",
-      "missed_at": "2026-08-02",
-      "status": "missed",
-      "template_id": "daily-devops-srs",
-      "todoist_task_id": "6h9gcW75QqJH4jW5"
     },
     "847907b4dec4fc16": {
       "created_at": "2026-08-01T22:17:12.469541+00:00",
