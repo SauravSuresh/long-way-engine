@@ -16,14 +16,6 @@
       "template_id": "weekday-morning-study-wednesday",
       "todoist_task_id": "6hWQgQ74h6rqF5W5"
     },
-    "08e63dcc1109d27c": {
-      "created_at": "2026-08-02T22:15:05.032683+00:00",
-      "due_date": "2026-08-03",
-      "missed_at": "2026-08-04",
-      "status": "missed",
-      "template_id": "weekday-morning-study-monday",
-      "todoist_task_id": "6hC7VqJh87HxVqc5"
-    },
     "09c30687bed4f990": {
       "created_at": "2026-08-27T00:54:05.950803+00:00",
       "due_date": "2026-08-27",
@@ -140,14 +132,6 @@
       "status": "missed",
       "template_id": "weekday-morning-study-friday",
       "todoist_task_id": "6hP57Q8gWQpCgwCX"
-    },
-    "1fa5941a8c63ed96": {
-      "created_at": "2026-08-02T22:15:05.813996+00:00",
-      "due_date": "2026-08-03",
-      "missed_at": "2026-08-04",
-      "status": "missed",
-      "template_id": "weekly-leetcode-monday",
-      "todoist_task_id": "6hC7VqHHmfC94JX5"
     },
     "1fdfa6d332c8c79b": {
       "completed_at": "2026-08-23",
@@ -393,14 +377,6 @@
       "template_id": "weekday-morning-study-tuesday",
       "todoist_task_id": "6hHfp4PfmjwP3RWX"
     },
-    "69ce6f5e416e6f4d": {
-      "created_at": "2026-08-02T22:15:05.437917+00:00",
-      "due_date": "2026-08-03",
-      "missed_at": "2026-08-04",
-      "status": "missed",
-      "template_id": "weekly-bootdev-monday",
-      "todoist_task_id": "6hC7VqGVH6WQJxqX"
-    },
     "6bb2e0794c7d0426": {
       "created_at": "2026-08-25T21:49:07.569444+00:00",
       "due_date": "2026-08-26",
@@ -493,14 +469,6 @@
       "status": "completed",
       "template_id": "weekly-reflection",
       "todoist_task_id": "6hPFwJC2Xcf7G6h5"
-    },
-    "8515d637799ae023": {
-      "created_at": "2026-08-02T22:15:04.413793+00:00",
-      "due_date": "2026-08-03",
-      "missed_at": "2026-08-04",
-      "status": "missed",
-      "template_id": "daily-devops-srs",
-      "todoist_task_id": "6hC7VqCv833hxqjX"
     },
     "8523ccc6eca15005": {
       "created_at": "2026-09-16T23:41:25.299568+00:00",
