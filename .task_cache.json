@@ -174,14 +174,6 @@
       "template_id": "weekly-leetcode-friday",
       "todoist_task_id": "6hP57QFGMHxRJhFX"
     },
-    "2c8f2591a99f6758": {
-      "created_at": "2026-08-04T22:32:41.108800+00:00",
-      "due_date": "2026-08-05",
-      "missed_at": "2026-08-06",
-      "status": "missed",
-      "template_id": "weekly-bootdev-wednesday",
-      "todoist_task_id": "6hCccJrgjH4WVRx5"
-    },
     "2ca6bbbb41bddb2a": {
       "created_at": "2026-09-15T23:33:30.528197+00:00",
       "due_date": "2026-09-16",
@@ -221,14 +213,6 @@
       "status": "completed",
       "template_id": "weekday-morning-study-thursday",
       "todoist_task_id": "6hJ6mj6JC5pq5qQX"
-    },
-    "3b2d9547461fb1cb": {
-      "created_at": "2026-08-04T22:32:41.817783+00:00",
-      "due_date": "2026-08-05",
-      "missed_at": "2026-08-06",
-      "status": "missed",
-      "template_id": "weekly-leetcode-wednesday",
-      "todoist_task_id": "6hCccJrG3PJjCRMX"
     },
     "3b4ce84cb848e431": {
       "created_at": "2026-08-11T22:09:07.327416+00:00",
@@ -642,14 +626,6 @@
       "template_id": "weekly-bootdev-wednesday",
       "todoist_task_id": "6hQ8hjcMJ8GFxHrX"
     },
-    "b82dd8a4cb2b9a5a": {
-      "created_at": "2026-08-04T22:32:39.898386+00:00",
-      "due_date": "2026-08-05",
-      "missed_at": "2026-08-06",
-      "status": "missed",
-      "template_id": "daily-devops-srs",
-      "todoist_task_id": "6hCccJm2qqjFrFf5"
-    },
     "c0ccee911caddf80": {
       "created_at": "2026-09-18T23:23:43.122684+00:00",
       "due_date": "2026-09-19",
@@ -729,14 +705,6 @@
       "status": "missed",
       "template_id": "weekly-reflection",
       "todoist_task_id": "6hVVfV8jjfP99H8X"
-    },
-    "da63c8a954571117": {
-      "created_at": "2026-08-04T22:32:40.400054+00:00",
-      "due_date": "2026-08-05",
-      "missed_at": "2026-08-06",
-      "status": "missed",
-      "template_id": "weekday-morning-study-wednesday",
-      "todoist_task_id": "6hCccJjQP475mG85"
     },
     "dd3bd359d0008349": {
       "created_at": "2026-09-17T23:34:54.166621+00:00",
