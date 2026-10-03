@@ -198,14 +198,6 @@
       "template_id": "weekday-morning-study-monday",
       "todoist_task_id": "6hM4j6MVj2F6wmjX"
     },
-    "30581e49feaa545e": {
-      "created_at": "2026-08-03T22:31:01.816799+00:00",
-      "due_date": "2026-08-04",
-      "missed_at": "2026-08-05",
-      "status": "missed",
-      "template_id": "weekday-morning-study-tuesday",
-      "todoist_task_id": "6hCM6G8ffqwgvcpX"
-    },
     "3147785df23befd7": {
       "created_at": "2026-09-02T23:24:36.891596+00:00",
       "due_date": "2026-09-03",
@@ -323,14 +315,6 @@
       "status": "missed",
       "template_id": "weekly-bootdev-friday",
       "todoist_task_id": "6hF6M4JMF5qXcgwX"
-    },
-    "5812cdde4a2826b6": {
-      "created_at": "2026-08-03T22:31:03.106117+00:00",
-      "due_date": "2026-08-04",
-      "missed_at": "2026-08-05",
-      "status": "missed",
-      "template_id": "weekly-bootdev-tuesday",
-      "todoist_task_id": "6hCM6GHRC5gj9VJX"
     },
     "58429a3d6b00c1a3": {
       "created_at": "2026-08-09T21:54:59.071140+00:00",
@@ -929,14 +913,6 @@
       "status": "missed",
       "template_id": "daily-devops-srs",
       "todoist_task_id": "6hFmv7792x5QmPq5"
-    },
-    "ff7b3300b42afcc2": {
-      "created_at": "2026-08-03T22:31:00.868182+00:00",
-      "due_date": "2026-08-04",
-      "missed_at": "2026-08-05",
-      "status": "missed",
-      "template_id": "daily-devops-srs",
-      "todoist_task_id": "6hCM6G5xvrCV2fP5"
     }
   },
   "long-way": {
