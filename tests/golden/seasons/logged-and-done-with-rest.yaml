@@ -1,0 +1,73 @@
+today: 2026-10-14
+seasons:
+  todoist_project_id: seasons
+  rhythm:
+    rest_week: true
+    deep_blocks:
+      monday:
+        start: 07:30
+        minutes: 120
+      wednesday:
+        start: 07:30
+        minutes: 120
+      friday:
+        start: 07:30
+        minutes: 120
+  bucket:
+  - id: done-one
+    name: Done
+    area: Work
+    hours: 10
+  - id: next-one
+    name: Next
+    area: Work
+    hours: 6
+  - id: last-one
+    name: Last
+    area: Work
+    hours: 2
+  disciplines: []
+state:
+  milestones:
+    done-one:
+      logged:
+        2026-10-05: 120
+        2026-10-07: 120
+      done: 2026-10-10
+    next-one:
+      logged:
+        2026-10-09: 120
+      done: null
+  rest_until: 2026-10-17
+  last_run:
+    main: done-one
+    side: null
+    resting: true
+expected:
+  current:
+    main: next-one
+    side: null
+    resting: true
+  milestones:
+    next-one:
+      start: '2026-10-18'
+      end: '2026-10-21'
+      hours_reached: false
+      segments:
+      - lane: main
+        from: '2026-10-18'
+        to: '2026-10-21'
+    last-one:
+      start: '2026-10-29'
+      end: '2026-10-30'
+      hours_reached: false
+      segments:
+      - lane: main
+        from: '2026-10-29'
+        to: '2026-10-30'
+  rests:
+  - from: '2026-10-14'
+    to: '2026-10-17'
+  - from: '2026-10-22'
+    to: '2026-10-28'
+  overflow: false

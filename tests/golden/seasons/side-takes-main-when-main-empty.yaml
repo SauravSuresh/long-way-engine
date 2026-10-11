@@ -1,0 +1,58 @@
+today: 2026-10-12
+seasons:
+  todoist_project_id: seasons
+  rhythm:
+    rest_week: true
+    deep_blocks:
+      monday:
+        start: 07:30
+        minutes: 60
+        lane: main
+      tuesday:
+        start: 07:30
+        minutes: 60
+        lane: side
+      wednesday:
+        start: 07:30
+        minutes: 60
+        lane: main
+  bucket:
+  - id: s1
+    name: S1
+    area: Learning
+    hours: 2
+    lane: side
+  - id: s2
+    name: S2
+    area: Learning
+    hours: 1
+    lane: side
+    pin_start: 2026-10-26
+  disciplines: []
+state: {}
+expected:
+  current:
+    main: null
+    side: s1
+    resting: false
+  milestones:
+    s1:
+      start: '2026-10-12'
+      end: '2026-10-13'
+      hours_reached: false
+      segments:
+      - lane: main
+        from: '2026-10-12'
+        to: '2026-10-13'
+    s2:
+      start: '2026-10-26'
+      end: '2026-10-26'
+      hours_reached: false
+      segments:
+      - lane: main
+        from: '2026-10-26'
+        to: '2026-10-26'
+  rests:
+  - from: '2026-10-14'
+    to: '2026-10-20'
+  overflow: false

@@ -1,0 +1,116 @@
+today: 2026-10-13
+seasons:
+  todoist_project_id: seasons
+  rhythm:
+    sleep:
+      from: '22:30'
+      to: 06:00
+    fixed_hours:
+      from: 09:30
+      to: '18:30'
+      days:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+    shutdown: '21:00'
+    rest_week: true
+    deep_blocks:
+      monday:
+        start: 07:30
+        minutes: 90
+        lane: main
+      tuesday:
+        start: 07:30
+        minutes: 90
+        lane: side
+      wednesday:
+        start: 07:30
+        minutes: 90
+        lane: main
+      thursday:
+        start: 07:30
+        minutes: 90
+        lane: side
+      friday:
+        start: 07:30
+        minutes: 90
+        lane: main
+      saturday:
+        start: 07:30
+        minutes: 210
+        lane: main
+  bucket:
+  - id: previz-product
+    name: Previz product
+    area: Work
+    hours: 100
+    lane: main
+  - id: bootdev-backend
+    name: boot.dev backend
+    area: Learning
+    hours: 100
+    lane: main
+  - id: aws-saa
+    name: AWS SAA
+    area: Learning
+    hours: 40
+    lane: side
+  - id: ckad
+    name: CKAD
+    area: Learning
+    hours: 40
+    lane: side
+  disciplines: []
+state: {}
+expected:
+  current:
+    main: previz-product
+    side: aws-saa
+    resting: false
+  milestones:
+    previz-product:
+      start: '2026-10-13'
+      end: '2027-01-09'
+      hours_reached: false
+      segments:
+      - lane: main
+        from: '2026-10-13'
+        to: '2027-01-09'
+    bootdev-backend:
+      start: '2027-01-17'
+      end: '2027-04-16'
+      hours_reached: false
+      segments:
+      - lane: main
+        from: '2027-01-17'
+        to: '2027-04-16'
+    aws-saa:
+      start: '2026-10-13'
+      end: '2027-01-19'
+      hours_reached: false
+      segments:
+      - lane: side
+        from: '2026-10-13'
+        to: '2027-01-09'
+      - lane: side
+        from: '2027-01-17'
+        to: '2027-01-19'
+    ckad:
+      start: '2027-01-20'
+      end: '2027-04-24'
+      hours_reached: false
+      segments:
+      - lane: side
+        from: '2027-01-20'
+        to: '2027-04-16'
+      - lane: main
+        from: '2027-04-24'
+        to: '2027-04-24'
+  rests:
+  - from: '2027-01-10'
+    to: '2027-01-16'
+  - from: '2027-04-17'
+    to: '2027-04-23'
+  overflow: false
