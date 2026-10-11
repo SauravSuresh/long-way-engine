@@ -45,6 +45,21 @@ Per-syllabus state lives at `state/<key>.yaml`; user-life-wide state
 (timezone, Anki count, manual counters, notes) lives at `state/shared.yaml`.
 Pause and streak are per-syllabus.
 
+## Seasons — one focus at a time
+
+Opt-in layer above the syllabuses (on iff `seasons.yaml` exists at the repo
+root). An ordered **bucket** of milestones, a weekly **rhythm** of deep
+blocks, and the rule that one milestone holds the blocks at a time (plus an
+optional side lane on marked days). Off-season syllabuses are paused; their
+month only advances while they are in season. The daily run creates the
+block task and the discipline tasks, credits completed blocks as logged
+minutes, and renders a Seasons section + TRMNL tiles on the dashboard.
+
+- Owner file: `seasons.yaml` (start from `examples/seasons.example.yaml`),
+  edited in the planner at `docs/plan.html` on the Pages site or by hand.
+- Engine state: `state/seasons.yaml`. CLI: `lw season status|done|log|rest-end`.
+- Full spec: [`specs/seasons.md`](./specs/seasons.md). Glossary: [`CONTEXT.md`](./CONTEXT.md).
+
 ## What it does
 
 - **Daily Todoist tasks.** Templates declare cadence (`daily`,
