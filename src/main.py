@@ -54,6 +54,7 @@ from src.dashboard import (
 from src.ids import external_id, module_external_id
 from src.reflections import StubResult, create_stub, update_metadata
 from src.scheduler import _is_last_saturday_of_month, should_create_today
+from src.season_dashboard import catalog as seasons_catalog, render_seasons_section, season_tiles, seasons_data
 from src.season_run import (
     SEASONS_NS,
     SeasonContext,
@@ -110,6 +111,7 @@ CONFIG_PATH = REPO_ROOT / "config.yaml"
 STATE_PATH = REPO_ROOT / "state.yaml"
 SHARED_STATE_PATH = REPO_ROOT / "state" / "shared.yaml"
 SEASONS_PATH = REPO_ROOT / "seasons.yaml"
+DOCS_CATALOG_PATH = REPO_ROOT / "docs" / "assets" / "catalog.json"
 SEASONS_STATE_PATH = REPO_ROOT / "state" / "seasons.yaml"
 ENV_PATH = REPO_ROOT / ".env"
 # Legacy curriculum paths — kept so test monkeypatches still work.
@@ -1598,6 +1600,14 @@ def main(argv: list[str] | None = None) -> int:
                     )
                 )
 
+                seasons_render = None
+                if season_ctx is not None:
+                    s_cache = nc.data.get(SEASONS_NS, {})
+                    seasons_render = {
+                        "html": render_seasons_section(season_ctx, s_cache),
+                        "tiles": season_tiles(season_ctx, s_cache),
+                        "data": seasons_data(season_ctx, s_cache),
+                    }
                 html, data = render_multi_syllabus(
                     cfg=cfg,
                     shared=new_shared,
@@ -1613,8 +1623,13 @@ def main(argv: list[str] | None = None) -> int:
                     module_titles_by_syllabus=per_syllabus_module_titles,
                     streak_specs_by_syllabus=per_syllabus_streak_specs,
                     xp=xp_block,
+                    seasons=seasons_render,
                 )
                 DOCS_HTML_PATH.parent.mkdir(parents=True, exist_ok=True)
+                DOCS_CATALOG_PATH.write_text(
+                    json.dumps(seasons_catalog(cfg, syllabuses_parsed), indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
                 DOCS_DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
                 DOCS_HTML_PATH.write_text(html, encoding="utf-8")
                 DOCS_DATA_PATH.write_text(

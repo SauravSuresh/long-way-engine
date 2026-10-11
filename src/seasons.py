@@ -91,6 +91,7 @@ class MilestoneProgress:
 class SeasonsState:
     milestones: dict[str, MilestoneProgress] = field(default_factory=dict)
     rest_until: date | None = None
+    rests: list[tuple[date, date]] = field(default_factory=list)  # past rest weeks (from, to)
     last_run: dict[str, Any] = field(default_factory=lambda: {"main": None, "side": None, "resting": False})
 
 
@@ -174,6 +175,7 @@ def load_seasons_state(path: Path) -> SeasonsState:
     return SeasonsState(
         milestones=milestones,
         rest_until=_date(raw.get("rest_until")),
+        rests=[(_date(r["from"]), _date(r["to"])) for r in (raw.get("rests") or [])],
         last_run={"main": last_run.get("main"), "side": last_run.get("side"), "resting": bool(last_run.get("resting", False))},
     )
 
@@ -185,6 +187,7 @@ def save_seasons_state(path: Path, state: SeasonsState) -> None:
             for k, v in sorted(state.milestones.items())
         },
         "rest_until": state.rest_until.isoformat() if state.rest_until else None,
+        "rests": [{"from": a.isoformat(), "to": b.isoformat()} for a, b in state.rests],
         "last_run": state.last_run,
     }
     path.parent.mkdir(parents=True, exist_ok=True)

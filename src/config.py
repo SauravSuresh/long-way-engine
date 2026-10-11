@@ -30,6 +30,7 @@ class TodoistConfig:
 class DashboardConfig:
     github_username: str
     repo_name: str
+    sections: list[str] | None = None  # page order; None = default for the repo's layout
 
 
 @dataclass
@@ -101,6 +102,7 @@ def load_config(yaml_path: Path, env_path: Path) -> Config:
     dashboard = DashboardConfig(
         github_username=str(dashboard_raw["github_username"]),
         repo_name=str(dashboard_raw["repo_name"]),
+        sections=[str(x) for x in dashboard_raw["sections"]] if dashboard_raw.get("sections") is not None else None,
     )
     pair_day = raw.get("pair_day")
     if pair_day is not None:
@@ -207,6 +209,7 @@ def load_multi_syllabus_config(yaml_path: Path, env_path: Path, *, strict: bool 
     dashboard = DashboardConfig(
         github_username=str(dashboard_raw["github_username"]),
         repo_name=str(dashboard_raw["repo_name"]),
+        sections=[str(x) for x in dashboard_raw["sections"]] if dashboard_raw.get("sections") is not None else None,
     )
     pair_day = raw.get("pair_day")
     if pair_day is not None:

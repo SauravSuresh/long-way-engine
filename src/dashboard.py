@@ -748,6 +748,7 @@ def _trmnl_band(
     today: date,
     shared: SharedState,
     xp: dict[str, Any] | None = None,
+    tiles_html: str | None = None,
 ) -> str:
     """At-a-glance band sized for the TRMNL OG (800×480) screenshot.
 
@@ -765,7 +766,7 @@ def _trmnl_band(
         f'&middot; Anki {anki:,}</span>'
         f'</div>'
     )
-    tiles = "".join(_trmnl_tile(s) for s in summaries)
+    tiles = tiles_html if tiles_html is not None else "".join(_trmnl_tile(s) for s in summaries)
     xp_strip = "" if xp is None else _xp_band(xp)
     return (
         f'<header class="trmnl-band">'
@@ -1142,6 +1143,7 @@ def render_multi_syllabus(
     module_titles_by_syllabus: dict[str, dict[int, str]] | None = None,
     streak_specs_by_syllabus: dict[str, Sequence[StreakTemplateSpec]] | None = None,
     xp: dict[str, Any] | None = None,
+    seasons: dict[str, Any] | None = None,
 ) -> tuple[str, dict[str, Any]]:
     """Render the multi-syllabus dashboard.
 
@@ -1231,7 +1233,13 @@ def render_multi_syllabus(
             "last_7_days": per_data["last_7_days"],
         })
 
-    trmnl_band = _trmnl_band(band_summaries, today, shared, xp)
+    tiles_html = seasons["tiles"] if seasons else None
+    trmnl_band = _trmnl_band(band_summaries, today, shared, xp, tiles_html=tiles_html)
+    if seasons:
+        combined_data["seasons"] = seasons["data"]
+    blocks = {"syllabus_cards": "".join(sections), "seasons": seasons["html"] if seasons else ""}
+    order = cfg.dashboard.sections or (["seasons", "syllabus_cards"] if seasons else ["syllabus_cards"])
+    body = "".join(blocks.get(name, "") for name in order)
 
     html_doc = (
         '<!doctype html>\n'
@@ -1242,7 +1250,7 @@ def render_multi_syllabus(
         '<link rel="stylesheet" href="assets/style.css">'
         f'</head><body><main class="dashboard">'
         f'{trmnl_band}'
-        f'{"".join(sections)}'
+        f'{body}'
         f'</main></body></html>\n'
     )
     return html_doc, combined_data
@@ -1694,6 +1702,33 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--line);
   .paused-banner { background: white; }
   .today { border: 1px solid #aaa; }
 }
+
+/* Seasons section (wayfinder #12). Colors per milestone via --c inline. */
+.seasons .sz-hero h1 { font-size: 1.6rem; line-height: 1.2; margin: .25rem 0 .4rem; max-width: 30ch; }
+.seasons .sz-hero p { color: var(--muted); max-width: 60ch; margin: 0; }
+.seasons .sz-today { font-size: 1.05rem; margin: .75rem 0; }
+.seasons .sz-lede, .seasons .sz-meta { color: var(--muted); font-size: .9rem; margin: .15rem 0; }
+.seasons .sz-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 700px) { .seasons .sz-cols { grid-template-columns: 1fr; } }
+.seasons .sz-dot { display: inline-block; width: .7rem; height: .7rem; border-radius: 50%; background: var(--c, var(--muted)); margin-right: .35rem; vertical-align: -.05em; }
+.seasons .sz-row { margin: .6rem 0; }
+.seasons .sz-head { display: flex; justify-content: space-between; gap: 1rem; font-size: .95rem; }
+.seasons .sz-name { font-weight: 600; }
+.seasons .sz-area, .seasons .sz-when { color: var(--muted); font-weight: 400; font-size: .9rem; }
+.seasons .sz-track { position: relative; height: 24px; background: #ececec; border-radius: 4px; overflow: hidden; margin-top: .25rem; }
+.seasons .sz-track .sg { position: absolute; top: 0; height: 100%; background: var(--c); border-radius: 0 0 4px 4px; min-width: 3px; }
+.seasons .sz-track .sg.side { height: 36%; }
+.seasons .sz-track .rs { position: absolute; top: 0; bottom: 0; background: repeating-linear-gradient(135deg, var(--faint) 0 1.5px, transparent 1.5px 5px); opacity: .5; }
+.seasons .sz-calhead, .seasons .sz-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; max-width: 18rem; }
+.seasons .sz-calhead { font-size: .75rem; color: var(--muted); text-align: center; margin-bottom: 3px; }
+.seasons .sz-cal span { height: 14px; border-radius: 3px; background: #e6e6e6; }
+.seasons .sz-cal .l1 { background: #a9dcbd; } .seasons .sz-cal .l2 { background: #5cbd89; } .seasons .sz-cal .l3 { background: var(--accent); }
+.seasons .sz-cal .future { background: transparent; outline: 1px dashed var(--line); outline-offset: -1px; }
+.seasons .sz-cal .today { outline: 2px solid var(--fg); outline-offset: 1px; }
+.seasons .sz-bucket { padding-left: 0; list-style: none; }
+.seasons .sz-bucket li { margin: .6rem 0; }
+.seasons .sz-bar { height: 5px; background: var(--line); border-radius: 3px; max-width: 20rem; overflow: hidden; margin: .3rem 0; }
+.seasons .sz-bar i { display: block; height: 100%; background: var(--c); }
 """
 
 

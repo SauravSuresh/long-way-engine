@@ -77,6 +77,11 @@ def _isolate_engine_paths(monkeypatch, tmp_path_factory):
     monkeypatch.setattr(
         "src.main.DOCS_CSS_PATH", root / "docs" / "assets" / "style.css"
     )
+    monkeypatch.setattr(
+        "src.main.DOCS_CATALOG_PATH", root / "docs" / "assets" / "catalog.json"
+    )
+    monkeypatch.setattr("src.main.SEASONS_PATH", root / "seasons.yaml")
+    monkeypatch.setattr("src.main.SEASONS_STATE_PATH", root / "state" / "seasons.yaml")
 
 
 def live_state_paused() -> bool:

@@ -11,11 +11,11 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, replace
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
 
-from src.forecast import Forecast, forecast
+from src.forecast import REST_DAYS, Forecast, forecast
 from src.seasons import (
     WEEKDAYS,
     DeepBlock,
@@ -165,14 +165,21 @@ def reconcile_pause(ctx: SeasonContext, key: str, state: SyllabusState) -> Sylla
     """
     paused_by: set[str] = set(ctx.state.last_run.get("paused") or [])
     desired = key in ctx.in_season()
-    if not desired and not state.paused:
-        state = replace(state, paused=True, paused_since=ctx.today, paused_until=None)
-        paused_by.add(key)
-        logger.info("[%s] seasons: off-season, paused", key)
-    elif desired and state.paused and key in paused_by:
+    expired = state.paused and state.paused_until is not None and state.paused_until <= ctx.today
+    if desired and state.paused and (key in paused_by or expired):
         state = unset_pause(state, todoist_task_id=SEASON_ACTOR, today=ctx.today).new_state  # type: ignore[assignment]
         paused_by.discard(key)
         logger.info("[%s] seasons: in season, unpaused", key)
+    elif not desired and not state.paused:
+        state = replace(state, paused=True, paused_since=ctx.today, paused_until=None)
+        paused_by.add(key)
+        logger.info("[%s] seasons: off-season, paused", key)
+    elif not desired and expired:
+        # Owner's dated pause ran out while off-season: close it, then take over.
+        state = unset_pause(state, todoist_task_id=SEASON_ACTOR, today=ctx.today).new_state  # type: ignore[assignment]
+        state = replace(state, paused=True, paused_since=ctx.today, paused_until=None)
+        paused_by.add(key)
+        logger.info("[%s] seasons: owner pause expired, now off-season", key)
     ctx.state.last_run["paused"] = sorted(paused_by)
     return state
 
@@ -311,3 +318,53 @@ def finish_run(ctx: SeasonContext, state_path: Path, nc: Any, *, dry_run: bool) 
     if not dry_run:
         save_seasons_state(state_path, ctx.state)
     return credited
+
+
+# --- streaks ----------------------------------------------------------------
+
+
+def _in_rest(state: SeasonsState, d: date, today: date) -> bool:
+    """Inside a recorded rest week, or inside the live one (rest_until)."""
+    if state.rest_until is not None and today - timedelta(days=REST_DAYS) <= d <= state.rest_until:
+        return True
+    return any(a <= d <= b for a, b in state.rests)
+
+
+def deep_work_streak(seasons: Seasons, state: SeasonsState, today: date, *, lookback: int = 400) -> int:
+    """Consecutive block days with logged minutes, walking back from yesterday.
+
+    Days without a block and rest-week days are skipped, not broken.
+    """
+    logged_days = {d for p in state.milestones.values() for d, m in p.logged.items() if m > 0}
+    streak = 0
+    d = today - timedelta(days=1)
+    for _ in range(lookback):
+        if WEEKDAYS[d.weekday()] in seasons.rhythm.deep_blocks and not _in_rest(state, d, today):
+            if d not in logged_days:
+                break
+            streak += 1
+        d -= timedelta(days=1)
+    return streak
+
+
+def discipline_streaks(seasons: Seasons, cache: dict[str, dict[str, Any]], today: date, *, lookback: int = 400) -> dict[str, int]:
+    """Per-discipline streak over completed discipline tasks in the seasons cache."""
+    done: dict[str, set[date]] = {}
+    for entry in cache.values():
+        did = entry.get("discipline")
+        if did and entry.get("status") == "completed":
+            try:
+                done.setdefault(did, set()).add(date.fromisoformat(str(entry["due_date"])))
+            except (KeyError, ValueError):
+                continue
+    out: dict[str, int] = {}
+    for disc in seasons.disciplines:
+        streak, d = 0, today - timedelta(days=1)
+        for _ in range(lookback):
+            if WEEKDAYS[d.weekday()] in disc.days:
+                if d not in done.get(disc.id, set()):
+                    break
+                streak += 1
+            d -= timedelta(days=1)
+        out[disc.id] = streak
+    return out

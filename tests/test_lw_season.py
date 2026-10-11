@@ -28,6 +28,7 @@ def test_done_defaults_to_main_and_starts_rest(tmp_path):
     state, msg = mark_done(_seasons(tmp_path), SeasonsState(), MON, None)
     assert state.milestones["a"].done == MON
     assert state.rest_until == date(2026, 10, 19) and "rest week" in msg
+    assert state.rests == [(date(2026, 10, 13), date(2026, 10, 19))]
 
 
 def test_done_last_milestone_has_no_rest(tmp_path):

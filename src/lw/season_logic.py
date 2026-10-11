@@ -47,6 +47,7 @@ def mark_done(seasons: Seasons, state: SeasonsState, today: date, milestone_id: 
     others_live = any(m.id != mid and not (state.milestones.get(m.id) and state.milestones[m.id].done) for m in seasons.bucket)
     if mid == fc.main and seasons.rhythm.rest_week and others_live:
         state.rest_until = today + timedelta(days=REST_DAYS)
+        state.rests.append((today + timedelta(days=1), state.rest_until))
         msg += f"; rest week until {state.rest_until}"
     return state, msg
 

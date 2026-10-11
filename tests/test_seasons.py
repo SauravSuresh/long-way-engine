@@ -108,6 +108,7 @@ def test_state_roundtrip_and_orphan_warning(tmp_path):
     st = SeasonsState(
         milestones={"aws-saa": MilestoneProgress({date(2026, 10, 13): 90, date(2026, 10, 14): 90}, None), "ghost": MilestoneProgress({}, date(2026, 1, 1))},
         rest_until=date(2026, 12, 7),
+        rests=[(date(2026, 11, 1), date(2026, 11, 7))],
         last_run={"main": "aws-saa", "side": None, "resting": False},
     )
     save_seasons_state(p, st)

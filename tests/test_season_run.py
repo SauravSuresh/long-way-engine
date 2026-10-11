@@ -62,8 +62,20 @@ def _tpl(**raw):
     return SimpleNamespace(id=raw.get("id", "t"), raw=raw, gated_by=raw.get("gated_by", []))
 
 
-def _state(paused=False, since=None):
-    return SyllabusState(start_date=date(2026, 8, 1), phase=1, month=1, current_module=1, current_book="b", paused=paused, paused_since=since)
+def _state(paused=False, since=None, until=None):
+    return SyllabusState(start_date=date(2026, 8, 1), phase=1, month=1, current_module=1, current_book="b", paused=paused, paused_since=since, paused_until=until)
+
+
+def test_reconcile_lifts_expired_owner_pause(tmp_path):
+    ctx = _ctx(tmp_path, MON)
+    vacation = _state(paused=True, since=date(2026, 9, 22), until=date(2026, 10, 7))
+    mb = reconcile_pause(ctx, "mb", vacation)  # in season: lifted, interval closed
+    assert not mb.paused and mb.pause_history[-1].end == MON
+    lw = reconcile_pause(ctx, "lw", vacation)  # off-season: closed, then seasons-owned pause
+    assert lw.paused and lw.paused_since == MON and lw.paused_until is None and lw.pause_history[-1].end == MON
+    assert ctx.state.last_run["paused"] == ["lw"]
+    future = _state(paused=True, since=MON, until=date(2026, 11, 1))
+    assert reconcile_pause(ctx, "mb", future).paused  # not expired: respected
 
 
 class FakeClient:
@@ -171,3 +183,33 @@ def test_emit_is_idempotent_and_credits_minutes(tmp_path):
     assert credit_completed_blocks(ctx.state, nc.data) == 1
     assert ctx.state.milestones["mb-rungs"].logged == {MON: 90}
     assert credit_completed_blocks(ctx.state, nc.data) == 0
+
+
+def test_deep_work_streak_skips_rest_and_no_block_days(tmp_path):
+    from src.season_run import deep_work_streak
+    from src.seasons import MilestoneProgress
+
+    # blocks Mon + Tue only (OWNER). today = Mon 2026-10-19; walk back from Sun 10-18.
+    ctx = _ctx(tmp_path, date(2026, 10, 19))
+    st = ctx.state
+    logged = {date(2026, 10, 13): 90, date(2026, 10, 12): 90, date(2026, 10, 6): 90, date(2026, 9, 29): 90, date(2026, 9, 28): 90}
+    st.milestones["mb-rungs"] = MilestoneProgress(logged)
+    # Tue 10-13, Mon 10-12, Tue 10-06 logged; Mon 10-05 is a block day with nothing -> 3
+    assert deep_work_streak(ctx.seasons, st, date(2026, 10, 19)) == 3
+    # a recorded rest week covering Mon 10-05 is skipped, so the walk reaches 09-29 and 09-28
+    st.rests.append((date(2026, 9, 30), date(2026, 10, 5)))
+    assert deep_work_streak(ctx.seasons, st, date(2026, 10, 19)) == 5
+
+
+def test_discipline_streaks(tmp_path):
+    from src.season_run import discipline_streaks
+
+    ctx = _ctx(tmp_path, date(2026, 10, 15))  # Thursday
+    cache = {
+        f"seasons:disc:anki:{d}": {"discipline": "anki", "status": "completed", "due_date": d}
+        for d in ("2026-10-14", "2026-10-13")
+    }
+    cache["seasons:disc:gym:2026-10-13"] = {"discipline": "gym", "status": "completed", "due_date": "2026-10-13"}
+    cache["seasons:disc:anki:2026-10-12"] = {"discipline": "anki", "status": "missed", "due_date": "2026-10-12"}
+    # anki daily: 14, 13 done, 12 missed -> 2.  gym Tuesdays only: 13 done, 06 not -> 1
+    assert discipline_streaks(ctx.seasons, cache, date(2026, 10, 15)) == {"anki": 2, "gym": 1}
