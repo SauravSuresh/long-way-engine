@@ -1,0 +1,97 @@
+# seasons.yaml — written by docs/plan.html. Vocabulary: CONTEXT.md.
+todoist_project_id: "6hjPcvfCfwQQ9v87"
+rhythm:
+  sleep:
+    from: "22:30"
+    to: "06:00"
+  fixed_hours:
+    from: "09:30"
+    to: "18:30"
+    days:
+      - "monday"
+      - "tuesday"
+      - "wednesday"
+      - "thursday"
+      - "friday"
+  shutdown: "21:00"
+  rest_week: true
+  deep_blocks:
+    monday:
+      start: "07:30"
+      minutes: 90
+      lane: "main"
+    tuesday:
+      start: "07:30"
+      minutes: 90
+      lane: "main"
+    wednesday:
+      start: "07:30"
+      minutes: 90
+      lane: "main"
+    thursday:
+      start: "07:30"
+      minutes: 90
+      lane: "side"
+    friday:
+      start: "07:30"
+      minutes: 90
+      lane: "main"
+    saturday:
+      start: "18:30"
+      minutes: 100
+      lane: "side"
+bucket:
+  - id: "get-the-aws-solutions-architect-certification"
+    name: "Get the AWS Solutions Architect Certification"
+    area: "Learning"
+    hours: 40
+    lane: "main"
+    syllabus: "devops-ready"
+    track:
+      category: "Certifications"
+      item: "AWS Solutions Architect Associate"
+  - id: "previz-saas-development"
+    name: "Previz SaaS Development"
+    area: "Work"
+    hours: 50
+    lane: "side"
+  - id: "become-capable-of-building-a-backend"
+    name: "Become Capable of building a backend"
+    area: "Learning"
+    hours: 100
+    lane: "main"
+    syllabus: "devops-ready"
+    track:
+      category: "Courses"
+      item: "boot.dev backend path"
+disciplines:
+  - id: "writing"
+    name: "Writing"
+    minutes: 45
+    start: "06:00"
+    days:
+      - "monday"
+      - "tuesday"
+      - "wednesday"
+      - "thursday"
+      - "friday"
+      - "saturday"
+  - id: "anki"
+    name: "Anki"
+    minutes: 30
+    start: "19:00"
+    days:
+      - "monday"
+      - "tuesday"
+      - "wednesday"
+      - "thursday"
+      - "friday"
+  - id: "gym"
+    name: "Gym"
+    minutes: 90
+    start: "19:30"
+    days:
+      - "monday"
+      - "tuesday"
+      - "wednesday"
+      - "thursday"
