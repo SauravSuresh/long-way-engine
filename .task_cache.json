@@ -152,14 +152,6 @@
       "template_id": "weekday-morning-study-thursday",
       "todoist_task_id": "6hJ6mj6JC5pq5qQX"
     },
-    "3b4ce84cb848e431": {
-      "created_at": "2026-08-11T22:09:07.327416+00:00",
-      "due_date": "2026-08-12",
-      "missed_at": "2026-08-13",
-      "status": "missed",
-      "template_id": "weekly-bootdev-wednesday",
-      "todoist_task_id": "6hGCx6FJh6fJvJM5"
-    },
     "3d58ccbe46004f82": {
       "created_at": "2026-08-23T21:40:56.418344+00:00",
       "due_date": "2026-08-24",
@@ -175,14 +167,6 @@
       "status": "missed",
       "template_id": "weekday-morning-study-friday",
       "todoist_task_id": "6hWwgG9Qw4MhxVv5"
-    },
-    "4a5dc0d5b4c663f8": {
-      "created_at": "2026-08-11T22:09:06.847337+00:00",
-      "due_date": "2026-08-12",
-      "missed_at": "2026-08-13",
-      "status": "missed",
-      "template_id": "weekday-morning-study-wednesday",
-      "todoist_task_id": "6hGCx6CfFwC33cC5"
     },
     "4feecf5bd2594d30": {
       "created_at": "2026-09-16T23:41:25.676835+00:00",
@@ -268,14 +252,6 @@
       "status": "completed",
       "template_id": "weekly-state-review",
       "todoist_task_id": "6hQv62WR7JmjH4C5"
-    },
-    "756038e2cc3cb075": {
-      "created_at": "2026-08-11T22:09:06.352073+00:00",
-      "due_date": "2026-08-12",
-      "missed_at": "2026-08-13",
-      "status": "missed",
-      "template_id": "daily-devops-srs",
-      "todoist_task_id": "6hGCx69j483QVjfX"
     },
     "75acc9aa1ce2b2f4": {
       "completed_at": "2026-09-01",
@@ -556,14 +532,6 @@
       "status": "missed",
       "template_id": "weekly-state-review",
       "todoist_task_id": "6hGxGcmRGCcQH37X"
-    },
-    "e93617f36902b8a0": {
-      "created_at": "2026-08-11T22:09:07.879324+00:00",
-      "due_date": "2026-08-12",
-      "missed_at": "2026-08-13",
-      "status": "missed",
-      "template_id": "weekly-leetcode-wednesday",
-      "todoist_task_id": "6hGCx6FgCVCcrW55"
     },
     "ecee3beb0c7d8d04": {
       "created_at": "2026-08-16T21:39:57.524339+00:00",
