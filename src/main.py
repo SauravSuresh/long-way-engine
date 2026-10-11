@@ -54,6 +54,16 @@ from src.dashboard import (
 from src.ids import external_id, module_external_id
 from src.reflections import StubResult, create_stub, update_metadata
 from src.scheduler import _is_last_saturday_of_month, should_create_today
+from src.season_run import (
+    SEASONS_NS,
+    SeasonContext,
+    SeasonsError,
+    emit_season_tasks,
+    finish_run as finish_season_run,
+    load_season_context,
+    reconcile_pause,
+    syllabus_facts,
+)
 from src.state import (
     SharedState,
     State,
@@ -99,6 +109,8 @@ CONFIG_PATH = REPO_ROOT / "config.yaml"
 # Legacy single-syllabus state path — kept so test monkeypatches still work.
 STATE_PATH = REPO_ROOT / "state.yaml"
 SHARED_STATE_PATH = REPO_ROOT / "state" / "shared.yaml"
+SEASONS_PATH = REPO_ROOT / "seasons.yaml"
+SEASONS_STATE_PATH = REPO_ROOT / "state" / "seasons.yaml"
 ENV_PATH = REPO_ROOT / ".env"
 # Legacy curriculum paths — kept so test monkeypatches still work.
 CURRICULUM_DIR = REPO_ROOT / "curriculum"
@@ -795,6 +807,7 @@ def run_for_syllabus(
     review_factory=None,
     state_log_path: Path | None = None,
     reflections_root_override: Path | None = None,
+    season_ctx: SeasonContext | None = None,
 ) -> tuple[RunSummary, SyllabusState, SharedState, dict[str, Any]]:
     """Execute one syllabus' daily run.
 
@@ -874,6 +887,7 @@ def run_for_syllabus(
     stub_decisions: list[StubDecision] = []
     pending_paths: set[Path] = set()
     errors = 0
+    season_slot_fired = False
 
     for tpl in templates:
         try:
@@ -887,6 +901,9 @@ def run_for_syllabus(
             decisions.append(Decision(tpl.id, None, "ERROR (cadence)"))
             errors += 1
             continue
+        if season_ctx is not None and not season_ctx.ritual_allowed(entry.key, tpl):
+            decisions.append(Decision(tpl.id, None, "SKIP (off-season)"))
+            continue
 
         resolved = resolve_variables(tpl, state, per_syllabus_cfg_shim, today, syllabus=syllabus)
         if resolved is None:
@@ -894,6 +911,11 @@ def run_for_syllabus(
             errors += 1
             continue
         resolved = dataclasses.replace(resolved, syllabus_key=entry.key)
+        slot_fields: dict[str, Any] = {}
+        if season_ctx is not None and (due_override := season_ctx.due_override(tpl)):
+            resolved = dataclasses.replace(resolved, due=due_override)
+            slot_fields = season_ctx.slot_cache_fields(entry.key)
+            season_slot_fired = True
 
         if tpl.cadence == "once-per-module":
             assert tpl.module_number is not None
@@ -923,6 +945,8 @@ def run_for_syllabus(
                 "template_id": result.template_id,
                 "due_date": cache_due,
             }
+        if slot_fields:
+            syllabus_cache[ext_id].update(slot_fields)
 
         if resolved.state_review and tpl.cadence == "weekly" and not entry.cli_review:
             syllabus_cache.setdefault(ext_id, {})["state_review_parent"] = True
@@ -1082,6 +1106,7 @@ def run_for_syllabus(
         "daily_streak": daily_streak(
             today, state, syllabus_cache, completion_set, streak_specs
         ),
+        "season_slot_fired": season_slot_fired,
     }
 
     return summary, state, shared, dashboard_data
@@ -1444,12 +1469,34 @@ def main(argv: list[str] | None = None) -> int:
     new_shared = shared
 
     for key in cfg.priority_order:
+        if cfg.syllabuses[key].enabled:
+            syllabuses_parsed[key] = load_syllabus_for_entry(cfg.syllabuses[key])
+
+    # Seasons layer (opt-in: present iff seasons.yaml exists).
+    try:
+        season_ctx = load_season_context(
+            SEASONS_PATH, SEASONS_STATE_PATH, today, syllabus_facts(cfg, syllabuses_parsed)
+        )
+    except SeasonsError as e:
+        logger.error("%s", e)
+        print(str(e), file=sys.stderr)
+        return 2
+    slot_fired: set[str] = set()
+    if season_ctx is not None:
+        logger.info(
+            "seasons: main=%s side=%s resting=%s",
+            season_ctx.fc.main, season_ctx.fc.side, season_ctx.resting,
+        )
+
+    for key in cfg.priority_order:
         entry = cfg.syllabuses[key]
         if not entry.enabled:
             continue
 
         state = load_syllabus_state(entry.state_file)
-        syllabus = load_syllabus_for_entry(entry)
+        syllabus = syllabuses_parsed[key]
+        if season_ctx is not None:
+            state = reconcile_pause(season_ctx, key, state)
 
         per_summary, state, new_shared, dash_data = run_for_syllabus(
             cfg=cfg,
@@ -1462,11 +1509,13 @@ def main(argv: list[str] | None = None) -> int:
             cache=nc,
             dry_run=args.dry_run,
             sweep=not args.no_sweep,
+            season_ctx=season_ctx,
         )
 
         aggregate.merge(per_summary)
         per_syllabus_states[key] = state
-        syllabuses_parsed[key] = syllabus
+        if dash_data.get("season_slot_fired"):
+            slot_fired.add(key)
         per_syllabus_completion[key] = dash_data["completion_set"]
         per_syllabus_module_titles[key] = dash_data["module_titles"]
         per_syllabus_books[key] = dash_data["books"]
@@ -1474,6 +1523,30 @@ def main(argv: list[str] | None = None) -> int:
         per_syllabus_streak_specs[key] = dash_data["streak_specs"]
         per_syllabus_template_kinds[key] = dash_data["template_kinds"]
         per_syllabus_daily_streak[key] = dash_data["daily_streak"]
+
+    if season_ctx is not None:
+        s_created, s_skipped, s_errors = emit_season_tasks(
+            season_ctx, cfg, nc, slot_fired, client_factory=TodoistClient, clock=clock, dry_run=args.dry_run
+        )
+        aggregate.errors += s_errors
+        if not args.no_sweep:
+            sweep_past_due(
+                nc.data.setdefault(SEASONS_NS, {}),
+                today=today,
+                completion_client=TodoistCompletionClient(
+                    token=cfg.todoist_token,
+                    cache_path=COMPLETION_CACHE_PATH,
+                    project_id=season_ctx.seasons.todoist_project_id,
+                    clock=clock,
+                ),
+                admin_client=TodoistAdminClient(token=cfg.todoist_token),
+                dry_run=args.dry_run,
+            )
+        credited = finish_season_run(season_ctx, SEASONS_STATE_PATH, nc, dry_run=args.dry_run)
+        logger.info(
+            "seasons: tasks created=%d skipped=%d errors=%d; blocks credited=%d",
+            s_created, s_skipped, s_errors, credited,
+        )
 
     # After all syllabuses: persist cache + shared state, render dashboard.
     if not args.dry_run:

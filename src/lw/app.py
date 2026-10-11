@@ -19,7 +19,22 @@ def main(argv: list[str] | None = None) -> int:
     rung = sub.add_parser("rung", help="ladder commands")
     rung_sub = rung.add_subparsers(dest="rung_cmd", required=True)
     rung_sub.add_parser("start", help="pick this rung's challenge and scaffold it")
+    season = sub.add_parser("season", help="seasons layer: who holds the deep block")
+    season_sub = season.add_subparsers(dest="season_cmd", required=True)
+    season_sub.add_parser("status", help="current main/side and the forecast")
+    done = season_sub.add_parser("done", help="finish a milestone (default: current main)")
+    done.add_argument("milestone", nargs="?")
+    log = season_sub.add_parser("log", help="set logged minutes for a day")
+    log.add_argument("minutes", type=int)
+    log.add_argument("--date", type=date.fromisoformat)
+    log.add_argument("--milestone")
+    season_sub.add_parser("rest-end", help="end the rest week early")
     args = parser.parse_args(argv)
+
+    if args.cmd == "season":
+        from src.lw.season_logic import run_season
+
+        return run_season(REPO_ROOT, args)
 
     if args.cmd == "status":
         from src.lw.status_logic import build_status

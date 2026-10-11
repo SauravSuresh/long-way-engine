@@ -1,0 +1,48 @@
+# Seasons layer owner file. Copy to the repo root as `seasons.yaml` to turn the layer on.
+# Vocabulary: CONTEXT.md. Schema: wayfinder ticket #9. Edited by the planner or by hand.
+todoist_project_id: "<Todoist project id for bare-season blocks + disciplines>"
+
+rhythm:
+  sleep: {from: "22:30", to: "06:00"}
+  fixed_hours: {from: "09:30", to: "18:30", days: [monday, tuesday, wednesday, thursday, friday]}
+  shutdown: "21:00"
+  rest_week: true
+  deep_blocks:                      # a weekday absent here = no deep block that day
+    monday:    {start: "07:30", minutes: 90,  lane: main}
+    tuesday:   {start: "07:30", minutes: 90,  lane: side}
+    wednesday: {start: "07:30", minutes: 90,  lane: main}
+    thursday:  {start: "07:30", minutes: 90,  lane: side}
+    friday:    {start: "07:30", minutes: 90,  lane: main}
+    saturday:  {start: "07:30", minutes: 210, lane: main}
+
+bucket:                             # ordered; order is the only decision
+  - id: marketplace-rungs-1-5
+    name: Marketplace rungs 1–5
+    area: Work
+    hours: 200
+    lane: main
+    syllabus: marketplace-builder
+    modules: [1, 5]
+  - id: aws-saa
+    name: AWS Solutions Architect Associate
+    area: Learning
+    hours: 40
+    lane: side
+    syllabus: devops-ready
+    track: {category: Certifications, item: AWS Solutions Architect Associate}
+  - id: previz-product             # bare season: no syllabus, just the block
+    name: Previz product build
+    area: Work
+    hours: 100
+    lane: main
+
+disciplines:
+  - id: anki
+    name: "Anki · {milestone}"
+    minutes: 20
+    start: "07:15"
+  - id: writing
+    name: Writing
+    minutes: 30
+    start: "05:45"
+    days: [monday, tuesday, wednesday, thursday, friday]
