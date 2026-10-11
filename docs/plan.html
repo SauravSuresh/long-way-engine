@@ -55,6 +55,8 @@ button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink);fon
 button.quiet{border-color:transparent;color:var(--muted);padding-inline:.5rem}
 button.quiet:hover{color:var(--ink);border-color:var(--line)}
 button.icon{width:2.35rem;padding:0}
+button.remove{color:var(--warn);border-color:var(--warn);padding-inline:.6rem}
+button.remove:hover{background:var(--warn-bg)}
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;padding:2px;background:var(--surface);flex:none}
 .seg button{border:0;min-height:1.95rem;padding:.2rem .7rem;border-radius:6px;white-space:nowrap}
@@ -453,12 +455,13 @@ function renderBucket() {
       h += '<li style="--c:' + colorOf(m) + '"><div class="rowline"><span class="dot"></span>' +
         '<span class="grow"><input class="name" type="text" aria-label="Milestone name" data-bind="bucket.#' + m.id + '.name" value="' + esc(m.name) + '"></span>' +
         '<button class="icon quiet" data-act="up" data-id="' + m.id + '" aria-label="Move earlier"' + (i === 0 ? " disabled" : "") + ">&uarr;</button>" +
-        '<button class="icon quiet" data-act="down" data-id="' + m.id + '" aria-label="Move later"' + (i === liveP.length - 1 ? " disabled" : "") + ">&darr;</button></div>" +
+        '<button class="icon quiet" data-act="down" data-id="' + m.id + '" aria-label="Move later"' + (i === liveP.length - 1 ? " disabled" : "") + ">&darr;</button>" +
+        '<button class="remove" data-act="remove" data-id="' + m.id + '">Remove</button></div>' +
         '<div class="rowline ctrls"><input class="area" type="text" list="areas" maxlength="40" aria-label="Area of life" placeholder="Area" data-bind="bucket.#' + m.id + '.area" value="' + esc(m.area) + '">' +
         '<span class="unit"><input type="number" min="1" max="5000" step="5" aria-label="Hours to the milestone" data-bind="bucket.#' + m.id + '.hours" value="' + m.hours + '"> h</span>' +
         (two ? '<span class="seg" role="group" aria-label="Lane"><button data-act="slot" data-id="' + m.id + '" data-v="main" aria-pressed="' + (m.lane !== "side") + '">Main</button><button data-act="slot" data-id="' + m.id + '" data-v="side" aria-pressed="' + (m.lane === "side") + '">Side</button></span>' : "") +
         '<span class="unit">not before <input type="date" aria-label="Earliest start" data-bind="bucket.#' + m.id + '.pin_start" value="' + (m.pin_start || "") + '"></span>' +
-        '<button class="quiet" data-act="remove" data-id="' + m.id + '">Remove</button></div>' +
+        '</div>' +
         '<div class="rowline ctrls">' + bindingControls(m) + "</div>" +
         '<div class="meta" data-meta="' + m.id + '"></div></li>';
     });
@@ -471,7 +474,7 @@ function renderBucket() {
   h += '<datalist id="areas">' + areas.map((a) => '<option value="' + esc(a) + '">').join("") + "</datalist>";
   if (done.length) {
     h += "<details><summary>Finished (" + done.length + ')</summary><ul class="list">';
-    done.forEach((m) => { h += '<li style="--c:' + colorOf(m) + '"><div class="rowline"><span class="dot"></span><span class="grow">' + esc(m.name) + (m.area ? " (" + esc(m.area) + ")" : "") + ", " + fmtH(loggedOf(m.id)) + " logged, done " + esc(st.milestones[m.id].done) + '</span><button class="quiet" data-act="remove" data-id="' + m.id + '">Remove</button></div></li>'; });
+    done.forEach((m) => { h += '<li style="--c:' + colorOf(m) + '"><div class="rowline"><span class="dot"></span><span class="grow">' + esc(m.name) + (m.area ? " (" + esc(m.area) + ")" : "") + ", " + fmtH(loggedOf(m.id)) + " logged, done " + esc(st.milestones[m.id].done) + '</span><button class="remove" data-act="remove" data-id="' + m.id + '">Remove</button></div></li>'; });
     h += "</ul></details>";
   }
   el.innerHTML = h;
@@ -615,7 +618,7 @@ function renderHabits() {
       h += '<li style="--c:' + cvar((k + 4) % PALETTE) + '"><div class="rowline"><span class="dot"></span><span class="grow"><input class="name" type="text" aria-label="Discipline name" data-bind="disciplines.#' + x.id + '.name" value="' + esc(x.name) + '"></span>' +
         '<span class="unit"><input type="number" min="5" max="240" step="5" aria-label="Minutes" data-bind="disciplines.#' + x.id + '.minutes" value="' + x.minutes + '"> min</span>' +
         '<span class="unit">at <input type="time" aria-label="Start time" data-bind="disciplines.#' + x.id + '.start" value="' + x.start + '"></span>' + dayButtons("habitDay", x.id, x.days) +
-        '<button class="quiet" data-act="removeHabit" data-id="' + x.id + '">Remove</button></div></li>';
+        '<button class="remove" data-act="removeHabit" data-id="' + x.id + '">Remove</button></div></li>';
     });
     h += "</ul>";
   } else h += '<p class="empty">No disciplines yet. Add the one you most want to keep, and keep it short enough to do on a bad day.</p>';
