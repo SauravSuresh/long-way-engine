@@ -1,0 +1,276 @@
+{
+  "syllabuses": {
+    "devops-ready": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "AWS Core Services",
+          "number": 1
+        },
+        {
+          "name": "AWS Advanced & IaC",
+          "number": 2
+        },
+        {
+          "name": "AWS Certification Sprint",
+          "number": 3
+        },
+        {
+          "name": "Docker & Container Fundamentals",
+          "number": 4
+        },
+        {
+          "name": "Kubernetes Deep Dive & Certification",
+          "number": 5
+        },
+        {
+          "name": "CI/CD & GitOps Pipelines",
+          "number": 6
+        },
+        {
+          "name": "System Design & Interview Mastery",
+          "number": 7
+        },
+        {
+          "name": "Stack ADR & Proof-of-Concepts",
+          "number": 8
+        },
+        {
+          "name": "API Design as a Discipline",
+          "number": 9
+        },
+        {
+          "name": "Data Modeling & Booking Concurrency",
+          "number": 10
+        },
+        {
+          "name": "Payments Integration for India",
+          "number": 11
+        },
+        {
+          "name": "Production Infra & Delivery on AWS",
+          "number": 12
+        },
+        {
+          "name": "Observability, Reliability & Security Baseline",
+          "number": 13
+        }
+      ],
+      "name": "DevOps Job Ready",
+      "tracks": [
+        {
+          "category": "Certifications",
+          "item": "AWS Solutions Architect Associate"
+        },
+        {
+          "category": "Certifications",
+          "item": "CKA or CKAD"
+        },
+        {
+          "category": "Interview Prep",
+          "item": "LeetCode Interview Prep"
+        },
+        {
+          "category": "Courses",
+          "item": "boot.dev backend path"
+        },
+        {
+          "category": "Interview Prep",
+          "item": "System Design Practice"
+        },
+        {
+          "category": "Projects",
+          "item": "GitHub Portfolio Projects"
+        },
+        {
+          "category": "Projects",
+          "item": "Capstone: Booking Platform"
+        }
+      ]
+    },
+    "long-way": {
+      "enabled": false,
+      "modules": [
+        {
+          "name": "Python Basics",
+          "number": 1
+        },
+        {
+          "name": "Debugging (Agans)",
+          "number": 2
+        },
+        {
+          "name": "Data Structures & Algorithms",
+          "number": 3
+        },
+        {
+          "name": "C & Memory Management",
+          "number": 4
+        },
+        {
+          "name": "CSAPP",
+          "number": 5
+        },
+        {
+          "name": "Pi Homelab Stage 1",
+          "number": 6
+        },
+        {
+          "name": "Computer Networking (Top-Down)",
+          "number": 7
+        },
+        {
+          "name": "Pi Homelab Stage 2 (real server)",
+          "number": 8
+        },
+        {
+          "name": "LFCS Certification",
+          "number": 9
+        },
+        {
+          "name": "Go Fundamentals",
+          "number": 10
+        },
+        {
+          "name": "The Go Programming Language (book)",
+          "number": 11
+        },
+        {
+          "name": "SQL & Databases",
+          "number": 12
+        },
+        {
+          "name": "HTTP Servers in Go",
+          "number": 13
+        },
+        {
+          "name": "Docker, S3 & CDN",
+          "number": 14
+        },
+        {
+          "name": "Pub/Sub Architecture",
+          "number": 15
+        },
+        {
+          "name": "DDIA",
+          "number": 16
+        },
+        {
+          "name": "Building Microservices (Newman)",
+          "number": 17
+        },
+        {
+          "name": "Release It! (Nygard)",
+          "number": 18
+        },
+        {
+          "name": "The Rental Booking System \u2014 start building",
+          "number": 19
+        },
+        {
+          "name": "AWS Solutions Architect Associate",
+          "number": 20
+        },
+        {
+          "name": "Kubernetes the Hard Way",
+          "number": 21
+        },
+        {
+          "name": "Observability",
+          "number": 22
+        },
+        {
+          "name": "Synthesis \u2014 Writing & Polish",
+          "number": 23
+        }
+      ],
+      "name": "The Long Way",
+      "tracks": [
+        {
+          "category": "Courses",
+          "item": "boot.dev backend path"
+        }
+      ]
+    },
+    "marketplace-builder": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "CLI craft & tests",
+          "number": 1
+        },
+        {
+          "name": "Crash-safe persistence",
+          "number": 2
+        },
+        {
+          "name": "Network clients that don't lie",
+          "number": 3
+        },
+        {
+          "name": "Concurrency basics",
+          "number": 4
+        },
+        {
+          "name": "A library with real users",
+          "number": 5
+        },
+        {
+          "name": "HTTP service from scratch",
+          "number": 6
+        },
+        {
+          "name": "Postgres for real",
+          "number": 7
+        },
+        {
+          "name": "Auth: sessions, tokens, roles",
+          "number": 8
+        },
+        {
+          "name": "Spec-first API design",
+          "number": 9
+        },
+        {
+          "name": "Webhooks & idempotency",
+          "number": 10
+        },
+        {
+          "name": "Jobs, queues & retries",
+          "number": 11
+        },
+        {
+          "name": "Ship it & keep it up",
+          "number": 12
+        },
+        {
+          "name": "Performance: measure, then fix",
+          "number": 13
+        },
+        {
+          "name": "Wire protocols",
+          "number": 14
+        },
+        {
+          "name": "Distributed coordination",
+          "number": 15
+        },
+        {
+          "name": "Reliability engineering",
+          "number": 16
+        }
+      ],
+      "name": "Marketplace Builder",
+      "tracks": [
+        {
+          "category": "Platform",
+          "item": "Rental platform build"
+        },
+        {
+          "category": "Platform",
+          "item": "Platform in production"
+        }
+      ]
+    }
+  }
+}

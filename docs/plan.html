@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seasons planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js" integrity="sha512-CSBhVREyzHAjAFfBlIBakjoRUKp5h7VSweP0InR/pAJyptH7peuhCsqAI/snV+TwZmXZqoUklpXp6R6wMnYf5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+:root{
+  --bg:#E7EEF0; --surface:#F4F8F9; --raised:#FFFFFF; --ink:#0D2830; --muted:#516B74; --line:#C3D1D6;
+  --night:#0D2830; --job:#9DB0B7; --focus:#0B6E99; --warn:#7A3400; --warn-bg:#FBE8D3; --ok:#0F8B8D;
+  --p0:#0F8B8D; --p1:#E3A008; --p2:#D64933; --p3:#6C4AB6; --p4:#4C956C; --p5:#C2387F; --p6:#2F6FDE; --p7:#8A5A2B;
+  --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --body:"Hanken Grotesk","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#091A20; --surface:#0F262E; --raised:#173540; --ink:#E3EEF1; --muted:#8FAAB3; --line:#25444F;
+    --night:#02090C; --job:#3B5A65; --focus:#6CC5E8; --warn:#FFC58A; --warn-bg:#3A2410;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.5 var(--body);font-variant-numeric:tabular-nums;-webkit-text-size-adjust:100%}
+.wrap{max-width:74rem;margin:0 auto;padding:0 clamp(1rem,3.5vw,2.75rem) 6rem}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:1.25rem 0 0;flex-wrap:wrap}
+.brand{font:800 1.15rem/1 var(--display);letter-spacing:-.01em}
+.brand a{color:var(--muted);font:500 .9rem var(--body);margin-left:.75rem;text-decoration:none}
+#status{font-size:.85rem;color:var(--muted);text-align:right}
+#status.bad{color:var(--warn)}
+main[inert]{opacity:.55}
+.hero{padding:clamp(1.75rem,5vw,3.5rem) 0 clamp(1.75rem,4vw,3rem)}
+.hero h1{font:700 clamp(2rem,5.2vw,3.9rem)/1.04 var(--display);letter-spacing:-.028em;margin:0;max-width:21ch;text-wrap:balance}
+.hero p{font-size:clamp(1.05rem,1.6vw,1.3rem);line-height:1.45;max-width:58ch;margin:1.1rem 0 0;color:var(--muted)}
+.hero p strong{color:var(--ink);font-weight:600}
+.pn{text-decoration:underline;text-decoration-color:var(--c);text-decoration-thickness:.11em;text-underline-offset:.13em;text-decoration-skip-ink:none}
+h2{font:700 1.65rem/1.12 var(--display);letter-spacing:-.018em;margin:0 0 .4rem}
+h3{font:600 1rem/1.3 var(--body);margin:1.4rem 0 .5rem}
+.lede{color:var(--muted);max-width:64ch;margin:0 0 1rem}
+section{margin-top:clamp(2.5rem,5vw,4rem)}
+.cols{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,8fr);gap:clamp(1.5rem,4vw,3.5rem);align-items:start}
+.cols > section{margin-top:0}
+.cols.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr);margin-top:clamp(2rem,4vw,3rem)}
+@media (max-width:860px){.cols,.cols.even{grid-template-columns:minmax(0,1fr)}}
+input,select,button{font:inherit;color:inherit}
+input[type=text],input[type=number],input[type=time],input[type=date],input[type=password],select{background:var(--raised);border:1px solid var(--line);border-radius:6px;padding:.35rem .55rem;min-height:2.35rem;max-width:100%}
+input[type=number]{width:5.2rem}
+input[type=time]{width:7.6rem}
+input.area{width:8.5rem}
+input.mods{width:3.6rem}
+button{cursor:pointer;border-radius:6px;border:1px solid var(--line);background:transparent;padding:.35rem .75rem;min-height:2.35rem;line-height:1.2}
+button:hover{border-color:var(--muted)}
+button:disabled{opacity:.4;cursor:default}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:600}
+button.quiet{border-color:transparent;color:var(--muted);padding-inline:.5rem}
+button.quiet:hover{color:var(--ink);border-color:var(--line)}
+button.icon{width:2.35rem;padding:0}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;padding:2px;background:var(--surface);flex:none}
+.seg button{border:0;min-height:1.95rem;padding:.2rem .7rem;border-radius:6px;white-space:nowrap}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.dot{display:inline-block;width:.8rem;height:.8rem;border-radius:50%;background:var(--c,var(--muted));flex:none;vertical-align:-.05em}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.list > li{border-bottom:1px solid var(--line);padding:.6rem 0}
+.rowline{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .5rem}
+.rowline .grow{flex:1 1 9rem;min-width:0}
+input.name{width:100%;border-color:transparent;background:transparent;font-weight:600;padding-left:.35rem}
+input.name:hover{border-color:var(--line)}
+input.name:focus{background:var(--raised)}
+.unit{display:inline-flex;align-items:center;gap:.3rem;color:var(--muted);font-size:.9rem;white-space:nowrap}
+.ctrls{margin:.1rem 0 0 1.4rem}
+.meta{margin:.25rem 0 0 1.4rem;font-size:.9rem;color:var(--muted)}
+.bar{height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin:.3rem 0 .35rem;max-width:22rem}
+.bar i{display:block;height:100%;background:var(--c);transition:width .25s}
+.add{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding:.8rem 0 0}
+.add .grow{flex:1 1 13rem;min-width:0}
+.add .grow input{width:100%}
+.hint{font-size:.9rem;color:var(--muted);margin:.5rem 0 0;max-width:60ch}
+.days{display:inline-flex;gap:2px;flex:none}
+.days button{width:1.85rem;min-height:1.95rem;padding:0;font-size:.85rem;font-weight:600;color:var(--muted)}
+.days button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+details summary{cursor:pointer;color:var(--muted);padding:.7rem 0;font-size:.95rem}
+.empty{color:var(--muted);padding:1rem 0;max-width:52ch}
+.headrow{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.5rem 1rem;margin-bottom:.4rem}
+.headrow h2{margin:0}
+.todayblock{font-size:1.1rem;line-height:1.4;margin:.6rem 0 1rem;max-width:34ch}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;max-width:20rem}
+.cal span{height:15px;border-radius:3px;background:color-mix(in srgb,var(--ink) 9%,transparent)}
+.cal span.l1{background:color-mix(in srgb,var(--ink) 32%,transparent)}.cal span.l2{background:color-mix(in srgb,var(--ink) 62%,transparent)}.cal span.l3{background:var(--ink)}
+.cal span.future{background:transparent;outline:1px dashed var(--line);outline-offset:-1px}
+.cal span.today{outline:2px solid var(--focus);outline-offset:1px}
+.calhead{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;max-width:20rem;font-size:.75rem;color:var(--muted);text-align:center;margin-bottom:3px}
+.dayrow{display:grid;grid-template-columns:2.6rem minmax(0,1fr) 15.5rem;column-gap:.85rem;align-items:center;margin-bottom:.45rem}
+.dname{font-weight:600}
+.dsum{font-size:.88rem;line-height:1.3;color:var(--muted)}
+.dsum b{color:var(--ink);font-weight:600}
+.band{position:relative;height:54px;background:var(--surface);border-radius:4px;overflow:hidden}
+.band .tick{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+.blk{position:absolute;top:0;min-width:2px}
+.blk.sleep{height:100%;background:var(--night)}
+.blk.job{height:56%;background:repeating-linear-gradient(135deg,var(--job) 0 3px,transparent 3px 6px);border-bottom:2px solid var(--job)}
+.blk.habit{height:32%;background:var(--c);border-radius:0 0 3px 3px}
+.blk.deep{height:100%;background:var(--c);border-radius:0 0 4px 4px}
+.shut{position:absolute;top:0;bottom:0;border-left:2px dashed var(--ink);opacity:.75}
+.axis{position:relative;height:1.3rem;font-size:.78rem;color:var(--muted)}
+.axis span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.axis span:first-child{transform:none}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1.3rem;font-size:.88rem;color:var(--muted);margin:.9rem 0 0;padding:0;list-style:none}
+.legend li{display:inline-flex;align-items:center;gap:.45rem}
+.key{display:inline-block;width:1.5rem;height:1.05rem;position:relative;background:var(--surface);border-radius:2px;overflow:hidden}
+.key i{position:absolute;left:0;top:0;width:100%}
+.checks{margin:1.1rem 0 0;padding:0;list-style:none;max-width:68ch}
+.checks li{padding:.5rem .75rem;border-radius:6px;background:var(--warn-bg);color:var(--warn);margin-bottom:.35rem}
+.checks li.ok{background:transparent;color:var(--muted);padding-left:0}
+@media (max-width:700px){
+  .dayrow{grid-template-columns:auto minmax(0,1fr);row-gap:.2rem;margin-bottom:.8rem}
+  .dayrow .band,.dayrow .axis{grid-column:1/-1;grid-row:2}
+  .dayrow .dsum{text-align:right}
+  .dayrow.axisrow{margin-bottom:0}
+  .dayrow.axisrow .dname,.dayrow.axisrow .dsum{display:none}
+  .dayrow.axisrow .axis{grid-row:1}
+  .band{height:46px}
+  .axis .minor{display:none}
+  .ctrls,.meta{margin-left:.35rem}
+}
+.yaxis{position:relative;height:1.35rem;font-size:.78rem;color:var(--muted);margin-top:.6rem}
+.yaxis span{position:absolute;white-space:nowrap;padding-left:.25rem}
+.yrow{margin-top:.85rem}
+.yhead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.1rem 1rem;margin-bottom:.25rem}
+.yhead .nm{font-weight:600;display:inline-flex;align-items:center;gap:.45rem;min-width:0;overflow-wrap:anywhere}
+.yhead .ar{font-weight:400;color:var(--muted);font-size:.9rem}
+.yhead .when{color:var(--muted);font-size:.9rem}
+.track{position:relative;height:32px;background:var(--surface);border-radius:4px;overflow:hidden}
+.track .mline{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+.track .sg{position:absolute;top:0;background:var(--c);border-radius:0 0 4px 4px;min-width:3px}
+.track .sg.main{height:100%}
+.track .sg.side{height:34%}
+.track .rs{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,var(--muted) 0 1.5px,transparent 1.5px 5px);opacity:.45}
+.notes{margin:1.1rem 0 0;padding:0;list-style:none;max-width:68ch;color:var(--muted)}
+.notes li{margin-bottom:.4rem}
+.field{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .6rem;padding:.55rem 0;border-bottom:1px solid var(--line)}
+.field > .lab{flex:0 0 6.2rem;font-weight:600}
+.field .to{color:var(--muted)}
+.brow{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .6rem;padding:.4rem 0;border-bottom:1px solid var(--line)}
+.brow label.on{flex:0 0 6.2rem;display:inline-flex;align-items:center;gap:.5rem;font-weight:600}
+.brow.off > :not(label.on){opacity:.35}
+input[type=checkbox]{width:1.1rem;height:1.1rem;accent-color:var(--ink)}
+/* save bar */
+.savebar{position:fixed;left:0;right:0;bottom:0;background:var(--raised);border-top:1px solid var(--line);padding:.6rem clamp(1rem,3.5vw,2.75rem);display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;z-index:5;padding-bottom:calc(.6rem + env(safe-area-inset-bottom,0px))}
+.savebar .msg{flex:1 1 16rem;font-size:.9rem;color:var(--muted);min-width:0}
+.savebar .msg.bad{color:var(--warn)}
+.savebar input[type=password]{width:13rem}
+.errs{margin:.75rem 0 0;padding:0;list-style:none}
+.errs li{padding:.4rem .7rem;border-radius:6px;background:var(--warn-bg);color:var(--warn);margin-bottom:.3rem;font-size:.92rem}
+footer{margin-top:clamp(3rem,6vw,5rem);padding-top:1.5rem;border-top:1px solid var(--line);color:var(--muted);font-size:.95rem}
+footer ol{margin:.6rem 0 0;padding-left:1.2rem;max-width:70ch}
+footer li{margin-bottom:.45rem}
+footer li b{color:var(--ink);font-weight:600}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Seasons planner <a href="./index.html">dashboard</a></div>
+    <div id="status" role="status">Loading</div>
+  </header>
+  <main id="app" inert>
+    <div class="hero" id="hero"></div>
+    <div class="cols">
+      <section id="today" aria-label="Today"></section>
+      <section id="bucket" aria-label="The bucket"></section>
+    </div>
+    <section id="year" aria-label="The seasons ahead"></section>
+    <section id="week" aria-label="A week under this plan"></section>
+    <div class="cols even">
+      <section id="habits" aria-label="Disciplines"></section>
+      <section id="rhythm" aria-label="The rhythm"></section>
+    </div>
+    <footer>
+      The rules this page follows
+      <ol>
+        <li><b>Sequence, don't sacrifice.</b> Everything in the bucket gets a season. Only the order is a decision.</li>
+        <li><b>Few things at once.</b> One main milestone holds the deep blocks. A second is fine only in a small side slot, and best from a different area of life.</li>
+        <li><b>Short, protected depth.</b> One to two focused hours before the day's obligations beat scattered evenings.</li>
+        <li><b>A hard stop.</b> After shutdown the day is over, and between seasons you take a week off.</li>
+      </ol>
+      <p>This page edits <code>seasons.yaml</code>. Progress (logged minutes, finished milestones, rest weeks) is written by the engine and <code>lw season</code>, and shown here read-only.</p>
+    </footer>
+  </main>
+</div>
+<div class="savebar" id="savebar">
+  <span class="msg" id="savemsg">Loading</span>
+  <input type="password" id="token" placeholder="GitHub token (contents: write)" aria-label="GitHub fine-grained token" autocomplete="off">
+  <button id="saveToken" class="quiet">Save token</button>
+  <button id="download">Download seasons.yaml</button>
+  <button id="commit" class="primary" disabled>Commit seasons.yaml</button>
+</div>
+
+<script type="module">
+import { forecast, normalizeSeasons, normalizeState, WEEKDAYS, REST_DAYS } from "./assets/forecast.js";
+
+const q = new URLSearchParams(location.search);
+const REPO = q.get("repo") || "SauravSuresh/long-way-engine";
+const BRANCH = q.get("branch") || "main";
+const FILE = "seasons.yaml";
+const API = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
+const RAW = q.get("src") || `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FILE}`; // ?src=<url> previews any seasons.yaml
+const PALETTE = 8, LIGHT = { 1: true };
+const DAYN = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], DAYL = ["M", "T", "W", "T", "F", "S", "S"];
+const DAYFULL = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const $ = (s, el) => (el || document).querySelector(s);
+const app = $("#app"), statusEl = $("#status"), saveMsg = $("#savemsg");
+
+/* ---------- helpers ---------- */
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pad = (n) => (n < 10 ? "0" : "") + n;
+const validT = (t) => (typeof t === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(t) ? t : null);
+const toMin = (t) => { const a = t.split(":"); return +a[0] * 60 + +a[1]; };
+const clamp = (v, lo, hi, d) => { v = Number(v); return isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d; };
+const fmtTime = (m) => { m = ((m % 1440) + 1440) % 1440; const h = Math.floor(m / 60), mm = m % 60, ap = h < 12 ? "am" : "pm"; return (h % 12 || 12) + (mm ? ":" + pad(mm) : "") + " " + ap; };
+const fmtDur = (m) => { m = Math.round(m); if (m < 60) return m + " min"; const h = Math.floor(m / 60), r = m % 60; return h + " h" + (r ? " " + pad(r) : ""); };
+const fmtH = (m) => Math.round(m / 6) / 10 + " h";
+const today0 = () => { const d = new Date(); return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); };
+const addDays = (d, n) => new Date(d.getTime() + n * 864e5);
+const keyOf = (d) => d.toISOString().slice(0, 10);
+const parseKey = (k) => new Date(k + "T00:00:00Z");
+const diffDays = (a, b) => Math.round((b - a) / 864e5);
+const dowOf = (d) => (d.getUTCDay() + 6) % 7;
+const fmtD = (d, long) => d.toLocaleDateString("en-GB", { day: "numeric", month: long ? "long" : "short", timeZone: "UTC", ...(d.getUTCFullYear() !== today0().getUTCFullYear() ? { year: "numeric" } : {}) });
+const weeksOf = (days) => Math.max(1, Math.round(days / 7));
+const plural = (n, w) => n + " " + w + (n === 1 ? "" : "s");
+const cvar = (i) => "var(--p" + (i % PALETTE) + ")";
+const dayList = (ds) => (ds.length === 7 ? "every day" : ds.map((d) => DAYN[d]).join(", "));
+const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "milestone";
+const uniqueId = (base, taken) => { let id = base, i = 2; while (taken.has(id)) id = base + "-" + i++; return id; };
+
+/* ---------- editing model ---------- */
+// plan = { todoist_project_id, rhythm:{sleep, fixed:{from,to,days[idx]}, shutdown, rest_week, blocks[7]:{on,start,minutes,lane}}, bucket[], disciplines[] }
+function fromOwner(raw) {
+  const s = normalizeSeasons(raw);
+  const blocks = WEEKDAYS.map((w, i) => {
+    const b = s.rhythm.deep_blocks[w];
+    return b ? { on: true, start: b.start, minutes: b.minutes, lane: b.lane } : { on: false, start: "07:30", minutes: i === 5 ? 210 : 90, lane: "main" };
+  });
+  return {
+    todoist_project_id: s.todoist_project_id,
+    rhythm: {
+      sleep: { ...s.rhythm.sleep },
+      fixed: { from: s.rhythm.fixed_hours.from, to: s.rhythm.fixed_hours.to, days: s.rhythm.fixed_hours.days.map((d) => WEEKDAYS.indexOf(d)).filter((i) => i >= 0) },
+      shutdown: s.rhythm.shutdown, rest_week: s.rhythm.rest_week, blocks,
+    },
+    bucket: s.bucket.map((m) => ({ ...m, track: m.track ? m.track.slice() : null, modules: m.modules ? m.modules.slice() : null })),
+    disciplines: s.disciplines.map((d) => ({ ...d, days: d.days.map((x) => WEEKDAYS.indexOf(x)).filter((i) => i >= 0) })),
+  };
+}
+function toOwner(p) {
+  const deep_blocks = {};
+  p.rhythm.blocks.forEach((b, i) => { if (b.on) deep_blocks[WEEKDAYS[i]] = { start: b.start, minutes: b.minutes, lane: b.lane }; });
+  return {
+    todoist_project_id: p.todoist_project_id,
+    rhythm: {
+      sleep: { from: p.rhythm.sleep.from, to: p.rhythm.sleep.to },
+      fixed_hours: { from: p.rhythm.fixed.from, to: p.rhythm.fixed.to, days: p.rhythm.fixed.days.slice().sort().map((i) => WEEKDAYS[i]) },
+      shutdown: p.rhythm.shutdown, rest_week: p.rhythm.rest_week, deep_blocks,
+    },
+    bucket: p.bucket.map((m) => {
+      const o = { id: m.id, name: m.name, area: m.area, hours: m.hours, lane: m.lane };
+      if (m.syllabus) o.syllabus = m.syllabus;
+      if (m.syllabus && m.track) o.track = { category: m.track[0], item: m.track[1] };
+      if (m.syllabus && m.modules) o.modules = [m.modules[0], m.modules[1]];
+      if (m.pin_start) o.pin_start = m.pin_start;
+      return o;
+    }),
+    disciplines: p.disciplines.map((d) => ({ id: d.id, name: d.name, minutes: d.minutes, start: d.start, days: d.days.slice().sort().map((i) => WEEKDAYS[i]) })),
+  };
+}
+const toYAML = (p) => "# seasons.yaml — written by docs/plan.html. Vocabulary: CONTEXT.md.\n" + jsyaml.dump(toOwner(p), { lineWidth: 120, noRefs: true, quotingType: '"', forceQuotes: true, sortKeys: false });
+
+function validate(p, catalog) {
+  const errs = [], slugRe = /^[a-z0-9]+(-[a-z0-9]+)*$/, seen = new Set();
+  for (const [k, v] of [["sleep from", p.rhythm.sleep.from], ["sleep to", p.rhythm.sleep.to], ["fixed hours from", p.rhythm.fixed.from], ["fixed hours to", p.rhythm.fixed.to], ["shutdown", p.rhythm.shutdown]]) if (!validT(v)) errs.push(k + " is not a time");
+  p.rhythm.blocks.forEach((b, i) => { if (b.on && (!validT(b.start) || b.minutes < 15)) errs.push(DAYFULL[i] + " block needs a start time and at least 15 minutes"); });
+  for (const m of p.bucket) {
+    if (!slugRe.test(m.id)) errs.push(`"${m.name}" has an invalid id (${m.id})`);
+    if (seen.has(m.id)) errs.push(`duplicate id ${m.id}`); seen.add(m.id);
+    if (!(m.hours >= 1)) errs.push(`"${m.name}" needs at least 1 hour`);
+    if (m.syllabus) {
+      const c = catalog.syllabuses[m.syllabus];
+      if (!c) errs.push(`"${m.name}": unknown syllabus ${m.syllabus}`);
+      else if (!c.enabled) errs.push(`"${m.name}": ${m.syllabus} is disabled in config.yaml`);
+      else {
+        if (m.track && !c.tracks.some((t) => t.category === m.track[0] && t.item === m.track[1])) errs.push(`"${m.name}": track not declared by ${m.syllabus}`);
+        if (m.modules && !(1 <= m.modules[0] && m.modules[0] <= m.modules[1] && m.modules[1] <= c.modules.length)) errs.push(`"${m.name}": modules must lie within 1..${c.modules.length}`);
+      }
+    }
+  }
+  const dseen = new Set();
+  for (const d of p.disciplines) {
+    if (!slugRe.test(d.id)) errs.push(`discipline "${d.name}" has an invalid id`);
+    if (dseen.has(d.id)) errs.push(`duplicate discipline id ${d.id}`); dseen.add(d.id);
+    if (!validT(d.start) || d.minutes < 5) errs.push(`discipline "${d.name}" needs a start time and at least 5 minutes`);
+    if (!d.days.length) errs.push(`discipline "${d.name}" has no days`);
+  }
+  return errs;
+}
+
+/* ---------- state ---------- */
+let plan = fromOwner({}), catalog = { syllabuses: {} }, live = null, sha = null, source = "", dirty = false;
+let token = ""; try { token = localStorage.getItem("seasons.token") || ""; } catch (e) {}
+const liveState = () => normalizeState(live ? { milestones: Object.fromEntries(Object.entries(live.milestones || {}).map(([k, v]) => [k, { logged: v.logged || {}, done: v.done }])), rest_until: live.rest_until } : {});
+const sim = () => forecast(normalizeSeasons(toOwner(plan)), liveState(), keyOf(today0()));
+const liveProjects = () => { const st = liveState(); return plan.bucket.filter((m) => !(st.milestones[m.id] && st.milestones[m.id].done)); };
+const loggedOf = (id) => Object.values(((liveState().milestones[id] || {}).logged) || {}).reduce((a, b) => a + b, 0);
+const colorOf = (m) => cvar(plan.bucket.indexOf(m));
+const pn = (m) => '<span class="pn" style="--c:' + colorOf(m) + '">' + esc(m.name || "Untitled") + "</span>";
+const twoLanes = () => plan.rhythm.blocks.some((b) => b.on && b.lane === "side");
+const weekly = () => { let main = 0, side = 0; plan.rhythm.blocks.forEach((b) => { if (!b.on) return; if (twoLanes() && b.lane === "side") side += b.minutes; else main += b.minutes; }); return { main, side, total: main + side }; };
+const byId = (id) => plan.bucket.find((m) => m.id === id) || null;
+const setStatus = (t, bad) => { statusEl.textContent = t; statusEl.className = bad ? "bad" : ""; };
+const setMsg = (t, bad) => { saveMsg.textContent = t; saveMsg.className = "msg" + (bad ? " bad" : ""); };
+
+/* ---------- loading ---------- */
+async function loadAll() {
+  try { catalog = await (await fetch("./assets/catalog.json", { cache: "no-store" })).json(); } catch (e) { catalog = { syllabuses: {} }; }
+  try { live = (await (await fetch("./assets/data.json", { cache: "no-store" })).json()).seasons || null; } catch (e) { live = null; }
+  let text = null;
+  if (token) {
+    const r = await fetch(API + "?ref=" + BRANCH, { headers: ghHeaders() });
+    if (r.status === 200) { const j = await r.json(); sha = j.sha; text = decodeURIComponent(escape(atob(j.content.replace(/\n/g, "")))); source = "GitHub (" + REPO + ")"; }
+    else if (r.status === 404) { source = "new file"; }
+    else { setMsg("GitHub said " + r.status + " when reading seasons.yaml. Check the token.", true); }
+  }
+  if (text === null && source !== "new file") {
+    const r = await fetch(RAW, { cache: "no-store" });
+    if (r.ok) { text = await r.text(); source = token ? source : "GitHub, read-only until you save a token"; }
+    else source = "defaults (no seasons.yaml yet)";
+  }
+  if (text !== null) {
+    try { plan = fromOwner(jsyaml.load(text)); } catch (e) { setMsg("seasons.yaml did not parse: " + e.message, true); }
+  } else {
+    plan = fromOwner({ rhythm: { deep_blocks: { monday: { start: "07:30", minutes: 90 }, tuesday: { start: "07:30", minutes: 90 }, wednesday: { start: "07:30", minutes: 90 }, thursday: { start: "07:30", minutes: 90 }, friday: { start: "07:30", minutes: 90 }, saturday: { start: "07:30", minutes: 210 } } } });
+  }
+}
+const ghHeaders = () => ({ Authorization: "Bearer " + token, Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" });
+
+async function commit() {
+  const errs = validate(plan, catalog);
+  if (errs.length) { setMsg("Fix " + plural(errs.length, "problem") + " first (listed under The rhythm).", true); renderRhythm(); return; }
+  $("#commit").disabled = true; setMsg("Committing");
+  const body = { message: "chore(seasons): plan edited in docs/plan.html", content: btoa(unescape(encodeURIComponent(toYAML(plan)))), branch: BRANCH };
+  if (sha) body.sha = sha;
+  try {
+    const r = await fetch(API, { method: "PUT", headers: { ...ghHeaders(), "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({}));
+    if (r.status === 200 || r.status === 201) { sha = j.content.sha; dirty = false; setMsg("Committed " + (j.commit.sha || "").slice(0, 7) + ". The next daily run picks it up."); }
+    else if (r.status === 409) setMsg("seasons.yaml changed on GitHub since this page loaded. Reload, then redo your edits.", true);
+    else setMsg("GitHub said " + r.status + (j.message ? ": " + j.message : ""), true);
+  } catch (e) { setMsg("Could not reach GitHub: " + e.message, true); }
+  $("#commit").disabled = !token;
+}
+function download() {
+  const blob = new Blob([toYAML(plan)], { type: "text/yaml" }), a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = FILE; a.click(); URL.revokeObjectURL(a.href);
+}
+
+/* ---------- hero ---------- */
+function renderHero(f) {
+  const el = $("#hero"), liveP = liveProjects(), today = today0(), sub = [];
+  const lead = byId(f.current.main) || byId(f.current.side);
+  let h;
+  if (!liveP.length) { h = "Put the first milestone in the bucket."; sub.push("Add everything you want to do, related or not. One of them gets your deep hours at a time. The others wait their turn, each with a start date, so nothing is given up."); }
+  else if (!weekly().total) { h = "Your week has no deep blocks yet."; sub.push("Switch on at least one day under “The rhythm” and the seasons will appear."); }
+  else if (!lead) { h = "Every milestone waits on a pinned start date."; }
+  else if (f.current.resting) { h = "Week off until " + fmtD(parseKey(live.rest_until), true) + "."; sub.push("No deep blocks. Walk, read for fun, look back at the season. Then <strong>" + pn(lead) + "</strong> gets your deep hours."); }
+  else {
+    const I = f.milestones[lead.id];
+    if (I.hours_reached) { h = pn(lead) + ": milestone hours reached."; sub.push("Mark it done with <code>lw season done</code>, or raise the hours."); }
+    else if (I.end === null) { h = pn(lead) + " needs more than two years at this pace."; sub.push("That is a dream, not a milestone. Cut it down to the next thing you could show someone."); }
+    else h = pn(lead) + " has your deep hours until " + fmtD(parseKey(I.end), true) + ".";
+    const s = byId(f.current.side);
+    if (f.current.main && s && weekly().side > 0) { const sd = []; plan.rhythm.blocks.forEach((b, i) => { if (b.on && b.lane === "side") sd.push(i); }); sub.push("<strong>" + pn(s) + "</strong> rides along on " + dayList(sd) + "."); }
+    if (I.end !== null) {
+      let next = null;
+      liveP.forEach((p) => { const J = f.milestones[p.id]; if (p !== lead && J && J.start && J.start > I.end && (!next || J.start < f.milestones[next.id].start)) next = p; });
+      if (next) sub.push("Then " + (plan.rhythm.rest_week ? "a week off, then " : "") + "<strong>" + pn(next) + "</strong>.");
+    }
+  }
+  if (liveP.length && weekly().total && lead) {
+    let tail = fmtH(weekly().total) + " of deep work a week.";
+    if (f.overflow) tail += " At this pace the bucket runs past two years. Shrink the milestones, not your sleep.";
+    sub.push(tail);
+  }
+  el.innerHTML = "<h1>" + h + "</h1><p>" + sub.join(" ") + "</p>";
+}
+
+/* ---------- today (read-only) ---------- */
+function blockTarget(f, b) { const m = byId(f.current.main), s = byId(f.current.side); return twoLanes() && b.lane === "side" ? s || m : m || s; }
+function renderToday(f) {
+  const el = $("#today"), today = today0(), wd = dowOf(today), b = plan.rhythm.blocks[wd];
+  const t = b.on ? blockTarget(f, b) : null;
+  let line;
+  if (f.current.resting) line = "Week off. No deep block. Disciplines still count.";
+  else if (b.on && t) line = "Deep block " + fmtTime(toMin(b.start)) + " to " + fmtTime(toMin(b.start) + b.minutes) + ", " + fmtDur(b.minutes) + ", for " + pn(t) + ".";
+  else if (b.on) line = "Deep block " + fmtTime(toMin(b.start)) + " to " + fmtTime(toMin(b.start) + b.minutes) + ". Nothing in the bucket to spend it on yet.";
+  else line = "No deep block on " + DAYFULL[wd] + "s. That is on purpose.";
+  let h = '<div class="headrow"><h2>Today</h2><span class="hint">' + esc(fmtD(today, true)) + "</span></div><p class=\"todayblock\">" + line + "</p>";
+  const due = plan.disciplines.filter((x) => x.days.indexOf(wd) >= 0);
+  const label = f.current.resting || !byId(f.current.main) ? "Rest" : byId(f.current.main).name;
+  if (due.length) h += '<p class="hint">Disciplines: ' + due.map((x) => esc(x.name.replace("{milestone}", label)) + " at " + fmtTime(toMin(x.start))).join(", ") + ".</p>";
+  const perDay = {};
+  const st = liveState();
+  Object.values(st.milestones).forEach((m) => Object.entries(m.logged).forEach(([k, v]) => (perDay[k] = (perDay[k] || 0) + v)));
+  const monday = addDays(today, -dowOf(today)), start = addDays(monday, -21);
+  let cells = "", weekDeep = 0;
+  for (let i = 0; i < 28; i++) {
+    const cd = addDays(start, i), ck = keyOf(cd), mins = perDay[ck] || 0;
+    if (cd >= monday && cd <= today) weekDeep += mins;
+    let cls = cd > today ? "future" : mins >= 90 ? "l3" : mins >= 45 ? "l2" : mins > 0 ? "l1" : "";
+    if (ck === keyOf(today)) cls += " today";
+    cells += '<span class="' + cls + '" title="' + esc(DAYN[dowOf(cd)] + " " + fmtD(cd) + ": " + (mins ? fmtDur(mins) + " deep" : "no deep work")) + '"></span>';
+  }
+  h += '<h3>Last four weeks</h3><div class="calhead" aria-hidden="true">' + DAYL.map((l) => "<span>" + l + "</span>").join("") + '</div><div class="cal" role="img" aria-label="Deep work logged over the last four weeks">' + cells + "</div>";
+  h += '<p class="hint">This week: ' + fmtDur(weekDeep) + " logged of " + fmtH(weekly().total) + " planned. Minutes are logged by the engine when you complete the block task, or with <code>lw season log</code>." + (live && live.deep_work_streak !== undefined ? " Streak: " + live.deep_work_streak + "." : "") + "</p>";
+  el.innerHTML = h;
+}
+
+/* ---------- bucket ---------- */
+function bindingControls(m) {
+  const keys = Object.keys(catalog.syllabuses);
+  let h = '<select aria-label="Syllabus" data-act="syllabus" data-id="' + m.id + '"><option value="">no syllabus (bare season)</option>';
+  keys.forEach((k) => { const c = catalog.syllabuses[k]; h += '<option value="' + esc(k) + '"' + (m.syllabus === k ? " selected" : "") + (c.enabled ? "" : " disabled") + ">" + esc(c.name || k) + (c.enabled ? "" : " (disabled)") + "</option>"; });
+  h += "</select>";
+  if (m.syllabus && catalog.syllabuses[m.syllabus]) {
+    const c = catalog.syllabuses[m.syllabus], mode = m.track ? "track" : m.modules ? "modules" : "all";
+    h += '<select aria-label="What part of the syllabus" data-act="binding" data-id="' + m.id + '"><option value="all"' + (mode === "all" ? " selected" : "") + ">whole syllabus</option>";
+    c.tracks.forEach((t) => { const v = "track:" + t.category + "|" + t.item; h += '<option value="' + esc(v) + '"' + (m.track && m.track[0] === t.category && m.track[1] === t.item ? " selected" : "") + ">" + esc(t.category + ": " + t.item) + "</option>"; });
+    if (c.modules.length) h += '<option value="modules"' + (mode === "modules" ? " selected" : "") + ">module range</option>";
+    h += "</select>";
+    if (mode === "modules") h += '<span class="unit">modules <input class="mods" type="number" min="1" max="' + c.modules.length + '" aria-label="First module" data-bind="bucket.#' + m.id + '.modules.0" value="' + m.modules[0] + '"> to <input class="mods" type="number" min="1" max="' + c.modules.length + '" aria-label="Last module" data-bind="bucket.#' + m.id + '.modules.1" value="' + m.modules[1] + '"></span>';
+  }
+  return h;
+}
+function renderBucket() {
+  const el = $("#bucket"), two = twoLanes(), liveP = liveProjects(), st = liveState(), done = plan.bucket.filter((m) => st.milestones[m.id] && st.milestones[m.id].done);
+  let h = '<div class="headrow"><h2>The bucket</h2><div class="seg" role="group" aria-label="How many milestones at once"><button data-act="lanes" data-n="1" aria-pressed="' + !two + '">One at a time</button><button data-act="lanes" data-n="2" aria-pressed="' + two + '">One main, one side</button></div></div>';
+  h += '<p class="lede" id="bucketLede"></p>';
+  if (!liveP.length) h += '<p class="empty">Nothing here yet. Add any milestone, from any part of your life, with the hours you think it needs. Ongoing things with no finish line belong under disciplines.</p>';
+  else {
+    h += '<ol class="list">';
+    liveP.forEach((m, i) => {
+      h += '<li style="--c:' + colorOf(m) + '"><div class="rowline"><span class="dot"></span>' +
+        '<span class="grow"><input class="name" type="text" aria-label="Milestone name" data-bind="bucket.#' + m.id + '.name" value="' + esc(m.name) + '"></span>' +
+        '<button class="icon quiet" data-act="up" data-id="' + m.id + '" aria-label="Move earlier"' + (i === 0 ? " disabled" : "") + ">&uarr;</button>" +
+        '<button class="icon quiet" data-act="down" data-id="' + m.id + '" aria-label="Move later"' + (i === liveP.length - 1 ? " disabled" : "") + ">&darr;</button></div>" +
+        '<div class="rowline ctrls"><input class="area" type="text" list="areas" maxlength="40" aria-label="Area of life" placeholder="Area" data-bind="bucket.#' + m.id + '.area" value="' + esc(m.area) + '">' +
+        '<span class="unit"><input type="number" min="1" max="5000" step="5" aria-label="Hours to the milestone" data-bind="bucket.#' + m.id + '.hours" value="' + m.hours + '"> h</span>' +
+        (two ? '<span class="seg" role="group" aria-label="Lane"><button data-act="slot" data-id="' + m.id + '" data-v="main" aria-pressed="' + (m.lane !== "side") + '">Main</button><button data-act="slot" data-id="' + m.id + '" data-v="side" aria-pressed="' + (m.lane === "side") + '">Side</button></span>' : "") +
+        '<span class="unit">not before <input type="date" aria-label="Earliest start" data-bind="bucket.#' + m.id + '.pin_start" value="' + (m.pin_start || "") + '"></span>' +
+        '<button class="quiet" data-act="remove" data-id="' + m.id + '">Remove</button></div>' +
+        '<div class="rowline ctrls">' + bindingControls(m) + "</div>" +
+        '<div class="meta" data-meta="' + m.id + '"></div></li>';
+    });
+    h += "</ol>";
+  }
+  h += '<div class="add"><span class="grow"><input type="text" id="newName" aria-label="New milestone name" placeholder="New milestone"></span><input class="area" type="text" id="newArea" list="areas" maxlength="40" aria-label="Area of life" placeholder="Area"><span class="unit"><input type="number" id="newHours" min="1" max="5000" step="5" value="40" aria-label="Hours"> h</span><button class="primary" data-act="addProject">Add to bucket</button></div><p class="hint" id="addHint"></p>';
+  const areas = [];
+  plan.bucket.forEach((p) => { if (p.area && areas.indexOf(p.area) < 0) areas.push(p.area); });
+  ["Work", "Learning", "Creative", "Health", "Home", "Money", "People"].forEach((a) => { if (!areas.some((x) => x.toLowerCase() === a.toLowerCase())) areas.push(a); });
+  h += '<datalist id="areas">' + areas.map((a) => '<option value="' + esc(a) + '">').join("") + "</datalist>";
+  if (done.length) {
+    h += "<details><summary>Finished (" + done.length + ')</summary><ul class="list">';
+    done.forEach((m) => { h += '<li style="--c:' + colorOf(m) + '"><div class="rowline"><span class="dot"></span><span class="grow">' + esc(m.name) + (m.area ? " (" + esc(m.area) + ")" : "") + ", " + fmtH(loggedOf(m.id)) + " logged, done " + esc(st.milestones[m.id].done) + '</span><button class="quiet" data-act="remove" data-id="' + m.id + '">Remove</button></div></li>'; });
+    h += "</ul></details>";
+  }
+  el.innerHTML = h;
+}
+function updateBucketDerived(f) {
+  const today = today0(), two = twoLanes(), wk = weekly(), lede = $("#bucketLede");
+  if (lede) {
+    if (!two) lede.textContent = "One milestone gets every deep block until it is done, then the next one starts. The order of this list is the only decision. Give each entry the hours to its next milestone, not the whole dream.";
+    else if (wk.side === 0) lede.textContent = "Allowed, with a rule: the main milestone keeps most of the blocks and the side one gets only the days you mark Side. No day is marked Side yet, so pick one or two under “The rhythm”.";
+    else lede.textContent = "Allowed, with a rule: the main milestone keeps most of the blocks and the side one gets only the days marked Side, " + fmtH(wk.side) + " a week right now. Pair things from different areas. Main seasons run about " + (wk.main > 0 ? Math.round((wk.total / wk.main - 1) * 100) : 0) + "% longer.";
+  }
+  liveProjects().forEach((p) => {
+    const el = $('[data-meta="' + p.id + '"]'); if (!el) return;
+    const I = f.milestones[p.id] || { start: null, end: null }, logged = loggedOf(p.id), pct = Math.min(100, Math.round(logged / (p.hours * 60) * 100));
+    let txt;
+    if (I.hours_reached) txt = "Milestone hours reached. Mark it done with lw season done, or raise the hours.";
+    else if (!wk.total) txt = "Waiting for a deep block in your week.";
+    else if (I.start === null) txt = p.pin_start && parseKey(p.pin_start) > addDays(today, 730) ? "Pinned beyond two years." : "Beyond two years at this pace.";
+    else {
+      const s = parseKey(I.start), e = I.end ? parseKey(I.end) : null;
+      txt = (s <= today ? (f.current.resting ? "Starts after the week off" : "In progress") : "Starts " + fmtD(s)) + (e ? ", about " + plural(weeksOf(diffDays(s, e) + 1), "week") + ", ends " + fmtD(e) : ", runs past two years") + ".";
+    }
+    el.innerHTML = '<div class="bar"><i style="width:' + pct + '%"></i></div>' + fmtH(logged) + " of " + p.hours + " h logged. " + esc(txt);
+  });
+  const hint = $("#addHint"), nh = $("#newHours");
+  if (hint && nh) { const hrs = parseFloat(nh.value), per = (two && wk.main > 0 ? wk.main : wk.total) / 60; hint.textContent = per > 0 && hrs > 0 ? hrs + " hours is about " + plural(Math.max(1, Math.round(hrs / per)), "week") + " of your main blocks. Six to twelve weeks makes a good season." : ""; }
+}
+
+/* ---------- seasons chart ---------- */
+function renderYear(f) {
+  const el = $("#year"), liveP = liveProjects(), today = today0();
+  let h = "<h2>The seasons ahead</h2>";
+  if (!liveP.length || !weekly().total) { el.innerHTML = h + '<p class="empty">' + (liveP.length ? "Add a deep block to your week and each milestone will get its dates here." : "Once the bucket has milestones, this shows when each one starts, how long its season lasts, and when it ends.") + "</p>"; return; }
+  h += '<p class="lede">Tall bars hold your main blocks. Short bars ride along in the side slot. Hatched weeks are time off between seasons.</p>';
+  const ends = Object.values(f.milestones).filter((x) => x.end).map((x) => diffDays(today, parseKey(x.end)));
+  const total = Math.min(730, Math.max(182, (ends.length ? Math.max(...ends) : 0) + 21));
+  const pct = (x) => (x / total * 100).toFixed(3) + "%";
+  const months = []; let d = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() + 1, 1));
+  while (diffDays(today, d) < total) { months.push({ day: diffDays(today, d), label: d.toLocaleDateString("en-GB", { month: "short", timeZone: "UTC" }) + (d.getUTCMonth() === 0 ? " " + d.getUTCFullYear() : "") }); d = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1)); }
+  const w = el.clientWidth || 900, step = Math.max(1, Math.ceil(months.length / Math.max(3, Math.floor(w / 70))));
+  h += '<div class="yaxis" aria-hidden="true"><span style="left:0">today</span>';
+  months.forEach((m, i) => { if (i % step === 0 && m.day / total > 0.07 && m.day / total < 0.95) h += '<span style="left:' + pct(m.day) + '">' + m.label + "</span>"; });
+  h += "</div>";
+  const mlines = months.map((m) => '<i class="mline" style="left:' + pct(m.day) + '"></i>').join("");
+  const rests = f.rests.map((r) => [diffDays(today, parseKey(r.from)), diffDays(today, parseKey(r.to))]).filter(([a]) => a < total).map(([a, b]) => '<i class="rs" title="Week off" style="left:' + pct(a) + ";width:" + pct(Math.min(b, total - 1) - a + 1) + '"></i>').join("");
+  const order = liveP.slice().sort((a, b) => { const x = f.milestones[a.id].start, y = f.milestones[b.id].start; return (x === null ? "9" : x) < (y === null ? "9" : y) ? -1 : 1; });
+  const notes = [];
+  order.forEach((p) => {
+    const I = f.milestones[p.id]; let when, segs = "";
+    if (I.hours_reached) when = "hours reached";
+    else if (I.start === null) when = "beyond two years at this pace";
+    else {
+      const s = parseKey(I.start), e = I.end ? parseKey(I.end) : null, span = e ? diffDays(s, e) + 1 : null;
+      when = (s <= today ? (f.current.resting ? "after the week off" : "now") : fmtD(s)) + (span === null ? ", runs past two years" : " to " + fmtD(e) + ", " + plural(weeksOf(span), "week"));
+      const sideOnly = I.segments.length && I.segments.every((x) => x.lane === "side");
+      if (span !== null && span > 91) notes.push(esc(p.name) + (sideOnly ? " takes " + weeksOf(span) + " weeks in the side slot. That is the price of running two at once. Give it a smaller milestone, or its own season later." : " runs " + weeksOf(span) + " weeks. Past about twelve, a season stops feeling finite. Cut the milestone smaller and queue the rest as its own entry."));
+    }
+    I.segments.forEach((sg) => { const a = diffDays(today, parseKey(sg.from)), b = diffDays(today, parseKey(sg.to)); if (a >= total) return; segs += '<i class="sg ' + sg.lane + '" title="' + esc(p.name + ", " + (sg.lane === "main" ? "main blocks" : "side slot") + ", " + fmtD(parseKey(sg.from)) + " to " + fmtD(parseKey(sg.to))) + '" style="left:' + pct(a) + ";width:" + pct(Math.min(b, total - 1) - a + 1) + '"></i>'; });
+    h += '<div class="yrow" style="--c:' + colorOf(p) + '"><div class="yhead"><span class="nm"><span class="dot"></span>' + esc(p.name) + (p.area ? ' <span class="ar">' + esc(p.area) + "</span>" : "") + '</span><span class="when">' + when + '</span></div><div class="track">' + mlines + rests + segs + "</div></div>";
+  });
+  if (f.overflow) notes.push("The bucket does not fit in two years at " + fmtH(weekly().total) + " a week. That is fine for dreams. It means the entries are dreams, not milestones yet.");
+  if (notes.length) h += '<ul class="notes">' + notes.map((n) => "<li>" + n + "</li>").join("") + "</ul>";
+  el.innerHTML = h;
+}
+
+/* ---------- week profile ---------- */
+function dayIntervals(i, f) {
+  const out = [], b = plan.rhythm.blocks[i], fx = plan.rhythm.fixed;
+  if (fx.days.indexOf(i) >= 0) { const jf = toMin(fx.from), jt = toMin(fx.to); if (jt > jf) out.push({ type: "job", name: "Fixed hours", from: jf, to: jt }); }
+  if (b.on) { const t = blockTarget(f, b), from = toMin(b.start); out.push({ type: "deep", name: "Deep block", from, to: Math.min(1440, from + b.minutes), p: t }); }
+  plan.disciplines.forEach((x, k) => { if (x.days.indexOf(i) >= 0) { const from = toMin(x.start); out.push({ type: "habit", name: x.name, from, to: Math.min(1440, from + x.minutes), color: (k + 4) % PALETTE }); } });
+  return out;
+}
+function sleepPieces() { const f = toMin(plan.rhythm.sleep.from), t = toMin(plan.rhythm.sleep.to); if (f === t) return []; return f < t ? [[f, t]] : [[0, t], [f, 1440]]; }
+function renderWeek(f) {
+  const el = $("#week"), sp = sleepPieces(), shut = toMin(plan.rhythm.shutdown), pc = (m) => (m / 1440 * 100).toFixed(3) + "%";
+  let h = '<h2>A week under this plan</h2><p class="lede">Each band is one day, midnight to midnight. Deep work goes all the way down, fixed hours halfway, disciplines stay near the surface.</p>';
+  let ticks = ""; for (let k = 3; k < 24; k += 3) ticks += '<i class="tick" style="left:' + pc(k * 60) + '"></i>';
+  let ax = '<span style="left:0">midnight</span>'; [6, 9, 12, 15, 18, 21].forEach((k) => { ax += "<span" + (k % 6 ? ' class="minor"' : "") + ' style="left:' + pc(k * 60) + '">' + (k === 12 ? "noon" : fmtTime(k * 60)) + "</span>"; });
+  h += '<div class="dayrow axisrow" aria-hidden="true"><div class="dname"></div><div class="axis">' + ax + '</div><div class="dsum"></div></div>';
+  for (let i = 0; i < 7; i++) {
+    const iv = dayIntervals(i, f), busy = new Uint8Array(1440); let deep = 0, hab = 0, blocks = "", say = [];
+    sp.forEach((s) => { for (let m = s[0]; m < s[1]; m++) busy[m] = 1; blocks += '<i class="blk sleep" title="Sleep" style="left:' + pc(s[0]) + ";width:" + pc(s[1] - s[0]) + '"></i>'; });
+    ["job", "habit", "deep"].forEach((type) => iv.forEach((v) => {
+      if (v.type !== type) return; for (let m = v.from; m < v.to; m++) busy[m] = 1;
+      const c = type === "deep" ? (v.p ? colorOf(v.p) : "var(--muted)") : type === "habit" ? cvar(v.color) : "";
+      const nm = type === "deep" ? (v.p ? v.p.name : "Deep block") : v.name;
+      blocks += '<i class="blk ' + type + '" title="' + esc(nm + ", " + fmtTime(v.from) + " to " + fmtTime(v.to)) + '" style="left:' + pc(v.from) + ";width:" + pc(v.to - v.from) + (c ? ";--c:" + c : "") + '"></i>';
+      if (type === "deep") { deep += v.to - v.from; say.push("deep work " + fmtTime(v.from) + " to " + fmtTime(v.to)); }
+      if (type === "habit") { hab += v.to - v.from; say.push(v.name + " at " + fmtTime(v.from)); }
+      if (type === "job") say.push("fixed hours " + fmtTime(v.from) + " to " + fmtTime(v.to));
+    }));
+    let free = 0; for (let m = 0; m < 1440; m++) if (!busy[m]) free++;
+    const dp = iv.find((v) => v.type === "deep");
+    const sum = (deep ? '<b><span class="dot" style="--c:' + (dp && dp.p ? colorOf(dp.p) : "var(--muted)") + '"></span> ' + fmtDur(deep) + " deep</b>" : "<b>No deep block</b>") + "<br>" + (hab ? fmtDur(hab) + " disciplines, " : "") + fmtDur(free) + " free";
+    h += '<div class="dayrow"><div class="dname">' + DAYN[i] + '</div><div class="band" role="img" aria-label="' + esc(DAYFULL[i] + ": " + (say.join("; ") || "nothing scheduled")) + '">' + ticks + blocks + '<i class="shut" title="Shutdown at ' + fmtTime(shut) + '" style="left:' + pc(shut) + '"></i></div><div class="dsum">' + sum + "</div></div>";
+  }
+  h += '<ul class="legend"><li><span class="key"><i style="height:100%;background:var(--p0)"></i></span>Deep block</li><li><span class="key"><i style="height:56%;background:repeating-linear-gradient(135deg,var(--job) 0 3px,transparent 3px 6px)"></i></span>Fixed hours</li><li><span class="key"><i style="height:32%;background:var(--p4)"></i></span>Discipline</li><li><span class="key"><i style="height:100%;background:var(--night)"></i></span>Sleep</li><li><span class="key" style="background:none"><i style="height:100%;width:0;left:50%;border-left:2px dashed var(--ink)"></i></span>Shutdown</li></ul>';
+  const ch = realityChecks(f);
+  h += '<ul class="checks">' + (ch.length ? ch.map((c) => "<li>" + esc(c) + "</li>").join("") : '<li class="ok">Nothing clashes. This week is livable.</li>') + "</ul>";
+  el.innerHTML = h;
+}
+function realityChecks(f) {
+  const out = [], sp = sleepPieces(), shut = toMin(plan.rhythm.shutdown), sl = (toMin(plan.rhythm.sleep.to) - toMin(plan.rhythm.sleep.from) + 1440) % 1440, two = twoLanes();
+  if (sl && sl < 420) out.push("You have planned " + fmtDur(sl) + " of sleep. Deep work on short sleep turns into shallow work.");
+  const clashes = {}, late = {}, cut = {}, heavy = [];
+  const add = (map, k, i) => (map[k] = map[k] || []).push(i);
+  for (let i = 0; i < 7; i++) {
+    const iv = dayIntervals(i, f); let dm = 0;
+    iv.forEach((a, x) => {
+      if (a.type === "deep") dm += a.to - a.from;
+      for (let y = x + 1; y < iv.length; y++) { const b = iv[y]; if (a.from < b.to && b.from < a.to) add(clashes, a.name + " and " + b.name + " overlap", i); }
+      if (a.type !== "job") { if (a.to > shut && a.from >= 720) add(late, a.name, i); sp.forEach((s) => { if (a.from < s[1] && s[0] < a.to) add(cut, a.name, i); }); }
+    });
+    if (plan.rhythm.fixed.days.indexOf(i) >= 0 && dm > 150) heavy.push(i);
+  }
+  Object.keys(clashes).forEach((k) => out.push(k + " on " + dayList(clashes[k]) + "."));
+  Object.keys(cut).forEach((k) => out.push(k + " cuts into your sleep on " + dayList(cut[k]) + "."));
+  Object.keys(late).forEach((k) => { if (!cut[k]) out.push(k + " runs past your " + fmtTime(shut) + " shutdown on " + dayList(late[k]) + "."); });
+  if (heavy.length) out.push("More than 2 h 30 of deep work on a day with fixed hours (" + dayList(heavy) + ") is hard to keep up for a whole season.");
+  if (plan.rhythm.blocks.every((b) => b.on)) out.push("Every day has a deep block. Keep one day without, so the rest is real.");
+  if (two) {
+    const wk = weekly(), hasSide = liveProjects().some((p) => p.lane === "side");
+    if (wk.side >= wk.main && wk.side > 0) out.push("The side slot has as many hours as the main one. That is two main milestones, and neither will feel deep.");
+    const cm = byId(f.current.main), cs = byId(f.current.side);
+    if (cm && cs && cm.area && cm.area.toLowerCase() === cs.area.toLowerCase()) out.push("Your main and side milestones are both " + cm.area + ". A side project works best as a change of scene.");
+    if (hasSide && wk.side === 0) out.push("Your side milestone has no blocks. Mark one or two days Side in the rhythm.");
+    if (!hasSide && wk.side > 0) out.push("Blocks marked Side go to the main milestone until you put something in the side lane.");
+  }
+  return out;
+}
+
+/* ---------- disciplines + rhythm editors ---------- */
+function dayButtons(act, id, sel) { let h = '<span class="days" role="group" aria-label="Days">'; for (let i = 0; i < 7; i++) h += '<button data-act="' + act + '"' + (id ? ' data-id="' + id + '"' : "") + ' data-d="' + i + '" aria-pressed="' + (sel.indexOf(i) >= 0) + '" aria-label="' + DAYFULL[i] + '">' + DAYL[i] + "</button>"; return h + "</span>"; }
+function renderHabits() {
+  const el = $("#habits");
+  let h = '<h2>Disciplines</h2><p class="lede">Small things you do on repeat, like Anki or a workout. They never take a season. The engine creates one Todoist task per discipline per day; <code>{milestone}</code> in a name becomes the current main milestone.</p>';
+  if (plan.disciplines.length) {
+    h += '<ul class="list">';
+    plan.disciplines.forEach((x, k) => {
+      h += '<li style="--c:' + cvar((k + 4) % PALETTE) + '"><div class="rowline"><span class="dot"></span><span class="grow"><input class="name" type="text" aria-label="Discipline name" data-bind="disciplines.#' + x.id + '.name" value="' + esc(x.name) + '"></span>' +
+        '<span class="unit"><input type="number" min="5" max="240" step="5" aria-label="Minutes" data-bind="disciplines.#' + x.id + '.minutes" value="' + x.minutes + '"> min</span>' +
+        '<span class="unit">at <input type="time" aria-label="Start time" data-bind="disciplines.#' + x.id + '.start" value="' + x.start + '"></span>' + dayButtons("habitDay", x.id, x.days) +
+        '<button class="quiet" data-act="removeHabit" data-id="' + x.id + '">Remove</button></div></li>';
+    });
+    h += "</ul>";
+  } else h += '<p class="empty">No disciplines yet. Add the one you most want to keep, and keep it short enough to do on a bad day.</p>';
+  h += '<div class="add"><span class="grow"><input type="text" id="newHabit" aria-label="New discipline name" placeholder="Anki, writing, workout"></span><span class="unit"><input type="number" id="newHabitMins" min="5" max="240" step="5" value="30" aria-label="Minutes"> min</span><span class="unit">at <input type="time" id="newHabitStart" value="07:15" aria-label="Start time"></span><button class="primary" data-act="addHabit">Add discipline</button></div>';
+  el.innerHTML = h;
+}
+function renderRhythm() {
+  const el = $("#rhythm"), two = twoLanes(), r = plan.rhythm;
+  let h = '<h2>The rhythm</h2><p class="lede">The fixed shape of your week. Set it once and let it run for the season.</p>';
+  h += '<div class="field"><span class="lab">Sleep</span><input type="time" aria-label="Sleep from" data-bind="rhythm.sleep.from" value="' + r.sleep.from + '"><span class="to">to</span><input type="time" aria-label="Wake at" data-bind="rhythm.sleep.to" value="' + r.sleep.to + '"></div>';
+  h += '<div class="field"><span class="lab">Fixed hours</span><input type="time" aria-label="Fixed hours start" data-bind="rhythm.fixed.from" value="' + r.fixed.from + '"><span class="to">to</span><input type="time" aria-label="Fixed hours end" data-bind="rhythm.fixed.to" value="' + r.fixed.to + '">' + dayButtons("jobDay", "", r.fixed.days) + "</div>";
+  h += '<div class="field"><span class="lab">Shutdown</span><input type="time" aria-label="Shutdown time" data-bind="rhythm.shutdown" value="' + r.shutdown + '"><span class="to">nothing is scheduled after this</span></div>';
+  h += '<div class="field"><label style="display:inline-flex;gap:.5rem;align-items:center"><input type="checkbox" data-bind="rhythm.rest_week"' + (r.rest_week ? " checked" : "") + "> Take a week off between seasons</label></div>";
+  h += '<div class="field"><span class="lab">Todoist</span><input type="text" style="width:14rem" aria-label="Todoist project id for bare seasons and disciplines" placeholder="project id" data-bind="todoist_project_id" value="' + esc(plan.todoist_project_id) + '"><span class="to">project for bare seasons and disciplines</span></div>';
+  h += "<h3>Deep blocks</h3>";
+  r.blocks.forEach((b, i) => {
+    h += '<div class="brow' + (b.on ? "" : " off") + '"><label class="on"><input type="checkbox" data-bind="rhythm.blocks.' + i + '.on" data-row="1"' + (b.on ? " checked" : "") + "> " + DAYN[i] + "</label>" +
+      '<input type="time" aria-label="' + DAYFULL[i] + ' block starts" data-bind="rhythm.blocks.' + i + '.start" value="' + b.start + '">' +
+      '<span class="unit"><input type="number" min="15" max="600" step="15" aria-label="' + DAYFULL[i] + ' block minutes" data-bind="rhythm.blocks.' + i + '.minutes" value="' + b.minutes + '"> min</span>' +
+      (two ? '<span class="seg" role="group" aria-label="' + DAYFULL[i] + ' block goes to"><button data-act="blockSlot" data-i="' + i + '" data-v="main" aria-pressed="' + (b.lane !== "side") + '">Main</button><button data-act="blockSlot" data-i="' + i + '" data-v="side" aria-pressed="' + (b.lane === "side") + '">Side</button></span>' : "") + "</div>";
+  });
+  const errs = validate(plan, catalog);
+  if (errs.length) h += '<ul class="errs">' + errs.map((e) => "<li>" + esc(e) + "</li>").join("") + "</ul>";
+  el.innerHTML = h;
+}
+
+/* ---------- orchestration ---------- */
+let pendingRender = false;
+const typing = () => { const a = document.activeElement; return a && app.contains(a) && /^(INPUT|SELECT)$/.test(a.tagName) && a.type !== "checkbox"; };
+function updateDerived() { const f = sim(); renderHero(f); renderToday(f); updateBucketDerived(f); renderYear(f); renderWeek(f); }
+function renderAll() { renderBucket(); renderHabits(); renderRhythm(); updateDerived(); }
+function changed(structural) {
+  dirty = true; setMsg("Unsaved changes" + (token ? "." : ". Save a token to commit, or download the file."));
+  if (structural) renderAll(); else updateDerived();
+}
+app.addEventListener("focusout", () => { if (pendingRender) setTimeout(() => { if (pendingRender && !typing()) { pendingRender = false; renderAll(); } }, 0); });
+
+function setPath(path, v) {
+  const segs = path.split("."); let o = plan;
+  for (let i = 0; i < segs.length - 1; i++) { const s = segs[i]; o = s.charAt(0) === "#" ? o.find((x) => x.id === s.slice(1)) : o[s]; if (!o) return false; }
+  o[segs[segs.length - 1]] = v; return true;
+}
+app.addEventListener("input", (e) => {
+  const t = e.target, path = t.dataset.bind; let v;
+  if (t.id === "newHours") { updateBucketDerived(sim()); return; }
+  if (!path) return;
+  if (t.type === "checkbox") v = t.checked;
+  else if (t.type === "number") { v = parseFloat(t.value); if (!isFinite(v) || v <= 0) return; v = Math.min(v, +t.max || 1e9); if (v < (+t.min || 0)) return; }
+  else if (t.type === "time") { if (!/^\d\d:\d\d/.test(t.value)) return; v = t.value.slice(0, 5); }
+  else if (t.type === "date") v = t.value || null;
+  else v = t.value;
+  if (!setPath(path, v)) return;
+  if (t.dataset.row) t.closest(".brow").classList.toggle("off", !v);
+  changed(false);
+});
+app.addEventListener("change", (e) => {
+  const t = e.target;
+  if (t.type === "number") { const v = clamp(t.value, +t.min || 0, +t.max || 1e9, +t.min || 1); if (String(v) !== t.value) { t.value = v; if (t.dataset.bind && setPath(t.dataset.bind, v)) changed(false); } }
+  if (t.classList.contains("name") && !t.value.trim()) { t.value = "Untitled"; if (setPath(t.dataset.bind, "Untitled")) changed(false); }
+  if (t.dataset.act === "syllabus") { const m = byId(t.dataset.id); if (m) { m.syllabus = t.value || null; m.track = null; m.modules = null; changed(true); } }
+  if (t.dataset.act === "binding") {
+    const m = byId(t.dataset.id); if (!m) return;
+    const v = t.value;
+    if (v === "all") { m.track = null; m.modules = null; }
+    else if (v === "modules") { m.track = null; m.modules = [1, Math.max(1, Math.min(5, (catalog.syllabuses[m.syllabus] || { modules: [] }).modules.length))]; }
+    else if (v.startsWith("track:")) { const [c, it] = v.slice(6).split("|"); m.track = [c, it]; m.modules = null; }
+    changed(true);
+  }
+});
+app.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter") return; const id = e.target.id;
+  if (id === "newName" || id === "newArea" || id === "newHours") { e.preventDefault(); act("addProject", {}); }
+  if (id === "newHabit" || id === "newHabitMins" || id === "newHabitStart") { e.preventDefault(); act("addHabit", {}); }
+});
+app.addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (!b || b.disabled || b.tagName === "SELECT") return; act(b.dataset.act, b.dataset, b); });
+const toggleIn = (arr, d) => { const i = arr.indexOf(d); if (i >= 0) arr.splice(i, 1); else { arr.push(d); arr.sort(); } };
+function act(name, d, btn) {
+  let m, x, i, list;
+  switch (name) {
+    case "lanes":
+      if (d.n === "2") { if (!plan.rhythm.blocks.some((b) => b.on && b.lane === "side")) [1, 3].forEach((k) => { if (plan.rhythm.blocks[k].on) plan.rhythm.blocks[k].lane = "side"; }); }
+      else plan.rhythm.blocks.forEach((b) => (b.lane = "main"));
+      changed(true); break;
+    case "slot": m = byId(d.id); if (m) { m.lane = d.v === "side" ? "side" : "main"; changed(true); } break;
+    case "blockSlot": plan.rhythm.blocks[+d.i].lane = d.v === "side" ? "side" : "main"; changed(true); break;
+    case "up": case "down":
+      list = liveProjects(); i = list.map((q) => q.id).indexOf(d.id); x = list[i + (name === "up" ? -1 : 1)]; m = list[i];
+      if (m && x) { const a = plan.bucket.indexOf(m), b = plan.bucket.indexOf(x); plan.bucket[a] = x; plan.bucket[b] = m; changed(true); const again = $('[data-act="' + name + '"][data-id="' + d.id + '"]'); if (again && !again.disabled) again.focus(); }
+      break;
+    case "remove":
+      if (btn && !btn.dataset.sure) { btn.dataset.sure = "1"; btn.textContent = "Remove for good?"; setTimeout(() => { if (btn.isConnected) { delete btn.dataset.sure; btn.textContent = "Remove"; } }, 3500); break; }
+      plan.bucket = plan.bucket.filter((q) => q.id !== d.id); changed(true); break;
+    case "removeHabit": plan.disciplines = plan.disciplines.filter((q) => q.id !== d.id); changed(true); break;
+    case "addProject": {
+      const nm = $("#newName").value.trim(); if (!nm) { $("#newName").focus(); break; }
+      plan.bucket.push({ id: uniqueId(slug(nm), new Set(plan.bucket.map((q) => q.id))), name: nm, area: $("#newArea").value.trim(), hours: clamp($("#newHours").value, 1, 5000, 40), lane: "main", syllabus: null, track: null, modules: null, pin_start: null });
+      changed(true); $("#newName").focus(); break;
+    }
+    case "addHabit": {
+      const hn = $("#newHabit").value.trim(); if (!hn) { $("#newHabit").focus(); break; }
+      plan.disciplines.push({ id: uniqueId(slug(hn), new Set(plan.disciplines.map((q) => q.id))), name: hn, minutes: clamp($("#newHabitMins").value, 5, 240, 30), start: validT($("#newHabitStart").value) || "07:15", days: [0, 1, 2, 3, 4, 5, 6] });
+      changed(true); $("#newHabit").focus(); break;
+    }
+    case "habitDay": x = plan.disciplines.find((q) => q.id === d.id); if (x) { toggleIn(x.days, +d.d); btn.setAttribute("aria-pressed", x.days.indexOf(+d.d) >= 0); changed(false); } break;
+    case "jobDay": toggleIn(plan.rhythm.fixed.days, +d.d); btn.setAttribute("aria-pressed", plan.rhythm.fixed.days.indexOf(+d.d) >= 0); changed(false); break;
+  }
+}
+$("#token").value = token;
+$("#saveToken").addEventListener("click", () => {
+  token = $("#token").value.trim();
+  try { if (token) localStorage.setItem("seasons.token", token); else localStorage.removeItem("seasons.token"); } catch (e) {}
+  $("#commit").disabled = !token;
+  setMsg(token ? "Token saved in this browser. Reloading from GitHub." : "Token removed.");
+  if (token) start();
+});
+$("#commit").addEventListener("click", commit);
+$("#download").addEventListener("click", download);
+window.addEventListener("beforeunload", (e) => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
+let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => renderYear(sim()), 200); });
+
+async function start() {
+  app.setAttribute("inert", ""); setStatus("Loading");
+  try { await loadAll(); } catch (e) { setStatus("Could not load: " + e.message, true); }
+  dirty = false; renderAll(); app.removeAttribute("inert");
+  setStatus("Loaded from " + source + (live ? " · engine state " + (live.today || "") : " · no engine state yet"));
+  $("#commit").disabled = !token;
+  setMsg(token ? "Edits commit straight to " + REPO + "." : "Read-only until you save a GitHub token. You can still download the file.");
+}
+start();
+</script>
+</body>
+</html>
