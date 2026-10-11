@@ -1626,6 +1626,7 @@ def main(argv: list[str] | None = None) -> int:
                     seasons=seasons_render,
                 )
                 DOCS_HTML_PATH.parent.mkdir(parents=True, exist_ok=True)
+                DOCS_CATALOG_PATH.parent.mkdir(parents=True, exist_ok=True)
                 DOCS_CATALOG_PATH.write_text(
                     json.dumps(seasons_catalog(cfg, syllabuses_parsed), indent=2, sort_keys=True) + "\n",
                     encoding="utf-8",

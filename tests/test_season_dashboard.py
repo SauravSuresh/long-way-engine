@@ -118,9 +118,12 @@ def test_render_multi_syllabus_orders_sections_and_swaps_tiles(tmp_path):
             reflections_root=tmp_path / "r", seasons=seasons_arg,
         )
 
+    def band(h):
+        return h[h.index('<header class="trmnl-band">'):h.index("</header>")]
+
     html, data = render(None, seasons)
     assert html.index('<section class="seasons"') < html.index('<section class="syllabus-card"')  # default order
-    assert '<div class="t-name">Marketplace rungs</div>' in html and "Adherence" not in html  # season tiles replaced adherence tiles
+    assert '<div class="t-name">Marketplace rungs</div>' in band(html) and "t-pct-label" not in band(html)  # season tiles replaced adherence tiles
     assert data["seasons"]["current"]["main"] == "mb-rungs"
 
     html, _ = render(["syllabus_cards", "seasons"], seasons)
@@ -129,4 +132,4 @@ def test_render_multi_syllabus_orders_sections_and_swaps_tiles(tmp_path):
     assert '<section class="seasons"' not in html
 
     html, data = render(None, None)  # layer off: unchanged behaviour
-    assert "Adherence" in html and "seasons" not in data and '<section class="seasons"' not in html
+    assert "t-pct-label" in band(html) and "seasons" not in data and '<section class="seasons"' not in html
