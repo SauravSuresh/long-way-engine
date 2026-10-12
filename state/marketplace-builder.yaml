@@ -6,9 +6,12 @@ current_book: The Go Programming Language
 completed_modules: []
 active_branches: []
 paused: true
-paused_since: '2026-09-22'
-paused_until: '2026-10-07'
-pause_history: []
+paused_since: '2026-10-12'
+paused_until: null
+pause_history:
+- start: '2026-09-22'
+  end: '2026-10-12'
+  reason: ''
 books_state: {}
 learning_tracks:
   Platform:
