@@ -1,4 +1,8 @@
-milestones: {}
+milestones:
+  get-the-aws-solutions-architect-certification:
+    logged:
+      '2026-10-16': 90
+    done: null
 rest_until: null
 rests: []
 last_run:
