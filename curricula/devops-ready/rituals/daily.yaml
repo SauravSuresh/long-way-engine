@@ -2,7 +2,9 @@
 # Required: SRS review and morning study must be present in every curriculum
 #
 # RHYTHMIC SCHEDULE (2026-08-17): one theme per evening, anchored 20:45.
-#   Mornings Mon-Fri  -> long study session ({current_book}) at 08:00
+#   Mornings Mon-Fri  -> long study session ({current_book}); slot: deep_block
+#                        makes it the season deep block (block start time,
+#                        only on days the block serves this syllabus)
 #   Evenings          -> Mon/Wed/Thu boot.dev, Fri LeetCode
 #                        (see rituals/weekly.yaml; Tue = marketplace ladder)
 #
@@ -20,6 +22,7 @@
     then make Anki cards for the key concepts. Focus on understanding,
     not just watching. Current course: {current_book}.
   due: "today at {ritual_times.morning_udemy}"
+  slot: deep_block
   labels: [daily-ritual, learning]
   cadence: weekly
   day_of_week: monday
@@ -32,6 +35,7 @@
     then make Anki cards for the key concepts. Focus on understanding,
     not just watching. Current course: {current_book}.
   due: "today at {ritual_times.morning_udemy}"
+  slot: deep_block
   labels: [daily-ritual, learning]
   cadence: weekly
   day_of_week: tuesday
@@ -44,6 +48,7 @@
     then make Anki cards for the key concepts. Focus on understanding,
     not just watching. Current course: {current_book}.
   due: "today at {ritual_times.morning_udemy}"
+  slot: deep_block
   labels: [daily-ritual, learning]
   cadence: weekly
   day_of_week: wednesday
@@ -56,6 +61,7 @@
     then make Anki cards for the key concepts. Focus on understanding,
     not just watching. Current course: {current_book}.
   due: "today at {ritual_times.morning_udemy}"
+  slot: deep_block
   labels: [daily-ritual, learning]
   cadence: weekly
   day_of_week: thursday
@@ -68,6 +74,7 @@
     then make Anki cards for the key concepts. Focus on understanding,
     not just watching. Current course: {current_book}.
   due: "today at {ritual_times.morning_udemy}"
+  slot: deep_block
   labels: [daily-ritual, learning]
   cadence: weekly
   day_of_week: friday
