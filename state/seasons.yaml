@@ -3,6 +3,10 @@ milestones:
     logged:
       '2026-10-16': 90
     done: null
+  previz-saas-development:
+    logged:
+      '2026-10-22': 90
+    done: null
 rest_until: null
 rests: []
 last_run:
