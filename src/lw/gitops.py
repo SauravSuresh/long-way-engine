@@ -28,7 +28,7 @@ def commit_and_push(
             ["gh", "auth", "switch", "-u", "SauravSuresh"],
             capture_output=True, text=True, check=False,
         )
-        pull = _git(repo_root, "pull", "--rebase", "origin", "main", check=False)
+        pull = _git(repo_root, "pull", "--rebase", "--autostash", "origin", "main", check=False)
         pushed = _git(repo_root, "push", "origin", "main", check=False)
         if pull.returncode != 0 or pushed.returncode != 0:
             print(f"WARNING: push failed — commit {sha} is local only. Push manually.")
