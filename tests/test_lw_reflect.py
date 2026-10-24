@@ -21,10 +21,17 @@ def test_reflect_targets_finds_weekly_stub_templates():
     from src.lw.reflect_logic import reflect_targets
     from src.lw.status_logic import load_engine
 
+    from dataclasses import replace
+
     ctx = load_engine(Path(__file__).resolve().parents[1])
+    mb_cur = ctx.per_key["marketplace-builder"]
+    mb_cur.state = replace(mb_cur.state, paused=False)
     targets = reflect_targets(ctx, date(2026, 8, 7))  # a Friday
     keys = {(t.key, t.cadence) for t in targets}
     assert ("marketplace-builder", "weekly") in keys
+
+    mb_cur.state = replace(mb_cur.state, paused=True)
+    assert all(t.key != "marketplace-builder" for t in reflect_targets(ctx, date(2026, 8, 7)))
     mb = next(t for t in targets if t.key == "marketplace-builder" and t.cadence == "weekly")
     assert "marketplace-builder/weekly" in str(mb.stub_path).replace("\\", "/")
     assert "marketplace-builder/marketplace-builder" not in str(mb.stub_path)

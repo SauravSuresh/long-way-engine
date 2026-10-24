@@ -43,9 +43,12 @@ def _cfg_shim(ctx: EngineCtx, key: str) -> Config:
 def reflect_targets(ctx: EngineCtx, today: date) -> list[ReflectTarget]:
     """Every reflection-stub template across enabled curricula, with the
     path this date's reflection files to. Existence is not filtered —
-    editing an existing reflection is legitimate."""
+    editing an existing reflection is legitimate. Paused (off-season)
+    curricula are skipped."""
     out: list[ReflectTarget] = []
     for key, cur in ctx.per_key.items():
+        if cur.state.paused:
+            continue
         cfg_shim = _cfg_shim(ctx, key)
         root = ctx.repo_root / "reflections" / key
         tpl_root = cur.entry.path / "reflection_templates"

@@ -89,8 +89,8 @@
 - id: weekly-reflection
   title: "Weekly reflection — run `lw reflect` (10 min)"
   description: |
-    Part of the Saturday close-out sitting (after the platform deep
-    block, alongside the marketplace reflection and both state reviews).
+    Part of the Saturday close-out sitting (after the deep block,
+    alongside the state review).
     Run `lw reflect` in the long-way-engine repo — this task is the
     reminder; the sectioned form and auto-filing happen there.
 
