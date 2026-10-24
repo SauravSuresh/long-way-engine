@@ -9,11 +9,11 @@
       "resting": false,
       "side": "previz-saas-development"
     },
-    "deep_work_streak": 2,
+    "deep_work_streak": 3,
     "discipline_streaks": {
       "anki": 0,
       "gym": 1,
-      "writing": 2
+      "writing": 0
     },
     "milestones": {
       "become-capable-of-building-a-backend": {
@@ -29,12 +29,12 @@
         "name": "Become Capable of building a backend",
         "segments": [
           {
-            "from": "2026-12-16",
+            "from": "2026-12-15",
             "lane": "main",
             "to": "2027-03-24"
           }
         ],
-        "start": "2026-12-16",
+        "start": "2026-12-15",
         "syllabus": "devops-ready",
         "track": [
           "Courses",
@@ -44,7 +44,7 @@
       "get-the-aws-solutions-architect-certification": {
         "area": "Learning",
         "done": null,
-        "end": "2026-12-08",
+        "end": "2026-12-07",
         "hours": 40.0,
         "hours_reached": false,
         "lane": "main",
@@ -57,12 +57,12 @@
         "name": "Get the AWS Solutions Architect Certification",
         "segments": [
           {
-            "from": "2026-10-24",
+            "from": "2026-10-25",
             "lane": "main",
-            "to": "2026-12-08"
+            "to": "2026-12-07"
           }
         ],
-        "start": "2026-10-24",
+        "start": "2026-10-25",
         "syllabus": "devops-ready",
         "track": [
           "Certifications",
@@ -72,29 +72,30 @@
       "previz-saas-development": {
         "area": "Work",
         "done": null,
-        "end": "2027-02-13",
+        "end": "2027-02-18",
         "hours": 50.0,
         "hours_reached": false,
         "lane": "side",
         "logged": {
-          "2026-10-22": 90
+          "2026-10-22": 90,
+          "2026-10-24": 100
         },
-        "logged_minutes": 90,
+        "logged_minutes": 190,
         "modules": null,
         "name": "Previz SaaS Development",
         "segments": [
           {
-            "from": "2026-10-24",
+            "from": "2026-10-25",
             "lane": "side",
-            "to": "2026-12-08"
+            "to": "2026-12-07"
           },
           {
-            "from": "2026-12-16",
+            "from": "2026-12-15",
             "lane": "side",
-            "to": "2027-02-13"
+            "to": "2027-02-18"
           }
         ],
-        "start": "2026-10-24",
+        "start": "2026-10-25",
         "syllabus": null,
         "track": null
       }
@@ -103,16 +104,16 @@
     "rest_until": null,
     "rests": [
       {
-        "from": "2026-12-09",
-        "to": "2026-12-15"
+        "from": "2026-12-08",
+        "to": "2026-12-14"
       }
     ],
-    "today": "2026-10-24"
+    "today": "2026-10-25"
   },
   "shared": {
-    "anki_card_count": 360,
+    "anki_card_count": 410,
     "manual_counters": {
-      "anki_card_count": 360,
+      "anki_card_count": 410,
       "learn_clusters_done": 2,
       "lineage_detours_done": [],
       "prs_opened": 0,
@@ -204,13 +205,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 69,
+      "day_of_journey": 70,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-10-17",
-          "state": "gray"
-        },
         {
           "date": "2026-10-18",
           "state": "gray"
@@ -234,6 +231,10 @@
         {
           "date": "2026-10-23",
           "state": "red"
+        },
+        {
+          "date": "2026-10-24",
+          "state": "gray"
         }
       ],
       "month": 2,
@@ -340,20 +341,20 @@
         "Daily": {
           "best": 5,
           "count": 0,
-          "hint": "rest day \u2014 no rituals scheduled"
+          "hint": "Sunday \u2014 rest day"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 8 days"
+          "hint": "next post in 7 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 6 days"
+          "hint": "next Friday in 5 days"
         }
       },
-      "today": "2026-10-24"
+      "today": "2026-10-25"
     },
     "marketplace-builder": {
       "adherence": {
@@ -409,13 +410,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 68,
+      "day_of_journey": 69,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-10-17",
-          "state": "gray"
-        },
         {
           "date": "2026-10-18",
           "state": "gray"
@@ -439,10 +436,14 @@
         {
           "date": "2026-10-23",
           "state": "gray"
+        },
+        {
+          "date": "2026-10-24",
+          "state": "gray"
         }
       ],
       "month": 2,
-      "paused": "Paused since 2026-10-12 (12 days)",
+      "paused": "Paused since 2026-10-12 (13 days)",
       "phase": 1,
       "practices": {
         "Code reading sessions": 0,
@@ -530,7 +531,7 @@
           "hint": "paused"
         }
       },
-      "today": "2026-10-24"
+      "today": "2026-10-25"
     }
   },
   "xp": {
@@ -541,7 +542,7 @@
       "reflections": 0,
       "rungs": 0,
       "streak_bonus": 0,
-      "weekly_review": 120,
+      "weekly_review": 160,
       "weekly_ritual": 275
     },
     "ladder": [
@@ -602,13 +603,13 @@
       }
     ],
     "level": 3,
-    "level_progress": 9,
+    "level_progress": 49,
     "next_level_at": 696,
     "next_reward": {
       "level": 4,
       "reward": "Order that thing sitting in your cart under \u20b92k. You know the one."
     },
-    "total": 475,
+    "total": 515,
     "unlocked": [
       {
         "level": 1,

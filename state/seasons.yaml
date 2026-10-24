@@ -7,6 +7,7 @@ milestones:
   previz-saas-development:
     logged:
       '2026-10-22': 90
+      '2026-10-24': 100
     done: null
 rest_until: null
 rests: []
