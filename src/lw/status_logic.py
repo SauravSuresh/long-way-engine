@@ -50,9 +50,13 @@ def load_engine(repo_root: Path) -> EngineCtx:
     return EngineCtx(cfg, shared, per_key, repo_root)
 
 
-def current_rung_meta(repo_root: Path, module_number: int) -> dict | None:
-    """The picked challenge's meta.yaml for this rung, or None if not picked."""
-    for d in sorted((repo_root / "ladder").glob(f"rung-{module_number:02d}[abc]-*")):
+def current_rung_meta(repo_root: Path, cur: CurriculumCtx) -> dict | None:
+    """The picked challenge's meta.yaml for this rung, or None if not picked.
+    ladder/ belongs to rung curricula only — a rungless one sharing the module
+    number must not pick up its deadline."""
+    if not _has_rungs(cur.templates):
+        return None
+    for d in sorted((repo_root / "ladder").glob(f"rung-{cur.state.current_module:02d}[abc]-*")):
         meta_path = d / "meta.yaml"
         if meta_path.exists():
             return yaml.safe_load(meta_path.read_text(encoding="utf-8"))
@@ -71,7 +75,7 @@ def build_status(repo_root: Path, today: date) -> list[str]:
         lines.append(f"## {key}")
         mod_no = cur.state.current_module
         lines.append(f"  module {mod_no}: {current_module_name(mod_no, cur.syllabus)}")
-        meta = current_rung_meta(repo_root, mod_no)
+        meta = current_rung_meta(repo_root, cur)
         if meta:
             lines.append(_deadline_line(meta, today))
         elif _has_rungs(cur.templates):

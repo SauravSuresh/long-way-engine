@@ -167,7 +167,7 @@ class GateOutcome:
 
 def build_deadline_gate(repo_root: Path, cur: CurriculumCtx, today: date) -> DeadlineGate | None:
     """The picked rung's gate, or None if not picked / already resolved / not yet due."""
-    meta = current_rung_meta(repo_root, cur.state.current_module)
+    meta = current_rung_meta(repo_root, cur)
     if meta is None or meta.get("outcome") is not None:
         return None
     dl = effective_deadline(meta)

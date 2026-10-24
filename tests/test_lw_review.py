@@ -2,6 +2,7 @@ import shutil
 from dataclasses import replace
 from datetime import date, timedelta
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import yaml
@@ -13,12 +14,13 @@ from src.state_review import load_state_log
 REPO = Path(__file__).resolve().parents[1]
 
 
-def _mk_cur(module: int = 1) -> CurriculumCtx:
+def _mk_cur(module: int = 1, rungs: bool = True) -> CurriculumCtx:
     state = SyllabusState(
         start_date=date(2026, 8, 5), phase=1, month=1,
         current_module=module, current_book="Book A",
     )
-    return CurriculumCtx(entry=None, state=state, syllabus=None, templates=[])
+    rung_tpl = SimpleNamespace(cadence="once-per-module", deadline_days=28)
+    return CurriculumCtx(entry=None, state=state, syllabus=None, templates=[rung_tpl] if rungs else [])
 
 
 def test_build_questions_filters_show_if_and_resolves_titles():
@@ -122,6 +124,10 @@ def test_deadline_gate_none_before_deadline_and_present_after(tmp_path: Path):
 
     _write_meta(meta_path, (today - timedelta(days=1)).isoformat(), outcome="shipped")
     assert build_deadline_gate(tmp_path, cur, today) is None
+
+    # A rungless curriculum on the same module number never sees ladder/.
+    _write_meta(meta_path, (today - timedelta(days=1)).isoformat())
+    assert build_deadline_gate(tmp_path, _mk_cur(module=1, rungs=False), today) is None
 
 
 def test_apply_gate_extend_requires_reason_and_appends(tmp_path: Path):
