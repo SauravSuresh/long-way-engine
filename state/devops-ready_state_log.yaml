@@ -28,3 +28,13 @@
   new:
     anki_card_count: 360
   message: 'anki_card_count: 280 -> 360 (+80)'
+- timestamp: '2026-10-24'
+  action: increment_counter
+  todoist_task_id: lw-review-2026-10-24-0
+  counter: anki_card_count
+  delta: 50
+  prior:
+    anki_card_count: 360
+  new:
+    anki_card_count: 410
+  message: 'anki_card_count: 360 -> 410 (+50)'
