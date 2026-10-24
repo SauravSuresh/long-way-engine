@@ -311,6 +311,12 @@ def run_review(repo_root: Path) -> int:
     if not enabled:
         print("No curriculum has cli_review enabled.")
         return 0
+    # Paused (off-season or owner pause) curricula have nothing to review.
+    for key in [k for k in enabled if ctx.per_key[k].state.paused]:
+        print(f"Skipping {key} — paused.")
+    enabled = [k for k in enabled if not ctx.per_key[k].state.paused]
+    if not enabled:
+        return 0
 
     keys = [key for key in enabled if is_review_time(ctx.per_key[key], today)]
     if not keys:
