@@ -19,7 +19,7 @@
       "become-capable-of-building-a-backend": {
         "area": "Learning",
         "done": null,
-        "end": "2027-03-24",
+        "end": "2027-03-23",
         "hours": 100.0,
         "hours_reached": false,
         "lane": "main",
@@ -31,7 +31,7 @@
           {
             "from": "2026-12-15",
             "lane": "main",
-            "to": "2027-03-24"
+            "to": "2027-03-23"
           }
         ],
         "start": "2026-12-15",
@@ -57,12 +57,12 @@
         "name": "Get the AWS Solutions Architect Certification",
         "segments": [
           {
-            "from": "2026-10-25",
+            "from": "2026-10-26",
             "lane": "main",
             "to": "2026-12-07"
           }
         ],
-        "start": "2026-10-25",
+        "start": "2026-10-26",
         "syllabus": "devops-ready",
         "track": [
           "Certifications",
@@ -72,7 +72,7 @@
       "previz-saas-development": {
         "area": "Work",
         "done": null,
-        "end": "2027-02-18",
+        "end": "2027-02-13",
         "hours": 50.0,
         "hours_reached": false,
         "lane": "side",
@@ -85,17 +85,17 @@
         "name": "Previz SaaS Development",
         "segments": [
           {
-            "from": "2026-10-25",
+            "from": "2026-10-26",
             "lane": "side",
             "to": "2026-12-07"
           },
           {
             "from": "2026-12-15",
             "lane": "side",
-            "to": "2027-02-18"
+            "to": "2027-02-13"
           }
         ],
-        "start": "2026-10-25",
+        "start": "2026-10-26",
         "syllabus": null,
         "track": null
       }
@@ -108,7 +108,7 @@
         "to": "2026-12-14"
       }
     ],
-    "today": "2026-10-25"
+    "today": "2026-10-26"
   },
   "shared": {
     "anki_card_count": 410,
@@ -205,13 +205,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 70,
+      "day_of_journey": 71,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-10-18",
-          "state": "gray"
-        },
         {
           "date": "2026-10-19",
           "state": "red"
@@ -234,6 +230,10 @@
         },
         {
           "date": "2026-10-24",
+          "state": "gray"
+        },
+        {
+          "date": "2026-10-25",
           "state": "gray"
         }
       ],
@@ -341,20 +341,20 @@
         "Daily": {
           "best": 5,
           "count": 0,
-          "hint": "Sunday \u2014 rest day"
+          "hint": "complete morning reading + Anki today to start"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 7 days"
+          "hint": "next post in 6 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 5 days"
+          "hint": "next Friday in 4 days"
         }
       },
-      "today": "2026-10-25"
+      "today": "2026-10-26"
     },
     "marketplace-builder": {
       "adherence": {
@@ -410,13 +410,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 69,
+      "day_of_journey": 70,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-10-18",
-          "state": "gray"
-        },
         {
           "date": "2026-10-19",
           "state": "gray"
@@ -440,10 +436,14 @@
         {
           "date": "2026-10-24",
           "state": "gray"
+        },
+        {
+          "date": "2026-10-25",
+          "state": "gray"
         }
       ],
       "month": 2,
-      "paused": "Paused since 2026-10-12 (13 days)",
+      "paused": "Paused since 2026-10-12 (14 days)",
       "phase": 1,
       "practices": {
         "Code reading sessions": 0,
@@ -531,7 +531,7 @@
           "hint": "paused"
         }
       },
-      "today": "2026-10-25"
+      "today": "2026-10-26"
     }
   },
   "xp": {
