@@ -1,13 +1,5 @@
 {
   "devops-ready": {
-    "012b9cf8710a230c": {
-      "created_at": "2026-08-27T00:54:05.494436+00:00",
-      "due_date": "2026-08-27",
-      "missed_at": "2026-08-28",
-      "status": "missed",
-      "template_id": "weekday-morning-study-thursday",
-      "todoist_task_id": "6hMp9hJFWWXWrmRX"
-    },
     "06184b4a87235874": {
       "created_at": "2026-09-15T23:33:29.936074+00:00",
       "due_date": "2026-09-16",
@@ -15,14 +7,6 @@
       "status": "missed",
       "template_id": "weekday-morning-study-wednesday",
       "todoist_task_id": "6hWQgQ74h6rqF5W5"
-    },
-    "09c30687bed4f990": {
-      "created_at": "2026-08-27T00:54:05.950803+00:00",
-      "due_date": "2026-08-27",
-      "missed_at": "2026-08-28",
-      "status": "missed",
-      "template_id": "weekly-bootdev-thursday",
-      "todoist_task_id": "6hMp9hQ4VwjF9h6X"
     },
     "0d249e97be62b07e": {
       "created_at": "2026-10-20T23:58:51.524331+00:00",
@@ -221,6 +205,14 @@
       "template_id": "weekly-bootdev-monday",
       "todoist_task_id": "6hPhp9Fw8vrqQ4p5"
     },
+    "793a22ecab9da012": {
+      "block_minutes": 90,
+      "created_at": "2026-10-27T00:37:09.999239+00:00",
+      "due_date": "2026-10-27",
+      "season_milestone": "get-the-aws-solutions-architect-certification",
+      "template_id": "weekday-morning-study-tuesday",
+      "todoist_task_id": "6hr5F8p6Cw5wwMvX"
+    },
     "7d5780abb0c71143": {
       "completed_at": "2026-08-30",
       "created_at": "2026-08-29T03:12:24.937577+00:00",
@@ -233,7 +225,9 @@
       "block_minutes": 90,
       "created_at": "2026-10-25T23:22:13.808995+00:00",
       "due_date": "2026-10-26",
+      "missed_at": "2026-10-27",
       "season_milestone": "get-the-aws-solutions-architect-certification",
+      "status": "missed",
       "template_id": "weekday-morning-study-monday",
       "todoist_task_id": "6hqqJvQPR72WWjg5"
     },
@@ -1848,14 +1842,6 @@
       "template_id": "daily-anki",
       "todoist_task_id": "6hRXjQ97hJ38fPrp"
     },
-    "c5c269c84bc6cd56": {
-      "completed_at": "2026-08-28",
-      "created_at": "2026-08-27T00:54:04.230888+00:00",
-      "due_date": "2026-08-27",
-      "status": "completed",
-      "template_id": "daily-anki",
-      "todoist_task_id": "6hMp9hGFvQfcWWPp"
-    },
     "c5f4dde5d75e58fa": {
       "created_at": "2026-09-04T23:06:00.596448+00:00",
       "due_date": "2026-09-05",
@@ -2077,8 +2063,17 @@
       "created_at": "2026-10-25T23:22:15.024682+00:00",
       "discipline": "anki",
       "due_date": "2026-10-26",
+      "missed_at": "2026-10-27",
+      "status": "missed",
       "template_id": "seasons:disc:anki",
       "todoist_task_id": "6hqqJvfpP6WfWHmf"
+    },
+    "seasons:disc:anki:2026-10-27": {
+      "created_at": "2026-10-27T00:37:12.001323+00:00",
+      "discipline": "anki",
+      "due_date": "2026-10-27",
+      "template_id": "seasons:disc:anki",
+      "todoist_task_id": "6hr5F8xJ7JqHqGR7"
     },
     "seasons:disc:gym:2026-10-12": {
       "completed_at": "2026-10-13",
@@ -2156,8 +2151,17 @@
       "created_at": "2026-10-25T23:22:15.381787+00:00",
       "discipline": "gym",
       "due_date": "2026-10-26",
+      "missed_at": "2026-10-27",
+      "status": "missed",
       "template_id": "seasons:disc:gym",
       "todoist_task_id": "6hqqJvfJ4GwWQ39f"
+    },
+    "seasons:disc:gym:2026-10-27": {
+      "created_at": "2026-10-27T00:37:12.553579+00:00",
+      "discipline": "gym",
+      "due_date": "2026-10-27",
+      "template_id": "seasons:disc:gym",
+      "todoist_task_id": "6hr5F8wG7WhV274f"
     },
     "seasons:disc:writing:2026-10-12": {
       "completed_at": "2026-10-13",
@@ -2271,8 +2275,17 @@
       "created_at": "2026-10-25T23:22:14.534070+00:00",
       "discipline": "writing",
       "due_date": "2026-10-26",
+      "missed_at": "2026-10-27",
+      "status": "missed",
       "template_id": "seasons:disc:writing",
       "todoist_task_id": "6hqqJvXpXMCMMqX7"
+    },
+    "seasons:disc:writing:2026-10-27": {
+      "created_at": "2026-10-27T00:37:11.480612+00:00",
+      "discipline": "writing",
+      "due_date": "2026-10-27",
+      "template_id": "seasons:disc:writing",
+      "todoist_task_id": "6hr5F8q9WgcRPfVf"
     }
   }
 }
