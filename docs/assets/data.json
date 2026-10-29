@@ -9,7 +9,7 @@
       "resting": false,
       "side": "previz-saas-development"
     },
-    "deep_work_streak": 1,
+    "deep_work_streak": 0,
     "discipline_streaks": {
       "anki": 0,
       "gym": 0,
@@ -58,12 +58,12 @@
         "name": "Get the AWS Solutions Architect Certification",
         "segments": [
           {
-            "from": "2026-10-28",
+            "from": "2026-10-29",
             "lane": "main",
             "to": "2026-12-09"
           }
         ],
-        "start": "2026-10-28",
+        "start": "2026-10-29",
         "syllabus": "devops-ready",
         "track": [
           "Certifications",
@@ -86,7 +86,7 @@
         "name": "Previz SaaS Development",
         "segments": [
           {
-            "from": "2026-10-28",
+            "from": "2026-10-29",
             "lane": "side",
             "to": "2026-12-09"
           },
@@ -96,7 +96,7 @@
             "to": "2027-02-13"
           }
         ],
-        "start": "2026-10-28",
+        "start": "2026-10-29",
         "syllabus": null,
         "track": null
       }
@@ -109,7 +109,7 @@
         "to": "2026-12-16"
       }
     ],
-    "today": "2026-10-28"
+    "today": "2026-10-29"
   },
   "shared": {
     "anki_card_count": 410,
@@ -127,7 +127,7 @@
     "devops-ready": {
       "adherence": {
         "done": 6,
-        "expected": 37,
+        "expected": 38,
         "percent": 16,
         "since": "2026-08-17"
       },
@@ -206,13 +206,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 73,
+      "day_of_journey": 74,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-10-21",
-          "state": "red"
-        },
         {
           "date": "2026-10-22",
           "state": "red"
@@ -236,6 +232,10 @@
         {
           "date": "2026-10-27",
           "state": "green"
+        },
+        {
+          "date": "2026-10-28",
+          "state": "red"
         }
       ],
       "month": 2,
@@ -334,28 +334,28 @@
         }
       ],
       "streaks": {
-        "Daily": 1,
+        "Daily": 0,
         "Monthly post": 0,
         "Weekly review": 0
       },
       "streaks_view": {
         "Daily": {
           "best": 5,
-          "count": 1,
-          "hint": "morning reading + Anki by 23:59 to keep it"
+          "count": 0,
+          "hint": "complete morning reading + Anki today to start"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 4 days"
+          "hint": "next post in 3 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 2 days"
+          "hint": "next Friday in 1 day"
         }
       },
-      "today": "2026-10-28"
+      "today": "2026-10-29"
     },
     "marketplace-builder": {
       "adherence": {
@@ -411,13 +411,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 72,
+      "day_of_journey": 73,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-10-21",
-          "state": "gray"
-        },
         {
           "date": "2026-10-22",
           "state": "gray"
@@ -441,10 +437,14 @@
         {
           "date": "2026-10-27",
           "state": "gray"
+        },
+        {
+          "date": "2026-10-28",
+          "state": "gray"
         }
       ],
       "month": 2,
-      "paused": "Paused since 2026-10-12 (16 days)",
+      "paused": "Paused since 2026-10-12 (17 days)",
       "phase": 1,
       "practices": {
         "Code reading sessions": 0,
@@ -532,19 +532,19 @@
           "hint": "paused"
         }
       },
-      "today": "2026-10-28"
+      "today": "2026-10-29"
     }
   },
   "xp": {
     "by_source": {
-      "daily": 60,
+      "daily": 50,
       "deep_block": 0,
       "exam_gates": 0,
       "reflections": 0,
       "rungs": 0,
       "streak_bonus": 0,
       "weekly_review": 160,
-      "weekly_ritual": 300
+      "weekly_ritual": 250
     },
     "ladder": [
       {
@@ -560,7 +560,7 @@
       {
         "level": 3,
         "reward": "One full lazy Saturday morning \u2014 no alarm, no Anki before noon (streak-safe: do it at 1pm)",
-        "unlocked": true
+        "unlocked": false
       },
       {
         "level": 4,
@@ -603,14 +603,14 @@
         "unlocked": false
       }
     ],
-    "level": 3,
-    "level_progress": 54,
-    "next_level_at": 696,
+    "level": 2,
+    "level_progress": 196,
+    "next_level_at": 466,
     "next_reward": {
-      "level": 4,
-      "reward": "Order that thing sitting in your cart under \u20b92k. You know the one."
+      "level": 3,
+      "reward": "One full lazy Saturday morning \u2014 no alarm, no Anki before noon (streak-safe: do it at 1pm)"
     },
-    "total": 520,
+    "total": 460,
     "unlocked": [
       {
         "level": 1,
@@ -619,10 +619,6 @@
       {
         "level": 2,
         "reward": "Movie night, zero guilt \u2014 theatre, popcorn, phone off"
-      },
-      {
-        "level": 3,
-        "reward": "One full lazy Saturday morning \u2014 no alarm, no Anki before noon (streak-safe: do it at 1pm)"
       }
     ]
   }

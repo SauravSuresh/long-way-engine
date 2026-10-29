@@ -153,7 +153,9 @@
       "block_minutes": 90,
       "created_at": "2026-10-28T00:34:54.613336+00:00",
       "due_date": "2026-10-28",
+      "missed_at": "2026-10-29",
       "season_milestone": "get-the-aws-solutions-architect-certification",
+      "status": "missed",
       "template_id": "weekday-morning-study-wednesday",
       "todoist_task_id": "6hrGjcW8RJ4XQG8X"
     },
@@ -207,14 +209,6 @@
       "status": "completed",
       "template_id": "weekday-morning-study-tuesday",
       "todoist_task_id": "6hr5F8p6Cw5wwMvX"
-    },
-    "7d5780abb0c71143": {
-      "completed_at": "2026-08-30",
-      "created_at": "2026-08-29T03:12:24.937577+00:00",
-      "due_date": "2026-08-29",
-      "status": "completed",
-      "template_id": "weekly-reflection",
-      "todoist_task_id": "6hPFwJC2Xcf7G6h5"
     },
     "838279feefb7fb96": {
       "block_minutes": 90,
@@ -362,14 +356,6 @@
       "template_id": "weekly-state-review",
       "todoist_task_id": "6hX86CWq9HhhVWjX"
     },
-    "c10c1b643c411e1b": {
-      "created_at": "2026-08-29T03:12:24.533101+00:00",
-      "due_date": "2026-08-29",
-      "missed_at": "2026-08-30",
-      "status": "missed",
-      "template_id": "monthly-retrospective",
-      "todoist_task_id": "6hPFwJ8gP6J5PC95"
-    },
     "c8c6756dfb0128b1": {
       "completed_at": "2026-09-01",
       "created_at": "2026-08-30T23:37:36.465562+00:00",
@@ -482,14 +468,6 @@
       "status": "missed",
       "template_id": "weekday-morning-study-tuesday",
       "todoist_task_id": "6hWCG7FGRQ4JgPq5"
-    },
-    "fc6194c2277b9891": {
-      "created_at": "2026-08-29T03:12:25.323573+00:00",
-      "due_date": "2026-08-29",
-      "missed_at": "2026-08-30",
-      "status": "missed",
-      "template_id": "weekly-state-review",
-      "todoist_task_id": "6hPFwJF5wmqxVJCX"
     },
     "fd20edffca252746": {
       "completed_at": "2026-10-25",
@@ -1728,14 +1706,6 @@
       "template_id": "daily-anki",
       "todoist_task_id": "6hVVfRrcpgmfRW8G"
     },
-    "7583141671bcadf3": {
-      "completed_at": "2026-08-30",
-      "created_at": "2026-08-29T03:12:21.907229+00:00",
-      "due_date": "2026-08-29",
-      "status": "completed",
-      "template_id": "daily-anki",
-      "todoist_task_id": "6hPFwJ24RcGJMQ5p"
-    },
     "78df56ac93961fdb": {
       "created_at": "2026-10-17T23:13:20.852749+00:00",
       "due_date": "persistent",
@@ -1748,14 +1718,6 @@
       "persistent_consumed": false,
       "template_id": "persistent-emergency-pause",
       "todoist_task_id": "6hmxJx9V8gvQpMHG"
-    },
-    "7d5780abb0c71143": {
-      "completed_at": "2026-08-30",
-      "created_at": "2026-08-29T03:12:22.507339+00:00",
-      "due_date": "2026-08-29",
-      "status": "completed",
-      "template_id": "weekly-reflection",
-      "todoist_task_id": "6hPFwHxcwwRJhPGp"
     },
     "8a3a703e97ad8302": {
       "completed_at": "2026-09-05",
@@ -1788,14 +1750,6 @@
       "status": "completed",
       "template_id": "daily-anki",
       "todoist_task_id": "6hQP9QQWjw7QwVcG"
-    },
-    "ae300886c5ee7dc4": {
-      "created_at": "2026-08-29T03:12:22.947032+00:00",
-      "due_date": "2026-08-29",
-      "missed_at": "2026-08-30",
-      "status": "missed",
-      "template_id": "saturday-deep-block",
-      "todoist_task_id": "6hPFwJ4XfP2CR6vp"
     },
     "b199db1676f7b898": {
       "created_at": "2026-09-15T23:33:27.854984+00:00",
@@ -1903,14 +1857,6 @@
       "status": "missed",
       "template_id": "build-session-tuesday",
       "todoist_task_id": "6hRXjQGXCrqXXPgG"
-    },
-    "fc6194c2277b9891": {
-      "completed_at": "2026-08-30",
-      "created_at": "2026-08-29T03:12:23.729944+00:00",
-      "due_date": "2026-08-29",
-      "status": "completed",
-      "template_id": "weekly-state-review",
-      "todoist_task_id": "6hPFwJ4Rf455xVrp"
     }
   },
   "seasons": {
@@ -1955,6 +1901,14 @@
       "status": "completed",
       "template_id": "seasons:block",
       "todoist_task_id": "6hqJWR79xP8G4pj7"
+    },
+    "seasons:block:previz-saas-development:2026-10-29": {
+      "block_minutes": 90,
+      "created_at": "2026-10-29T01:04:45.321808+00:00",
+      "due_date": "2026-10-29",
+      "season_milestone": "previz-saas-development",
+      "template_id": "seasons:block",
+      "todoist_task_id": "6hrWMMQWRXQg9mG7"
     },
     "seasons:disc:anki:2026-10-12": {
       "completed_at": "2026-10-13",
@@ -2068,8 +2022,17 @@
       "created_at": "2026-10-28T00:34:55.976601+00:00",
       "discipline": "anki",
       "due_date": "2026-10-28",
+      "missed_at": "2026-10-29",
+      "status": "missed",
       "template_id": "seasons:disc:anki",
       "todoist_task_id": "6hrGjchX6JqxPPJ7"
+    },
+    "seasons:disc:anki:2026-10-29": {
+      "created_at": "2026-10-29T01:04:46.333039+00:00",
+      "discipline": "anki",
+      "due_date": "2026-10-29",
+      "template_id": "seasons:disc:anki",
+      "todoist_task_id": "6hrWMMVGP86fRM2f"
     },
     "seasons:disc:gym:2026-10-12": {
       "completed_at": "2026-10-13",
@@ -2165,8 +2128,17 @@
       "created_at": "2026-10-28T00:34:56.513307+00:00",
       "discipline": "gym",
       "due_date": "2026-10-28",
+      "missed_at": "2026-10-29",
+      "status": "missed",
       "template_id": "seasons:disc:gym",
       "todoist_task_id": "6hrGjcj9vrjg395f"
+    },
+    "seasons:disc:gym:2026-10-29": {
+      "created_at": "2026-10-29T01:04:46.714763+00:00",
+      "discipline": "gym",
+      "due_date": "2026-10-29",
+      "template_id": "seasons:disc:gym",
+      "todoist_task_id": "6hrWMMW4W6XXcmqf"
     },
     "seasons:disc:writing:2026-10-12": {
       "completed_at": "2026-10-13",
@@ -2298,8 +2270,17 @@
       "created_at": "2026-10-28T00:34:55.562286+00:00",
       "discipline": "writing",
       "due_date": "2026-10-28",
+      "missed_at": "2026-10-29",
+      "status": "missed",
       "template_id": "seasons:disc:writing",
       "todoist_task_id": "6hrGjccVC7vWvRjf"
+    },
+    "seasons:disc:writing:2026-10-29": {
+      "created_at": "2026-10-29T01:04:45.908775+00:00",
+      "discipline": "writing",
+      "due_date": "2026-10-29",
+      "template_id": "seasons:disc:writing",
+      "todoist_task_id": "6hrWMMV2cPhwHWFf"
     }
   }
 }
