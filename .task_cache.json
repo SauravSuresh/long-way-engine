@@ -12,7 +12,9 @@
       "block_minutes": 90,
       "created_at": "2026-10-30T01:10:41.255016+00:00",
       "due_date": "2026-10-30",
+      "missed_at": "2026-10-31",
       "season_milestone": "get-the-aws-solutions-architect-certification",
+      "status": "missed",
       "template_id": "weekday-morning-study-friday",
       "todoist_task_id": "6hrmw8wGw2cCPMJX"
     },
@@ -103,6 +105,12 @@
       "status": "missed",
       "template_id": "weekly-bootdev-thursday",
       "todoist_task_id": "6hQP9QR8jwhQ8rQX"
+    },
+    "400aafcbbeb845fe": {
+      "created_at": "2026-10-31T00:53:36.140386+00:00",
+      "due_date": "2026-10-31",
+      "template_id": "weekly-state-review",
+      "todoist_task_id": "6hv3H7mQ7w7vvvpX"
     },
     "41cd71e2339e0ad2": {
       "created_at": "2026-09-17T23:34:53.762691+00:00",
@@ -324,6 +332,12 @@
       "template_id": "weekday-morning-study-tuesday",
       "todoist_task_id": "6hjpxxvfrfhPwJQX"
     },
+    "a620b9372369e47b": {
+      "created_at": "2026-10-31T00:53:35.198136+00:00",
+      "due_date": "2026-10-31",
+      "template_id": "monthly-retrospective",
+      "todoist_task_id": "6hv3H7gFFPxxMH3X"
+    },
     "a9f94597c5c5769b": {
       "created_at": "2026-09-13T23:14:45.919787+00:00",
       "due_date": "2026-09-14",
@@ -460,6 +474,12 @@
       "status": "missed",
       "template_id": "weekday-morning-study-tuesday",
       "todoist_task_id": "6hWCG7FGRQ4JgPq5"
+    },
+    "f89a843b3e847364": {
+      "created_at": "2026-10-31T00:53:35.768765+00:00",
+      "due_date": "2026-10-31",
+      "template_id": "weekly-reflection",
+      "todoist_task_id": "6hv3H7hjfmGqrwQX"
     },
     "fd20edffca252746": {
       "completed_at": "2026-10-25",
@@ -1896,6 +1916,14 @@
       "template_id": "seasons:block",
       "todoist_task_id": "6hrWMMQWRXQg9mG7"
     },
+    "seasons:block:previz-saas-development:2026-10-31": {
+      "block_minutes": 100,
+      "created_at": "2026-10-31T00:53:36.926633+00:00",
+      "due_date": "2026-10-31",
+      "season_milestone": "previz-saas-development",
+      "template_id": "seasons:block",
+      "todoist_task_id": "6hv3H7jCxxMX4FF7"
+    },
     "seasons:disc:anki:2026-10-12": {
       "completed_at": "2026-10-13",
       "created_at": "2026-10-12T00:38:46.126057+00:00",
@@ -2026,6 +2054,8 @@
       "created_at": "2026-10-30T01:10:42.642599+00:00",
       "discipline": "anki",
       "due_date": "2026-10-30",
+      "missed_at": "2026-10-31",
+      "status": "missed",
       "template_id": "seasons:disc:anki",
       "todoist_task_id": "6hrmw95HFWjPg5G7"
     },
@@ -2285,8 +2315,17 @@
       "created_at": "2026-10-30T01:10:42.080970+00:00",
       "discipline": "writing",
       "due_date": "2026-10-30",
+      "missed_at": "2026-10-31",
+      "status": "missed",
       "template_id": "seasons:disc:writing",
       "todoist_task_id": "6hrmw937f5CQgRX7"
+    },
+    "seasons:disc:writing:2026-10-31": {
+      "created_at": "2026-10-31T00:53:37.234448+00:00",
+      "discipline": "writing",
+      "due_date": "2026-10-31",
+      "template_id": "seasons:disc:writing",
+      "todoist_task_id": "6hv3H7rWv4hXVFx7"
     }
   }
 }
