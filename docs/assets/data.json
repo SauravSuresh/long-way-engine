@@ -13,13 +13,13 @@
     "discipline_streaks": {
       "anki": 0,
       "gym": 0,
-      "writing": 0
+      "writing": 1
     },
     "milestones": {
       "become-capable-of-building-a-backend": {
         "area": "Learning",
         "done": null,
-        "end": "2027-03-29",
+        "end": "2027-03-30",
         "hours": 100.0,
         "hours_reached": false,
         "lane": "main",
@@ -29,12 +29,12 @@
         "name": "Become Capable of building a backend",
         "segments": [
           {
-            "from": "2026-12-19",
+            "from": "2026-12-22",
             "lane": "main",
-            "to": "2027-03-29"
+            "to": "2027-03-30"
           }
         ],
-        "start": "2026-12-19",
+        "start": "2026-12-22",
         "syllabus": "devops-ready",
         "track": [
           "Courses",
@@ -44,7 +44,7 @@
       "get-the-aws-solutions-architect-certification": {
         "area": "Learning",
         "done": null,
-        "end": "2026-12-11",
+        "end": "2026-12-14",
         "hours": 40.0,
         "hours_reached": false,
         "lane": "main",
@@ -58,12 +58,12 @@
         "name": "Get the AWS Solutions Architect Certification",
         "segments": [
           {
-            "from": "2026-11-02",
+            "from": "2026-11-03",
             "lane": "main",
-            "to": "2026-12-11"
+            "to": "2026-12-14"
           }
         ],
-        "start": "2026-11-02",
+        "start": "2026-11-03",
         "syllabus": "devops-ready",
         "track": [
           "Certifications",
@@ -86,17 +86,17 @@
         "name": "Previz SaaS Development",
         "segments": [
           {
-            "from": "2026-11-02",
+            "from": "2026-11-03",
             "lane": "side",
-            "to": "2026-12-11"
+            "to": "2026-12-14"
           },
           {
-            "from": "2026-12-19",
+            "from": "2026-12-22",
             "lane": "side",
             "to": "2027-02-20"
           }
         ],
-        "start": "2026-11-02",
+        "start": "2026-11-03",
         "syllabus": null,
         "track": null
       }
@@ -105,11 +105,11 @@
     "rest_until": null,
     "rests": [
       {
-        "from": "2026-12-12",
-        "to": "2026-12-18"
+        "from": "2026-12-15",
+        "to": "2026-12-21"
       }
     ],
-    "today": "2026-11-02"
+    "today": "2026-11-03"
   },
   "shared": {
     "anki_card_count": 410,
@@ -126,9 +126,9 @@
   "syllabuses": {
     "devops-ready": {
       "adherence": {
-        "done": 2,
-        "expected": 40,
-        "percent": 5,
+        "done": 1,
+        "expected": 41,
+        "percent": 2,
         "since": "2026-08-17"
       },
       "books": [
@@ -206,13 +206,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 78,
+      "day_of_journey": 79,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-10-26",
-          "state": "red"
-        },
         {
           "date": "2026-10-27",
           "state": "green"
@@ -236,6 +232,10 @@
         {
           "date": "2026-11-01",
           "state": "gray"
+        },
+        {
+          "date": "2026-11-02",
+          "state": "red"
         }
       ],
       "month": 2,
@@ -361,21 +361,21 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 29 days"
+          "hint": "next post in 28 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 4 days"
+          "hint": "next Friday in 3 days"
         }
       },
-      "today": "2026-11-02"
+      "today": "2026-11-03"
     },
     "marketplace-builder": {
       "adherence": {
-        "done": 1,
+        "done": 0,
         "expected": 30,
-        "percent": 3,
+        "percent": 0,
         "since": "2026-08-18"
       },
       "books": [
@@ -425,13 +425,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 77,
+      "day_of_journey": 78,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-10-26",
-          "state": "gray"
-        },
         {
           "date": "2026-10-27",
           "state": "gray"
@@ -455,10 +451,14 @@
         {
           "date": "2026-11-01",
           "state": "gray"
+        },
+        {
+          "date": "2026-11-02",
+          "state": "gray"
         }
       ],
       "month": 2,
-      "paused": "Paused since 2026-10-12 (21 days)",
+      "paused": "Paused since 2026-10-12 (22 days)",
       "phase": 1,
       "practices": {
         "Code reading sessions": 0,
@@ -531,7 +531,7 @@
       },
       "streaks_view": {
         "Daily": {
-          "best": 1,
+          "best": 0,
           "count": 0,
           "hint": "paused"
         },
@@ -546,19 +546,19 @@
           "hint": "paused"
         }
       },
-      "today": "2026-11-02"
+      "today": "2026-11-03"
     }
   },
   "xp": {
     "by_source": {
-      "daily": 10,
+      "daily": 0,
       "deep_block": 0,
       "exam_gates": 0,
       "reflections": 0,
       "rungs": 0,
       "streak_bonus": 0,
       "weekly_review": 160,
-      "weekly_ritual": 125
+      "weekly_ritual": 100
     },
     "ladder": [
       {
@@ -569,7 +569,7 @@
       {
         "level": 2,
         "reward": "Movie night, zero guilt \u2014 theatre, popcorn, phone off",
-        "unlocked": true
+        "unlocked": false
       },
       {
         "level": 3,
@@ -617,22 +617,18 @@
         "unlocked": false
       }
     ],
-    "level": 2,
-    "level_progress": 31,
-    "next_level_at": 466,
+    "level": 1,
+    "level_progress": 160,
+    "next_level_at": 264,
     "next_reward": {
-      "level": 3,
-      "reward": "One full lazy Saturday morning \u2014 no alarm, no Anki before noon (streak-safe: do it at 1pm)"
+      "level": 2,
+      "reward": "Movie night, zero guilt \u2014 theatre, popcorn, phone off"
     },
-    "total": 295,
+    "total": 260,
     "unlocked": [
       {
         "level": 1,
         "reward": "Fancy dessert run \u2014 the good bakery, no price-checking"
-      },
-      {
-        "level": 2,
-        "reward": "Movie night, zero guilt \u2014 theatre, popcorn, phone off"
       }
     ]
   }
