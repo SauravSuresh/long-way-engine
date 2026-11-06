@@ -9,6 +9,7 @@ milestones:
     logged:
       '2026-10-22': 90
       '2026-10-24': 100
+      '2026-11-05': 90
     done: null
 rest_until: null
 rests: []

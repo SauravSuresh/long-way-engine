@@ -60,14 +60,6 @@
       "template_id": "weekly-bootdev-wednesday",
       "todoist_task_id": "6hRq8r993hFwH3WX"
     },
-    "27a68f722f756518": {
-      "created_at": "2026-09-06T22:56:11.094977+00:00",
-      "due_date": "2026-09-07",
-      "missed_at": "2026-09-08",
-      "status": "missed",
-      "template_id": "weekly-bootdev-monday",
-      "todoist_task_id": "6hRJ3xWFH23vcgJ5"
-    },
     "2944a687fe3b1586": {
       "completed_at": "2026-10-25",
       "created_at": "2026-10-23T23:53:24.445881+00:00",
@@ -91,6 +83,14 @@
       "status": "missed",
       "template_id": "weekly-bootdev-wednesday",
       "todoist_task_id": "6hWQgQ7rMPgv2cjX"
+    },
+    "371a3c22e46d6ebd": {
+      "block_minutes": 90,
+      "created_at": "2026-11-06T01:39:49.056550+00:00",
+      "due_date": "2026-11-06",
+      "season_milestone": "get-the-aws-solutions-architect-certification",
+      "template_id": "weekday-morning-study-friday",
+      "todoist_task_id": "6hwPVhC523Jw7vrX"
     },
     "400aafcbbeb845fe": {
       "created_at": "2026-10-31T00:53:36.140386+00:00",
@@ -291,14 +291,6 @@
       "status": "missed",
       "template_id": "weekly-leetcode-friday",
       "todoist_task_id": "6hVG6PCPrHgCrC6X"
-    },
-    "954282e775f157f9": {
-      "created_at": "2026-09-06T22:56:10.647919+00:00",
-      "due_date": "2026-09-07",
-      "missed_at": "2026-09-08",
-      "status": "missed",
-      "template_id": "weekday-morning-study-monday",
-      "todoist_task_id": "6hRJ3xMq4VGc7295"
     },
     "9df94af07647f493": {
       "created_at": "2026-10-13T02:37:52.780070+00:00",
@@ -1695,14 +1687,6 @@
       "template_id": "daily-anki",
       "todoist_task_id": "6hRXjQ97hJ38fPrp"
     },
-    "c6953740ede2d631": {
-      "created_at": "2026-09-06T22:56:09.806887+00:00",
-      "due_date": "2026-09-07",
-      "missed_at": "2026-09-08",
-      "status": "missed",
-      "template_id": "daily-anki",
-      "todoist_task_id": "6hRJ3xH68W6g58FG"
-    },
     "d6a9344b038f2296": {
       "created_at": "2026-09-11T23:23:14.013023+00:00",
       "due_date": "2026-09-12",
@@ -1804,9 +1788,12 @@
     },
     "seasons:block:previz-saas-development:2026-11-05": {
       "block_minutes": 90,
+      "completed_at": "2026-11-06",
       "created_at": "2026-11-05T01:31:29.869950+00:00",
       "due_date": "2026-11-05",
+      "season_logged": true,
       "season_milestone": "previz-saas-development",
+      "status": "completed",
       "template_id": "seasons:block",
       "todoist_task_id": "6hw92RwjHVxQC4Vf"
     },
@@ -1976,8 +1963,17 @@
       "created_at": "2026-11-05T01:31:30.758895+00:00",
       "discipline": "anki",
       "due_date": "2026-11-05",
+      "missed_at": "2026-11-06",
+      "status": "missed",
       "template_id": "seasons:disc:anki",
       "todoist_task_id": "6hw92V5HHGjcVQ7f"
+    },
+    "seasons:disc:anki:2026-11-06": {
+      "created_at": "2026-11-06T01:39:50.240591+00:00",
+      "discipline": "anki",
+      "due_date": "2026-11-06",
+      "template_id": "seasons:disc:anki",
+      "todoist_task_id": "6hwPVhHRRWPf2vc7"
     },
     "seasons:disc:gym:2026-10-12": {
       "completed_at": "2026-10-13",
@@ -2115,9 +2111,11 @@
       "todoist_task_id": "6hvxRQmFpWrWRmp7"
     },
     "seasons:disc:gym:2026-11-05": {
+      "completed_at": "2026-11-06",
       "created_at": "2026-11-05T01:31:31.024740+00:00",
       "discipline": "gym",
       "due_date": "2026-11-05",
+      "status": "completed",
       "template_id": "seasons:disc:gym",
       "todoist_task_id": "6hw92V7J4c4Pjp67"
     },
@@ -2314,8 +2312,17 @@
       "created_at": "2026-11-05T01:31:30.442697+00:00",
       "discipline": "writing",
       "due_date": "2026-11-05",
+      "missed_at": "2026-11-06",
+      "status": "missed",
       "template_id": "seasons:disc:writing",
       "todoist_task_id": "6hw92V3RrvXHwcF7"
+    },
+    "seasons:disc:writing:2026-11-06": {
+      "created_at": "2026-11-06T01:39:49.915554+00:00",
+      "discipline": "writing",
+      "due_date": "2026-11-06",
+      "template_id": "seasons:disc:writing",
+      "todoist_task_id": "6hwPVhCfcgm8cwx7"
     }
   }
 }
