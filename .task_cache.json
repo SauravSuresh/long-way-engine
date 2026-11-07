@@ -36,6 +36,12 @@
       "template_id": "weekday-morning-study-monday",
       "todoist_task_id": "6hvRGvxCPfXQv9F5"
     },
+    "18d963457f91bed3": {
+      "created_at": "2026-11-07T00:59:23.738485+00:00",
+      "due_date": "2026-11-07",
+      "template_id": "weekly-state-review",
+      "todoist_task_id": "6hwfpmc983G5X745"
+    },
     "1b64ca12516bfd50": {
       "created_at": "2026-10-12T00:38:44.221632+00:00",
       "due_date": "2026-10-12",
@@ -88,7 +94,9 @@
       "block_minutes": 90,
       "created_at": "2026-11-06T01:39:49.056550+00:00",
       "due_date": "2026-11-06",
+      "missed_at": "2026-11-07",
       "season_milestone": "get-the-aws-solutions-architect-certification",
+      "status": "missed",
       "template_id": "weekday-morning-study-friday",
       "todoist_task_id": "6hwPVhC523Jw7vrX"
     },
@@ -196,6 +204,12 @@
       "status": "missed",
       "template_id": "weekday-morning-study-wednesday",
       "todoist_task_id": "6hvxRQQh4PVpRhVX"
+    },
+    "705e8b47e7aa6851": {
+      "created_at": "2026-11-07T00:59:22.930692+00:00",
+      "due_date": "2026-11-07",
+      "template_id": "weekly-reflection",
+      "todoist_task_id": "6hwfpmXFxmrPQJ75"
     },
     "793a22ecab9da012": {
       "block_minutes": 90,
@@ -404,14 +418,6 @@
       "persistent_consumed": false,
       "template_id": "persistent-resume",
       "todoist_task_id": "6hXrqc8wWc8gr2cX"
-    },
-    "f6eb948bd18aa663": {
-      "created_at": "2026-09-07T23:36:20.352019+00:00",
-      "due_date": "2026-09-08",
-      "missed_at": "2026-09-09",
-      "status": "missed",
-      "template_id": "weekday-morning-study-tuesday",
-      "todoist_task_id": "6hRXjQHPJ26852J5"
     },
     "f79f2970cfb5df59": {
       "created_at": "2026-09-14T23:54:31.604189+00:00",
@@ -1679,14 +1685,6 @@
       "template_id": "weekly-state-review",
       "todoist_task_id": "6hX86CM9qwPjVC2p"
     },
-    "c36c558178e5d1df": {
-      "created_at": "2026-09-07T23:36:18.821958+00:00",
-      "due_date": "2026-09-08",
-      "missed_at": "2026-09-09",
-      "status": "missed",
-      "template_id": "daily-anki",
-      "todoist_task_id": "6hRXjQ97hJ38fPrp"
-    },
     "d6a9344b038f2296": {
       "created_at": "2026-09-11T23:23:14.013023+00:00",
       "due_date": "2026-09-12",
@@ -1713,14 +1711,6 @@
       "persistent_consumed": false,
       "template_id": "persistent-resume",
       "todoist_task_id": "6hXrqc7rQpG9cfjG"
-    },
-    "fc207251bc491af8": {
-      "created_at": "2026-09-07T23:36:19.377852+00:00",
-      "due_date": "2026-09-08",
-      "missed_at": "2026-09-09",
-      "status": "missed",
-      "template_id": "build-session-tuesday",
-      "todoist_task_id": "6hRXjQGXCrqXXPgG"
     }
   },
   "seasons": {
@@ -1796,6 +1786,14 @@
       "status": "completed",
       "template_id": "seasons:block",
       "todoist_task_id": "6hw92RwjHVxQC4Vf"
+    },
+    "seasons:block:previz-saas-development:2026-11-07": {
+      "block_minutes": 100,
+      "created_at": "2026-11-07T00:59:24.793548+00:00",
+      "due_date": "2026-11-07",
+      "season_milestone": "previz-saas-development",
+      "template_id": "seasons:block",
+      "todoist_task_id": "6hwfpmjmQ5pQjM27"
     },
     "seasons:disc:anki:2026-10-12": {
       "completed_at": "2026-10-13",
@@ -1972,6 +1970,8 @@
       "created_at": "2026-11-06T01:39:50.240591+00:00",
       "discipline": "anki",
       "due_date": "2026-11-06",
+      "missed_at": "2026-11-07",
+      "status": "missed",
       "template_id": "seasons:disc:anki",
       "todoist_task_id": "6hwPVhHRRWPf2vc7"
     },
@@ -2321,8 +2321,17 @@
       "created_at": "2026-11-06T01:39:49.915554+00:00",
       "discipline": "writing",
       "due_date": "2026-11-06",
+      "missed_at": "2026-11-07",
+      "status": "missed",
       "template_id": "seasons:disc:writing",
       "todoist_task_id": "6hwPVhCfcgm8cwx7"
+    },
+    "seasons:disc:writing:2026-11-07": {
+      "created_at": "2026-11-07T00:59:25.196444+00:00",
+      "discipline": "writing",
+      "due_date": "2026-11-07",
+      "template_id": "seasons:disc:writing",
+      "todoist_task_id": "6hwfpmpG35vWc3Pf"
     }
   }
 }
