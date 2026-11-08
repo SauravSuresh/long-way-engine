@@ -39,6 +39,8 @@
     "18d963457f91bed3": {
       "created_at": "2026-11-07T00:59:23.738485+00:00",
       "due_date": "2026-11-07",
+      "missed_at": "2026-11-08",
+      "status": "missed",
       "template_id": "weekly-state-review",
       "todoist_task_id": "6hwfpmc983G5X745"
     },
@@ -57,14 +59,6 @@
       "status": "missed",
       "template_id": "weekday-morning-study-monday",
       "todoist_task_id": "6hW2XhQQWCx6Q3cX"
-    },
-    "27124ed89d093f6b": {
-      "created_at": "2026-09-08T23:27:53.341133+00:00",
-      "due_date": "2026-09-09",
-      "missed_at": "2026-09-10",
-      "status": "missed",
-      "template_id": "weekly-bootdev-wednesday",
-      "todoist_task_id": "6hRq8r993hFwH3WX"
     },
     "2944a687fe3b1586": {
       "completed_at": "2026-10-25",
@@ -208,6 +202,8 @@
     "705e8b47e7aa6851": {
       "created_at": "2026-11-07T00:59:22.930692+00:00",
       "due_date": "2026-11-07",
+      "missed_at": "2026-11-08",
+      "status": "missed",
       "template_id": "weekly-reflection",
       "todoist_task_id": "6hwfpmXFxmrPQJ75"
     },
@@ -273,14 +269,6 @@
       "status": "missed",
       "template_id": "weekly-bootdev-monday",
       "todoist_task_id": "6hXf574QQ5Vmrq35"
-    },
-    "892c5e1c1154a3be": {
-      "created_at": "2026-09-08T23:27:52.904488+00:00",
-      "due_date": "2026-09-09",
-      "missed_at": "2026-09-10",
-      "status": "missed",
-      "template_id": "weekday-morning-study-wednesday",
-      "todoist_task_id": "6hRq8r4grr8cMpwX"
     },
     "8beedf44afe79058": {
       "created_at": "2026-09-18T23:23:42.671478+00:00",
@@ -1544,14 +1532,6 @@
     }
   },
   "marketplace-builder": {
-    "327fc3a5d5a9c4c9": {
-      "created_at": "2026-09-08T23:27:51.219819+00:00",
-      "due_date": "2026-09-09",
-      "missed_at": "2026-09-10",
-      "status": "missed",
-      "template_id": "daily-anki",
-      "todoist_task_id": "6hRq8r2vFXvr62Xp"
-    },
     "3822f58402ca8d9a": {
       "created_at": "2026-09-13T23:14:44.846352+00:00",
       "due_date": "2026-09-14",
@@ -1791,7 +1771,9 @@
       "block_minutes": 100,
       "created_at": "2026-11-07T00:59:24.793548+00:00",
       "due_date": "2026-11-07",
+      "missed_at": "2026-11-08",
       "season_milestone": "previz-saas-development",
+      "status": "missed",
       "template_id": "seasons:block",
       "todoist_task_id": "6hwfpmjmQ5pQjM27"
     },
@@ -2330,6 +2312,8 @@
       "created_at": "2026-11-07T00:59:25.196444+00:00",
       "discipline": "writing",
       "due_date": "2026-11-07",
+      "missed_at": "2026-11-08",
+      "status": "missed",
       "template_id": "seasons:disc:writing",
       "todoist_task_id": "6hwfpmpG35vWc3Pf"
     }
