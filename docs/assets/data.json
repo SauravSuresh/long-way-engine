@@ -13,13 +13,13 @@
     "discipline_streaks": {
       "anki": 0,
       "gym": 0,
-      "writing": 2
+      "writing": 3
     },
     "milestones": {
       "become-capable-of-building-a-backend": {
         "area": "Learning",
         "done": null,
-        "end": "2027-04-06",
+        "end": "2027-04-08",
         "hours": 100.0,
         "hours_reached": false,
         "lane": "main",
@@ -31,7 +31,7 @@
           {
             "from": "2026-12-31",
             "lane": "main",
-            "to": "2027-04-06"
+            "to": "2027-04-08"
           }
         ],
         "start": "2026-12-31",
@@ -58,12 +58,12 @@
         "name": "Get the AWS Solutions Architect Certification",
         "segments": [
           {
-            "from": "2026-11-12",
+            "from": "2026-11-13",
             "lane": "main",
             "to": "2026-12-23"
           }
         ],
-        "start": "2026-11-12",
+        "start": "2026-11-13",
         "syllabus": "devops-ready",
         "track": [
           "Certifications",
@@ -73,7 +73,7 @@
       "previz-saas-development": {
         "area": "Work",
         "done": null,
-        "end": "2027-02-25",
+        "end": "2027-02-27",
         "hours": 50.0,
         "hours_reached": false,
         "lane": "side",
@@ -87,17 +87,17 @@
         "name": "Previz SaaS Development",
         "segments": [
           {
-            "from": "2026-11-12",
+            "from": "2026-11-13",
             "lane": "side",
             "to": "2026-12-23"
           },
           {
             "from": "2026-12-31",
             "lane": "side",
-            "to": "2027-02-25"
+            "to": "2027-02-27"
           }
         ],
-        "start": "2026-11-12",
+        "start": "2026-11-13",
         "syllabus": null,
         "track": null
       }
@@ -110,7 +110,7 @@
         "to": "2026-12-30"
       }
     ],
-    "today": "2026-11-12"
+    "today": "2026-11-13"
   },
   "shared": {
     "anki_card_count": 410,
@@ -128,7 +128,7 @@
     "devops-ready": {
       "adherence": {
         "done": 1,
-        "expected": 48,
+        "expected": 49,
         "percent": 2,
         "since": "2026-08-17"
       },
@@ -207,13 +207,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 88,
+      "day_of_journey": 89,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-11-05",
-          "state": "red"
-        },
         {
           "date": "2026-11-06",
           "state": "red"
@@ -236,6 +232,10 @@
         },
         {
           "date": "2026-11-11",
+          "state": "red"
+        },
+        {
+          "date": "2026-11-12",
           "state": "red"
         }
       ],
@@ -369,15 +369,15 @@
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 19 days"
+          "hint": "next post in 18 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 1 day"
+          "hint": "Friday review + filled reflection due today"
         }
       },
-      "today": "2026-11-12"
+      "today": "2026-11-13"
     },
     "marketplace-builder": {
       "adherence": {
@@ -433,13 +433,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 87,
+      "day_of_journey": 88,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-11-05",
-          "state": "gray"
-        },
         {
           "date": "2026-11-06",
           "state": "gray"
@@ -463,10 +459,14 @@
         {
           "date": "2026-11-11",
           "state": "gray"
+        },
+        {
+          "date": "2026-11-12",
+          "state": "gray"
         }
       ],
       "month": 3,
-      "paused": "Paused since 2026-10-12 (31 days)",
+      "paused": "Paused since 2026-10-12 (32 days)",
       "phase": 1,
       "practices": {
         "Code reading sessions": 0,
@@ -554,7 +554,7 @@
           "hint": "paused"
         }
       },
-      "today": "2026-11-12"
+      "today": "2026-11-13"
     }
   },
   "xp": {

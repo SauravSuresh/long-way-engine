@@ -62,14 +62,6 @@
       "template_id": "weekday-morning-study-monday",
       "todoist_task_id": "6hjWrH98hJcV3XVX"
     },
-    "1c94fe5da00ffdcc": {
-      "created_at": "2026-09-13T23:14:45.525980+00:00",
-      "due_date": "2026-09-14",
-      "missed_at": "2026-09-15",
-      "status": "missed",
-      "template_id": "weekday-morning-study-monday",
-      "todoist_task_id": "6hW2XhQQWCx6Q3cX"
-    },
     "1e0f016bbd1e768f": {
       "block_minutes": 90,
       "created_at": "2026-11-10T03:39:13.724196+00:00",
@@ -103,6 +95,14 @@
       "status": "missed",
       "template_id": "weekly-bootdev-wednesday",
       "todoist_task_id": "6hWQgQ7rMPgv2cjX"
+    },
+    "30cffc652dff8986": {
+      "block_minutes": 90,
+      "created_at": "2026-11-13T01:58:41.698133+00:00",
+      "due_date": "2026-11-13",
+      "season_milestone": "get-the-aws-solutions-architect-certification",
+      "template_id": "weekday-morning-study-friday",
+      "todoist_task_id": "6j255RpqCHr4C6p5"
     },
     "371a3c22e46d6ebd": {
       "block_minutes": 90,
@@ -305,14 +305,6 @@
       "status": "missed",
       "template_id": "monthly-retrospective",
       "todoist_task_id": "6hv3H7gFFPxxMH3X"
-    },
-    "a9f94597c5c5769b": {
-      "created_at": "2026-09-13T23:14:45.919787+00:00",
-      "due_date": "2026-09-14",
-      "missed_at": "2026-09-15",
-      "status": "missed",
-      "template_id": "weekly-bootdev-monday",
-      "todoist_task_id": "6hW2XhVvWFM6W6g5"
     },
     "c0ccee911caddf80": {
       "created_at": "2026-09-18T23:23:43.122684+00:00",
@@ -1514,14 +1506,6 @@
     }
   },
   "marketplace-builder": {
-    "3822f58402ca8d9a": {
-      "created_at": "2026-09-13T23:14:44.846352+00:00",
-      "due_date": "2026-09-14",
-      "missed_at": "2026-09-15",
-      "status": "missed",
-      "template_id": "daily-anki",
-      "todoist_task_id": "6hW2XhJqPg4hCVHp"
-    },
     "4faa98ee30d64b40": {
       "created_at": "2026-09-14T23:54:30.125479+00:00",
       "due_date": "2026-09-15",
@@ -1715,7 +1699,9 @@
       "block_minutes": 90,
       "created_at": "2026-11-12T02:19:21.496249+00:00",
       "due_date": "2026-11-12",
+      "missed_at": "2026-11-13",
       "season_milestone": "previz-saas-development",
+      "status": "missed",
       "template_id": "seasons:block",
       "todoist_task_id": "6hxqh75CqMWqHvP7"
     },
@@ -1930,8 +1916,17 @@
       "created_at": "2026-11-12T02:19:22.467865+00:00",
       "discipline": "anki",
       "due_date": "2026-11-12",
+      "missed_at": "2026-11-13",
+      "status": "missed",
       "template_id": "seasons:disc:anki",
       "todoist_task_id": "6hxqh77H3fHXjm7f"
+    },
+    "seasons:disc:anki:2026-11-13": {
+      "created_at": "2026-11-13T01:58:43.006974+00:00",
+      "discipline": "anki",
+      "due_date": "2026-11-13",
+      "template_id": "seasons:disc:anki",
+      "todoist_task_id": "6j255V2J45cmJ2Vf"
     },
     "seasons:disc:gym:2026-10-12": {
       "completed_at": "2026-10-13",
@@ -2108,6 +2103,8 @@
       "created_at": "2026-11-12T02:19:22.765874+00:00",
       "discipline": "gym",
       "due_date": "2026-11-12",
+      "missed_at": "2026-11-13",
+      "status": "missed",
       "template_id": "seasons:disc:gym",
       "todoist_task_id": "6hxqh77GfFPRpPc7"
     },
@@ -2355,11 +2352,20 @@
       "todoist_task_id": "6hxXvHHFr7F4mFR7"
     },
     "seasons:disc:writing:2026-11-12": {
+      "completed_at": "2026-11-13",
       "created_at": "2026-11-12T02:19:22.067929+00:00",
       "discipline": "writing",
       "due_date": "2026-11-12",
+      "status": "completed",
       "template_id": "seasons:disc:writing",
       "todoist_task_id": "6hxqh78r965ww247"
+    },
+    "seasons:disc:writing:2026-11-13": {
+      "created_at": "2026-11-13T01:58:42.504811+00:00",
+      "discipline": "writing",
+      "due_date": "2026-11-13",
+      "template_id": "seasons:disc:writing",
+      "todoist_task_id": "6j255RvRgcWcRC47"
     }
   }
 }
