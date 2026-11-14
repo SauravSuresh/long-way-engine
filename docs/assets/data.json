@@ -13,13 +13,13 @@
     "discipline_streaks": {
       "anki": 0,
       "gym": 0,
-      "writing": 3
+      "writing": 0
     },
     "milestones": {
       "become-capable-of-building-a-backend": {
         "area": "Learning",
         "done": null,
-        "end": "2027-04-08",
+        "end": "2027-04-09",
         "hours": 100.0,
         "hours_reached": false,
         "lane": "main",
@@ -29,12 +29,12 @@
         "name": "Become Capable of building a backend",
         "segments": [
           {
-            "from": "2026-12-31",
+            "from": "2027-01-02",
             "lane": "main",
-            "to": "2027-04-08"
+            "to": "2027-04-09"
           }
         ],
-        "start": "2026-12-31",
+        "start": "2027-01-02",
         "syllabus": "devops-ready",
         "track": [
           "Courses",
@@ -44,7 +44,7 @@
       "get-the-aws-solutions-architect-certification": {
         "area": "Learning",
         "done": null,
-        "end": "2026-12-23",
+        "end": "2026-12-25",
         "hours": 40.0,
         "hours_reached": false,
         "lane": "main",
@@ -58,12 +58,12 @@
         "name": "Get the AWS Solutions Architect Certification",
         "segments": [
           {
-            "from": "2026-11-13",
+            "from": "2026-11-14",
             "lane": "main",
-            "to": "2026-12-23"
+            "to": "2026-12-25"
           }
         ],
-        "start": "2026-11-13",
+        "start": "2026-11-14",
         "syllabus": "devops-ready",
         "track": [
           "Certifications",
@@ -87,17 +87,17 @@
         "name": "Previz SaaS Development",
         "segments": [
           {
-            "from": "2026-11-13",
+            "from": "2026-11-14",
             "lane": "side",
-            "to": "2026-12-23"
+            "to": "2026-12-25"
           },
           {
-            "from": "2026-12-31",
+            "from": "2027-01-02",
             "lane": "side",
             "to": "2027-02-27"
           }
         ],
-        "start": "2026-11-13",
+        "start": "2026-11-14",
         "syllabus": null,
         "track": null
       }
@@ -106,11 +106,11 @@
     "rest_until": null,
     "rests": [
       {
-        "from": "2026-12-24",
-        "to": "2026-12-30"
+        "from": "2026-12-26",
+        "to": "2027-01-01"
       }
     ],
-    "today": "2026-11-13"
+    "today": "2026-11-14"
   },
   "shared": {
     "anki_card_count": 410,
@@ -128,7 +128,7 @@
     "devops-ready": {
       "adherence": {
         "done": 1,
-        "expected": 49,
+        "expected": 50,
         "percent": 2,
         "since": "2026-08-17"
       },
@@ -207,13 +207,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 89,
+      "day_of_journey": 90,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-11-06",
-          "state": "red"
-        },
         {
           "date": "2026-11-07",
           "state": "gray"
@@ -236,6 +232,10 @@
         },
         {
           "date": "2026-11-12",
+          "state": "red"
+        },
+        {
+          "date": "2026-11-13",
           "state": "red"
         }
       ],
@@ -327,6 +327,13 @@
           "word_count": 0
         },
         {
+          "cadence": "weekly",
+          "file": "2026-W46",
+          "relative_path": "weekly/2026-W46.md",
+          "status": "stub",
+          "word_count": 0
+        },
+        {
           "cadence": "monthly",
           "file": "2026-06",
           "relative_path": "monthly/2026-06.md",
@@ -364,20 +371,20 @@
         "Daily": {
           "best": 1,
           "count": 0,
-          "hint": "complete morning reading + Anki today to start"
+          "hint": "rest day \u2014 no rituals scheduled"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 18 days"
+          "hint": "next post in 17 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "Friday review + filled reflection due today"
+          "hint": "next Friday in 6 days"
         }
       },
-      "today": "2026-11-13"
+      "today": "2026-11-14"
     },
     "marketplace-builder": {
       "adherence": {
@@ -433,13 +440,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 88,
+      "day_of_journey": 89,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-11-06",
-          "state": "gray"
-        },
         {
           "date": "2026-11-07",
           "state": "gray"
@@ -463,10 +466,14 @@
         {
           "date": "2026-11-12",
           "state": "gray"
+        },
+        {
+          "date": "2026-11-13",
+          "state": "gray"
         }
       ],
       "month": 3,
-      "paused": "Paused since 2026-10-12 (32 days)",
+      "paused": "Paused since 2026-10-12 (33 days)",
       "phase": 1,
       "practices": {
         "Code reading sessions": 0,
@@ -554,7 +561,7 @@
           "hint": "paused"
         }
       },
-      "today": "2026-11-13"
+      "today": "2026-11-14"
     }
   },
   "xp": {
