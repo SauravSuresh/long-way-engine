@@ -13,13 +13,13 @@
     "discipline_streaks": {
       "anki": 0,
       "gym": 0,
-      "writing": 0
+      "writing": 1
     },
     "milestones": {
       "become-capable-of-building-a-backend": {
         "area": "Learning",
         "done": null,
-        "end": "2027-04-09",
+        "end": "2027-04-10",
         "hours": 100.0,
         "hours_reached": false,
         "lane": "main",
@@ -31,7 +31,7 @@
           {
             "from": "2027-01-02",
             "lane": "main",
-            "to": "2027-04-09"
+            "to": "2027-04-10"
           }
         ],
         "start": "2027-01-02",
@@ -58,12 +58,12 @@
         "name": "Get the AWS Solutions Architect Certification",
         "segments": [
           {
-            "from": "2026-11-14",
+            "from": "2026-11-15",
             "lane": "main",
             "to": "2026-12-25"
           }
         ],
-        "start": "2026-11-14",
+        "start": "2026-11-15",
         "syllabus": "devops-ready",
         "track": [
           "Certifications",
@@ -73,7 +73,7 @@
       "previz-saas-development": {
         "area": "Work",
         "done": null,
-        "end": "2027-02-27",
+        "end": "2027-03-04",
         "hours": 50.0,
         "hours_reached": false,
         "lane": "side",
@@ -87,17 +87,17 @@
         "name": "Previz SaaS Development",
         "segments": [
           {
-            "from": "2026-11-14",
+            "from": "2026-11-15",
             "lane": "side",
             "to": "2026-12-25"
           },
           {
             "from": "2027-01-02",
             "lane": "side",
-            "to": "2027-02-27"
+            "to": "2027-03-04"
           }
         ],
-        "start": "2026-11-14",
+        "start": "2026-11-15",
         "syllabus": null,
         "track": null
       }
@@ -110,7 +110,7 @@
         "to": "2027-01-01"
       }
     ],
-    "today": "2026-11-14"
+    "today": "2026-11-15"
   },
   "shared": {
     "anki_card_count": 410,
@@ -207,13 +207,9 @@
       "books_state": {},
       "current_book": "Ultimate AWS Certified Solutions Architect Associate (Udemy)",
       "current_module": 1,
-      "day_of_journey": 90,
+      "day_of_journey": 91,
       "day_total": 335,
       "last_7_days": [
-        {
-          "date": "2026-11-07",
-          "state": "gray"
-        },
         {
           "date": "2026-11-08",
           "state": "gray"
@@ -237,6 +233,10 @@
         {
           "date": "2026-11-13",
           "state": "red"
+        },
+        {
+          "date": "2026-11-14",
+          "state": "gray"
         }
       ],
       "month": 3,
@@ -371,20 +371,20 @@
         "Daily": {
           "best": 1,
           "count": 0,
-          "hint": "rest day \u2014 no rituals scheduled"
+          "hint": "Sunday \u2014 rest day"
         },
         "Monthly post": {
           "best": 0,
           "count": 0,
-          "hint": "next post in 17 days"
+          "hint": "next post in 16 days"
         },
         "Weekly review": {
           "best": 0,
           "count": 0,
-          "hint": "next Friday in 6 days"
+          "hint": "next Friday in 5 days"
         }
       },
-      "today": "2026-11-14"
+      "today": "2026-11-15"
     },
     "marketplace-builder": {
       "adherence": {
@@ -440,13 +440,9 @@
       "books_state": {},
       "current_book": "The Go Programming Language",
       "current_module": 1,
-      "day_of_journey": 89,
+      "day_of_journey": 90,
       "day_total": 366,
       "last_7_days": [
-        {
-          "date": "2026-11-07",
-          "state": "gray"
-        },
         {
           "date": "2026-11-08",
           "state": "gray"
@@ -470,10 +466,14 @@
         {
           "date": "2026-11-13",
           "state": "gray"
+        },
+        {
+          "date": "2026-11-14",
+          "state": "gray"
         }
       ],
       "month": 3,
-      "paused": "Paused since 2026-10-12 (33 days)",
+      "paused": "Paused since 2026-10-12 (34 days)",
       "phase": 1,
       "practices": {
         "Code reading sessions": 0,
@@ -561,7 +561,7 @@
           "hint": "paused"
         }
       },
-      "today": "2026-11-14"
+      "today": "2026-11-15"
     }
   },
   "xp": {
