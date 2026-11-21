@@ -1972,3 +1972,12 @@
 - Dashboard: ok
 - Errors: 0
 
+## 2026-11-21 (Asia/Kolkata)
+- Run at: 2026-11-21 08:05 IST
+- Created: 2 (weekly-reflection, weekly-state-review)
+- Skipped (cache hit): 1 (module-1-onboarding)
+- Reflection stubs created: 1 (/home/runner/work/long-way-engine/long-way-engine/reflections/devops-ready/weekly/2026-W47.md)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
