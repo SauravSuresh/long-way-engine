@@ -269,6 +269,8 @@
     "99354673ef05ca0b": {
       "created_at": "2026-11-21T02:35:11.293051+00:00",
       "due_date": "2026-11-21",
+      "missed_at": "2026-11-22",
+      "status": "missed",
       "template_id": "weekly-state-review",
       "todoist_task_id": "6j3xC48Vgp65RWHX"
     },
@@ -311,6 +313,8 @@
     "c91746a6a84315d2": {
       "created_at": "2026-11-21T02:35:10.588313+00:00",
       "due_date": "2026-11-21",
+      "missed_at": "2026-11-22",
+      "status": "missed",
       "template_id": "weekly-reflection",
       "todoist_task_id": "6j3xC46mhXxv4j85"
     },
@@ -351,17 +355,6 @@
       "status": "missed",
       "template_id": "weekday-morning-study-friday",
       "todoist_task_id": "6hmRWJ349F6fmwg5"
-    },
-    "f2db2a852101e64b": {
-      "created_at": "2026-09-22T00:11:23.915104+00:00",
-      "due_date": "persistent",
-      "persistent_action": {
-        "type": "unset_pause"
-      },
-      "persistent_category": "resume",
-      "persistent_consumed": false,
-      "template_id": "persistent-resume",
-      "todoist_task_id": "6hXrqc8wWc8gr2cX"
     },
     "f89a843b3e847364": {
       "created_at": "2026-10-31T00:53:35.768765+00:00",
@@ -1492,17 +1485,6 @@
       "persistent_consumed": false,
       "template_id": "persistent-emergency-pause",
       "todoist_task_id": "6hmxJx9V8gvQpMHG"
-    },
-    "f2db2a852101e64b": {
-      "created_at": "2026-09-22T00:11:22.940341+00:00",
-      "due_date": "persistent",
-      "persistent_action": {
-        "type": "unset_pause"
-      },
-      "persistent_category": "resume",
-      "persistent_consumed": false,
-      "template_id": "persistent-resume",
-      "todoist_task_id": "6hXrqc7rQpG9cfjG"
     }
   },
   "seasons": {
@@ -1624,7 +1606,9 @@
       "block_minutes": 100,
       "created_at": "2026-11-21T02:35:12.276594+00:00",
       "due_date": "2026-11-21",
+      "missed_at": "2026-11-22",
       "season_milestone": "previz-saas-development",
+      "status": "missed",
       "template_id": "seasons:block",
       "todoist_task_id": "6j3xC4HPRqcXJrf7"
     },
@@ -2433,6 +2417,8 @@
       "created_at": "2026-11-21T02:35:12.611196+00:00",
       "discipline": "writing",
       "due_date": "2026-11-21",
+      "missed_at": "2026-11-22",
+      "status": "missed",
       "template_id": "seasons:disc:writing",
       "todoist_task_id": "6j3xC4Gg6XvW7rHf"
     }
