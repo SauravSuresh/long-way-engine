@@ -32,7 +32,9 @@
       "block_minutes": 90,
       "created_at": "2026-11-24T03:39:27.705908+00:00",
       "due_date": "2026-11-24",
+      "missed_at": "2026-11-25",
       "season_milestone": "get-the-aws-solutions-architect-certification",
+      "status": "missed",
       "template_id": "weekday-morning-study-tuesday",
       "todoist_task_id": "6j4g48JQvRVWcR7X"
     },
@@ -351,6 +353,14 @@
       "status": "missed",
       "template_id": "weekday-morning-study-thursday",
       "todoist_task_id": "6hmF77FFCFC2MxWX"
+    },
+    "d27ff6abe23e0791": {
+      "block_minutes": 90,
+      "created_at": "2026-11-25T04:21:54.381981+00:00",
+      "due_date": "2026-11-25",
+      "season_milestone": "get-the-aws-solutions-architect-certification",
+      "template_id": "weekday-morning-study-wednesday",
+      "todoist_task_id": "6j4vm4JfjwMX47PX"
     },
     "dbf934175d0b8105": {
       "created_at": "2026-10-14T23:59:04.136318+00:00",
@@ -1924,8 +1934,17 @@
       "created_at": "2026-11-24T03:39:29.406403+00:00",
       "discipline": "anki",
       "due_date": "2026-11-24",
+      "missed_at": "2026-11-25",
+      "status": "missed",
       "template_id": "seasons:disc:anki",
       "todoist_task_id": "6j4g48P6jVMVfqJ7"
+    },
+    "seasons:disc:anki:2026-11-25": {
+      "created_at": "2026-11-25T04:21:55.836357+00:00",
+      "discipline": "anki",
+      "due_date": "2026-11-25",
+      "template_id": "seasons:disc:anki",
+      "todoist_task_id": "6j4vm4Qc67p8JmPf"
     },
     "seasons:disc:gym:2026-10-12": {
       "completed_at": "2026-10-13",
@@ -2156,8 +2175,17 @@
       "created_at": "2026-11-24T03:39:29.750789+00:00",
       "discipline": "gym",
       "due_date": "2026-11-24",
+      "missed_at": "2026-11-25",
+      "status": "missed",
       "template_id": "seasons:disc:gym",
       "todoist_task_id": "6j4g48PXMrXHmRjf"
+    },
+    "seasons:disc:gym:2026-11-25": {
+      "created_at": "2026-11-25T04:21:56.157388+00:00",
+      "discipline": "gym",
+      "due_date": "2026-11-25",
+      "template_id": "seasons:disc:gym",
+      "todoist_task_id": "6j4vm4W8jhPFHW37"
     },
     "seasons:disc:writing:2026-10-12": {
       "completed_at": "2026-10-13",
@@ -2493,11 +2521,20 @@
       "todoist_task_id": "6j4P2HQJc8G42ch7"
     },
     "seasons:disc:writing:2026-11-24": {
+      "completed_at": "2026-11-25",
       "created_at": "2026-11-24T03:39:28.979780+00:00",
       "discipline": "writing",
       "due_date": "2026-11-24",
+      "status": "completed",
       "template_id": "seasons:disc:writing",
       "todoist_task_id": "6j4g48Q8GqxC4xmf"
+    },
+    "seasons:disc:writing:2026-11-25": {
+      "created_at": "2026-11-25T04:21:55.532338+00:00",
+      "discipline": "writing",
+      "due_date": "2026-11-25",
+      "template_id": "seasons:disc:writing",
+      "todoist_task_id": "6j4vm4QQRj2GcCPf"
     }
   }
 }
