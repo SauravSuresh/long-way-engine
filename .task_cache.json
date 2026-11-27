@@ -286,6 +286,14 @@
       "template_id": "weekly-state-review",
       "todoist_task_id": "6j2GPgFrwXQJX3j5"
     },
+    "9642b14b7ba8cd41": {
+      "block_minutes": 90,
+      "created_at": "2026-11-27T03:40:58.746836+00:00",
+      "due_date": "2026-11-27",
+      "season_milestone": "get-the-aws-solutions-architect-certification",
+      "template_id": "weekday-morning-study-friday",
+      "todoist_task_id": "6j5JVr32w9C2hh4X"
+    },
     "99354673ef05ca0b": {
       "created_at": "2026-11-21T02:35:11.293051+00:00",
       "due_date": "2026-11-21",
@@ -1655,9 +1663,12 @@
     },
     "seasons:block:previz-saas-development:2026-11-26": {
       "block_minutes": 90,
+      "completed_at": "2026-11-27",
       "created_at": "2026-11-26T03:39:38.648118+00:00",
       "due_date": "2026-11-26",
+      "season_logged": true,
       "season_milestone": "previz-saas-development",
+      "status": "completed",
       "template_id": "seasons:block",
       "todoist_task_id": "6j573q2Hq2cQVj27"
     },
@@ -1962,8 +1973,17 @@
       "created_at": "2026-11-26T03:39:39.577320+00:00",
       "discipline": "anki",
       "due_date": "2026-11-26",
+      "missed_at": "2026-11-27",
+      "status": "missed",
       "template_id": "seasons:disc:anki",
       "todoist_task_id": "6j573q4p6CCVFmgf"
+    },
+    "seasons:disc:anki:2026-11-27": {
+      "created_at": "2026-11-27T03:40:59.934996+00:00",
+      "discipline": "anki",
+      "due_date": "2026-11-27",
+      "template_id": "seasons:disc:anki",
+      "todoist_task_id": "6j5JVr6vrp8JrQR7"
     },
     "seasons:disc:gym:2026-10-12": {
       "completed_at": "2026-10-13",
@@ -2209,9 +2229,11 @@
       "todoist_task_id": "6j4vm4W8jhPFHW37"
     },
     "seasons:disc:gym:2026-11-26": {
+      "completed_at": "2026-11-27",
       "created_at": "2026-11-26T03:39:39.947015+00:00",
       "discipline": "gym",
       "due_date": "2026-11-26",
+      "status": "completed",
       "template_id": "seasons:disc:gym",
       "todoist_task_id": "6j573q8Cr9v9fwg7"
     },
@@ -2570,8 +2592,17 @@
       "created_at": "2026-11-26T03:39:39.197341+00:00",
       "discipline": "writing",
       "due_date": "2026-11-26",
+      "missed_at": "2026-11-27",
+      "status": "missed",
       "template_id": "seasons:disc:writing",
       "todoist_task_id": "6j573q47GFhFhw9f"
+    },
+    "seasons:disc:writing:2026-11-27": {
+      "created_at": "2026-11-27T03:40:59.625274+00:00",
+      "discipline": "writing",
+      "due_date": "2026-11-27",
+      "template_id": "seasons:disc:writing",
+      "todoist_task_id": "6j5JVr3fQr5gMWGf"
     }
   }
 }
