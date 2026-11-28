@@ -2044,3 +2044,12 @@
 - Dashboard: ok
 - Errors: 0
 
+## 2026-11-28 (Asia/Kolkata)
+- Run at: 2026-11-28 08:52 IST
+- Created: 3 (monthly-retrospective, weekly-reflection, weekly-state-review)
+- Skipped (cache hit): 1 (module-1-onboarding)
+- Reflection stubs created: 2 (/home/runner/work/long-way-engine/long-way-engine/reflections/devops-ready/monthly/2026-11.md, /home/runner/work/long-way-engine/long-way-engine/reflections/devops-ready/weekly/2026-W48.md)
+- Reflection metadata updated: 0
+- Dashboard: ok
+- Errors: 0
+
